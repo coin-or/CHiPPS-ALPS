@@ -1,0 +1,62 @@
+ALPS Version 0.6 README
+=======================
+
+Welcome to Alps. Alps is distributed under the Common Public License
+Version 1.0 and is freely redistributable. All source code and documentation 
+is Copyright 2001-2004 by International Business Machines Corporation,
+Lehigh University, Yan Xu, Ted Ralphs, Matthew Saltzman and others.
+This README may be distributed freely.
+
+
+WHAT IS ABC
+============
+
+Abc is an example of the applications developed on top of Alps (See 
+the README of Alps). Abc is a simple branch and cut solver for Mixed
+Integer Linear Programming. Its whole purpose is to illustrate how to write 
+an application based on Alps. Blis (to be released soon) is a serious
+mixed integer linear Programming (MILP) solver, which can be used to 
+solve MILPs.
+
+
+DOCUMENTATION
+=============
+
+The html documentation of the classes in Alps (See INSTALL of Alps) can be 
+created. A user's guide that is under preparation that can help users to 
+develop an application.
+
+
+INSTALLATION
+============
+
+Please see the INSTALL file for a guide to install Abc.
+
+
+CURRENT TESTING STATUS
+======================
+
+1. Configurations
+   - Serial: deprecated. (Use Alps/Bcps/Blis instead, forthcoming)
+   - LAMMPI: broken. (Use Alps/Bcps/Blis instead, forthcoming)
+   - MPICH: broken. (Use Alps/Bcps/Blis instead, forthcoming)
+
+
+SUPPORT
+=======
+
+1. Authors
+
+Yan Xu (yan.xu@sas.com)
+Ted Ralphs (tkralphs@lehigh.edu), Project Manager
+Laci Ladanyi (ladanyi@us.ibm.com)
+Matt Saltzman (mjs@clemson.edu)
+
+2. List Serve
+
+Alps users should use the Coin-Discuss mailing list. To subscribe, go to 
+http://list.coin-or.org/mailman/listinfo/coin-discuss
+
+3. Bug Reports
+
+Bug reports should be posted to the Coin-Discuss mailing list (see above).
