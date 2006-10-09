@@ -1,0 +1,123 @@
+PREREQUISITES FOR INSTALLATION
+==============================
+
+NOTE: CoinDir is the path to the directory of COIN
+NOTE: AlpsDir is the path to the directory of COIN/Alps
+NOTE: AbcDir is the path to the directory of COIN/Example/Abc
+NOTE: TargetDir is the path to the directory where targets are put in,
+      whose name is derived from the platform name (as returned by `uname`)
+      and the optimization level (e.g., AbcDir/Linux-g or AbcDir/Linux-O)
+
+1. Download the necessary components (Alps, Coin, Clp, Osi, Cgl) of COIN
+   - Alps depends on Coin.
+   - Abc depends on Coin, Clp, Osi, Cgl
+2. At the moment, on (*)nix platforms, you must use g++ 2.95.2 or higher.
+3. must use gnu make
+4. To make the documentation, doxygen must be installed
+
+
+TO BUILD AND RUN SERIAL ABC
+===========================
+
+1. Build Alps serial library. Please refer to the INSTALL file in AlpsDir.
+
+2. Build Abc. In AbcDir, 'make' to build the executable, 
+   which will be placed in the target subdirectory (TargetDir).
+
+3. Change parameters if users do want to use the default values.
+   AlpsDir/include/AlpsParams.h has explanations of each parameter.
+   There are two ways to change parameters:
+   - parameter file: AbcDir/abc.par
+   - command line
+
+   Users must specify:
+   - which instance to solve
+
+   Users can specify:
+   - maximum solution time
+   - log level, etc.
+
+4. To run Abc, in AbcDir, type 
+
+	TargetDir/abc -param abc.par
+
+   Abc can also read in parameters from command line, for instance
+
+	TargetDir/abc -Alps_instance ./data/flugpl.mps
+	
+
+TO BUILD AND RUN PARALLEL ABC
+=============================
+
+1. Build Alps parallel library. Please refer to the INSTALL file in AlpsDir.
+
+2. Build Abc. In AbcDir, 'make' to build the executable, which will 
+   be placed in the target subdirectory (TargetDir).
+
+3. If do NOT want to use the default parameter values, users can modify them.
+   (AlpsDir/include/AlpsParams.h has explanations of each parameter.)
+
+   There are two ways to change parameters:
+   - parameter file: AbcDir/abc.par
+   - command line
+
+   Users must specify:
+   - which instance to solve
+   - how many processes to be launched 
+
+   Users can specify:
+   - how many hubs
+   - maximum solution time
+   - log level, etc.
+
+4. The way to run parallel version depends on users' computing environment.
+   Users can ask help from their system administrators if not sure. 
+   A general way:
+
+   - in AbcDir, type 
+
+      mpirun -np numProcesses TargetDir/abc -param abc.par
+	
+
+SOLVER OUTPUT
+=============
+ 
+For example, in AbcDir, type following command to solve instance flugpl using
+serial Abc:
+
+./Linux-g/abc -Alps_instance data/flugpl.mps
+
+The message to screen is as follows:
+(Note users might see a bit different output depends on LP solver and system)
+
+*****************************
+* ALPS Version 0.6 (Serial) *
+*****************************
+
+Reading in ALPS parameters ...
+Reading in ABC parameters ...
+Coin0001I At line 15 NAME          FLUGPL
+Coin0001I At line 16 ROWS
+Coin0001I At line 36 COLUMNS
+Coin0001I At line 89 RHS
+Coin0001I At line 94 BOUNDS
+Coin0001I At line 111 ENDATA
+Coin0002I Problem FLUGPL has 18 rows, 18 columns and 46 elements
+Coin0008I FLUGPL read with 0 errors
+Problem = flugpl
+Data file = data/flugpl.mps
+Log file = flugpl.log
+
+Abc0010I Process[-10]: after 0 nodes, 0 on tree, 1e+80 best solution, best possible 1e+75
+Abc0010I Process[-10]: after 50 nodes, 33 on tree, 1e+80 best solution, best possible 1.19089e+06
+
+....
+
+Abc0010I Process[-10]: after 2800 nodes, 343 on tree, 1.2015e+06 best solution, best possible 1.19702e+06
+Number of nodes processed = 5671
+Number of nodes left = 0
+Tree depth = 35
+Search CPU time = 3.2605 seconds
+Search wallclock = 3.89941 seconds
+Best solution quality = 1.2015e+06
+
