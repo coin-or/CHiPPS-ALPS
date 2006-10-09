@@ -1,0 +1,64 @@
+##############################################################################
+##############################################################################
+# You should not need to edit below this line.
+##############################################################################
+##############################################################################
+
+# The location of the customized Makefiles
+include ${MakefileDir}/Makefile.coin
+include ${MakefileDir}/Makefile.location
+
+##############################################################################
+
+LIBNAME := Alps
+LIBSRC :=
+LIBSRC += AlpsCompareActual.cpp
+LIBSRC += AlpsKnowledge.cpp
+LIBSRC += AlpsKnowledgeBroker.cpp
+LIBSRC += AlpsMessage.cpp
+LIBSRC += AlpsModel.cpp
+LIBSRC += AlpsParameterBase.cpp
+LIBSRC += AlpsParams.cpp
+LIBSRC += AlpsSubTree.cpp
+LIBSRC += AlpsTreeNode.cpp
+
+ifeq ($(MESSAGE_INTERFACE), MPICH)
+    LIBSRC +=  AlpsKnowledgeBrokerMPI.cpp
+else
+ifeq ($(MESSAGE_INTERFACE), LAMMPI)
+    LIBSRC +=  AlpsKnowledgeBrokerMPI.cpp
+else
+    LIBSRC +=  AlpsKnowledgeBrokerSerial.cpp	
+endif
+endif
+
+##############################################################################
+
+export ExtraIncDir  := ${MpiIncDir} ${CoinIncDir} ${zlibIncDir} ${bzlibIncDir}
+export ExtraLibDir  := ${CoinLibDir} ${zlibLibDir} ${bzlibLibDir}
+export ExtraLibName := ${CoinLibName} ${zlibLibName} ${bzlibLibName}
+export ExtraDefine  := ${AlpsDefine} ${CoinDefine} ${zlibDefine} ${bzlibDefine}
+
+##############################################################################
+
+ifeq ($(OptLevel),-g)
+      ExtraDefine += NF_DEBUG
+#     ExtraDefine += -NF_DEBUG_MORE
+else
+#     ExtraDefine += -NDEBUG
+endif
+
+##############################################################################
+
+export LibType OptLevel LIBNAME LIBSRC
+
+###############################################################################
+
+.DELETE_ON_ERROR:
+
+.PHONY: default install library
+
+default: install
+
+install library:
+	$(MAKE) -f ${MakefileDir}/Makefile.lib $@

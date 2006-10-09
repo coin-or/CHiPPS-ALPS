@@ -1,0 +1,56 @@
+PREREQUISITES FOR INSTALLATION
+==============================
+
+NOTE: CoinDir is the path to the directory of COIN
+NOTE: AlpsDir is the path to the directory of COIN/Alps
+
+1. Download the necessary components (Alps, Coin, Clp, Osi, Cgl) of COIN
+   - Alps depends on Coin.
+   - Example CoinDir/Examples/Knap depends on Coin
+   - Example CoinDir/Examples/Abc depends on Coin, Clp, Osi, Cgl
+   - AlpsDir/Bcps (to be released) depends on Coin
+   - AlpsDir/Bcps/Blis (to be released) depends on Coin, Clp, Osi, Cgl
+2. At the moment, on (*)nix platforms, you must use g++ 2.95.2 or higher.
+3. must use gnu make
+4. To make the documentation, doxygen must be installed
+
+
+TO CREATE HTML DOCUMENTATION
+============================
+
+In AlpsDir, 'make doc' to create the html documentation of the classes 
+in the library. By default, the created html documentation is in
+AlpsDir/Doc/html.
+
+
+TO BUILD ALPS SERIAL LIBRARY AND RUN EXAMPLES
+=============================================
+
+1. Read and edit the top of AlpsDir/Makefile.config:
+   - select to build serial library by 
+     - uncommenting line 'export MESSAGE_INTERFACE = NONE' if it is commented
+     - commenting line 'export MESSAGE_INTERFACE = MPICH' if it is not
+     - commenting line 'export MESSAGE_INTERFACE = LAMMPI' if it is not
+   - select whether to build shared or static library
+   - select optimization level
+
+2. In AlpsDir, 'make' to build and install the Alps serial library.
+
+3. Build and run examples. Please refer to the INSTALL files in 
+   CoinDir/Examples/Knap or CoinDir/Examples/Abc.
+
+
+TO BUILD ALPS PARALLEL LIBRARY AND RUN EXAMPLES
+===============================================
+
+1. Read and edit the top of Makefile.config:
+   - select to build parallel library by 
+     - commenting line 'export MESSAGE_INTERFACE = NONE' if it is not
+     - uncommenting line 'export MESSAGE_INTERFACE = MPICH' if using MPICH
+     - uncommenting line 'export MESSAGE_INTERFACE = LAMMPI' if using LAMMPI
+   - select optimization level
+
+2. In AlpsDir, 'make' to build and install the Alps parallel library.
+
+3. Build and run examples. Please refer to the INSTALL files in 
+   CoinDir/Examples/Knap or CoinDir/Examples/Abc.

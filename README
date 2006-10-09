@@ -1,0 +1,74 @@
+ALPS Version 0.6 README
+=======================
+
+Welcome to Alps. Alps is distributed under the Common Public License
+Version 1.0 and is freely redistributable. All source code and documentation 
+is Copyright 2001-2004 by International Business Machines Corporation,
+Lehigh University, Yan Xu, Ted Ralphs, Matthew Salzman and others.
+This README may be distributed freely.
+
+
+WHAT IS ALPS
+============
+
+Alps is a framework for implementing parallel graph search algorithms. 
+It generalizes many of the notions present in BCP, allowing the implementation
+of a wider range of algorithms with a simplified interface. Alps implements
+the search handling methods required for implementing large-scale,
+data-intensive parallel search algorithms, such as those used for 
+solving discrete optimization problems. It is the base layer of a 
+planned hierarchy that will include a library for solving mixed-integer
+linear programs.
+
+
+PROJECT WEB PAGE
+================
+
+https://coral.ie.lehigh.edu/trac_projects/alps
+
+
+DOCUMENTATION
+=============
+
+The html documentation of the classes in Alps (See INSTALL) can be created
+readily. A user's guide that is under preparation can show users how to 
+develop an application based Alps and how to use existing applications.
+
+
+INSTALLATION
+============
+
+Please see the INSTALL file for a guide to install Alps.
+
+
+CURRENT TESTING STATUS
+======================
+
+1. Configurations
+   - Serial: Well tested.
+   - LAMMPI: Well tested.
+   - MPICH: Well tested.
+
+2. Applications (See INSTALL)
+   - Abc: Alps Branch and Cut (A simple generic MILP solver): Well tested.
+   - Knap: Knapsack solver: Well tested.
+
+
+SUPPORT
+=======
+
+1. Authors
+
+Yan Xu (yan.xu@sas.com)
+Ted Ralphs (tkralphs@lehigh.edu), Project Manager
+Laci Ladanyi (ladanyi@us.ibm.com)
+Matt Saltzman (mjs@clemson.edu)
+
+2. List Serve
+
+Alps users should use the Coin-Discuss mailing list. To subscribe, go to 
+http://list.coin-or.org/mailman/listinfo/coin-discuss
+
+3. Bug Reports
+
+Bug reports should be posted to the Coin-Discuss mailing list (see above).
