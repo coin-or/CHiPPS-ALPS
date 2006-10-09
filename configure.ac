@@ -22,7 +22,7 @@
 
 AC_PREREQ(2.59)
 
-AC_INIT([Alps],[0.1],[https://projects.coin-or.org/Alps/newticket])
+AC_INIT([Alps],[0.9],[https://projects.coin-or.org/Alps/newticket])
 
 AC_COPYRIGHT([
 Copyright 2006 International Business Machines and others.
