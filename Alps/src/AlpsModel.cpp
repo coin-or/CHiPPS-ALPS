@@ -15,6 +15,7 @@
  *===========================================================================*/
 
 
+#include "AlpsKnowledgeBroker.h"
 #include "AlpsModel.h"
 
 //##############################################################################
@@ -66,3 +67,42 @@ AlpsModel::readParameters(const int argnum, const char * const * arglist)
 } 
 
 //##############################################################################
+void 
+AlpsModel::nodeLog(AlpsTreeNode *node, bool force) 
+{
+    int nodeInterval = 
+	broker_->getModel()->AlpsPar()->entry(AlpsParams::nodeLogInterval);
+
+    int numNodesProcessed = broker_->getNumNodesProcessed();
+
+    AlpsTreeNode *bestNode = NULL;
+    
+    if ( (broker_->getMsgLevel() > 1) && 
+         ( force ||
+           (numNodesProcessed % nodeInterval == 0) ) ) {
+        
+        double feasBound = ALPS_OBJ_MAX, relBound = ALPS_OBJ_MAX;
+
+        if (broker_->getNumKnowledges(ALPS_SOLUTION) > 0) {
+            feasBound = (broker_->getBestKnowledge(ALPS_SOLUTION)).second;
+        }
+
+        bestNode = broker_->getBestNode();
+        
+        if (bestNode) {
+            relBound = bestNode->getQuality();
+        }
+
+        getKnowledgeBroker()->messageHandler()->
+            message(ALPS_S_NODE_COUNT,getKnowledgeBroker()->messages())
+            << numNodesProcessed 
+            << broker_->updateNumNodesLeft()
+            << relBound
+            << feasBound
+            << CoinMessageEol;
+    }
+}
+
+//##############################################################################
+
+

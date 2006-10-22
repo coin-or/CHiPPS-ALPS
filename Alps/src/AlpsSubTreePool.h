@@ -44,7 +44,7 @@ class AlpsSubTreePool : public AlpsKnowledgePool {
   
     /** Check whether there is a subtree in the subtree pool. */
     inline bool hasKnowledge() const{ return ! (subTreeList_.empty()); }
-
+    
     /** Get a subtree from subtree pool, doesn't remove it from the pool*/
     inline std::pair<AlpsKnowledge*, double> getKnowledge() const {
 	return std::make_pair( subTreeList_.top(), 

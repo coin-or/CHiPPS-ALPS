@@ -90,8 +90,11 @@ class AlpsModel : public AlpsKnowledge {
 			"AlpsModel");
     } 
 
-    /** Log of specific models. */
+    /** Problem specific log. */
     virtual void modelLog() {}
+
+    /** Node log. */
+    virtual void nodeLog(AlpsTreeNode *node, bool force);
 
     //------------------------------------------------------
     // For parallel.

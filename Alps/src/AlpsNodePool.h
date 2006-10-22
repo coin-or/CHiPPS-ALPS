@@ -62,6 +62,25 @@ class AlpsNodePool : public AlpsKnowledgePool {
         }
         return bestQuality;
     }
+
+    /** Get the "best" nodes in node pool. */
+    inline AlpsTreeNode *getBestNode() const { 
+        const std::vector<AlpsTreeNode *>& pool=candidateList_.getContainer();
+        int k;
+        int size = pool.size();
+        double bestQuality = ALPS_OBJ_MAX;
+        AlpsTreeNode * bestNode = NULL;
+        AlpsTreeNode * node = NULL;
+        
+        for (k = 0; k < size; ++k) {
+            node = pool[k];
+            if (node->getQuality() < bestQuality) {
+                bestQuality = node->getQuality();
+                bestNode = node;
+            }
+        }
+        return bestNode;
+    }
     
     /** Check whether there are still nodes in the node pool. */
     inline bool hasKnowledge() const{ return ! (candidateList_.empty()); }

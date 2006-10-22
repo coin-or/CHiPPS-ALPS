@@ -137,11 +137,11 @@ class AlpsKnowledgeBroker {
     CoinMessages messages_;
 
     /** The leve of printing message to screen. 
-        (-1: no; 0: default; 1: basic; 2: verbose) */
+        (0: no; 1: basic; 2: moderate, 3: verbose) */
     int msgLevel_;
     
     /** The degree of log file.
-        (-1: no; 0: default; 1: basic; 2: verbose) */
+        (0: no; 1: basic; 2: moderate, 3: verbose) */
     int logFileLevel_;
 
     /** The log file. */
@@ -291,47 +291,48 @@ class AlpsKnowledgeBroker {
 	    pools_->insert
 		(std::pair<AlpsKnowledgeType, AlpsKnowledgePool*>(kt, kp));
 	}
-	else
+	else {
 	    throw CoinError("Broker doesn't manage this type of knowledge", 
 			    "addKnowledgePool()", "AlpsKnowledgeBroker"); 
+        }
     }
   
     /** Retrieve a knowledge pool in the Knowledge base */
     inline  AlpsKnowledgePool* getKnowledgePool(AlpsKnowledgeType kt) const { 
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) 
+	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
 	    return (*pools_)[kt];
-	else
+        }
+	else {
 	    throw CoinError("Broker doesn't manage this type of knowledge", 
 			    "getKnowledgePool()", "AlpsKnowledgeBroker"); 
+        }
     }
 
     /** Query the number of knowledge in the given type of a knowledge pool. */
-    virtual int getNumKnowledges(AlpsKnowledgeType kt) const {
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE)
-	    return getKnowledgePool(kt)->getNumKnowledges();
-	else
-	    throw CoinError("Broker doesn't manage this type of knowledge", 
-			    "getNumKnowledgePool()", "AlpsKnowledgeBroker"); 
-    }
-
+    virtual int getNumKnowledges(AlpsKnowledgeType kt) const;
+    
     /** Query the max number of knowledge can be stored in a given 
-	type of knowledge pools.*/
+	type of knowledge pools. */
     virtual int getMaxNumKnowledges(AlpsKnowledgeType kt) const {
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE)
+	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
 	    return getKnowledgePool(kt)->getMaxNumKnowledges();
-	else
+        }
+	else {
 	    throw CoinError("Broker doesn't manage this type of knowledge", 
 			    "getMaxNumKnowledges()", "AlpsKnowledgeBroker"); 
+        }
     }
 
     /** Set the max number of knowledge can be stored in a given 
 	type o fknowledge pools. */
     virtual void setMaxNumKnowledges(AlpsKnowledgeType kt, int num) {
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE)
+	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
 	    getKnowledgePool(kt)->setMaxNumKnowledges(num);
-	else
+        }
+	else {
 	    throw CoinError("Broker doesn't manage this type of knowledge", 
 			    "setMaxNumKnowledges()", "AlpsKnowledgeBroker"); 
+        }
     }
 
     /** Query whether there are knowledges in the given type of 
@@ -347,55 +348,56 @@ class AlpsKnowledgeBroker {
     /** Get a knowledge, but doesn't remove it from the pool*/
     virtual std::pair<AlpsKnowledge*, double> 
 	getKnowledge(AlpsKnowledgeType kt) const {
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE)   
+	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
 	    return getKnowledgePool(kt)->getKnowledge();
-	else
+        }
+	else {
 	    throw CoinError("Broker doesn't manage this type of knowledge", 
 			    "getKnowledge()", "AlpsKnowledgeBroker"); 
+        }
     }
 
     /** Remove the a knowledge from the given type of knowledge pools.*/
     virtual void popKnowledge(AlpsKnowledgeType kt) {
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE)
+	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
 	    getKnowledgePool(kt)->popKnowledge();
-	else
+        }
+	else {
 	    throw CoinError("Broker doesn't manage this type of knowledge", 
 			    "popKnowledge()", "AlpsKnowledgeBroker"); 
+        }
     } 
 
     /** Get the best knowledge in the given type of knowledge pools. */
     virtual std::pair<AlpsKnowledge*, double> 
-	getBestKnowledge(AlpsKnowledgeType kt) const { 
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE)
-	    return getKnowledgePool(kt)->getBestKnowledge();
-	else
-	    throw CoinError("Broker doesn't manage this type of knowledge", 
-			    "getBestKnowledge()", "AlpsKnowledgeBroker"); 
-    }
+	getBestKnowledge(AlpsKnowledgeType kt) const;
 
     /** Get all knowledges in the given type of knowledge pools. */
     virtual void getAllKnowledges (AlpsKnowledgeType kt, 
 				   std::vector<std::pair<AlpsKnowledge*, 
 				   double> >& kls)  const { 
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE)
+	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
 	    getKnowledgePool(kt)->getAllKnowledges(kls);
-	else
+        }
+	else {
 	    throw CoinError("Broker doesn't manage this type of knowledge", 
 			    "popKnowledge()", "AlpsKnowledgeBroker"); 
+        }
     }
 
     /** Add a knowledge in the given type of knowledge pools. */
     virtual void addKnowledge(AlpsKnowledgeType kt, 
 			      AlpsKnowledge* kl, 
 			      double value ) { 
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE)
+	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
 	    getKnowledgePool(kt)->addKnowledge(kl, value);
-	else
+        }
+	else {
 	    throw CoinError("Broker doesn't manage this type of knowledge", 
 			    "popKnowledge()", "AlpsKnowledgeBroker"); 
+        }
     }
     //@}
-
 
     /** @name Querty and set statistics
      *
@@ -405,22 +407,11 @@ class AlpsKnowledgeBroker {
 	return nodeProcessedNum_;
     }
 
-    /** Query the number of left nodes on this process. */
-    virtual int getNumNodesLeft() {
-	nodeLeftNum_ = 0;
-	if (workingSubTree_ != 0)
-	    nodeLeftNum_ += workingSubTree_->getNumNodes();
-   
-	std::vector<AlpsSubTree*> subTreeVec = 
-	    subTreePool_->getSubTreeList().getContainer();
-	std::vector<AlpsSubTree*>::iterator pos1 = subTreeVec.begin();
-	std::vector<AlpsSubTree*>::iterator pos2 = subTreeVec.end();
-	for ( ; pos1 != pos2; ++pos1) {
-	    nodeLeftNum_ += (*pos1)->getNumNodes();
-	}
-	
-	return 	nodeLeftNum_;
-    }
+    /** Update the number of left nodes on this process. */
+    virtual int updateNumNodesLeft();
+    
+    /** Query the best node in the subtree pool. Return NULL if no node exits. */
+    virtual AlpsTreeNode* getBestNode() const;
 
     /** Query search termination status. */
     AlpsSolStatus getTermStatus() const {
@@ -518,23 +509,30 @@ class AlpsKnowledgeBroker {
     }
     //@}
    
-    /**@name Message handling */
+    /**@name Message and log file handling */
     //@{
-    /// Pass in Message handler (not deleted at end)
+    /** Pass in Message handler (not deleted at end). */
     void passInMessageHandler(CoinMessageHandler * handler);
-    /// Set language
+
+    /** Set language. */
     void newLanguage(CoinMessages::Language language);
     void setLanguage(CoinMessages::Language language)
-	{ newLanguage(language); }
-    /// Return handler
-    CoinMessageHandler * messageHandler() const
-	{ return handler_; }
-    /// Return messages
-    CoinMessages messages() 
-	{ return messages_; }
-    /// Return pointer to messages
-    CoinMessages * messagesPointer() 
-	{ return &messages_; }
+    { newLanguage(language); }
+
+    /** Return handler. */
+    CoinMessageHandler * messageHandler() const { return handler_; }
+
+    /** Return messages. */
+    CoinMessages messages() { return messages_; }
+
+    /** Return pointer to messages. */
+    CoinMessages * messagesPointer() { return &messages_; }
+
+    /** Return msg level. */
+    int getMsgLevel() { return msgLevel_; }
+
+    /** Return log file level. */
+    int getlogFileLevel() { return logFileLevel_; }
     //@}
 };
 #endif

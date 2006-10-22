@@ -59,10 +59,10 @@ class AlpsTreeNode : public AlpsKnowledge {
     /** The depth of the node (in the whole tree -- the root is at depth 0). */
     int                depth_;
 
-    /** The solution estimate. */
+    /** The solution estimate. The smaller the better. */
     double             solEstimate_;
 
-    /** The quality of this node. */
+    /** The quality of this node. The smaller the better. */
     double             quality_;
     
     /** The parent of the tree node. */
@@ -99,7 +99,7 @@ class AlpsTreeNode : public AlpsKnowledge {
     /** Various mark used in splitting and passing subtrees. */
     // 0: default; 1: in subtree to be sent: 2: in subtree's node pool 
     int sentMark_;   
-
+    
     /** When processing it, if it is in the diving processing. */
     bool diving_;
     
@@ -142,11 +142,9 @@ class AlpsTreeNode : public AlpsKnowledge {
 	}
     }
     
-    //-------------------------------------------------------------------------
     bool operator<(const AlpsTreeNode& compNode)
 	{ return quality_ < compNode.getQuality(); }
     
-    //-------------------------------------------------------------------------
     /** Access the desc so that can modify it. */
     AlpsNodeDesc* modifyDesc() { return desc_; }
     AlpsNodeDesc* getDesc() const { return desc_; }
@@ -158,7 +156,6 @@ class AlpsTreeNode : public AlpsKnowledge {
     inline void setKnowledgeBroker(AlpsKnowledgeBroker* kb) 
 	{ knowledgeBroker_ = kb; }
 
-    //-------------------------------------------------------------------------
     /** The purpose of this function is be able to create the children of 
 	a node after branching. */
     /* FIXME: I think that we probably want the argument to be a diff'd
@@ -168,7 +165,6 @@ class AlpsTreeNode : public AlpsKnowledge {
        description. */
     virtual AlpsTreeNode* createNewTreeNode(AlpsNodeDesc*& desc) const = 0;
 
-    //-------------------------------------------------------------------------
     /** Query/set the current status. */
     ///@{
     inline AlpsNodeStatus getStatus() const { return status_; }
@@ -209,26 +205,14 @@ class AlpsTreeNode : public AlpsKnowledge {
 
     /** Query/set the solution estimate	of the node. */
     ///@{
-    inline double getSolEstimate() const 
-	{
-	    return solEstimate_;
-	}
-    inline void setSolEstimate(double est) 
-	{
-	    solEstimate_ = est;
-	}
+    inline double getSolEstimate() const { return solEstimate_; }
+    inline void setSolEstimate(double est) { solEstimate_ = est; }
     ///@}
 
     /** Query/set the quality of the node. */
     ///@{
-    inline double getQuality() const 
-	{
-	    return quality_;
-	}
-    inline void setQuality(double quality) 
-	{
-	    quality_ = quality;
-	}
+    inline double getQuality() const { return quality_; }
+    inline void setQuality(double quality) { quality_ = quality; }
     ///@}
 
     /** Query/set what the number of children. */

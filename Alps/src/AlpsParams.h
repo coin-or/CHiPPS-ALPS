@@ -31,17 +31,24 @@ class AlpsParams : public AlpsParameterSet {
   /** Character parameters. All of these variable are used as booleans
       (ture = 1, false = 0). */
   enum chrParams{
-    // The dummy is needed so the allocation won't try for 0 entries.
-    /** Input date from file or not. */
-    inputFromFile,
-    /** Remove dead nodes or not. */
-    deleteDeadNode,
-    /** Master balances the workload of hubs: centralized. */
-    interClusterBalance,
-    /** Hub balances the workload of workers: receiver initialized. */
-    intraClusterBalance,
-    ///
-    endOfChrParams
+      /** Remove dead nodes or not. 
+          Default: true. */
+      deleteDeadNode,
+      /** Input date from file or not. 
+          Default: true. */
+      inputFromFile,
+      /** Master balances the workload of hubs: centralized. 
+          Default: true. */
+      interClusterBalance,
+      /** Hub balances the workload of workers: receiver initialized. 
+          Default: true*/
+      intraClusterBalance,
+      /** Print solution to screen and log if have a solution and msgLevel and
+          logFileLevel permits. 
+          Default: false. */
+      printSolution,
+      ///
+      endOfChrParams
   };
 
   /** Integer paramters. */
@@ -76,13 +83,8 @@ class AlpsParams : public AlpsParameterSet {
 	this threshold, this worker will not share work with others.
 	NOT USED.*/
     minNodeNum,
-    /** Display option: 
-     *   0 [No display]; 
-     *   1 [Display nodes under nodeInterval]. 
-     NOT USED. */
-    display,
     /** Node log interval. */
-    nodeInterval,
+    nodeLogInterval,
     /** Number of the "elite" nodes that are used in determining workload. */
     eliteSize,
     /** SubTree compare criteria. 0: quality (priority); 1: quantity; 
@@ -99,7 +101,7 @@ class AlpsParams : public AlpsParameterSet {
 	also work as a worker. */
     maxHubWorkSize,
     /** When hub has no work to do, it is used to reduce the frequency to 
-     report. */
+        report. */
     hubReportFreqency,
     ///
     endOfIntParams
@@ -151,9 +153,10 @@ class AlpsParams : public AlpsParameterSet {
 
   /** There are no string array parameters. */
   enum strArrayParams{
-    strArrayDummy,
-    ///
-    endOfStrArrayParams
+      // The dummy is needed so the allocation won't try for 0 entries.
+      strArrayDummy,
+      ///
+      endOfStrArrayParams
   };
 
  public:

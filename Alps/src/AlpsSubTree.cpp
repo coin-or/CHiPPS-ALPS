@@ -296,7 +296,7 @@ AlpsSubTree::exploreSubTree(AlpsTreeNode* root,
     AlpsReturnCode status = ALPS_OK;
     AlpsSolStatus solStatus = ALPS_INFEASIBLE;
     
-    bool betterSolution = false;
+    bool betterSolution = true;
 
     //------------------------------------------------------
     // Set the root node and put it into the queue.
@@ -393,6 +393,7 @@ AlpsSubTree::rampUp(int& depth, AlpsTreeNode* root)
 	case AlpsNodeStatusCandidate :
 	case AlpsNodeStatusEvaluated :
 	    ++numNodesProcessed; 
+            activeNode_ = node;
 	    node->setActive(true);
 	    if (node == root_) {
                 node->process(true, true);
@@ -904,11 +905,6 @@ AlpsSubTree::decode(AlpsEncoded& encoded) const
     return st;
 }
 
-
-
-
-
-
 //#############################################################################
 
 AlpsReturnCode
@@ -925,7 +921,6 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 
     int numChildren = 0;
         
-    double relBound = ALPS_OBJ_MAX;
     double startTime = AlpsCpuTime();
     double oldSolQuality = ALPS_OBJ_MAX;
     double newSolQuality = ALPS_OBJ_MAX;
@@ -936,12 +931,6 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     //------------------------------------------------------    
     // Get parameters.
     //------------------------------------------------------
-
-    const int msgLevel =
-	broker_->getModel()->AlpsPar()->entry(AlpsParams::msgLevel);
-
-    const int nodeInterval = 
-	broker_->getModel()->AlpsPar()->entry(AlpsParams::nodeInterval);
 
     const bool deleteNode = 
 	broker_->getModel()->AlpsPar()->entry(AlpsParams::deleteDeadNode);
@@ -1036,8 +1025,10 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 	}
 	case AlpsNodeStatusCandidate:
 	case AlpsNodeStatusEvaluated:
-            // Process the node. 
 	    node->setActive(true);
+            activeNode_ = node;
+
+            // Process the node.
 	    if (node == root_) {
                 node->process(true);
 	    }
@@ -1055,8 +1046,8 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 		    if (newSolQuality < oldSolQuality) {
 			betterSolution = true;
 			solStatus = ALPS_FEASIBLE;
-			std::cout << "betterSolution value=" << newSolQuality
-				  << std::endl;
+			// std::cout << "betterSolution value=" << newSolQuality
+                        //  << std::endl;
 		    }
 		}
             }
@@ -1064,31 +1055,8 @@ AlpsSubTree::exploreUnitWork(int unitWork,
             // Increment by 1.
 	    ++numNodesProcessed;
 
-	    if ( (msgLevel > -1) && (numNodesProcessed % nodeInterval == 0) ) {
-                double feasBound = ALPS_OBJ_MAX;
-                relBound = ALPS_OBJ_MAX;
-                if (getKnowledgeBroker()->getNumKnowledges(ALPS_SOLUTION)) {
-                    feasBound = (getKnowledgeBroker()->
-                                 getBestKnowledge(ALPS_SOLUTION)).second;
-                }
-
-
-                relBound = getBestKnowledgeValue();
-                if (node) {
-                    relBound = ALPS_MIN(node->getQuality(), relBound);
-                }
-                if (diveNodePool_->getNumKnowledges() > 0) {
-                    relBound = ALPS_MIN(diveNodePool_->getBestKnowledgeValue(),
-                                        relBound);
-                }
-                getKnowledgeBroker()->messageHandler()->
-                    message(ALPS_S_NODE_COUNT,getKnowledgeBroker()->messages())
-                        << numNodesProcessed 
-                        << getKnowledgeBroker()->getNumNodesLeft()
-                        << relBound
-                        << feasBound
-                        << CoinMessageEol;
-	    }
+            // Print node log.
+            broker_->getModel()->nodeLog(node, betterSolution);
             
             // Check processing status.
 	    switch (node->getStatus()) {
@@ -1157,20 +1125,10 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     }
 
     return status;
-}   
-
-
-
-
-
-
-
-
-
-
+}
 
 //#############################################################################
-// FOLLOWING CODE IS REMOVED
+// ALL FOLLOWING CODE ARE NOT USED
 //#############################################################################
 #if 0
 //       approximateQuality(double inc, double rho) instead.

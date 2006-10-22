@@ -93,7 +93,7 @@ class AlpsSubTree : public AlpsKnowledge {
 
     /** Set pointer to active node */
     inline void setActiveNode(AlpsTreeNode *activeNode)
-	{ activeNode_ = activeNode; }
+    { activeNode_ = activeNode; }
 
     /** Create children nodes from the given parent node. */
     void createChildren(AlpsTreeNode* parent,
@@ -149,8 +149,44 @@ class AlpsSubTree : public AlpsKnowledge {
     }
 
     /** Get the "best value" of the nodes in node pool. */
-    inline double getBestKnowledgeValue() const { 
-      return nodePool_->getBestKnowledgeValue();
+    inline double getBestKnowledgeValue() const {
+        double bv1 = ALPS_OBJ_MAX;
+        double bv2 = ALPS_OBJ_MAX;
+        bv1 = nodePool_->getBestKnowledgeValue();
+        bv2 = diveNodePool_->getBestKnowledgeValue();
+        if (bv1 < bv2) {
+            return bv1;
+        }
+        else {
+            return bv2;
+        }
+    }
+
+    inline AlpsTreeNode *getBestNode() const {
+        AlpsTreeNode *bn1 = NULL;
+        AlpsTreeNode *bn2 = NULL;
+        bn1 = nodePool_->getBestNode();
+        bn2 = diveNodePool_->getBestNode();
+        if (bn1->getQuality() < bn2->getQuality()) {
+            if (activeNode_) {
+                if (activeNode_->getQuality() < bn1->getQuality()){
+                    return activeNode_;
+                }
+                else {
+                    return bn1;
+                }
+            }
+        }
+        else {
+            if (activeNode_) {
+                if (activeNode_->getQuality() < bn2->getQuality()){
+                    return activeNode_;
+                }
+                else {
+                    return bn2;
+                }
+            }
+        }        
     }
 
     /** Get the knowledge broker. */
@@ -158,14 +194,14 @@ class AlpsSubTree : public AlpsKnowledge {
 
     /** Set a pointer to the knowledge broker. */
     inline void setKnowledgeBroker(AlpsKnowledgeBroker* kb) 
-	{
-	    assert(kb);
-	    broker_ = kb;
-	    //eliteSize_ = kb->getDataPool()->
-	    //getOwnParams()->entry(AlpsOwnParams::eliteSize);
-	    //assert(eliteSize_ > 0);
-	}
-
+    {
+        assert(kb);
+        broker_ = kb;
+        //eliteSize_ = kb->getDataPool()->
+        //getOwnParams()->entry(AlpsOwnParams::eliteSize);
+        //assert(eliteSize_ > 0);
+    }
+    
     /** Get the quality of this subtree. */
     inline double getQuality() const { return quality_; };
     
@@ -205,9 +241,9 @@ class AlpsSubTree : public AlpsKnowledge {
     
     /** Return the number of nodes on this subtree. */
     int getNumNodes() const {
-	assert(nodePool_);
-	return nodePool_->getNumKnowledges() + 
-            diveNodePool_->getNumKnowledges();
+	assert(nodePool_ && diveNodePool_);
+	return (nodePool_->getNumKnowledges() + 
+                diveNodePool_->getNumKnowledges());
     }
 
     /** Set the node comparision rule. */

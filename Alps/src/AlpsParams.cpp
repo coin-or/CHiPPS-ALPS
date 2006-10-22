@@ -35,7 +35,10 @@ void AlpsParams::createKeywordList() {
    keys_.push_back(make_pair(std::string("Alps_intraClusterBalance"),
 			    AlpsParameter(AlpsCharPar, 
 					  intraClusterBalance)));
-			     
+   keys_.push_back(make_pair(std::string("Alps_printSolution"),
+                             AlpsParameter(AlpsCharPar, 
+                                           printSolution)));
+
    //--------------------------------------------------------------------------
    // BoolArrayPar
 
@@ -93,13 +96,9 @@ void AlpsParams::createKeywordList() {
 			     AlpsParameter(AlpsIntPar, 
 					   minNodeNum)));
    //
-   keys_.push_back(make_pair(std::string("Alps_display"),
+   keys_.push_back(make_pair(std::string("Alps_nodeLogInterval"),
 			     AlpsParameter(AlpsIntPar, 
-					   display)));
-   //
-   keys_.push_back(make_pair(std::string("Alps_nodeInterval"),
-			     AlpsParameter(AlpsIntPar, 
-					   nodeInterval)));
+					   nodeLogInterval)));
    //
    keys_.push_back(make_pair(std::string("Alps_eliteSize"),
 			     AlpsParameter(AlpsIntPar, 
@@ -188,6 +187,7 @@ void AlpsParams::createKeywordList() {
 void AlpsParams::setDefaultEntries() {
   //--------------------------------------------------------------------------
   // CharPar
+  setEntry(printSolution, false);
   setEntry(inputFromFile, true);
   setEntry(deleteDeadNode, true);
   setEntry(interClusterBalance, true);
@@ -208,8 +208,7 @@ void AlpsParams::setDefaultEntries() {
   setEntry(largeSize, 1048576);  // 2^21
   setEntry(bufSpare, 256);
   setEntry(minNodeNum, 1);
-  setEntry(display, 1);
-  setEntry(nodeInterval, 100);
+  setEntry(nodeLogInterval, 100);
   setEntry(eliteSize, 5);
   setEntry(subTreeCompareRule, 0);
   setEntry(nodeSelStrategy, 0);
