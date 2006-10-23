@@ -296,7 +296,7 @@ AlpsSubTree::exploreSubTree(AlpsTreeNode* root,
     AlpsReturnCode status = ALPS_OK;
     AlpsSolStatus solStatus = ALPS_INFEASIBLE;
     
-    bool betterSolution = true;
+    bool betterSolution = false;
 
     //------------------------------------------------------
     // Set the root node and put it into the queue.
@@ -413,8 +413,9 @@ AlpsSubTree::rampUp(int& depth, AlpsTreeNode* root)
 	    case AlpsNodeStatusFathomed :
 		// Based on the parameter deleteNode, we decide whether to
 		// clean up the tree or preserve it for posterity
-		if (deleteNode)
+		if (deleteNode) {
 		    removeDeadNodes(node);
+		}
 		break;
 	    default : 
 		throw CoinError("Impossible Status: branched",
@@ -429,7 +430,6 @@ AlpsSubTree::rampUp(int& depth, AlpsTreeNode* root)
 	}
     }
 
-    //numNodesInPool = nodePool_->getNumKnowledges();
     return numNodesProcessed;
 }
 
@@ -928,6 +928,8 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     AlpsTreeNode * node = NULL;
     AlpsTreeNode * tempNode = NULL;
 
+    bool forceLog = false;
+    
     //------------------------------------------------------    
     // Get parameters.
     //------------------------------------------------------
@@ -1038,25 +1040,29 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 	    node->setActive(false); 
 
 	    // Record the new sol quality if have. 
-	    // TODO: replace use a function.
-            if (checkBetter) {
-                if( broker_->hasKnowledge(ALPS_SOLUTION) ) {
-                    newSolQuality = 
-                        broker_->getBestKnowledge(ALPS_SOLUTION).second;
-		    if (newSolQuality < oldSolQuality) {
+
+	    if( broker_->hasKnowledge(ALPS_SOLUTION) ) {
+		newSolQuality = 
+		    broker_->getBestKnowledge(ALPS_SOLUTION).second;
+		if (newSolQuality < oldSolQuality) {
+		    if (checkBetter) {
 			betterSolution = true;
-			solStatus = ALPS_FEASIBLE;
-			// std::cout << "betterSolution value=" << newSolQuality
-                        //  << std::endl;
 		    }
+		    forceLog = true;
+		    solStatus = ALPS_FEASIBLE;
+		    oldSolQuality = newSolQuality;
+		    
+		    // std::cout << "betterSolution value=" << newSolQuality
+		    //  << std::endl;
 		}
-            }
+	    }
 
             // Increment by 1.
 	    ++numNodesProcessed;
 
             // Print node log.
-            broker_->getModel()->nodeLog(node, betterSolution);
+            broker_->getModel()->nodeLog(node, forceLog);
+	    forceLog = false;
             
             // Check processing status.
 	    switch (node->getStatus()) {
@@ -1271,5 +1277,81 @@ AlpsSubTree::popNode()
     }
 }
 #endif
+
+//#############################################################################
+
+double 
+AlpsSubTree::getBestKnowledgeValue() const
+{
+    double bv1 = ALPS_OBJ_MAX;
+    double bv2 = ALPS_OBJ_MAX;
+    bv1 = nodePool_->getBestKnowledgeValue();
+    bv2 = diveNodePool_->getBestKnowledgeValue();
+    if (bv1 < bv2) {
+	if (activeNode_) {
+	    if (activeNode_->getQuality() < bv1){
+		return activeNode_->getQuality();
+	    }
+	    else {
+		return bv1;
+	    }
+	}
+	else {
+	    return bv1;
+	}
+    }
+    else {
+	if ( (activeNode_) &&
+	     (activeNode_->getStatus() != AlpsNodeStatusFathomed) ) {
+	    if (activeNode_->getQuality() < bv2){
+		return activeNode_->getQuality();
+	    }
+	    else {
+		return bv2;
+	    }
+	}
+	else {
+	    return bv2;
+	}
+    }
+}
+
+//#############################################################################
+
+AlpsTreeNode * 
+AlpsSubTree::getBestNode() const 
+{
+    AlpsTreeNode *bn2 = NULL;
+    AlpsTreeNode *bestNode = NULL;
+
+    bestNode = nodePool_->getBestNode();
+    bn2 = diveNodePool_->getBestNode();
+    
+    if (bn2) {
+	if (bestNode) {
+	    if (bestNode->getQuality() > bn2->getQuality()) {
+		bestNode = bn2;
+	    }
+	}
+	else {
+	    bestNode = bn2;
+	}
+    }
+    
+    if (activeNode_ && 
+	(activeNode_->getStatus() != AlpsNodeStatusFathomed) ) {
+	
+	if (bestNode) {
+	    if (bestNode->getQuality() > activeNode_->getQuality()) {
+		bestNode = activeNode_;
+	    }
+	}
+	else {
+	    bestNode = activeNode_;
+	}
+    }
+
+    return bestNode;
+}
 
 //#############################################################################

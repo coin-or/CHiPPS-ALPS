@@ -100,9 +100,6 @@ class AlpsParams : public AlpsParameterSet {
     /** If the number of processes in a cluster is less than it, the hub
 	also work as a worker. */
     maxHubWorkSize,
-    /** When hub has no work to do, it is used to reduce the frequency to 
-        report. */
-    hubReportFreqency,
     ///
     endOfIntParams
   };
@@ -179,6 +176,9 @@ class AlpsParams : public AlpsParameterSet {
       setDefaultEntries();
     }
   /*@}*/
+
+      virtual ~AlpsParams(){ /**/ }
+      
   
   AlpsParams& operator=(const AlpsParams& x) {
     // no need to delete anything, since the size of (almost) everything is

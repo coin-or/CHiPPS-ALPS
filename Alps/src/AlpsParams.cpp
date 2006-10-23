@@ -124,10 +124,6 @@ void AlpsParams::createKeywordList() {
 			     AlpsParameter(AlpsIntPar,
 					   maxHubWorkSize)));
    //
-   keys_.push_back(make_pair(std::string("Alps_hubReportFreqency"),
-			     AlpsParameter(AlpsIntPar,
-					   hubReportFreqency)));
-
    //--------------------------------------------------------------------------
    // DoublePar
    keys_.push_back(make_pair(std::string("Alps_tolerance"),

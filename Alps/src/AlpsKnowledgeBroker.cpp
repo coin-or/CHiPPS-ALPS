@@ -119,7 +119,7 @@ AlpsKnowledgeBroker::getBestNode() const
     AlpsTreeNode *bestNode = NULL;
     AlpsTreeNode *node = NULL;
     
-    if (workingSubTree_ != NULL) {
+    if (workingSubTree_ ) {
         bestNode = workingSubTree_->getBestNode();
     }
     

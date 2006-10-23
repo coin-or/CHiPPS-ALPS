@@ -125,17 +125,17 @@ class AlpsSubTree : public AlpsKnowledge {
 
     /** Get the node pool. */
     inline AlpsNodePool* getNodePool() const { return nodePool_; }
-
-    /** Set node pool. Delete previous node pool and elements in pool if exit.*/
+    
+    /** Set node pool. Delete previous node pool and nodes in pool if exit.*/
     inline void setNodePool(AlpsNodePool* np) { 
-	if (nodePool_ != NULL) {
-	    delete nodePool_; 
-	    nodePool_ = NULL;
-	}
-	nodePool_ = np;
+      if (nodePool_ != NULL) {
+	delete nodePool_; 
+	nodePool_ = NULL;
+      }
+      nodePool_ = np;
     }
 
-    /** Set node pool. Delete previous node pool, but not the elements in pool.*/
+    /** Set node pool. Delete previous node pool, but not the nodes in pool.*/
     inline void changeNodePool(AlpsNodePool* np) { 
 	if (nodePool_ != NULL) {
 	    // Remove all elements first.
@@ -148,49 +148,15 @@ class AlpsSubTree : public AlpsKnowledge {
 	nodePool_ = np;
     }
 
-    /** Get the "best value" of the nodes in node pool. */
-    inline double getBestKnowledgeValue() const {
-        double bv1 = ALPS_OBJ_MAX;
-        double bv2 = ALPS_OBJ_MAX;
-        bv1 = nodePool_->getBestKnowledgeValue();
-        bv2 = diveNodePool_->getBestKnowledgeValue();
-        if (bv1 < bv2) {
-            return bv1;
-        }
-        else {
-            return bv2;
-        }
-    }
+    /** Get the quality of the best node in the subtree. */
+    double getBestKnowledgeValue() const;
 
-    inline AlpsTreeNode *getBestNode() const {
-        AlpsTreeNode *bn1 = NULL;
-        AlpsTreeNode *bn2 = NULL;
-        bn1 = nodePool_->getBestNode();
-        bn2 = diveNodePool_->getBestNode();
-        if (bn1->getQuality() < bn2->getQuality()) {
-            if (activeNode_) {
-                if (activeNode_->getQuality() < bn1->getQuality()){
-                    return activeNode_;
-                }
-                else {
-                    return bn1;
-                }
-            }
-        }
-        else {
-            if (activeNode_) {
-                if (activeNode_->getQuality() < bn2->getQuality()){
-                    return activeNode_;
-                }
-                else {
-                    return bn2;
-                }
-            }
-        }        
-    }
+    /** Get the "best" node in the subtree. */
+    AlpsTreeNode *getBestNode() const;
 
     /** Get the knowledge broker. */
-    inline AlpsKnowledgeBroker*  getKnowledgeBroker() const { return broker_; }
+    inline AlpsKnowledgeBroker*  getKnowledgeBroker() const 
+    { return broker_; }
 
     /** Set a pointer to the knowledge broker. */
     inline void setKnowledgeBroker(AlpsKnowledgeBroker* kb) 
@@ -257,7 +223,8 @@ class AlpsSubTree : public AlpsKnowledge {
     AlpsSubTree* splitSubTree(int& returnSize, int size = 10);
     
     /** Explore the subtree from \c root as the root of the subtree for given
-	number of nodes or time, depending on which one reach first. */
+	number of nodes or time, depending on which one reach first. 
+	Only for serial code. */
     virtual AlpsReturnCode exploreSubTree(AlpsTreeNode* root,
 					  int nodeLimit,  
 					  double timeLimit,
@@ -267,7 +234,7 @@ class AlpsSubTree : public AlpsKnowledge {
     /** Explore the subtree for certain amount of work/time. */
     AlpsReturnCode exploreUnitWork(int unitWork,
                                    double unitTime,
-                                   AlpsSolStatus & solStatus,
+                                   AlpsSolStatus & solStatus,/*not for parallel*/
                                    int & numNodesProcessed, /* Output */
                                    int & depth,             /* Output */
                                    bool & betterSolution);  /* Output */
