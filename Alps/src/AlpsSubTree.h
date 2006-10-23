@@ -208,7 +208,11 @@ class AlpsSubTree : public AlpsKnowledge {
     /** Return the number of nodes on this subtree. */
     int getNumNodes() const {
 	assert(nodePool_ && diveNodePool_);
-	return (nodePool_->getNumKnowledges() + 
+        int nn = 0;
+        if (activeNode_) {
+            ++nn;
+        }
+	return (nn + nodePool_->getNumKnowledges() + 
                 diveNodePool_->getNumKnowledges());
     }
 
