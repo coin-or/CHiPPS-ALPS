@@ -925,7 +925,6 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     double oldSolQuality = ALPS_OBJ_MAX;
     double newSolQuality = ALPS_OBJ_MAX;
 
-    AlpsTreeNode * node = NULL;
     AlpsTreeNode * tempNode = NULL;
 
     bool forceLog = false;
@@ -955,6 +954,7 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     // Process nodes until reach unit limits, or better solution if check.
     //------------------------------------------------------    
 
+    activeNode_ = NULL;
     solStatus = ALPS_INFEASIBLE;    
     numNodesProcessed = 0;
 
@@ -970,30 +970,31 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 	    break;
 	}
         
-        if (!node) {
-            node=dynamic_cast<AlpsTreeNode*>(nodePool_->getKnowledge().first); 
-            node->setDiving(false);
+	if (!activeNode_) {
+            activeNode_ = dynamic_cast<AlpsTreeNode*>
+		(nodePool_->getKnowledge().first); 
+            activeNode_->setDiving(false);
             
 #ifdef NF_DEBUG_MORE
-            std::cout << "======= NOTE[" << node->getIndex() 
-                      << "]: JUMP : depth = " << node->getDepth() 
-                      << ", quality = " << node->getQuality()
-                      << ", estimate = " << node->getSolEstimate()
+            std::cout << "======= NOTE[" << activeNode_->getIndex() 
+                      << "]: JUMP : depth = " << activeNode_->getDepth() 
+                      << ", quality = " << activeNode_->getQuality()
+                      << ", estimate = " << activeNode_->getSolEstimate()
                       << std::endl;
-#endif            
-
+#endif
             nodePool_->popKnowledge();
-            
+	    
 	}
         else {
-            node->setDiving(true);
+            activeNode_->setDiving(true);
         }
         
-	switch (node->getStatus()) {
+	switch (activeNode_->getStatus()) {
 	case AlpsNodeStatusPregnant: 
         {            
-	    if (depth < node->getDepth() + 1) {// Record the depth of tree
-		depth = node->getDepth() + 1;
+	    if (depth < activeNode_->getDepth() + 1) {
+		// Record the depth of tree
+		depth = activeNode_->getDepth() + 1;
             }
             
             // (1) Move left nodes in diving pool to normal pool.
@@ -1006,41 +1007,39 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 
             // (2) Branching to form children descriptions.
 	    std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
-		children = node->branch();
+		children = activeNode_->branch();
             
 	    // (3) Create actual children nodes and store in diving pool
-            createChildren(node, children, diveNodePool_);
+            createChildren(activeNode_, children, diveNodePool_);
             numChildren = diveNodePool_->getNumKnowledges();
             
             // (4) Get a new node for diving pool.
             if (numChildren > 0) {
-                node = dynamic_cast<AlpsTreeNode *>
+                activeNode_ = dynamic_cast<AlpsTreeNode *>
                     (diveNodePool_->getKnowledge().first);
                 diveNodePool_->popKnowledge();
                 diving = true;
             }
             else {
-                node = NULL;
+                activeNode_ = NULL;
                 diving = false;
             }
 	    break;
 	}
 	case AlpsNodeStatusCandidate:
 	case AlpsNodeStatusEvaluated:
-	    node->setActive(true);
-            activeNode_ = node;
+	    activeNode_->setActive(true);
 
             // Process the node.
-	    if (node == root_) {
-                node->process(true);
+	    if (activeNode_ == root_) {
+                activeNode_->process(true);
 	    }
 	    else {
-                node->process();
+                activeNode_->process();
 	    }           
-	    node->setActive(false); 
+	    activeNode_->setActive(false); 
 
-	    // Record the new sol quality if have. 
-
+	    // Record the new sol quality if have.
 	    if( broker_->hasKnowledge(ALPS_SOLUTION) ) {
 		newSolQuality = 
 		    broker_->getBestKnowledge(ALPS_SOLUTION).second;
@@ -1061,11 +1060,11 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 	    ++numNodesProcessed;
 
             // Print node log.
-            broker_->getModel()->nodeLog(node, forceLog);
+            broker_->getModel()->nodeLog(activeNode_, forceLog);
 	    forceLog = false;
             
             // Check processing status.
-	    switch (node->getStatus()) {
+	    switch (activeNode_->getStatus()) {
 	    case AlpsNodeStatusCandidate :
 	    case AlpsNodeStatusEvaluated :
 	    case AlpsNodeStatusPregnant :
@@ -1073,16 +1072,16 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 		break;
 	    case AlpsNodeStatusFathomed :
 		if (deleteNode) {
-		    removeDeadNodes(node);
+		    removeDeadNodes(activeNode_);
                 }
                 if (diveNodePool_->getNumKnowledges() > 0) {
-                    node = dynamic_cast<AlpsTreeNode *>
+                    activeNode_ = dynamic_cast<AlpsTreeNode *>
                         (diveNodePool_->getKnowledge().first);
                     diveNodePool_->popKnowledge();
                     diving = true;
                 }
                 else {
-                    node = NULL;
+                    activeNode_ = NULL;
                     diving = false;
                 }
 		break;
@@ -1119,15 +1118,15 @@ AlpsSubTree::exploreUnitWork(int unitWork,
             diveNodePool_->popKnowledge();
             nodePool_->addKnowledge(tempNode, tempNode->getQuality());
         }
-        if (node) {
-            nodePool_->addKnowledge(node, node->getQuality());
+        if (activeNode_) {
+            nodePool_->addKnowledge(activeNode_, activeNode_->getQuality());
         }
     }
     else {
         // case 1.
         assert(nodePool_->getNumKnowledges() == 0);
         assert(diveNodePool_->getNumKnowledges() == 0);
-        assert(node == NULL);
+        assert(activeNode_ == NULL);
     }
 
     return status;

@@ -67,6 +67,7 @@ AlpsModel::readParameters(const int argnum, const char * const * arglist)
 } 
 
 //##############################################################################
+
 void 
 AlpsModel::nodeLog(AlpsTreeNode *node, bool force) 
 {
