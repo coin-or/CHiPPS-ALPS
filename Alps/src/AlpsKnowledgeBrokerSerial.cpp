@@ -242,6 +242,7 @@ AlpsKnowledgeBrokerSerial::searchLog()
 		<< nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
 	}
 
+	std::cout << std::endl;
         std::cout << "Number of nodes processed = " << nodeProcessedNum_ 
                   << std::endl;
         std::cout << "Number of nodes left = " << nodeLeftNum_ << std::endl;
@@ -262,7 +263,7 @@ AlpsKnowledgeBrokerSerial::searchLog()
     
     if(logFileLevel_ > 0) {
 	std::ofstream fout(logfile_.c_str(), std::ofstream::app);
-
+	fout << std::endl;
 	fout << "Number of nodes processed = "<<nodeProcessedNum_ << std::endl;
 	fout << "Number of nodes left = " << nodeLeftNum_ << std::endl;
 	fout << "Tree depth = " << treeDepth_ << std::endl;

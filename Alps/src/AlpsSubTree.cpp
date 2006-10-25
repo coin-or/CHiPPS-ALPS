@@ -910,18 +910,20 @@ AlpsSubTree::decode(AlpsEncoded& encoded) const
 AlpsReturnCode
 AlpsSubTree::exploreUnitWork(int unitWork,
                              double unitTime,
-                             AlpsSolStatus & solStatus,
-                             int & numNodesProcessed, /* Output */
-                             int & depth,             /* Output */
-                             bool & betterSolution)   /* Output */
+                             AlpsSolStatus & exploreStatus, /* Output */
+                             int & numNodesProcessed,       /* Output */
+                             int & depth,                   /* Output */
+                             bool & betterSolution)         /* Output */
 {
+    // Start to count time.
+    broker_->tempTimer().start();
+
     AlpsReturnCode status = ALPS_OK;
     
     bool diving = false;
 
     int numChildren = 0;
         
-    double startTime = AlpsCpuTime();
     double oldSolQuality = ALPS_OBJ_MAX;
     double newSolQuality = ALPS_OBJ_MAX;
 
@@ -935,7 +937,7 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 
     const bool deleteNode = 
 	broker_->getModel()->AlpsPar()->entry(AlpsParams::deleteDeadNode);
-
+    
     //------------------------------------------------------
     // If need to stop whenever find a better solution.
     //------------------------------------------------------
@@ -955,17 +957,20 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     //------------------------------------------------------    
 
     activeNode_ = NULL;
-    solStatus = ALPS_INFEASIBLE;    
+    exploreStatus = ALPS_INFEASIBLE;    
     numNodesProcessed = 0;
 
     while ( (nodePool_->hasKnowledge() || diving) && !betterSolution ) {
 	
+	broker_->tempTimer().stop();
+	broker_->timer().stop();
+	
 	if (numNodesProcessed >= unitWork) {
-            solStatus = ALPS_NODE_LIMIT;
+            exploreStatus = ALPS_NODE_LIMIT;
 	    break;
 	}
-	else if (AlpsCpuTime() - startTime > unitTime) {
-            solStatus = ALPS_TIME_LIMIT;
+	else if (broker_->tempTimer().getCpuTime() > unitTime) {
+            exploreStatus = ALPS_TIME_LIMIT;
 	    // getKnowledgeBroker()->setTermStatus(ALPS_TIME_LIMIT);
 	    break;
 	}
@@ -1048,7 +1053,7 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 			betterSolution = true;
 		    }
 		    forceLog = true;
-		    solStatus = ALPS_FEASIBLE;
+		    exploreStatus = ALPS_FEASIBLE;
 		    oldSolQuality = newSolQuality;
 		    
 		    // std::cout << "betterSolution value=" << newSolQuality
@@ -1056,12 +1061,12 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 		}
 	    }
 
-            // Increment by 1.
-	    ++numNodesProcessed;
-
             // Print node log.
             broker_->getModel()->nodeLog(activeNode_, forceLog);
 	    forceLog = false;
+
+            // Increment by 1.
+	    ++numNodesProcessed;
             
             // Check processing status.
 	    switch (activeNode_->getStatus()) {
@@ -1106,9 +1111,9 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     // 2 reach limits:    move nodes from diving pool to regular pool
     // 3 better solution: move nodes from diving pool to regular pool
     
-    if ( (solStatus == ALPS_TIME_LIMIT) ||
-         (solStatus == ALPS_NODE_LIMIT) ||
-         (solStatus == ALPS_FEASIBLE) ) {
+    if ( (exploreStatus == ALPS_TIME_LIMIT) ||
+         (exploreStatus == ALPS_NODE_LIMIT) ||
+         (exploreStatus == ALPS_FEASIBLE) ) {
         // Case 2 and 3.
 
         // Move nodes in diving pool to normal pool.

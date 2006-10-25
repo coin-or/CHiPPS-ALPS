@@ -99,8 +99,11 @@ class AlpsKnowledgeBroker {
      */
     //@{
     /***/
-    /** Timer. */
+    /** Main timer. */
     AlpsTimer timer_;
+
+    /** Secondary timer. */
+    AlpsTimer tempTimer_;
 
     /** The number of nodes processed. */
     int nodeProcessedNum_;
@@ -426,6 +429,11 @@ class AlpsKnowledgeBroker {
     /** Query timer. */
     AlpsTimer & timer() {
 	return timer_;
+    }
+
+    /** Query secondary timer. */
+    AlpsTimer & tempTimer() {
+	return tempTimer_;
     }
 
     /** Search statistics log. */

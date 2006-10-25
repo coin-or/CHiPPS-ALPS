@@ -57,9 +57,10 @@ enum AlpsParameterT{
     AlpsIntPar,
     /** Double parameter. */
     AlpsDoublePar,
-    /** String parameter. */
+    /** String parameter (E.g., data file name.). */
     AlpsStringPar,
-    /** The parameter is an array of strings. (E.g., data file name.) */
+    /** The parameter is an array of strings. N
+	Cause possible memory leak. Not used any more (10/24/06, Yan).*/
     AlpsStringArrayPar
 };
 
@@ -148,7 +149,8 @@ class AlpsParameterSet {
     /** The string (actually, std::string) parameters. */
     std::string*          spar_;
 
-    /** The string array parameters */
+    /** The "vector of string" parameters. */
+    int numSa_;
     std::vector<std::string>* sapar_;
   
   /*@}*/
@@ -232,22 +234,34 @@ class AlpsParameterSet {
     void writeToStream(std::ostream& outstream) const;
   
     /** The constructor allocate memory for parameters. */
+
+/*
     AlpsParameterSet(int c, int i, int d, int s, int sa) :
-	keys_(),
+    keys_(),
 	cpar_(new char[c]),
 	ipar_(new int[i]),
 	dpar_(new double[d]),
-	spar_(new std::string[s]),
-	sapar_(new std::vector<std::string>[sa])
-	{}
+	spar_(new std::string[s])//,
+	//sapar_(new std::vector<std::string>[sa])
+	*/
+
+    AlpsParameterSet(int c, int i, int d, int s, int sa)
+    {
+	cpar_ = new char[c];
+	ipar_ = new int[i];
+	dpar_ = new double[d];
+	spar_ = new std::string[s];
+    }
     
     /** The destructor deletes all data members. */
     virtual ~AlpsParameterSet() {
+	keys_.clear();
+	obsoleteKeys_.clear();
 	delete[] cpar_; cpar_ = 0;
 	delete[] ipar_; ipar_ = 0;
 	delete[] dpar_; dpar_ = 0;
 	delete[] spar_; spar_ = 0;
-	delete[] sapar_; sapar_ = 0;
+	//delete[] sapar_; sapar_ = 0;
     }
 };
 
