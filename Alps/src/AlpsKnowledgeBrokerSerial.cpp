@@ -245,7 +245,7 @@ AlpsKnowledgeBrokerSerial::searchLog()
 	std::cout << std::endl;
 	if (hasKnowledge(ALPS_SOLUTION)) {
 	    std::cout << "Best solution quality = " << getBestQuality() 
-		      << std::endl << std::endl;
+		      << std::endl;
 	}
 	else {
 	    std::cout << "Not solution found" << std::endl;
@@ -260,7 +260,8 @@ AlpsKnowledgeBrokerSerial::searchLog()
         std::cout << "Search wallclock = "
 		  <<  std::setprecision(2) <<timer_.getWallClock()<<" seconds"
                   << std::endl;
-
+	std::cout << std::endl;
+	
         if (printSolution && hasKnowledge(ALPS_SOLUTION)) {
             AlpsSolution *solution = dynamic_cast<AlpsSolution *>
                 (getBestKnowledge(ALPS_SOLUTION).first);
@@ -273,8 +274,7 @@ AlpsKnowledgeBrokerSerial::searchLog()
 	fout << std::endl;
 
 	if (hasKnowledge(ALPS_SOLUTION)) {
-	    fout << "Best solution quality = " << getBestQuality() 
-		  << std::endl << std::endl;
+	    fout << "Best solution quality = " << getBestQuality() << std::endl;
 	}
 	else {
 	    fout << "Not solution found" << std::endl;
@@ -287,6 +287,7 @@ AlpsKnowledgeBrokerSerial::searchLog()
 	     << std::endl;
 	fout << "Search wallclock = " << timer_.getWallClock() <<" seconds"
 	      << std::endl;
+	fout << std::endl;
 	
         if (printSolution && hasKnowledge(ALPS_SOLUTION)) {
             AlpsSolution *solution = dynamic_cast<AlpsSolution *>
