@@ -14,7 +14,7 @@
  * Corporation, Lehigh University, Yan Xu, Ted Ralphs, Matthew Salzman and   *
  *===========================================================================*/
 
-
+#include "iomanip"
 #include "AlpsKnowledgeBrokerSerial.h"
 
 
@@ -243,16 +243,23 @@ AlpsKnowledgeBrokerSerial::searchLog()
 	}
 
 	std::cout << std::endl;
+	if (hasKnowledge(ALPS_SOLUTION)) {
+	    std::cout << "Best solution quality = " << getBestQuality() 
+		      << std::endl << std::endl;
+	}
+	else {
+	    std::cout << "Not solution found" << std::endl;
+	}
         std::cout << "Number of nodes processed = " << nodeProcessedNum_ 
                   << std::endl;
         std::cout << "Number of nodes left = " << nodeLeftNum_ << std::endl;
         std::cout << "Tree depth = " << treeDepth_ << std::endl;
-        std::cout << "Search CPU time = " << timer_.getCpuTime() << " seconds"
+	std::cout << "Search CPU time = " 
+		  <<  std::setprecision(2) << timer_.getCpuTime() << " seconds"
                   << std::endl;
-        std::cout << "Search wallclock = "<<timer_.getWallClock()<<" seconds"
+        std::cout << "Search wallclock = "
+		  <<  std::setprecision(2) <<timer_.getWallClock()<<" seconds"
                   << std::endl;
-        std::cout << "Best solution quality = " << getBestQuality() 
-                  << std::endl << std::endl;
 
         if (printSolution && hasKnowledge(ALPS_SOLUTION)) {
             AlpsSolution *solution = dynamic_cast<AlpsSolution *>
@@ -264,6 +271,14 @@ AlpsKnowledgeBrokerSerial::searchLog()
     if(logFileLevel_ > 0) {
 	std::ofstream fout(logfile_.c_str(), std::ofstream::app);
 	fout << std::endl;
+
+	if (hasKnowledge(ALPS_SOLUTION)) {
+	    fout << "Best solution quality = " << getBestQuality() 
+		  << std::endl << std::endl;
+	}
+	else {
+	    fout << "Not solution found" << std::endl;
+	}
 	fout << "Number of nodes processed = "<<nodeProcessedNum_ << std::endl;
 	fout << "Number of nodes left = " << nodeLeftNum_ << std::endl;
 	fout << "Tree depth = " << treeDepth_ << std::endl;
@@ -272,8 +287,6 @@ AlpsKnowledgeBrokerSerial::searchLog()
 	     << std::endl;
 	fout << "Search wallclock = " << timer_.getWallClock() <<" seconds"
 	      << std::endl;
-	fout << "Best solution quality = " << getBestQuality() 
-             << std::endl << std::endl;
 	
         if (printSolution && hasKnowledge(ALPS_SOLUTION)) {
             AlpsSolution *solution = dynamic_cast<AlpsSolution *>
