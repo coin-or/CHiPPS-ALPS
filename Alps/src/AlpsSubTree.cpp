@@ -294,7 +294,7 @@ AlpsSubTree::exploreSubTree(AlpsTreeNode* root,
 			    int & depth)             /* Output */
 {
     AlpsReturnCode status = ALPS_OK;
-    AlpsSolStatus solStatus = ALPS_INFEASIBLE;
+    AlpsSolStatus exploreStatus = ALPS_INFEASIBLE;
     
     bool betterSolution = false;
 
@@ -311,15 +311,15 @@ AlpsSubTree::exploreSubTree(AlpsTreeNode* root,
 
     status = exploreUnitWork(nodeLimit,
                              timeLimit,
-                             solStatus,
+                             exploreStatus,
                              numNodesProcessed, /* Output */
                              depth,             /* Output */
                              betterSolution);   /* Output */
 
-    if (solStatus == ALPS_NODE_LIMIT) {
+    if (exploreStatus == ALPS_NODE_LIMIT) {
         broker_->setTermStatus(ALPS_NODE_LIMIT);
     }
-    else if (solStatus == ALPS_TIME_LIMIT) {
+    else if (exploreStatus == ALPS_TIME_LIMIT) {
         broker_->setTermStatus(ALPS_TIME_LIMIT);
     }
     else {
@@ -357,13 +357,13 @@ AlpsSubTree::rampUp(int& depth, AlpsTreeNode* root)
 	/* Master: set the root node and put it into the queue*/
 	root_ = root;
 	nodePool_->addKnowledge(root_, ALPS_OBJ_MAX);
-	requiredNumNodes = 
-	    broker_->getModel()->AlpsPar()->entry(AlpsParams::masterInitNodeNum);
+	requiredNumNodes = broker_->getModel()->AlpsPar()->
+	    entry(AlpsParams::masterInitNodeNum);
     }
     else {
 	/* Hub. */
-	requiredNumNodes = 
-	    broker_->getModel()->AlpsPar()->entry(AlpsParams::hubInitNodeNum);
+	requiredNumNodes = broker_->getModel()->AlpsPar()->
+	    entry(AlpsParams::hubInitNodeNum);
     }
 
     while( nodePool_->hasKnowledge() &&
