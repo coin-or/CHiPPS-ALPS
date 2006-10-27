@@ -920,8 +920,6 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 
     AlpsReturnCode status = ALPS_OK;
     
-    bool diving = false;
-
     int numChildren = 0;
         
     double oldSolQuality = ALPS_OBJ_MAX;
@@ -960,7 +958,8 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     exploreStatus = ALPS_INFEASIBLE;    
     numNodesProcessed = 0;
 
-    while ( (nodePool_->hasKnowledge() || diving) && !betterSolution ) {
+    while ( (nodePool_->hasKnowledge() || activeNode_) && 
+	    !betterSolution ) {
 	
 	broker_->tempTimer().stop();
 	broker_->timer().stop();
@@ -975,6 +974,7 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 	    break;
 	}
         
+	// Get next node to be processed.
 	if (!activeNode_) {
             activeNode_ = dynamic_cast<AlpsTreeNode*>
 		(nodePool_->getKnowledge().first); 
@@ -1002,6 +1002,8 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 		depth = activeNode_->getDepth() + 1;
             }
             
+	    // Should be part of default node selection.
+
             // (1) Move left nodes in diving pool to normal pool.
             while (diveNodePool_->getNumKnowledges() > 0) {
                 tempNode = dynamic_cast<AlpsTreeNode *>
@@ -1023,11 +1025,9 @@ AlpsSubTree::exploreUnitWork(int unitWork,
                 activeNode_ = dynamic_cast<AlpsTreeNode *>
                     (diveNodePool_->getKnowledge().first);
                 diveNodePool_->popKnowledge();
-                diving = true;
             }
             else {
                 activeNode_ = NULL;
-                diving = false;
             }
 	    break;
 	}
@@ -1073,7 +1073,6 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 	    case AlpsNodeStatusCandidate :
 	    case AlpsNodeStatusEvaluated :
 	    case AlpsNodeStatusPregnant :
-                diving = true;
 		break;
 	    case AlpsNodeStatusFathomed :
 		if (deleteNode) {
@@ -1083,11 +1082,9 @@ AlpsSubTree::exploreUnitWork(int unitWork,
                     activeNode_ = dynamic_cast<AlpsTreeNode *>
                         (diveNodePool_->getKnowledge().first);
                     diveNodePool_->popKnowledge();
-                    diving = true;
                 }
                 else {
                     activeNode_ = NULL;
-                    diving = false;
                 }
 		break;
 	    default : 
