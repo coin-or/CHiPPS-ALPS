@@ -32,11 +32,11 @@ class AlpsPriorityQueue {
 
  private:
     std::vector<T> vec_;
-    AlpsCompare<T> comparison_;	///> Sort function for heap ordering.
+    AlpsCompare<T> comparison_;	// Sort function for heap ordering.
 
  public:
     AlpsPriorityQueue() {}
-    AlpsPriorityQueue(AlpsCompareBase<T>& compare) { 
+    AlpsPriorityQueue(AlpsSearchStrategy<T>& compare) { 
 	setComparison(compare);
     }
 
@@ -44,8 +44,8 @@ class AlpsPriorityQueue {
     const std::vector<T>& getContainer() const { return vec_; }
 
     /** Set comparison function and resort heap. */
-    void setComparison(AlpsCompareBase<T>& compare) {
-	comparison_.test_ = &compare;
+    void setComparison(AlpsSearchStrategy<T>& c) {
+	comparison_.strategy_ = &c;
 	make_heap(vec_.begin(), vec_.end(), comparison_);
     }
 

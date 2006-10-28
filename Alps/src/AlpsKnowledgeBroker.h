@@ -122,11 +122,11 @@ class AlpsKnowledgeBroker {
      *
      */
     //@{
-    /** Tree comparison criterion. */
-    AlpsCompareBase<AlpsSubTree*>* treeCompare_;
+    /** Tree selection criterion. */
+    AlpsSearchStrategy<AlpsSubTree*>* treeSelection_;
 
     /** Node comparison criterion. */
-    AlpsCompareBase<AlpsTreeNode*>* nodeCompare_;
+    AlpsSearchStrategy<AlpsTreeNode*>* nodeSelection_;
     //@}
     
     /** @name message handling
@@ -226,66 +226,7 @@ class AlpsKnowledgeBroker {
      */
     //@{
     /** Set up knowledge pools for this broker. */
-    inline void setupKnowledgePools() {
-	pools_ = new std::map<AlpsKnowledgeType, AlpsKnowledgePool*>;
-	pools_->insert( std::pair<AlpsKnowledgeType, AlpsKnowledgePool*>
-			( ALPS_SOLUTION, solPool_ ) );
-	pools_->insert( std::pair<AlpsKnowledgeType, AlpsKnowledgePool*>
-			( ALPS_SUBTREE, subTreePool_ ) );
-	
-	//--------------------------------------------------
-	// NOTE: User can add her own rules by broker.setTreeCompare().
-	//--------------------------------------------------
-
-	const int treeCompareRule = 
-	    model_->AlpsPar()->entry(AlpsParams::subTreeCompareRule);
-	
-	if (treeCompareRule == 0) {      // Best Quality
-	    treeCompare_ = new AlpsCompareSubTreeBest;
-	}
-	else if (treeCompareRule == 1) { // Quantity
-	    treeCompare_ = new AlpsCompareSubTreeQuantity;
-	}
-	else if (treeCompareRule == 2) { // the depth of root
-	    treeCompare_ = new AlpsCompareSubTreeBreadth;
-	}
-	else if (treeCompareRule == 3) { // Hybrid
-	    // Not implement
-	    throw CoinError("Sorry, hybrid tree comparison isn't implemented", 
-			    "setupKnowledgePools", "AlpsSubTree"); 
-	}
-	else {
-	    std::cout << "treeCompareRule = " << treeCompareRule << std::endl;
-	    throw CoinError("Unknown subtree compare rule", 
-			"getGoodness", "AlpsSubTree"); 
-	}
-	subTreePool_->setComparison(*treeCompare_);
-
-	//--------------------------------------------------
-	// NOTE: User can add her own rules by broker.setNodeCompare().
-	//--------------------------------------------------
-
-	const int strategy =
-	    model_->AlpsPar()->entry(AlpsParams::nodeSelStrategy);
-	if (strategy == 0) {        // best bound
-	    nodeCompare_ = new AlpsCompareTreeNodeBest;
-	}
-	else if (strategy == 1) {   // depth first
-	    nodeCompare_ = new AlpsCompareTreeNodeDepth;
-	}
-	else if (strategy == 2) {   // best estimate
-	    nodeCompare_ = new AlpsCompareTreeNodeEstimate;
-	}
-	else if (strategy == 3) {   // breath first
-	    nodeCompare_ = new AlpsCompareTreeNodeBreadth;
-	}
-	else {
-            std::cout << "ERROR: unknown searchStrategy " << strategy 
-                      << std::endl;
-	    throw CoinError("Unknown search strategy", 
-			    "setupKnowledgePools", "AlpsSubTree"); 
-	}
-    }
+    void setupKnowledgePools();
     
     /** Add a knowledge pool into the Knowledge pools */
     inline void addKnowledgePool(AlpsKnowledgeType kt, AlpsKnowledgePool* kp) {
@@ -502,18 +443,18 @@ class AlpsKnowledgeBroker {
      *  
      */
     //@{
-    AlpsCompareBase<AlpsSubTree*>* getTreeCompare() const { 
-	return treeCompare_; 
+    AlpsSearchStrategy<AlpsSubTree*>* getSubTreeSelection() const { 
+	return treeSelection_; 
     }
-    void setTreeCompare(AlpsCompareBase<AlpsSubTree*>* tc) {
-	treeCompare_ = tc;
-	subTreePool_->setComparison(*treeCompare_);
+    void setSubTreeSelection(AlpsSearchStrategy<AlpsSubTree*>* tc) {
+	treeSelection_ = tc;
+	subTreePool_->setComparison(*treeSelection_);
     }
-    AlpsCompareBase<AlpsTreeNode*>* getNodeCompare() const {
-	return nodeCompare_;
+    AlpsSearchStrategy<AlpsTreeNode*>* getNodeSelection() const {
+	return nodeSelection_;
     }
-    void setNodeCompare(AlpsCompareBase<AlpsTreeNode*>* nc) {
-	nodeCompare_ = nc;
+    void setNodeSelection(AlpsSearchStrategy<AlpsTreeNode*>* nc) {
+	nodeSelection_ = nc;
     }
     //@}
    

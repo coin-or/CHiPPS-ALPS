@@ -52,7 +52,7 @@ class AlpsSubTree : public AlpsKnowledge {
     AlpsNodePool* diveNodePool_;
     
     /** Diving node comparing rule. */
-    AlpsCompareBase<AlpsTreeNode*> * diveNodeRule_;
+    AlpsSearchStrategy<AlpsTreeNode*> * diveNodeRule_;
 
     //   /** The next index to be assigned to a new search tree node */
     //   AlpsNodeIndex_t nextIndex_;
@@ -170,6 +170,16 @@ class AlpsSubTree : public AlpsKnowledge {
     
     /** Get the quality of this subtree. */
     inline double getQuality() const { return quality_; };
+
+    /** Get the emtimated quality of this subtree. */
+    inline double getSolEstimate() const { 
+        if (root_) {
+            return root_->getSolEstimate();
+        }
+        else {
+            return ALPS_OBJ_MAX;
+        };
+    }
     
     /** Calcuate  and return the quality of this subtree, which is measured
 	by the quality of the specified number of nodes.*/
@@ -217,7 +227,7 @@ class AlpsSubTree : public AlpsKnowledge {
     }
 
     /** Set the node comparision rule. */
-    void setNodeCompare(AlpsCompareBase<AlpsTreeNode*>* nc) {
+    void setNodeCompare(AlpsSearchStrategy<AlpsTreeNode*>* nc) {
 	nodePool_->setComparison(*nc);
     }
     //@}

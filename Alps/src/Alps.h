@@ -20,8 +20,6 @@
 #include <cfloat>
 #include <cstdio>
 
-// Test
-
 //#############################################################################
 /** The possible stati for the search nodes. */
 //#############################################################################
@@ -32,6 +30,18 @@ enum AlpsNodeStatus {
     AlpsNodeStatusPregnant,
     AlpsNodeStatusBranched,
     AlpsNodeStatusFathomed
+};
+
+//#############################################################################
+/** Search Strategies. */
+//#############################################################################
+
+enum AlpsSearchType {
+    AlpsBestFirst = 0,
+    AlpsBreadthFirst,
+    AlpsDepthFirst,
+    AlpsEstimate,
+    AlpsHybrid
 };
 
 //#############################################################################

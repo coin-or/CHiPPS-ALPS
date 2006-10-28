@@ -247,10 +247,10 @@ class AlpsParameterSet {
 
     AlpsParameterSet(int c, int i, int d, int s, int sa)
     {
-	cpar_ = new char[c];
-	ipar_ = new int[i];
-	dpar_ = new double[d];
-	spar_ = new std::string[s];
+	cpar_ = new char [c];
+	ipar_ = new int [i];
+	dpar_ = new double [d];
+	spar_ = new std::string [s];
     }
     
     /** The destructor deletes all data members. */

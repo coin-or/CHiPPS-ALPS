@@ -20,9 +20,14 @@ using std::make_pair;
 
 void AlpsParams::createKeywordList() {
 
+   //-------------------------------------------------------
    // Create the list of keywords for parameter file reading
-   //--------------------------------------------------------------------------
+   //-------------------------------------------------------
+
+   //-------------------------------------------------------
    // CharPar
+   //-------------------------------------------------------
+
    keys_.push_back(make_pair(std::string("Alps_inputFromFile"),
 			    AlpsParameter(AlpsCharPar, 
 					  inputFromFile)));
@@ -38,12 +43,14 @@ void AlpsParams::createKeywordList() {
    keys_.push_back(make_pair(std::string("Alps_printSolution"),
                              AlpsParameter(AlpsCharPar, 
                                            printSolution)));
+   //-------------------------------------------------------
+   // BoolArrayPar (nothing here)
+   //-------------------------------------------------------
 
-   //--------------------------------------------------------------------------
-   // BoolArrayPar
-
-   //--------------------------------------------------------------------------
+   //-------------------------------------------------------
    // IntPar
+   //-------------------------------------------------------
+
    keys_.push_back(make_pair(std::string("Alps_logFileLevel"),
 			     AlpsParameter(AlpsIntPar, 
 					   logFileLevel)));
@@ -104,13 +111,9 @@ void AlpsParams::createKeywordList() {
 			     AlpsParameter(AlpsIntPar, 
 					   eliteSize)));
    //
-   keys_.push_back(make_pair(std::string("Alps_subTreeCompareRule"),
+   keys_.push_back(make_pair(std::string("Alps_searchStrategy"),
 			     AlpsParameter(AlpsIntPar, 
-					   subTreeCompareRule)));
-   //
-   keys_.push_back(make_pair(std::string("Alps_nodeSelStrategy"),
-			     AlpsParameter(AlpsIntPar, 
-					   nodeSelStrategy)));
+					   searchStrategy)));
    //
    keys_.push_back(make_pair(std::string("Alps_masterReportInterval"),
 			     AlpsParameter(AlpsIntPar, 
@@ -123,9 +126,11 @@ void AlpsParams::createKeywordList() {
    keys_.push_back(make_pair(std::string("Alps_maxHubWorkSize"),
 			     AlpsParameter(AlpsIntPar,
 					   maxHubWorkSize)));
-   //
-   //--------------------------------------------------------------------------
+
+   //-------------------------------------------------------
    // DoublePar
+   //-------------------------------------------------------
+
    keys_.push_back(make_pair(std::string("Alps_tolerance"),
 			     AlpsParameter(AlpsDoublePar, 
 					   tolerance)));
@@ -169,8 +174,10 @@ void AlpsParams::createKeywordList() {
    keys_.push_back(make_pair(std::string("Alps_timeLimit"),
 			     AlpsParameter(AlpsDoublePar, timeLimit)));
 
-   //--------------------------------------------------------------------------
+   //-------------------------------------------------------
    // StringPar
+   //-------------------------------------------------------
+
    keys_.push_back(make_pair(std::string("Alps_instance"),
 			     AlpsParameter(AlpsStringPar, instance)));
    ///
@@ -181,7 +188,7 @@ void AlpsParams::createKeywordList() {
 //#############################################################################
 
 void AlpsParams::setDefaultEntries() {
-  //--------------------------------------------------------------------------
+
   // CharPar
   setEntry(printSolution, false);
   setEntry(inputFromFile, true);
@@ -189,7 +196,6 @@ void AlpsParams::setDefaultEntries() {
   setEntry(interClusterBalance, true);
   setEntry(intraClusterBalance, true);
 
-  //--------------------------------------------------------------------------
   // IntPar
   setEntry(logFileLevel, 0);
   setEntry(msgLevel, 2);
@@ -206,13 +212,11 @@ void AlpsParams::setDefaultEntries() {
   setEntry(minNodeNum, 1);
   setEntry(nodeLogInterval, 100);
   setEntry(eliteSize, 5);
-  setEntry(subTreeCompareRule, 0);
-  setEntry(nodeSelStrategy, 0);
+  setEntry(searchStrategy, 0);
   setEntry(masterReportInterval, 10);
   setEntry(nodeLimit, 210000000);
   setEntry(maxHubWorkSize, 0); // Hub never works now
 
-  //--------------------------------------------------------------------------
   // DoublePar
   setEntry(tolerance, 1.0e-6);
   setEntry(unitWorkTime, 0.5);
@@ -227,8 +231,9 @@ void AlpsParams::setDefaultEntries() {
   setEntry(receiverThreshold, 0.10);
   setEntry(timeLimit, 1.0e75);
 
-  //--------------------------------------------------------------------------
   // StringPar
   setEntry(instance, "NONE");
   setEntry(logFile, "Alps.log");
 }
+
+//#############################################################################

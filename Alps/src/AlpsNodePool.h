@@ -115,8 +115,8 @@ class AlpsNodePool : public AlpsKnowledgePool {
     inline const AlpsPriorityQueue<AlpsTreeNode*>&
 	getCandidateList() const { return candidateList_; }
     
-    /** Set comparison function and resort heap. */
-    void setComparison(AlpsCompareBase<AlpsTreeNode*>& compare) {
+    /** Set strategy and resort heap. */
+    void setComparison(AlpsSearchStrategy<AlpsTreeNode*>& compare) {
 	candidateList_.setComparison(compare);
     }
 

@@ -39,7 +39,7 @@ AlpsSubTree::AlpsSubTree()
     //nextIndex_(0), 
     nodePool_(new AlpsNodePool), 
     diveNodePool_(new AlpsNodePool), 
-    diveNodeRule_(new AlpsCompareTreeNodeEstimate),
+    diveNodeRule_(new AlpsNodeSearchEstimate),
     activeNode_(0),
     quality_(ALPS_OBJ_MAX),
     broker_(0)
@@ -57,7 +57,7 @@ AlpsSubTree::AlpsSubTree(AlpsKnowledgeBroker* kb)
     // nextIndex_(0), 
     nodePool_(new AlpsNodePool),
     diveNodePool_(new AlpsNodePool),
-    diveNodeRule_(new AlpsCompareTreeNodeEstimate),
+    diveNodeRule_(new AlpsNodeSearchEstimate),
     activeNode_(0),
     quality_(ALPS_OBJ_MAX)
 { 
@@ -651,11 +651,11 @@ AlpsSubTree::splitSubTree(int& returnSize, int size)
 
     // Splitted subtree's node pool.
     AlpsNodePool* nodePool1 = new AlpsNodePool;
-    nodePool1->setComparison(*(broker_->getNodeCompare()));
+    nodePool1->setComparison(*(broker_->getNodeSelection()));
 
     // Left node pool.
     AlpsNodePool* nodePool2 = new AlpsNodePool;
-    nodePool2->setComparison(*(broker_->getNodeCompare()));
+    nodePool2->setComparison(*(broker_->getNodeSelection()));
 
     while(getNodePool()->hasKnowledge()) {
 	curNode = dynamic_cast<AlpsTreeNode* >(
@@ -774,7 +774,7 @@ AlpsSubTree::decode(AlpsEncoded& encoded) const
     AlpsEncoded* encodedNode = 0;
     AlpsTreeNode* node = 0;
     AlpsNodePool* nodePool = new AlpsNodePool;
-    nodePool->setComparison(*(broker_->getNodeCompare()));
+    nodePool->setComparison(*(broker_->getNodeSelection()));
 
     std::vector<AlpsTreeNode* > nodeVector;
 
@@ -876,7 +876,7 @@ AlpsSubTree::decode(AlpsEncoded& encoded) const
     
     st->setNodePool(nodePool);
     st->setKnowledgeBroker(getKnowledgeBroker());
-    st->setNodeCompare(getKnowledgeBroker()->getNodeCompare());
+    st->setNodeCompare(getKnowledgeBroker()->getNodeSelection());
 
     //------------------------------------------------------
     // Clean up.

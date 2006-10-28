@@ -176,7 +176,7 @@ AlpsKnowledgeBrokerSerial::search(AlpsTreeNode* root)
     //------------------------------------------------------
 
     workingSubTree_ = new AlpsSubTree(this);
-    workingSubTree_->setNodeCompare(nodeCompare_);
+    workingSubTree_->setNodeCompare(nodeSelection_);
 
 #ifdef NF_DEBUG_MORE
     // Useless work, just for testing subtree pool.

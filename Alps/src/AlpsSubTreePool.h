@@ -67,7 +67,7 @@ class AlpsSubTreePool : public AlpsKnowledgePool {
 	getSubTreeList() const { return subTreeList_; }
 
     /** Set comparison function and resort heap. */
-    void setComparison(AlpsCompareBase<AlpsSubTree*>& compare) {
+    void setComparison(AlpsSearchStrategy<AlpsSubTree*>& compare) {
 	subTreeList_.setComparison(compare);
     }
 

@@ -15,7 +15,7 @@
  *===========================================================================*/
 
 #include "AlpsKnowledgeBroker.h"
-
+#include "Alps.h"
 
 //#############################################################################
 // Initialize static member. 
@@ -43,8 +43,8 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     nodeLeftNum_(0),
     treeDepth_(0),
     termStatus_(ALPS_OPTIMAL),
-    treeCompare_(0),
-    nodeCompare_(0),
+    treeSelection_(0),
+    nodeSelection_(0),
     msgLevel_(2),
     logFileLevel_(0)
 {
@@ -74,13 +74,13 @@ AlpsKnowledgeBroker:: ~AlpsKnowledgeBroker()
 	delete workingSubTree_; 
 	workingSubTree_ = 0;
     }
-    if (nodeCompare_ != 0){
-	delete  nodeCompare_;
-	nodeCompare_ = 0;
+    if (nodeSelection_ != 0){
+	delete  nodeSelection_;
+	nodeSelection_ = 0;
     }
-    if (treeCompare_ != 0){
-	delete  treeCompare_;
-	treeCompare_ = 0;
+    if (treeSelection_ != 0){
+	delete  treeSelection_;
+	treeSelection_ = 0;
     }
     if (handler_ != 0) {
 	delete  handler_;
@@ -184,6 +184,58 @@ AlpsKnowledgeBroker::getBestKnowledge(AlpsKnowledgeType kt) const
         throw CoinError("Broker doesn't manage this type of knowledge", 
                         "getBestKnowledge()", "AlpsKnowledgeBroker"); 
     }
+}
+
+//#############################################################################
+
+void 
+AlpsKnowledgeBroker::setupKnowledgePools() 
+{
+
+    //--------------------------------------------------
+    // Setup search strategy.
+    //--------------------------------------------------
+    int strategy = model_->AlpsPar()->entry(AlpsParams::searchStrategy);
+    
+    if (strategy == AlpsBestFirst) {
+        treeSelection_ = new AlpsTreeSearchBest;
+        nodeSelection_ = new AlpsNodeSearchBest;
+    }
+    else if (strategy == AlpsBreadthFirst) {
+        treeSelection_ = new AlpsTreeSearchBreadth;
+        nodeSelection_ = new AlpsNodeSearchBreadth;
+    }
+    else if (strategy == AlpsDepthFirst) {
+        treeSelection_ = new AlpsTreeSearchBreadth;
+        nodeSelection_ = new AlpsNodeSearchBreadth;
+    }
+    else if (strategy == AlpsEstimate) {
+        treeSelection_ = new AlpsTreeSearchEstimate;
+        nodeSelection_ = new AlpsNodeSearchEstimate;
+    }
+    else if (strategy == AlpsHybrid) {
+        treeSelection_ = new AlpsTreeSearchBest;
+        nodeSelection_ = new AlpsNodeSearchHybrid;
+    }
+    else {
+        std::cout << "search strategy" << strategy << std::endl;
+        throw CoinError("Unknown subtree compare rule", 
+			"getGoodness", "AlpsSubTree"); 
+    }
+    
+    //--------------------------------------------------
+    // Create solution and subtree pools.
+    //--------------------------------------------------
+
+    pools_ = new std::map<AlpsKnowledgeType, AlpsKnowledgePool*>;
+
+    pools_->insert( std::pair<AlpsKnowledgeType, AlpsKnowledgePool*>
+                    ( ALPS_SOLUTION, solPool_ ) );
+
+    pools_->insert( std::pair<AlpsKnowledgeType, AlpsKnowledgePool*>
+                    ( ALPS_SUBTREE, subTreePool_ ) );
+    
+    subTreePool_->setComparison(*treeSelection_);    
 }
 
 //#############################################################################

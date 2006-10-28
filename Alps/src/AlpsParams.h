@@ -87,12 +87,21 @@ class AlpsParams : public AlpsParameterSet {
     nodeLogInterval,
     /** Number of the "elite" nodes that are used in determining workload. */
     eliteSize,
-    /** SubTree compare criteria. 0: quality (priority); 1: quantity; 
-	2: the level of root; 3: hybrid. Default is 0. */
+    /** SubTree selection (default is best first):
+        -- best-first
+        -- breadth-first
+        -- depth-first
+        -- best-estimate
+    */
     subTreeCompareRule,
-    /** Node selection: 0: best bound; 1: depth first; 2: breath first; 
-     3: hybrid. Default is 0. */
-    nodeSelStrategy,
+    /** Node selection (default is hybrid):
+        -- best-first
+        -- breadth-first
+        -- depth-first
+        -- best-estimate
+        -- hybrid
+    */
+    searchStrategy,
     /** The interval between master report system status. */
     masterReportInterval,
     /** The max number of nodes can be processed. */

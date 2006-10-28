@@ -23,130 +23,144 @@
 
 //#############################################################################
 
-class AlpsCompareSubTreeBreadth : public AlpsCompareBase<AlpsSubTree*> 
+class AlpsTreeSearchBest : public AlpsSearchStrategy<AlpsSubTree*> 
 {
- public:
-    // Default Constructor 
-    AlpsCompareSubTreeBreadth() {}
-    ~AlpsCompareSubTreeBreadth() {};
+public:
+    /** Default Constructor. */
+    AlpsTreeSearchBest() {}
+
+    /** Default Destructor. */
+    virtual ~AlpsTreeSearchBest() {}
     
-    // This returns true if the depth of the root node in subtree x
-    // is greater than depth of the root node in subtree y
-    virtual bool test(AlpsSubTree * x, AlpsSubTree * y);
+    /** This returns true if the quality of the subtree y is better
+        (the less the better) than that the subtree x. */
+    virtual bool compare(AlpsSubTree * x, AlpsSubTree * y);
+};
+
+class AlpsTreeSearchBreadth : public AlpsSearchStrategy<AlpsSubTree*> 
+{
+public:
+    /** Default Constructor */
+    AlpsTreeSearchBreadth() {}
+    
+    /** Default Destructor. */
+    virtual ~AlpsTreeSearchBreadth() {}
+    
+    /** This returns true if the depth of the root node in subtree y
+        is smaller than that of the root node in subtree x. */
+    virtual bool compare(AlpsSubTree * x, AlpsSubTree * y);
+};
+
+class AlpsTreeSearchDepth : public AlpsSearchStrategy<AlpsSubTree*> 
+{
+public:
+    /** Default Constructor */
+    AlpsTreeSearchDepth() {}
+    
+    /** Default Destructor. */
+    virtual ~AlpsTreeSearchDepth() {}
+    
+    /** This returns true if the depth of the root node in subtree y
+        is greater than that of the root node in subtree x. */
+    virtual bool compare(AlpsSubTree * x, AlpsSubTree * y);
+};
+
+class AlpsTreeSearchEstimate : public AlpsSearchStrategy<AlpsSubTree*> 
+{
+public:
+    /** Default Constructor. */
+    AlpsTreeSearchEstimate() {}
+
+    /** Default Destructor. */
+    virtual ~AlpsTreeSearchEstimate() {}
+    
+    /** This returns true if the estimated quality of the subtree y is better
+        (the less the better) than that the subtree x. */
+    virtual bool compare(AlpsSubTree * x, AlpsSubTree * y);
 };
 
 //#############################################################################
 
-class AlpsCompareSubTreeBest : public AlpsCompareBase<AlpsSubTree*> 
+class AlpsNodeSearchBest : public AlpsSearchStrategy<AlpsTreeNode*> 
 {
- public:
-    // Default Constructor 
-    AlpsCompareSubTreeBest() {}
-    ~AlpsCompareSubTreeBest() {};
-    
-    // This returns true if the quality of the subtree x 
-    // is better than the quality of the subtree y
-    virtual bool test(AlpsSubTree * x, AlpsSubTree * y);
-};
+public:
+    /** Default Constructor. */
+    AlpsNodeSearchBest() {}
 
-//#############################################################################
+    /** Default Destructor. */
+    virtual ~AlpsNodeSearchBest() {}
 
-class AlpsCompareSubTreeQuantity : public AlpsCompareBase<AlpsSubTree*> 
-{
- public:
-    // Default Constructor 
-    AlpsCompareSubTreeQuantity() {}
-    ~AlpsCompareSubTreeQuantity() {};
-    
-    // This returns true if the num of nodes in the subtree x 
-    // is less than the num of nodes in the subtree y
-    virtual bool test(AlpsSubTree * x, AlpsSubTree * y);
-  
-};
-
-//#############################################################################
-
-class AlpsCompareTreeNodeDepth : public AlpsCompareBase<AlpsTreeNode*> 
-{
- public:
-    // Default Constructor 
-    AlpsCompareTreeNodeDepth() {}
-    ~AlpsCompareTreeNodeDepth() {};
-
-    // This returns true if the depth of node x is lesser than depth of node y
-    virtual bool test (AlpsTreeNode * x, AlpsTreeNode * y) {
-	return x->getDepth() < y->getDepth();
+    /** This returns true if quality of node y is better (the less the better)
+        than that of node x. */
+    virtual bool compare(AlpsTreeNode * x, AlpsTreeNode * y) {
+	return (x->getQuality() > y->getQuality());
     }
 };
 
-//#############################################################################
-
-class AlpsCompareTreeNodeBest : public AlpsCompareBase<AlpsTreeNode*> 
+class AlpsNodeSearchBreadth : public AlpsSearchStrategy<AlpsTreeNode*> 
 {
- public:
-    // Default Constructor 
-    AlpsCompareTreeNodeBest() {}
-    ~AlpsCompareTreeNodeBest() {}
+public:
+    /** Default Constructor. */
+    AlpsNodeSearchBreadth() {}
 
-    // This returns true if the objective value (assume minization) of node x 
-    // is greater than objective of node y
-    virtual bool test (AlpsTreeNode * x, AlpsTreeNode * y) {
-	return x->getQuality() > y->getQuality();
-    }
-};
+    /** Default Destructor. */
+    virtual ~AlpsNodeSearchBreadth() {};
 
-//#############################################################################
-
-class AlpsCompareTreeNodeEstimate : public AlpsCompareBase<AlpsTreeNode*> 
-{
- public:
-    // Default Constructor 
-    AlpsCompareTreeNodeEstimate() {}
-    ~AlpsCompareTreeNodeEstimate() {}
-
-    // This returns true if the objective value (assume minization) of node x 
-    // is greater than objective of node y
-    virtual bool test (AlpsTreeNode * x, AlpsTreeNode * y) {
-	return x->getSolEstimate() > y->getSolEstimate();
-    }
-};
-
-//#############################################################################
-
-class AlpsCompareTreeNodeDefault : public AlpsCompareBase<AlpsTreeNode*> 
-{
- public:
-    // Default Constructor 
-    AlpsCompareTreeNodeDefault() {}
-    ~AlpsCompareTreeNodeDefault() {}
-    
-    // This returns true if the quality (assume minization) of node x 
-    // is greater than objective of node y
-    virtual bool test(AlpsTreeNode * x, AlpsTreeNode * y) {
-	if (weight_ == -1.0) {
-	    // depth first
-	    return x->getDepth() < y->getDepth();
-	}
-	else {
-	    //best first
-	    return x->getQuality() > y->getQuality();
-	}
-    }
-};
-
-//#############################################################################
-
-class AlpsCompareTreeNodeBreadth : public AlpsCompareBase<AlpsTreeNode*> 
-{
- public:
-    // Default Constructor 
-    AlpsCompareTreeNodeBreadth() {}
-    ~AlpsCompareTreeNodeBreadth() {};
-
-    // This returns true if the depth of node x is greater than depth of node y
-    virtual bool test (AlpsTreeNode * x, AlpsTreeNode * y) {
+    /** This returns true if the depth of node y is lesser
+        than that of node x */
+    virtual bool compare(AlpsTreeNode * x, AlpsTreeNode * y) {
 	return x->getDepth() > y->getDepth();
     }
 };
 
+class AlpsNodeSearchDepth : public AlpsSearchStrategy<AlpsTreeNode*> 
+{
+ public:
+    /** Default Constructor. */
+    AlpsNodeSearchDepth() {}
+
+    /** Default Destructor. */
+    virtual ~AlpsNodeSearchDepth() {};
+
+    /** This returns true if the depth of node y is greater than 
+        that of node x. */
+    virtual bool compare(AlpsTreeNode * x, AlpsTreeNode * y) {
+	return (x->getDepth() < y->getDepth());
+    }
+};
+
+class AlpsNodeSearchEstimate : public AlpsSearchStrategy<AlpsTreeNode*> 
+{
+ public:
+    /** Default Constructor. */
+    AlpsNodeSearchEstimate() {}
+
+    /** Default Destructor. */
+    virtual ~AlpsNodeSearchEstimate() {}
+
+    /** This returns true if the estimate quality of node y is better
+        (the lesser the better) than that of node x. */
+    virtual bool compare (AlpsTreeNode * x, AlpsTreeNode * y) {
+	return (x->getSolEstimate() > y->getSolEstimate());
+    }
+};
+
+class AlpsNodeSearchHybrid : public AlpsSearchStrategy<AlpsTreeNode*> 
+{
+public:
+    /** Default Constructor. */
+    AlpsNodeSearchHybrid() {}
+
+    /** Default Destructor. */
+    virtual ~AlpsNodeSearchHybrid() {}
+    
+    /** This returns true if the quality of node y is better (the lesser
+        the better) than that of node x. */
+    virtual bool compare(AlpsTreeNode * x, AlpsTreeNode * y) {
+        // best first
+        return (x->getQuality() > y->getQuality());
+    }
+};
+
+//#############################################################################
 #endif

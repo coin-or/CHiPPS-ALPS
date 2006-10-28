@@ -17,69 +17,77 @@
 #ifndef AlpsCompareBase_h_
 #define AlpsCompareBase_h_
 
-//#############################################################################
-// This file is modified from SbbCompareBase.hpp
-//#############################################################################
-
 class AlpsModel;
 
-template<class T>
-class AlpsCompareBase {
- protected:
+//#############################################################################
+
+/** Subtree and node selection rule, which is uese when
+    1) comparing subtrees or nodes when storing them in knowledge pools.
+    2) selecting the next subtee or node to be processed. 
+
+    The steps required to define a new search strategy are:
+    1) derive two subclasses from \code AlpsSearchStrategy, one for subtree 
+       and one for node. (see AlpsSearchStrategyActual.h),
+    2) override the \code compare() member function, and
+    3) set it to knowledge broker.
+*/
+template<class T> 
+class AlpsSearchStrategy
+{
+protected:
+    /** Used to change search behavior. */
     double weight_;
     
- public:
-    // Default Constructor 
-    AlpsCompareBase (): weight_(-1.0) {}
-
-  // This allows any method to change behavior as it is called
-  // after each solution
-  virtual void newSolution(AlpsModel * model) {}
-
-  // This Also allows any method to change behavior as it is called
-  // after each solution
-  virtual void newSolution(AlpsModel * model,
-			   double objectiveAtContinuous,
-			   int numberInfeasibilitiesAtContinuous) {}
-
-  // This allows any method to change behavior as it is called
-  // after every 1000 nodes
-  virtual void every1000Nodes(AlpsModel * model,int numberNodes) {}
-
-  virtual ~AlpsCompareBase() {}
-
-  /// This is test function
-  virtual bool test (T x, T y) {return true;}
-  
-  bool operator() (T x, T y) {
-    return test(x,y);
-  }
-  
-  inline const double getWeight() const { return weight_; }
-  inline void setWeight(double nw) { weight_ = nw; }
-  
+public:
+    /** Default Constructor. */
+    AlpsSearchStrategy() : weight_(-1.0) {}
+        
+    /** Default destructor. */
+    virtual ~AlpsSearchStrategy() {}
+        
+    /** Compare the preference of x and y. Return true if prefer y; 
+        return false if prefer x. The function is used when:
+        1) comparing subtrees or nodes when storing them in knowledge pools.
+        2) selecting the next subtee or node to be processed. 
+    */
+    virtual bool compare(T x, T y) {return true;}
+    
+    bool operator() (T x, T y) {
+        return compare(x,y);
+    }
+    
+    /** @name Get/set weight
+     *
+     */
+    //@{
+    inline const double getWeight() const { return weight_; }
+    inline void setWeight(double nw) { weight_ = nw; }
+    //@}     
 };
 
 //#############################################################################
 
+/** Compare function for priority queue. */
 template<class T>
-class AlpsCompare {
- public:
-    AlpsCompareBase<T>* test_;
+class AlpsCompare 
+{
+public:
+    AlpsSearchStrategy<T>* strategy_;
     
- public:
-    // Default Constructor 
-    AlpsCompare () : 
-	test_(0)
-	{}
+public:
+    /** Default Constructor */
+    AlpsCompare () : strategy_(0) {}
     virtual ~AlpsCompare() {}
-
-    void setComareBase(AlpsCompareBase<T>* t) { 
-	test_ = t; 
+        
+    void setComareBase(AlpsSearchStrategy<T>* c) { 
+        strategy_ = c;
     }
     
     bool operator() (T x, T y) {
-	return test_->test(x,y);
+        return strategy_->compare(x, y);
     }
 };
+
+//#############################################################################
+
 #endif

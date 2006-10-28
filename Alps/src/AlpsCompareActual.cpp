@@ -19,25 +19,33 @@
 //#############################################################################
 
 bool 
-AlpsCompareSubTreeBreadth::test(AlpsSubTree * x, AlpsSubTree * y)
+AlpsTreeSearchBest::compare(AlpsSubTree * x, AlpsSubTree * y) 
 {
-    return x->getRoot()->getDepth() > y->getRoot()->getDepth();
+    return (x->getQuality() < y->getQuality());
 }
 
 //#############################################################################
 
 bool 
-AlpsCompareSubTreeBest::test(AlpsSubTree * x, AlpsSubTree * y) 
+AlpsTreeSearchBreadth::compare(AlpsSubTree * x, AlpsSubTree * y)
 {
-    return x->getQuality() < y->getQuality();
+    return (x->getRoot()->getDepth() > y->getRoot()->getDepth());
 }
 
 //#############################################################################
 
 bool 
-AlpsCompareSubTreeQuantity::test(AlpsSubTree * x, AlpsSubTree * y) 
+AlpsTreeSearchDepth::compare(AlpsSubTree * x, AlpsSubTree * y) 
 {
-    return x->getNumNodes() < y->getNumNodes();
+    return (x->getRoot()->getDepth() < y->getRoot()->getDepth());
+}
+
+//#############################################################################
+
+bool 
+AlpsTreeSearchEstimate::compare(AlpsSubTree * x, AlpsSubTree * y)
+{
+    return (x->getSolEstimate() > y->getSolEstimate());
 }
 
 //#############################################################################
