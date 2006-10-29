@@ -40,7 +40,7 @@ class AlpsNodePool : public AlpsKnowledgePool {
     AlpsNodePool() {}
     virtual ~AlpsNodePool() {
 	if (!candidateList_.empty()) {
-	    clean();
+            deleteGuts();
 	}
     }
     
@@ -120,13 +120,13 @@ class AlpsNodePool : public AlpsKnowledgePool {
 	candidateList_.setComparison(compare);
     }
 
-    /** Delete all the nodes in the pool. */
-    void clean() {
+    /** Delete all the nodes in the pool and free memory. */
+    void deleteGuts() {
 	std::vector<AlpsTreeNode* > nodeVec = candidateList_.getContainer();
 	for_each(nodeVec.begin(), nodeVec.end(), DeletePtrObject());
     }
 
-    /** Remove all the nodes in the pool. */
+    /** Remove all the nodes in the pool (does not free memory). */
     void clear() {
 	candidateList_.clear();
     }

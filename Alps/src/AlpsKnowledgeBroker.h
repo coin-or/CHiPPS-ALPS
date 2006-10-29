@@ -81,7 +81,7 @@ class AlpsKnowledgeBroker {
     /** Point to the subtree that being explored. */
     AlpsSubTree* workingSubTree_;
     
-    /** Indicate whether needWorkingSubTree_ points to 0. */
+    /** Indicate whether need a new subtree. */
     bool needWorkingSubTree_;
 
     /** The index to be assigned to a new search tree node. */
@@ -105,13 +105,13 @@ class AlpsKnowledgeBroker {
     /** Secondary timer. */
     AlpsTimer tempTimer_;
 
-    /** The number of nodes processed. */
+    /** The number of nodes have been processed. */
     int nodeProcessedNum_;
     
-    /** The number of nodes in pool. */
+    /** The number of nodes left. */
     int nodeLeftNum_;
-
-    /** The depth of the tree explored. */
+    
+    /** The depth of the tree. */
     int treeDepth_;
 
     /** The status of termination. */

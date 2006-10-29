@@ -53,7 +53,7 @@ class AlpsSubTree : public AlpsKnowledge {
     
     /** Diving node comparing rule. */
     AlpsSearchStrategy<AlpsTreeNode*> * diveNodeRule_;
-
+    
     //   /** The next index to be assigned to a new search tree node */
     //   AlpsNodeIndex_t nextIndex_;
 
@@ -68,12 +68,6 @@ class AlpsSubTree : public AlpsKnowledge {
 	processed. */
     // Need broker to query model && parameters.
     AlpsKnowledgeBroker*  broker_;
-
-    /** Elite list of nodes. */
-    //    std::multimap<double, AlpsTreeNode*> eliteNodes_;
-    
-    /** The number of elite nodes stored. */
-    //  int eliteSize_;
     
  protected:
 
@@ -88,19 +82,6 @@ class AlpsSubTree : public AlpsKnowledge {
     /** This function replaces \c oldNode with \c newNode in the tree. */
     void replaceNode(AlpsTreeNode* oldNode, AlpsTreeNode* newNode);
 
-    /** Get pointer to active node */
-    inline AlpsTreeNode* getActiveNode() { return activeNode_; }
-
-    /** Set pointer to active node */
-    inline void setActiveNode(AlpsTreeNode *activeNode)
-    { activeNode_ = activeNode; }
-
-    /** Create children nodes from the given parent node. */
-    void createChildren(AlpsTreeNode* parent,
-			std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, 
-			double> >& children,
-                        AlpsNodePool *kidNodePool = NULL);
-
  public:
     
     /** Default constructor. */
@@ -111,9 +92,22 @@ class AlpsSubTree : public AlpsKnowledge {
         
     /** Destructor. */
     virtual ~AlpsSubTree();
-    
+
  public:
 
+    /** Get pointer to active node */
+    inline AlpsTreeNode* activeNode() { return activeNode_; }
+
+    /** Set pointer to active node */
+    inline void setActiveNode(AlpsTreeNode *activeNode)
+    { activeNode_ = activeNode; }
+
+    /** Create children nodes from the given parent node. */
+    void createChildren(AlpsTreeNode* parent,
+			std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, 
+			double> >& children,
+                        AlpsNodePool *kidNodePool = NULL);
+    
     /** @name query and set member functions
      */
     //@{
@@ -123,9 +117,12 @@ class AlpsSubTree : public AlpsKnowledge {
     /** Set the root node of this subtree. */
     inline void setRoot(AlpsTreeNode* r) { root_ = r; }
 
-    /** Get the node pool. */
-    inline AlpsNodePool* getNodePool() const { return nodePool_; }
-    
+    /** Access the node pool. */
+    inline AlpsNodePool* nodePool() { return nodePool_; }
+
+    /** Access the node pool. */
+    inline AlpsNodePool* diveNodePool() { return diveNodePool_; }
+
     /** Set node pool. Delete previous node pool and nodes in pool if exit.*/
     inline void setNodePool(AlpsNodePool* np) { 
       if (nodePool_ != NULL) {
@@ -163,9 +160,6 @@ class AlpsSubTree : public AlpsKnowledge {
     {
         assert(kb);
         broker_ = kb;
-        //eliteSize_ = kb->getDataPool()->
-        //getOwnParams()->entry(AlpsOwnParams::eliteSize);
-        //assert(eliteSize_ > 0);
     }
     
     /** Get the quality of this subtree. */
@@ -196,25 +190,6 @@ class AlpsSubTree : public AlpsKnowledge {
     /** Set the index of the next generated node. */
     void setNextIndex(int next);
 
-#if 0
-    /** Approximate the quality of this subtree. It is cheap than 
-	<code>calculateQuality()<\code> */
-    void approximateQuality(double inc, double rho);
-
-    /** Add a node to node pool and adjust elite list. */
-    void addNode(AlpsTreeNode* node, double quality = ALPS_OBJ_MAX);
-
-    /** Remove the node with highest priority from node pool and adjust 
-	elite list. */
-    void popNode();
-
-    /** Get a pointer the node with highest priority. */
-    AlpsTreeNode* topNode() {   
-	return dynamic_cast<AlpsTreeNode*>
-	    (nodePool_->popKnowledge().first);
-    }
-#endif
-    
     /** Return the number of nodes on this subtree. */
     int getNumNodes() const {
 	assert(nodePool_ && diveNodePool_);

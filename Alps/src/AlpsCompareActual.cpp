@@ -49,3 +49,60 @@ AlpsTreeSearchEstimate::compare(AlpsSubTree * x, AlpsSubTree * y)
 }
 
 //#############################################################################
+
+AlpsTreeNode*
+AlpsNodeSearchHybrid::selectNextNode(AlpsSubTree *subTree)
+{
+    AlpsTreeNode *node = subTree->activeNode();
+    
+    if (!node) {
+        node = dynamic_cast<AlpsTreeNode*>(subTree->nodePool()->getKnowledge().first); 
+        node->setDiving(false);
+        
+#if 0
+        std::cout << "======= NOTE[" << node->getIndex() 
+                  << "]: JUMP : depth = " << node->getDepth() 
+                  << ", quality = " << node->getQuality()
+                  << ", estimate = " << node->getSolEstimate()
+                  << std::endl;
+#endif
+        subTree->nodePool()->popKnowledge();
+	
+    }
+    else {
+        node->setDiving(true);
+    }
+    
+    return node;
+}
+
+//#############################################################################
+
+void 
+AlpsNodeSearchHybrid::createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node) 
+{
+    int numChildren = 0;
+    AlpsTreeNode *tempNode, *activeNode = 0;
+
+    while (subTree->diveNodePool()->getNumKnowledges() > 0) {
+        tempNode = dynamic_cast<AlpsTreeNode *>
+            (subTree->diveNodePool()->getKnowledge().first);
+        subTree->diveNodePool()->popKnowledge();
+        subTree->nodePool()->addKnowledge(tempNode, tempNode->getQuality());
+    }
+    
+    std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
+        children = node->branch();
+    
+    subTree->createChildren(node, children, subTree->diveNodePool());
+    numChildren = subTree->diveNodePool()->getNumKnowledges();
+    
+    if (numChildren > 0) {
+        activeNode = dynamic_cast<AlpsTreeNode *>
+            (subTree->diveNodePool()->getKnowledge().first);
+        subTree->diveNodePool()->popKnowledge();
+        }
+    subTree->setActiveNode(activeNode);
+}
+
+//#############################################################################

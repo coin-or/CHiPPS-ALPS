@@ -95,6 +95,26 @@ public:
     virtual bool compare(AlpsTreeNode * x, AlpsTreeNode * y) {
 	return (x->getQuality() > y->getQuality());
     }
+    
+    /* Select the next node to be processed. */
+    virtual AlpsTreeNode* selectNextNode(AlpsSubTree *subTree)
+    {
+        AlpsTreeNode *node = subTree->activeNode();
+        if (node == NULL) {
+            node = dynamic_cast<AlpsTreeNode*>
+                (const_cast<AlpsKnowledge*>(subTree->nodePool()->getKnowledge().first) ); 
+            subTree->nodePool()->popKnowledge();
+        }           
+        return node;
+    }
+    
+    /* Create new nodes from pregnant node and store them in node pool. */
+    virtual void createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node) 
+    {
+        std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
+            children = node->branch();
+        subTree->createChildren(node, children);
+    }
 };
 
 class AlpsNodeSearchBreadth : public AlpsSearchStrategy<AlpsTreeNode*> 
@@ -110,6 +130,26 @@ public:
         than that of node x */
     virtual bool compare(AlpsTreeNode * x, AlpsTreeNode * y) {
 	return x->getDepth() > y->getDepth();
+    }
+
+    /* Select the next node to be processed. */
+    virtual AlpsTreeNode* selectNextNode(AlpsSubTree *subTree)
+    {
+        AlpsTreeNode *node = subTree->activeNode();
+        if (node == NULL) {
+            node = dynamic_cast<AlpsTreeNode*>
+                (const_cast<AlpsKnowledge*>(subTree->nodePool()->getKnowledge().first) ); 
+            subTree->nodePool()->popKnowledge();
+        }           
+        return node;
+    }
+    
+    /* Create new nodes from pregnant node and store them in node pool. */
+    virtual void createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node) 
+    {
+        std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
+            children = node->branch();
+        subTree->createChildren(node, children);
     }
 };
 
@@ -127,6 +167,26 @@ class AlpsNodeSearchDepth : public AlpsSearchStrategy<AlpsTreeNode*>
     virtual bool compare(AlpsTreeNode * x, AlpsTreeNode * y) {
 	return (x->getDepth() < y->getDepth());
     }
+
+    /* Select the next node to be processed. */
+    virtual AlpsTreeNode* selectNextNode(AlpsSubTree *subTree)
+    {
+        AlpsTreeNode *node = subTree->activeNode();
+        if (node == NULL) {
+            node = dynamic_cast<AlpsTreeNode*>
+                (const_cast<AlpsKnowledge*>(subTree->nodePool()->getKnowledge().first) ); 
+            subTree->nodePool()->popKnowledge();
+        }           
+        return node;
+    }
+    
+    /* Create new nodes from pregnant node and store them in node pool. */
+    virtual void createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node) 
+    {
+        std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
+            children = node->branch();
+        subTree->createChildren(node, children);
+    }
 };
 
 class AlpsNodeSearchEstimate : public AlpsSearchStrategy<AlpsTreeNode*> 
@@ -142,6 +202,27 @@ class AlpsNodeSearchEstimate : public AlpsSearchStrategy<AlpsTreeNode*>
         (the lesser the better) than that of node x. */
     virtual bool compare (AlpsTreeNode * x, AlpsTreeNode * y) {
 	return (x->getSolEstimate() > y->getSolEstimate());
+    }
+
+    /* Select the next node to be processed. */
+    virtual AlpsTreeNode* selectNextNode(AlpsSubTree *subTree)
+    {
+        AlpsTreeNode *node = subTree->activeNode();
+        if (node == NULL) {
+            node = dynamic_cast<AlpsTreeNode*>
+                (const_cast<AlpsKnowledge*>(subTree->nodePool()->getKnowledge().first) ); 
+            subTree->nodePool()->popKnowledge();
+        }           
+        return node;
+    }
+    
+    /* Create new nodes from pregnant node and store them in node pool. */
+    virtual void createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node) 
+    {
+        std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
+            children = node->branch();
+        subTree->createChildren(node, children);
+        subTree->setActiveNode(0);
     }
 };
 
@@ -160,6 +241,12 @@ public:
         // best first
         return (x->getQuality() > y->getQuality());
     }
+
+    /* Select the next node to be processed. */
+    virtual AlpsTreeNode* selectNextNode(AlpsSubTree *subTree);
+    
+    /* Create new nodes from pregnant node and store them in node pool. */
+    virtual void createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node);
 };
 
 //#############################################################################

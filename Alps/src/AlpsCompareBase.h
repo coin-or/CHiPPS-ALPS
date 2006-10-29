@@ -18,6 +18,8 @@
 #define AlpsCompareBase_h_
 
 class AlpsModel;
+class AlpsSubTree;
+class AlpsTreeNode;
 
 //#############################################################################
 
@@ -50,10 +52,10 @@ public:
         1) comparing subtrees or nodes when storing them in knowledge pools.
         2) selecting the next subtee or node to be processed. 
     */
-    virtual bool compare(T x, T y) {return true;}
+    virtual bool compare(T x, T y) = 0;
     
     bool operator() (T x, T y) {
-        return compare(x,y);
+        return compare(x, y);
     }
     
     /** @name Get/set weight
@@ -62,7 +64,13 @@ public:
     //@{
     inline const double getWeight() const { return weight_; }
     inline void setWeight(double nw) { weight_ = nw; }
-    //@}     
+    //@}
+    
+    virtual AlpsTreeNode* selectNextNode(AlpsSubTree *subTree) 
+    { AlpsTreeNode *temp = 0; return temp; }
+
+    virtual void createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node)
+    { }
 };
 
 //#############################################################################
@@ -78,7 +86,7 @@ public:
     /** Default Constructor */
     AlpsCompare () : strategy_(0) {}
     virtual ~AlpsCompare() {}
-        
+
     void setComareBase(AlpsSearchStrategy<T>* c) { 
         strategy_ = c;
     }
