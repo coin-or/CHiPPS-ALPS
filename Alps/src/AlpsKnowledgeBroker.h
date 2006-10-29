@@ -404,10 +404,6 @@ class AlpsKnowledgeBroker {
     /** The process (serial) / the master (parallel) outputs the best 
 	solution that it knows to a file or std::out. */
     virtual void printBestSolution(char* outputFile = 0) const = 0;
-	
-    /** The process (serial) / the master (parallel) outputs the best 
-	solution found and its objective value to a file or std::out. */
-    virtual void printBestResult(char* outputFile = 0) const = 0;
     //@}
 
     /** Qeury the global rank of process. Note: not useful for serial code.*/

@@ -227,8 +227,8 @@ class AlpsSubTree : public AlpsKnowledge {
     }
 
     /** Set the node comparision rule. */
-    void setNodeCompare(AlpsSearchStrategy<AlpsTreeNode*>* nc) {
-	nodePool_->setComparison(*nc);
+    void setNodeSelection(AlpsSearchStrategy<AlpsTreeNode*>* nc) {
+	nodePool_->setNodeSelection(*nc);
     }
     //@}
 

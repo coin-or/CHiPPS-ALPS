@@ -110,10 +110,6 @@ int main(int argc, char* argv[])
 
 	// Sovle the problem
 	broker.search(root);
-	
-	// Report the best solution found and its ojective value
-	// broker.printBestResult("result");
-	//broker.printBestResult();
     }
     catch(CoinError& er) {
 	std::cerr << "ERROR:" << er.message() << std::endl

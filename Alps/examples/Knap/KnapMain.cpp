@@ -57,9 +57,8 @@ int main(int argc, char* argv[])
 	broker.search(root);
     
 	// 5: Report the best solution found and its ojective value
-	// broker.printBestResult("result");
-	broker.printBestResult();
-
+	broker.printBestSolution();
+        
 #ifdef NF_DEBUG
 	const int numSol = broker.getNumKnowledges(ALPS_SOLUTION);
 	broker.messageHandler()->message(ALPS_SOLUTION_COUNT,broker.messages())

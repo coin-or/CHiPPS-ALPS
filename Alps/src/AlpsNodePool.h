@@ -116,7 +116,7 @@ class AlpsNodePool : public AlpsKnowledgePool {
 	getCandidateList() const { return candidateList_; }
     
     /** Set strategy and resort heap. */
-    void setComparison(AlpsSearchStrategy<AlpsTreeNode*>& compare) {
+    void setNodeSelection(AlpsSearchStrategy<AlpsTreeNode*>& compare) {
 	candidateList_.setComparison(compare);
     }
 
@@ -135,16 +135,4 @@ class AlpsNodePool : public AlpsKnowledgePool {
 
 #endif
 
-//#############################################################################
-/** This class is used to implement the comparison for the priority queue.   */
-//#############################################################################
 
-//class nodeCompare {
-//
-// public:
-//
-//    inline bool operator()(const AlpsTreeNode* node1,
-//			   const AlpsTreeNode* node2) const {
-//	return(node1->getGoodness() > node2->getGoodness());
-//    }
-//};

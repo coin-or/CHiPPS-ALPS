@@ -4655,31 +4655,7 @@ AlpsKnowledgeBrokerMPI::printBestSolution(char* outputFile) const
 {
     if (globalRank_ == masterRank_) {
 	if (getNumKnowledges(ALPS_SOLUTION) <= 0) {
-	    std::cout << "\nSearch do not find any feasible solution."
-		      << std::endl;
-	    return;
-	}
-	if (outputFile != 0) {                // Write to outputFile
-	    std::ofstream os(outputFile);
-	    dynamic_cast<AlpsSolution* >
-		(getBestKnowledge(ALPS_SOLUTION).first)->print(os);
-	}
-	else {                                // Write to std::cout
-	    dynamic_cast<AlpsSolution* >
-		(getBestKnowledge(ALPS_SOLUTION).first)->print(std::cout);
-	}
-    }
-}
-
-//#############################################################################
-
-/** Master prints out the best solution and its quality. */
-void 
-AlpsKnowledgeBrokerMPI::printBestResult(char* outputFile) const 
-{
-    if (globalRank_ == masterRank_) {
-	if (getNumKnowledges(ALPS_SOLUTION) <= 0) {
-	    std::cout << "\nSearch do not find any feasible solution."
+	    std::cout << "\nALPS did not find a solution."
 		      << std::endl;
 	    return;
 	}

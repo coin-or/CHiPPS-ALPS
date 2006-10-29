@@ -168,7 +168,7 @@ AlpsKnowledgeBrokerSerial::search(AlpsTreeNode* root)
     root->setIndex(0);
     root->setExplicit(1); // True.
     
-    const int mns = model_->AlpsPar()->entry(AlpsParams::maxNumSolustion);
+    const int mns = model_->AlpsPar()->entry(AlpsParams::solLimit);
     setMaxNumKnowledges(ALPS_SOLUTION, mns);
     
     //------------------------------------------------------
@@ -176,7 +176,7 @@ AlpsKnowledgeBrokerSerial::search(AlpsTreeNode* root)
     //------------------------------------------------------
 
     workingSubTree_ = new AlpsSubTree(this);
-    workingSubTree_->setNodeCompare(nodeSelection_);
+    workingSubTree_->setNodeSelection(nodeSelection_);
 
 #ifdef NF_DEBUG_MORE
     // Useless work, just for testing subtree pool.
