@@ -101,7 +101,7 @@ AlpsNodeSearchHybrid::createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node)
         activeNode = dynamic_cast<AlpsTreeNode *>
             (subTree->diveNodePool()->getKnowledge().first);
         subTree->diveNodePool()->popKnowledge();
-        }
+    }
     subTree->setActiveNode(activeNode);
 }
 

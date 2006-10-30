@@ -66,11 +66,18 @@ public:
     inline void setWeight(double nw) { weight_ = nw; }
     //@}
     
+    /** @name Node selection
+     *
+     */
+    //@{
+    /** Selection next node to be processed. */
     virtual AlpsTreeNode* selectNextNode(AlpsSubTree *subTree) 
     { AlpsTreeNode *temp = 0; return temp; }
 
+    /** Create new nodes from a pregnant node and store them in node pool. */
     virtual void createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node)
     { }
+    //@}
 };
 
 //#############################################################################

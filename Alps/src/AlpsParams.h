@@ -98,7 +98,7 @@ class AlpsParams : public AlpsParameterSet {
       /** The total number of processes that are launched for parallel code. 
           Default: 2 */
       processNum,
-      /** Node selection:
+      /** Search strategy
           -- best-first
           -- breadth-first
           -- depth-first

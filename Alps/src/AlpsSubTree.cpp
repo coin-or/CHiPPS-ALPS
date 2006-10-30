@@ -164,7 +164,6 @@ AlpsSubTree::createChildren(
     for (i = 0; i < numChildren; ++i) {
 	AlpsTreeNode* child = parent->createNewTreeNode(children[i].first);
 	parent->setChild(i, child);
-        //child->setSubTree(this);
 	child->setStatus(children[i].second);
 	child->setQuality(children[i].third);
 	child->setParent(parent);

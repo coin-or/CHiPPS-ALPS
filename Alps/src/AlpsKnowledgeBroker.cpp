@@ -206,8 +206,8 @@ AlpsKnowledgeBroker::setupKnowledgePools()
         nodeSelection_ = new AlpsNodeSearchBreadth;
     }
     else if (strategy == AlpsDepthFirst) {
-        treeSelection_ = new AlpsTreeSearchBreadth;
-        nodeSelection_ = new AlpsNodeSearchBreadth;
+        treeSelection_ = new AlpsTreeSearchDepth;
+        nodeSelection_ = new AlpsNodeSearchDepth;
     }
     else if (strategy == AlpsEstimate) {
         treeSelection_ = new AlpsTreeSearchEstimate;

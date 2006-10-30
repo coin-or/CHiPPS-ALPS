@@ -443,6 +443,7 @@ class AlpsKnowledgeBroker {
 	return treeSelection_; 
     }
     void setSubTreeSelection(AlpsSearchStrategy<AlpsSubTree*>* tc) {
+        if (treeSelection_) delete treeSelection_;
 	treeSelection_ = tc;
 	subTreePool_->setComparison(*treeSelection_);
     }
@@ -450,6 +451,7 @@ class AlpsKnowledgeBroker {
 	return nodeSelection_;
     }
     void setNodeSelection(AlpsSearchStrategy<AlpsTreeNode*>* nc) {
+        if (nodeSelection_) delete nodeSelection_;
 	nodeSelection_ = nc;
     }
     //@}

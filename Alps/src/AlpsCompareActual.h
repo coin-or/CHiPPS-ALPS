@@ -114,6 +114,8 @@ public:
         std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
             children = node->branch();
         subTree->createChildren(node, children);
+        /* No active node now. */
+        subTree->setActiveNode(0);
     }
 };
 
@@ -150,6 +152,8 @@ public:
         std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
             children = node->branch();
         subTree->createChildren(node, children);
+        /* No active node now. */
+        subTree->setActiveNode(0);
     }
 };
 
@@ -186,6 +190,8 @@ class AlpsNodeSearchDepth : public AlpsSearchStrategy<AlpsTreeNode*>
         std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
             children = node->branch();
         subTree->createChildren(node, children);
+        /* No active node now. */
+        subTree->setActiveNode(0);
     }
 };
 
@@ -222,6 +228,7 @@ class AlpsNodeSearchEstimate : public AlpsSearchStrategy<AlpsTreeNode*>
         std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
             children = node->branch();
         subTree->createChildren(node, children);
+        /* No active node now. */
         subTree->setActiveNode(0);
     }
 };
