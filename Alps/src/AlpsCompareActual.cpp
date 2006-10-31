@@ -17,9 +17,37 @@
 #include "AlpsCompareActual.h"
 
 //#############################################################################
+//#############################################################################
+
+AlpsTreeNode* 
+AlpsNodeSelection::selectNextNode(AlpsSubTree *subTree)
+{
+    AlpsTreeNode *node = subTree->activeNode();
+    if (node == NULL) {
+	node = dynamic_cast<AlpsTreeNode*>
+	    (const_cast<AlpsKnowledge*>(subTree->nodePool()->getKnowledge().first) ); 
+	subTree->nodePool()->popKnowledge();
+        }           
+    return node;
+}
+
+//#############################################################################
+
+void 
+AlpsNodeSelection::createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node) 
+{
+    std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
+	children = node->branch();
+    subTree->createChildren(node, children);
+    /* No active node now. */
+    subTree->setActiveNode(0);
+}
+
+//#############################################################################
+//#############################################################################
 
 bool 
-AlpsTreeSearchBest::compare(AlpsSubTree * x, AlpsSubTree * y) 
+AlpsTreeSelectionBest::compare(AlpsSubTree * x, AlpsSubTree * y) 
 {
     return (x->getQuality() < y->getQuality());
 }
@@ -27,7 +55,7 @@ AlpsTreeSearchBest::compare(AlpsSubTree * x, AlpsSubTree * y)
 //#############################################################################
 
 bool 
-AlpsTreeSearchBreadth::compare(AlpsSubTree * x, AlpsSubTree * y)
+AlpsTreeSelectionBreadth::compare(AlpsSubTree * x, AlpsSubTree * y)
 {
     return (x->getRoot()->getDepth() > y->getRoot()->getDepth());
 }
@@ -35,7 +63,7 @@ AlpsTreeSearchBreadth::compare(AlpsSubTree * x, AlpsSubTree * y)
 //#############################################################################
 
 bool 
-AlpsTreeSearchDepth::compare(AlpsSubTree * x, AlpsSubTree * y) 
+AlpsTreeSelectionDepth::compare(AlpsSubTree * x, AlpsSubTree * y) 
 {
     return (x->getRoot()->getDepth() < y->getRoot()->getDepth());
 }
@@ -43,15 +71,16 @@ AlpsTreeSearchDepth::compare(AlpsSubTree * x, AlpsSubTree * y)
 //#############################################################################
 
 bool 
-AlpsTreeSearchEstimate::compare(AlpsSubTree * x, AlpsSubTree * y)
+AlpsTreeSelectionEstimate::compare(AlpsSubTree * x, AlpsSubTree * y)
 {
     return (x->getSolEstimate() > y->getSolEstimate());
 }
 
 //#############################################################################
+//#############################################################################
 
 AlpsTreeNode*
-AlpsNodeSearchHybrid::selectNextNode(AlpsSubTree *subTree)
+AlpsNodeSelectionHybrid::selectNextNode(AlpsSubTree *subTree)
 {
     AlpsTreeNode *node = subTree->activeNode();
     
@@ -79,7 +108,7 @@ AlpsNodeSearchHybrid::selectNextNode(AlpsSubTree *subTree)
 //#############################################################################
 
 void 
-AlpsNodeSearchHybrid::createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node) 
+AlpsNodeSelectionHybrid::createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node) 
 {
     int numChildren = 0;
     AlpsTreeNode *tempNode, *activeNode = 0;
@@ -105,4 +134,5 @@ AlpsNodeSearchHybrid::createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node)
     subTree->setActiveNode(activeNode);
 }
 
+//#############################################################################
 //#############################################################################

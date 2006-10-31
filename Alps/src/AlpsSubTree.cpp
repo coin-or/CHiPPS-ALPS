@@ -38,7 +38,7 @@ AlpsSubTree::AlpsSubTree()
     //nextIndex_(0), 
     nodePool_(new AlpsNodePool), 
     diveNodePool_(new AlpsNodePool), 
-    diveNodeRule_(new AlpsNodeSearchEstimate),
+    diveNodeRule_(new AlpsNodeSelectionEstimate),
     activeNode_(0),
     quality_(ALPS_OBJ_MAX),
     broker_(0)
@@ -56,7 +56,7 @@ AlpsSubTree::AlpsSubTree(AlpsKnowledgeBroker* kb)
     // nextIndex_(0), 
     nodePool_(new AlpsNodePool),
     diveNodePool_(new AlpsNodePool),
-    diveNodeRule_(new AlpsNodeSearchEstimate),
+    diveNodeRule_(new AlpsNodeSelectionEstimate),
     activeNode_(0),
     quality_(ALPS_OBJ_MAX)
 { 

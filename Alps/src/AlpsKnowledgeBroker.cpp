@@ -198,24 +198,24 @@ AlpsKnowledgeBroker::setupKnowledgePools()
     int strategy = model_->AlpsPar()->entry(AlpsParams::searchStrategy);
     
     if (strategy == AlpsBestFirst) {
-        treeSelection_ = new AlpsTreeSearchBest;
-        nodeSelection_ = new AlpsNodeSearchBest;
+        treeSelection_ = new AlpsTreeSelectionBest;
+        nodeSelection_ = new AlpsNodeSelectionBest;
     }
     else if (strategy == AlpsBreadthFirst) {
-        treeSelection_ = new AlpsTreeSearchBreadth;
-        nodeSelection_ = new AlpsNodeSearchBreadth;
+        treeSelection_ = new AlpsTreeSelectionBreadth;
+        nodeSelection_ = new AlpsNodeSelectionBreadth;
     }
     else if (strategy == AlpsDepthFirst) {
-        treeSelection_ = new AlpsTreeSearchDepth;
-        nodeSelection_ = new AlpsNodeSearchDepth;
+        treeSelection_ = new AlpsTreeSelectionDepth;
+        nodeSelection_ = new AlpsNodeSelectionDepth;
     }
     else if (strategy == AlpsEstimate) {
-        treeSelection_ = new AlpsTreeSearchEstimate;
-        nodeSelection_ = new AlpsNodeSearchEstimate;
+        treeSelection_ = new AlpsTreeSelectionEstimate;
+        nodeSelection_ = new AlpsNodeSelectionEstimate;
     }
     else if (strategy == AlpsHybrid) {
-        treeSelection_ = new AlpsTreeSearchBest;
-        nodeSelection_ = new AlpsNodeSearchHybrid;
+        treeSelection_ = new AlpsTreeSelectionBest;
+        nodeSelection_ = new AlpsNodeSelectionHybrid;
     }
     else {
         std::cout << "search strategy" << strategy << std::endl;

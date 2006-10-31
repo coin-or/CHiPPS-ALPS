@@ -22,57 +22,104 @@
 #include "AlpsTreeNode.h"
 
 //#############################################################################
+//#############################################################################
 
-class AlpsTreeSearchBest : public AlpsSearchStrategy<AlpsSubTree*> 
+class AlpsTreeSelection : public AlpsSearchStrategy<AlpsSubTree*> 
 {
 public:
     /** Default Constructor. */
-    AlpsTreeSearchBest() {}
+    AlpsTreeSelection() {}
 
     /** Default Destructor. */
-    virtual ~AlpsTreeSearchBest() {}
+    virtual ~AlpsTreeSelection() {}
+    
+    /** This returns true if the quality of the subtree y is better
+        (the less the better) than that the subtree x. */
+    virtual bool compare(AlpsSubTree * x, AlpsSubTree * y) = 0;
+};
+
+//#############################################################################
+
+class AlpsNodeSelection : public AlpsSearchStrategy<AlpsTreeNode*> 
+{
+public:
+    /** Default Constructor. */
+    AlpsNodeSelection() {}
+    
+    /** Default Destructor. */
+    virtual ~AlpsNodeSelection() {};
+    
+    /** This returns true if the depth of node y is lesser
+	than that of node x */
+    virtual bool compare(AlpsTreeNode * x, AlpsTreeNode * y) = 0;
+    
+    /* Select the next node to be processed. */
+    virtual AlpsTreeNode* selectNextNode(AlpsSubTree *subTree);
+    
+    /* Create new nodes from pregnant node and store them in node pool. */
+    virtual void createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node);
+};
+
+//#############################################################################
+// SUBTREE SELECTION RULES
+//#############################################################################
+
+class AlpsTreeSelectionBest : public AlpsTreeSelection
+{
+public:
+    /** Default Constructor. */
+    AlpsTreeSelectionBest() {}
+
+    /** Default Destructor. */
+    virtual ~AlpsTreeSelectionBest() {}
     
     /** This returns true if the quality of the subtree y is better
         (the less the better) than that the subtree x. */
     virtual bool compare(AlpsSubTree * x, AlpsSubTree * y);
 };
 
-class AlpsTreeSearchBreadth : public AlpsSearchStrategy<AlpsSubTree*> 
+//#############################################################################
+
+class AlpsTreeSelectionBreadth : public AlpsTreeSelection
 {
 public:
     /** Default Constructor */
-    AlpsTreeSearchBreadth() {}
+    AlpsTreeSelectionBreadth() {}
     
     /** Default Destructor. */
-    virtual ~AlpsTreeSearchBreadth() {}
+    virtual ~AlpsTreeSelectionBreadth() {}
     
     /** This returns true if the depth of the root node in subtree y
         is smaller than that of the root node in subtree x. */
     virtual bool compare(AlpsSubTree * x, AlpsSubTree * y);
 };
 
-class AlpsTreeSearchDepth : public AlpsSearchStrategy<AlpsSubTree*> 
+//#############################################################################
+
+class AlpsTreeSelectionDepth : public AlpsTreeSelection
 {
 public:
     /** Default Constructor */
-    AlpsTreeSearchDepth() {}
+    AlpsTreeSelectionDepth() {}
     
     /** Default Destructor. */
-    virtual ~AlpsTreeSearchDepth() {}
+    virtual ~AlpsTreeSelectionDepth() {}
     
     /** This returns true if the depth of the root node in subtree y
         is greater than that of the root node in subtree x. */
     virtual bool compare(AlpsSubTree * x, AlpsSubTree * y);
 };
 
-class AlpsTreeSearchEstimate : public AlpsSearchStrategy<AlpsSubTree*> 
+//#############################################################################
+
+class AlpsTreeSelectionEstimate : public AlpsTreeSelection
 {
 public:
     /** Default Constructor. */
-    AlpsTreeSearchEstimate() {}
+    AlpsTreeSelectionEstimate() {}
 
     /** Default Destructor. */
-    virtual ~AlpsTreeSearchEstimate() {}
+    virtual ~AlpsTreeSelectionEstimate() {}
     
     /** This returns true if the estimated quality of the subtree y is better
         (the less the better) than that the subtree x. */
@@ -80,167 +127,89 @@ public:
 };
 
 //#############################################################################
+// NODE SELECTION RULES
+//#############################################################################
 
-class AlpsNodeSearchBest : public AlpsSearchStrategy<AlpsTreeNode*> 
+class AlpsNodeSelectionBest : public AlpsNodeSelection
 {
 public:
     /** Default Constructor. */
-    AlpsNodeSearchBest() {}
+    AlpsNodeSelectionBest() {}
 
     /** Default Destructor. */
-    virtual ~AlpsNodeSearchBest() {}
+    virtual ~AlpsNodeSelectionBest() {}
 
     /** This returns true if quality of node y is better (the less the better)
         than that of node x. */
     virtual bool compare(AlpsTreeNode * x, AlpsTreeNode * y) {
 	return (x->getQuality() > y->getQuality());
     }
-    
-    /* Select the next node to be processed. */
-    virtual AlpsTreeNode* selectNextNode(AlpsSubTree *subTree)
-    {
-        AlpsTreeNode *node = subTree->activeNode();
-        if (node == NULL) {
-            node = dynamic_cast<AlpsTreeNode*>
-                (const_cast<AlpsKnowledge*>(subTree->nodePool()->getKnowledge().first) ); 
-            subTree->nodePool()->popKnowledge();
-        }           
-        return node;
-    }
-    
-    /* Create new nodes from pregnant node and store them in node pool. */
-    virtual void createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node) 
-    {
-        std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
-            children = node->branch();
-        subTree->createChildren(node, children);
-        /* No active node now. */
-        subTree->setActiveNode(0);
-    }
 };
 
-class AlpsNodeSearchBreadth : public AlpsSearchStrategy<AlpsTreeNode*> 
+//#############################################################################
+
+class AlpsNodeSelectionBreadth : public AlpsNodeSelection
 {
 public:
     /** Default Constructor. */
-    AlpsNodeSearchBreadth() {}
+    AlpsNodeSelectionBreadth() {}
 
     /** Default Destructor. */
-    virtual ~AlpsNodeSearchBreadth() {};
+    virtual ~AlpsNodeSelectionBreadth() {};
 
     /** This returns true if the depth of node y is lesser
         than that of node x */
     virtual bool compare(AlpsTreeNode * x, AlpsTreeNode * y) {
 	return x->getDepth() > y->getDepth();
     }
-
-    /* Select the next node to be processed. */
-    virtual AlpsTreeNode* selectNextNode(AlpsSubTree *subTree)
-    {
-        AlpsTreeNode *node = subTree->activeNode();
-        if (node == NULL) {
-            node = dynamic_cast<AlpsTreeNode*>
-                (const_cast<AlpsKnowledge*>(subTree->nodePool()->getKnowledge().first) ); 
-            subTree->nodePool()->popKnowledge();
-        }           
-        return node;
-    }
-    
-    /* Create new nodes from pregnant node and store them in node pool. */
-    virtual void createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node) 
-    {
-        std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
-            children = node->branch();
-        subTree->createChildren(node, children);
-        /* No active node now. */
-        subTree->setActiveNode(0);
-    }
 };
 
-class AlpsNodeSearchDepth : public AlpsSearchStrategy<AlpsTreeNode*> 
+//#############################################################################
+
+class AlpsNodeSelectionDepth : public AlpsNodeSelection
 {
  public:
     /** Default Constructor. */
-    AlpsNodeSearchDepth() {}
+    AlpsNodeSelectionDepth() {}
 
     /** Default Destructor. */
-    virtual ~AlpsNodeSearchDepth() {};
+    virtual ~AlpsNodeSelectionDepth() {};
 
     /** This returns true if the depth of node y is greater than 
         that of node x. */
     virtual bool compare(AlpsTreeNode * x, AlpsTreeNode * y) {
 	return (x->getDepth() < y->getDepth());
     }
-
-    /* Select the next node to be processed. */
-    virtual AlpsTreeNode* selectNextNode(AlpsSubTree *subTree)
-    {
-        AlpsTreeNode *node = subTree->activeNode();
-        if (node == NULL) {
-            node = dynamic_cast<AlpsTreeNode*>
-                (const_cast<AlpsKnowledge*>(subTree->nodePool()->getKnowledge().first) ); 
-            subTree->nodePool()->popKnowledge();
-        }           
-        return node;
-    }
-    
-    /* Create new nodes from pregnant node and store them in node pool. */
-    virtual void createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node) 
-    {
-        std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
-            children = node->branch();
-        subTree->createChildren(node, children);
-        /* No active node now. */
-        subTree->setActiveNode(0);
-    }
 };
 
-class AlpsNodeSearchEstimate : public AlpsSearchStrategy<AlpsTreeNode*> 
+//#############################################################################
+
+class AlpsNodeSelectionEstimate : public AlpsNodeSelection
 {
  public:
     /** Default Constructor. */
-    AlpsNodeSearchEstimate() {}
+    AlpsNodeSelectionEstimate() {}
 
     /** Default Destructor. */
-    virtual ~AlpsNodeSearchEstimate() {}
+    virtual ~AlpsNodeSelectionEstimate() {}
 
     /** This returns true if the estimate quality of node y is better
         (the lesser the better) than that of node x. */
     virtual bool compare (AlpsTreeNode * x, AlpsTreeNode * y) {
 	return (x->getSolEstimate() > y->getSolEstimate());
     }
-
-    /* Select the next node to be processed. */
-    virtual AlpsTreeNode* selectNextNode(AlpsSubTree *subTree)
-    {
-        AlpsTreeNode *node = subTree->activeNode();
-        if (node == NULL) {
-            node = dynamic_cast<AlpsTreeNode*>
-                (const_cast<AlpsKnowledge*>(subTree->nodePool()->getKnowledge().first) ); 
-            subTree->nodePool()->popKnowledge();
-        }           
-        return node;
-    }
-    
-    /* Create new nodes from pregnant node and store them in node pool. */
-    virtual void createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node) 
-    {
-        std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
-            children = node->branch();
-        subTree->createChildren(node, children);
-        /* No active node now. */
-        subTree->setActiveNode(0);
-    }
 };
 
-class AlpsNodeSearchHybrid : public AlpsSearchStrategy<AlpsTreeNode*> 
+//#############################################################################
+
+class AlpsNodeSelectionHybrid : public AlpsNodeSelection
 {
 public:
     /** Default Constructor. */
-    AlpsNodeSearchHybrid() {}
+    AlpsNodeSelectionHybrid() {}
 
     /** Default Destructor. */
-    virtual ~AlpsNodeSearchHybrid() {}
+    virtual ~AlpsNodeSelectionHybrid() {}
     
     /** This returns true if the quality of node y is better (the lesser
         the better) than that of node x. */
