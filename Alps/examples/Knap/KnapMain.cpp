@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
 	AlpsTreeNode* root = new KnapTreeNode(&model);
 
 	// 4: Sovle the problem
-	broker.search(root);
+	broker.rootSearch(root);
     
 	// 5: Report the best solution found and its ojective value
 	broker.printBestSolution();

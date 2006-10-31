@@ -492,7 +492,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     void initializeSearch(int argc, char* argv[], AlpsModel& model);
 
     /** Search best solution for a given model. */
-    void searchModel(AlpsModel *model);
+    void search(AlpsModel *model);
     
     /** This function
      * <ul>
@@ -501,7 +501,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
      * <li> collects the best solution found.
      * </ul>
      */
-    void search(AlpsTreeNode* root);
+    void rootSearch(AlpsTreeNode* root);
 
     /** Master tell hubs to terminate due to reaching limits or other reason.*/
     void masterForceHubTerm();

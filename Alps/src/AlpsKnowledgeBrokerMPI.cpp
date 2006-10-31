@@ -4043,8 +4043,8 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
 //#############################################################################
 
 /** Search best solution for a given model. */
-void 
-AlpsKnowledgeBrokerMPI::searchModel(AlpsModel *model) {
+void AlpsKnowledgeBrokerMPI::search(AlpsModel *model) 
+{
     AlpsTreeNode* root = NULL;
     if (getProcRank() == masterRank_) {
 	// Only master need create root.
@@ -4052,13 +4052,12 @@ AlpsKnowledgeBrokerMPI::searchModel(AlpsModel *model) {
 	root = model->createRoot();
     }
     
-    search(root);
+    rootSearch(root);
 }
 
 //#############################################################################
 
-void 
-AlpsKnowledgeBrokerMPI::search(AlpsTreeNode* root)
+void AlpsKnowledgeBrokerMPI::rootSearch(AlpsTreeNode* root)
 {  
 
     timer_.start();

@@ -914,16 +914,15 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 {
     // Start to count time.
     broker_->tempTimer().start();
-    
-    int numChildren = 0;
 
+    AlpsReturnCode status = ALPS_OK;
+    
     bool forceLog = false;
     bool checkBetter = false;
         
     double oldSolQuality = ALPS_OBJ_MAX;
     double newSolQuality = ALPS_OBJ_MAX;
 
-    AlpsReturnCode status = ALPS_OK;
     AlpsTreeNode * tempNode = NULL;
 
     //------------------------------------------------------    
@@ -960,13 +959,13 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 	    !betterSolution ) {
 	
 	broker_->tempTimer().stop();
-	broker_->timer().stop();
 	
 	if (numNodesProcessed >= unitWork) {
             exploreStatus = ALPS_NODE_LIMIT;
 	    break;
 	}
-	else if (broker_->tempTimer().getCpuTime() > unitTime) {
+	else if ( (broker_->tempTimer().getCpuTime() > unitTime) ||
+                  ((broker_->timer()).reachCpuLimit()) ){
             exploreStatus = ALPS_TIME_LIMIT;
 	    break;
 	}
@@ -1157,7 +1156,6 @@ AlpsSubTree::exploreUnitWork(int unitWork,
                       << std::endl;
 #endif
             nodePool_->popKnowledge();
-	    
 	}
         else {
             activeNode_->setDiving(true);

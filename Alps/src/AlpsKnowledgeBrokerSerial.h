@@ -102,7 +102,7 @@ class AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
                                   AlpsModel& model);
     
     /** Search for best solution. */
-    virtual void search(AlpsTreeNode* root);
+    virtual void rootSearch(AlpsTreeNode* root);
     
 };
 #endif

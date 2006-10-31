@@ -156,7 +156,7 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
 //#############################################################################
 
 void 
-AlpsKnowledgeBrokerSerial::search(AlpsTreeNode* root)
+AlpsKnowledgeBrokerSerial::rootSearch(AlpsTreeNode* root)
 {
     AlpsReturnCode status = ALPS_OK;
     
@@ -195,11 +195,11 @@ AlpsKnowledgeBrokerSerial::search(AlpsTreeNode* root)
     //------------------------------------------------------
     
     const int nodeLimit = model_->AlpsPar()->entry(AlpsParams::nodeLimit);
-    const double timeLimit = model_->AlpsPar()->entry(AlpsParams::timeLimit);
-    
+
+    timer_.limit_ = model_->AlpsPar()->entry(AlpsParams::timeLimit);
     status = workingSubTree_->exploreSubTree(root,
 					     nodeLimit,
-					     timeLimit,
+					     timer_.limit_,
 					     nodeProcessedNum_, 
 					     treeDepth_);
     

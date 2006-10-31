@@ -196,13 +196,12 @@ class AlpsKnowledgeBroker {
 				  AlpsModel& model) = 0;
 
     /** Explore the tree rooted as the given root. */
-    virtual void search(AlpsTreeNode* root) = 0;  
+    virtual void rootSearch(AlpsTreeNode* root) = 0;  
 
     /** Search best solution for a given model. */
-    virtual void searchModel(AlpsModel *model) {
-
+    virtual void search(AlpsModel *model) {   
 	AlpsTreeNode* root = model->createRoot();
-	search(root);
+	rootSearch(root);
     }
     //@}
 

@@ -195,7 +195,9 @@ class AlpsSubTree : public AlpsKnowledge {
 	assert(nodePool_ && diveNodePool_);
         int nn = 0;
         if (activeNode_) {
-            ++nn;
+            if (activeNode_->getStatus() != AlpsNodeStatusFathomed) {
+                ++nn;
+            }
         }
 	return (nn + nodePool_->getNumKnowledges() + 
                 diveNodePool_->getNumKnowledges());
