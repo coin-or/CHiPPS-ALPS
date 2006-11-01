@@ -59,6 +59,7 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
 AlpsKnowledgeBroker:: ~AlpsKnowledgeBroker() 
 {
     if (subTreePool_ != 0) {
+	//std::cout << "* delete subtree pool" << std::endl;
 	delete subTreePool_;
 	subTreePool_ = 0;
     }
@@ -71,6 +72,7 @@ AlpsKnowledgeBroker:: ~AlpsKnowledgeBroker()
 	pools_ = 0;
     }
     if (workingSubTree_ != 0) {
+	//std::cout << "* delete working subtree" << std::endl;
 	delete workingSubTree_; 
 	workingSubTree_ = 0;
     }

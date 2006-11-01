@@ -73,7 +73,8 @@ AlpsSubTree::AlpsSubTree(AlpsKnowledgeBroker* kb)
 
 /** Destructor. */
 AlpsSubTree::~AlpsSubTree() 
-{ 
+{
+    //std::cout << "- delete subtree" << std::endl;
     if (nodePool_ != NULL) {
         nodePool_->clear(); // Nodes will be freed by deleting root
         delete nodePool_;
@@ -87,9 +88,11 @@ AlpsSubTree::~AlpsSubTree()
     }
 
     if (root_ != NULL) {
+	//std::cout << "- delete root" << std::endl;
+	
         root_->removeDescendants();
         delete root_;
-	    root_ = NULL;
+	root_ = NULL;
     }
     
     delete diveNodeRule_;
@@ -955,7 +958,8 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     exploreStatus = ALPS_INFEASIBLE;    
     numNodesProcessed = 0;
 
-    while ( (nodePool_->hasKnowledge() || activeNode_) && 
+    while ( (nodePool_->hasKnowledge() || activeNode_ || 
+	     diveNodePool_->hasKnowledge()) && 
 	    !betterSolution ) {
 	
 	broker_->tempTimer().stop();
@@ -1060,6 +1064,7 @@ AlpsSubTree::exploreUnitWork(int unitWork,
         }
         if (activeNode_) {
             nodePool_->addKnowledge(activeNode_, activeNode_->getQuality());
+	    activeNode_ = 0;
         }
     }
     else {

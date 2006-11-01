@@ -129,7 +129,7 @@ class AlpsTreeNode : public AlpsKnowledge {
     
     virtual ~AlpsTreeNode() {
         assert(numChildren_ == 0);
-
+	//std::cout << "---- delete Alps part of node " << index_ << std::endl;
 #if ! defined(ALPS_MAX_CHILD_NUM)
 	if (children_ != 0) {
 	    delete [] children_;

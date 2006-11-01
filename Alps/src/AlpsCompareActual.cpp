@@ -85,8 +85,19 @@ AlpsNodeSelectionHybrid::selectNextNode(AlpsSubTree *subTree)
     AlpsTreeNode *node = subTree->activeNode();
     
     if (!node) {
-        node = dynamic_cast<AlpsTreeNode*>(subTree->nodePool()->getKnowledge().first); 
-        node->setDiving(false);
+	if (subTree->diveNodePool()->getNumKnowledges() > 0) {
+	    node = dynamic_cast<AlpsTreeNode*>(subTree->diveNodePool()->getKnowledge().first); 
+	    node->setDiving(false);	    
+	    subTree->diveNodePool()->popKnowledge();
+	}
+	else if (subTree->nodePool()->hasKnowledge()) {
+	    node = dynamic_cast<AlpsTreeNode*>(subTree->nodePool()->getKnowledge().first); 
+	    node->setDiving(false);
+	    subTree->nodePool()->popKnowledge();
+	}
+	else {
+	    assert(0);
+	}
         
 #if 0
         std::cout << "======= NOTE[" << node->getIndex() 
@@ -95,8 +106,6 @@ AlpsNodeSelectionHybrid::selectNextNode(AlpsSubTree *subTree)
                   << ", estimate = " << node->getSolEstimate()
                   << std::endl;
 #endif
-        subTree->nodePool()->popKnowledge();
-	
     }
     else {
         node->setDiving(true);

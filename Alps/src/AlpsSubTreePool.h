@@ -35,7 +35,7 @@ class AlpsSubTreePool : public AlpsKnowledgePool {
     AlpsSubTreePool() {}
     virtual ~AlpsSubTreePool() {
 	if (!subTreeList_.empty()) {
-	    clean();
+	    deleteGuts();
 	}
     }
    
@@ -72,7 +72,7 @@ class AlpsSubTreePool : public AlpsKnowledgePool {
     }
 
     /** Delete the subtrees in the pool. */
-    void clean() {
+    void deleteGuts() {
 	std::vector<AlpsSubTree* > treeVec = subTreeList_.getContainer();
 	for_each(treeVec.begin(), treeVec.end(), DeletePtrObject());
     }
