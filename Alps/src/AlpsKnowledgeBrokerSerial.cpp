@@ -25,10 +25,9 @@ void
 AlpsKnowledgeBrokerSerial::initializeSearch(int argc, 
 					    char* argv[], 
 					    AlpsModel& model) {
-    std::cout << std::endl;
-    std::cout << "*****************************" << std::endl;
-    std::cout << "* ALPS Version 0.6 (Serial) *" << std::endl;
-    std::cout << "*****************************" << std::endl << std::endl;
+
+    messageHandler()->message(ALPS_S_VERSION, messages())
+	<< "0.9" << CoinMessageEol;
     
     // Store a pointer to model
     model.setKnowledgeBroker(this);
@@ -221,6 +220,7 @@ AlpsKnowledgeBrokerSerial::searchLog()
     char printSolution = model_->AlpsPar()->entry(AlpsParams::printSolution);
     
     if (msgLevel_ > 0) {
+	std::cout << std::endl;
 	if (getTermStatus() == ALPS_OPTIMAL) {
 	    messageHandler()->message(ALPS_T_OPTIMAL, messages())
 		<< nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
@@ -242,25 +242,24 @@ AlpsKnowledgeBrokerSerial::searchLog()
 		<< nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
 	}
 
-	std::cout << std::endl;
 	if (hasKnowledge(ALPS_SOLUTION)) {
-	    std::cout << "Best solution quality = " << getBestQuality() 
-		      << std::endl;
+	    messageHandler()->message(ALPS_S_FINAL_SOL, messages())
+		<< getBestQuality() << CoinMessageEol;
 	}
 	else {
-	    std::cout << "Not solution found" << std::endl;
+	    messageHandler()->message(ALPS_S_FINAL_NO_SOL, messages())
+		<< CoinMessageEol;
 	}
-        std::cout << "Number of nodes processed = " << nodeProcessedNum_ 
-                  << std::endl;
-        std::cout << "Number of nodes left = " << nodeLeftNum_ << std::endl;
-        std::cout << "Tree depth = " << treeDepth_ << std::endl;
-	std::cout << "Search CPU time = " 
-		  <<  std::setprecision(2) << timer_.getCpuTime() << " seconds"
-                  << std::endl;
-        std::cout << "Search wallclock = "
-		  <<  std::setprecision(2) <<timer_.getWallClock()<<" seconds"
-                  << std::endl;
-	std::cout << std::endl;
+	messageHandler()->message(ALPS_S_FINAL_NODE_PROCESSED, messages())
+	    << nodeProcessedNum_ << CoinMessageEol;
+	messageHandler()->message(ALPS_S_FINAL_NODE_LEFT, messages())
+	    << nodeLeftNum_ << CoinMessageEol; 
+	messageHandler()->message(ALPS_S_FINAL_DEPTH, messages())
+	    << treeDepth_ << CoinMessageEol;
+	messageHandler()->message(ALPS_S_FINAL_CPU, messages())
+	    << timer_.getCpuTime() << CoinMessageEol;
+	messageHandler()->message(ALPS_S_FINAL_WALLCLOCK, messages())
+	    << timer_.getWallClock() << CoinMessageEol;
 	
         if (printSolution && hasKnowledge(ALPS_SOLUTION)) {
             AlpsSolution *solution = dynamic_cast<AlpsSolution *>
