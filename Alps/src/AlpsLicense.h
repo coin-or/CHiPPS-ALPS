@@ -11,5 +11,4 @@
  *                                                                           * 
  *                                                                           *
  * Copyright (C) 2001-2006, Lehigh University, Yan Xu, and Ted Ralphs.       *
- * Corporation, Lehigh University, Yan Xu, Ted Ralphs, Matthew Salzman and   *
  *===========================================================================*/
