@@ -20,8 +20,8 @@ lib_LTLIBRARIES = libAlps.la
 libAlps_la_SOURCES = \
 	AlpsConfig.h \
 	AlpsAix43.h \
-	AlpsCompareActual.cpp AlpsCompareActual.h \
-	AlpsCompareBase.h \
+	AlpsSearchStrategy.cpp AlpsSearchStrategy.h \
+	AlpsSearchStrategyBase.h \
 	AlpsCygwin.h \
 	AlpsEncoded.h \
 	AlpsEnumProcessT.h \

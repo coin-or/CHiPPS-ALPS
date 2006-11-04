@@ -13,8 +13,8 @@
  * Copyright (C) 2001-2006, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
-#ifndef AlpsCompareBase_h_
-#define AlpsCompareBase_h_
+#ifndef AlpsSearchStrategyBase_h_
+#define AlpsSearchStrategyBase_h_
 
 class AlpsModel;
 class AlpsSubTree;

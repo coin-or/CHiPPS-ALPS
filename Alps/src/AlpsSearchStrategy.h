@@ -13,10 +13,10 @@
  * Copyright (C) 2001-2006, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
-#ifndef AlpsCompareActual_h_
-#define AlpsCompareActual_h_
+#ifndef AlpsSearchStrategy_h_
+#define AlpsSearchStrategy_h_
 
-#include "AlpsCompareBase.h"
+#include "AlpsSearchStrategyBase.h"
 #include "AlpsSubTree.h"
 #include "AlpsTreeNode.h"
 
