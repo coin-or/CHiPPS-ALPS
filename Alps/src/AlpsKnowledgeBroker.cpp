@@ -14,7 +14,7 @@
  *===========================================================================*/
 
 #include "AlpsKnowledgeBroker.h"
-
+#include "Alps.h"
 
 //#############################################################################
 // Initialize static member. 
@@ -42,9 +42,9 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     nodeLeftNum_(0),
     treeDepth_(0),
     termStatus_(ALPS_OPTIMAL),
-    treeCompare_(0),
-    nodeCompare_(0),
-    msgLevel_(0),
+    treeSelection_(0),
+    nodeSelection_(0),
+    msgLevel_(2),
     logFileLevel_(0)
 {
     registerClass("ALPS_SUBTREE", new AlpsSubTree(this));
@@ -58,6 +58,7 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
 AlpsKnowledgeBroker:: ~AlpsKnowledgeBroker() 
 {
     if (subTreePool_ != 0) {
+	//std::cout << "* delete subtree pool" << std::endl;
 	delete subTreePool_;
 	subTreePool_ = 0;
     }
@@ -70,21 +71,172 @@ AlpsKnowledgeBroker:: ~AlpsKnowledgeBroker()
 	pools_ = 0;
     }
     if (workingSubTree_ != 0) {
+	//std::cout << "* delete working subtree" << std::endl;
 	delete workingSubTree_; 
 	workingSubTree_ = 0;
     }
-    if (nodeCompare_ != 0){
-	delete  nodeCompare_;
-	nodeCompare_ = 0;
+    if (nodeSelection_ != 0){
+	delete  nodeSelection_;
+	nodeSelection_ = 0;
     }
-    if (treeCompare_ != 0){
-	delete  treeCompare_;
-	treeCompare_ = 0;
+    if (treeSelection_ != 0){
+	delete  treeSelection_;
+	treeSelection_ = 0;
     }
     if (handler_ != 0) {
 	delete  handler_;
 	handler_ = 0;
     }
+}
+
+//#############################################################################
+ 
+int 
+AlpsKnowledgeBroker::updateNumNodesLeft()
+{
+    nodeLeftNum_ = 0;
+    
+    if (workingSubTree_ != 0) {
+        nodeLeftNum_ += workingSubTree_->getNumNodes();
+    }
+    
+    std::vector<AlpsSubTree*> subTreeVec = 
+        subTreePool_->getSubTreeList().getContainer();
+
+    std::vector<AlpsSubTree*>::iterator pos1 = subTreeVec.begin();
+    std::vector<AlpsSubTree*>::iterator pos2 = subTreeVec.end();
+
+    for ( ; pos1 != pos2; ++pos1) {
+        nodeLeftNum_ += (*pos1)->getNumNodes();
+    }
+    
+    return nodeLeftNum_;
+}
+
+//#############################################################################
+AlpsTreeNode* 
+AlpsKnowledgeBroker::getBestNode() const 
+{
+    AlpsTreeNode *bestNode = NULL;
+    AlpsTreeNode *node = NULL;
+    
+    if (workingSubTree_ ) {
+        bestNode = workingSubTree_->getBestNode();
+    }
+    
+    std::vector<AlpsSubTree*> subTreeVec = 
+        subTreePool_->getSubTreeList().getContainer();
+    
+    std::vector<AlpsSubTree*>::iterator pos1 = subTreeVec.begin();
+    std::vector<AlpsSubTree*>::iterator pos2 = subTreeVec.end();
+    
+    for ( ; pos1 != pos2; ++pos1) {
+        node = (*pos1)->getBestNode();
+        if (node) {
+            if (bestNode) {
+                if (node->getQuality() < bestNode->getQuality()) {
+                    bestNode = node;
+                }
+            }
+            else {
+                bestNode = node;
+            }
+        }
+    }
+    
+    return bestNode;
+}
+
+//#############################################################################
+
+int 
+AlpsKnowledgeBroker::getNumKnowledges(AlpsKnowledgeType kt) const 
+{
+    if ( (kt == ALPS_SOLUTION) || (kt == ALPS_SUBTREE) ){
+        return getKnowledgePool(kt)->getNumKnowledges();
+    }
+    else if (kt == ALPS_NODE) {
+        return nodeLeftNum_;
+    }
+    else {
+        throw CoinError("Broker doesn't manage this type of knowledge", 
+                        "getNumKnowledgePool()", "AlpsKnowledgeBroker"); 
+    }
+}
+
+//#############################################################################
+
+std::pair<AlpsKnowledge*, double> 
+AlpsKnowledgeBroker::getBestKnowledge(AlpsKnowledgeType kt) const 
+{ 
+    if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
+        return getKnowledgePool(kt)->getBestKnowledge();
+    }
+    else if (kt == ALPS_NODE) {
+        AlpsTreeNode *bn = getBestNode();
+        if (bn) {
+            return std::pair<AlpsKnowledge *, double>(bn, bn->getQuality());
+        }
+        else {
+            return std::pair<AlpsKnowledge *, double>(bn, ALPS_OBJ_MAX);
+        }
+    }	
+    else {
+        throw CoinError("Broker doesn't manage this type of knowledge", 
+                        "getBestKnowledge()", "AlpsKnowledgeBroker"); 
+    }
+}
+
+//#############################################################################
+
+void 
+AlpsKnowledgeBroker::setupKnowledgePools() 
+{
+
+    //--------------------------------------------------
+    // Setup search strategy.
+    //--------------------------------------------------
+    int strategy = model_->AlpsPar()->entry(AlpsParams::searchStrategy);
+    
+    if (strategy == AlpsBestFirst) {
+        treeSelection_ = new AlpsTreeSelectionBest;
+        nodeSelection_ = new AlpsNodeSelectionBest;
+    }
+    else if (strategy == AlpsBreadthFirst) {
+        treeSelection_ = new AlpsTreeSelectionBreadth;
+        nodeSelection_ = new AlpsNodeSelectionBreadth;
+    }
+    else if (strategy == AlpsDepthFirst) {
+        treeSelection_ = new AlpsTreeSelectionDepth;
+        nodeSelection_ = new AlpsNodeSelectionDepth;
+    }
+    else if (strategy == AlpsEstimate) {
+        treeSelection_ = new AlpsTreeSelectionEstimate;
+        nodeSelection_ = new AlpsNodeSelectionEstimate;
+    }
+    else if (strategy == AlpsHybrid) {
+        treeSelection_ = new AlpsTreeSelectionBest;
+        nodeSelection_ = new AlpsNodeSelectionHybrid;
+    }
+    else {
+        std::cout << "search strategy" << strategy << std::endl;
+        throw CoinError("Unknown subtree compare rule", 
+			"getGoodness", "AlpsSubTree"); 
+    }
+    
+    //--------------------------------------------------
+    // Create solution and subtree pools.
+    //--------------------------------------------------
+
+    pools_ = new std::map<AlpsKnowledgeType, AlpsKnowledgePool*>;
+
+    pools_->insert( std::pair<AlpsKnowledgeType, AlpsKnowledgePool*>
+                    ( ALPS_SOLUTION, solPool_ ) );
+
+    pools_->insert( std::pair<AlpsKnowledgeType, AlpsKnowledgePool*>
+                    ( ALPS_SUBTREE, subTreePool_ ) );
+    
+    subTreePool_->setComparison(*treeSelection_);    
 }
 
 //#############################################################################

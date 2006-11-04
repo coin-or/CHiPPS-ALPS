@@ -13,7 +13,7 @@
  * Copyright (C) 2001-2006, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
-
+#include "iomanip"
 #include "AlpsKnowledgeBrokerSerial.h"
 
 
@@ -24,10 +24,9 @@ void
 AlpsKnowledgeBrokerSerial::initializeSearch(int argc, 
 					    char* argv[], 
 					    AlpsModel& model) {
-    std::cout << std::endl;
-    std::cout << "*****************************" << std::endl;
-    std::cout << "* ALPS Version 0.6 (Serial) *" << std::endl;
-    std::cout << "*****************************" << std::endl << std::endl;
+
+    messageHandler()->message(ALPS_S_VERSION, messages())
+	<< "0.9" << CoinMessageEol;
     
     // Store a pointer to model
     model.setKnowledgeBroker(this);
@@ -48,17 +47,19 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
     }
     
     //--------------------------------------------------
-    // Read in model data if NEEDED.
+    // Read in model data if requred.
     //--------------------------------------------------
     
-    if ( model_->AlpsPar()->entry(AlpsParams::inputFromFile) ) {
-	const char* dataFile = 
-	    model_->AlpsPar()->entry(AlpsParams::instance).c_str();
+    std::string dataFile = model_->AlpsPar()->entry(AlpsParams::instance);
+    
+    if (dataFile != "NONE") {
 	messageHandler()->message(ALPS_DATAFILE, messages())
-	    << dataFile << CoinMessageEol;
-	model.readInstance(dataFile);
+	    << dataFile.c_str() << CoinMessageEol;
+
+        // Read in instance to be solved.
+	model.readInstance(dataFile.c_str());
 	
-	if (logFileLevel_ > 0) {
+	if (logFileLevel_ > 0 || msgLevel_ > 0) {
 	    std::string fileDir = dataFile;
 	    std::string::size_type pos1 = 
 		fileDir.rfind ('/', std::string::npos);
@@ -99,7 +100,9 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
 		
             model_->AlpsPar()->setEntry(AlpsParams::logFile, 
                                         logfile_.c_str());
-
+        }
+        
+        if (logFileLevel_ > 0) {
 	    //std::ofstream logFout(logfile_.c_str(), std::ofstream::app);
 	    std::ofstream logFout(logfile_.c_str());
             
@@ -108,6 +111,8 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
 		    << std::endl;
 	    logFout << "Problem = " << instanceName_ << std::endl;
 	    logFout << "Log file = " << logfile_ << std::endl << std::endl;
+        }
+        if (msgLevel_ > 2) {
 	    std::cout << "Problem = " << instanceName_ << std::endl;
 	    std::cout << "Data file = " << dataFile << std::endl;
 	    std::cout << "Log file = " << logfile_ << std::endl<< std::endl;
@@ -126,16 +131,11 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
     //--------------------------------------------------
 
     msgLevel_ = model_->AlpsPar()->entry(AlpsParams::msgLevel);
-    
-    // TODO. what's coin message settings.
     messageHandler()->setLogLevel(msgLevel_);
-    
-    messageHandler()->message(ALPS_PARAMFILE, messages())
-	<< argv[1] << CoinMessageEol;
     
     logFileLevel_ = model_->AlpsPar()->entry(AlpsParams::logFileLevel);
     if (logFileLevel_ > 0) {    // Require log file
-	logfile_ = model_->AlpsPar()->entry(AlpsParams::logFile).c_str();
+	logfile_ = model_->AlpsPar()->entry(AlpsParams::logFile);
     }
     
     //--------------------------------------------------
@@ -143,7 +143,6 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
     //--------------------------------------------------
     
     setupKnowledgePools();
-
     
     //--------------------------------------------------
     // Register knowledge (useless for serial).
@@ -155,7 +154,7 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
 //#############################################################################
 
 void 
-AlpsKnowledgeBrokerSerial::search(AlpsTreeNode* root)
+AlpsKnowledgeBrokerSerial::rootSearch(AlpsTreeNode* root)
 {
     AlpsReturnCode status = ALPS_OK;
     
@@ -167,7 +166,7 @@ AlpsKnowledgeBrokerSerial::search(AlpsTreeNode* root)
     root->setIndex(0);
     root->setExplicit(1); // True.
     
-    const int mns = model_->AlpsPar()->entry(AlpsParams::maxNumSolustion);
+    const int mns = model_->AlpsPar()->entry(AlpsParams::solLimit);
     setMaxNumKnowledges(ALPS_SOLUTION, mns);
     
     //------------------------------------------------------
@@ -175,7 +174,7 @@ AlpsKnowledgeBrokerSerial::search(AlpsTreeNode* root)
     //------------------------------------------------------
 
     workingSubTree_ = new AlpsSubTree(this);
-    workingSubTree_->setNodeCompare(nodeCompare_);
+    workingSubTree_->setNodeSelection(nodeSelection_);
 
 #ifdef NF_DEBUG_MORE
     // Useless work, just for testing subtree pool.
@@ -192,25 +191,35 @@ AlpsKnowledgeBrokerSerial::search(AlpsTreeNode* root)
     //------------------------------------------------------
     // Search the best solution.
     //------------------------------------------------------
-
-    const int nodeLimit = model_->AlpsPar()->entry(AlpsParams::nodeLimit);
-    const double timeLimit = model_->AlpsPar()->entry(AlpsParams::timeLimit);
     
+    const int nodeLimit = model_->AlpsPar()->entry(AlpsParams::nodeLimit);
+
+    timer_.limit_ = model_->AlpsPar()->entry(AlpsParams::timeLimit);
     status = workingSubTree_->exploreSubTree(root,
 					     nodeLimit,
-					     timeLimit,
+					     timer_.limit_,
 					     nodeProcessedNum_, 
 					     treeDepth_);
     
-    getNumNodesLeft();
-
+    updateNumNodesLeft();
+    
     timer_.stop();
     
-    //------------------------------------------------------
-    // Log statistics.
-    //------------------------------------------------------
+    searchLog();
 
+    /* Problem specific log. */
+    model_->modelLog();
+}
+
+//#############################################################################
+
+void 
+AlpsKnowledgeBrokerSerial::searchLog() 
+{
+    char printSolution = model_->AlpsPar()->entry(AlpsParams::printSolution);
+    
     if (msgLevel_ > 0) {
+	std::cout << std::endl;
 	if (getTermStatus() == ALPS_OPTIMAL) {
 	    messageHandler()->message(ALPS_T_OPTIMAL, messages())
 		<< nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
@@ -231,33 +240,43 @@ AlpsKnowledgeBrokerSerial::search(AlpsTreeNode* root)
 	    messageHandler()->message(ALPS_T_INFEASIBLE, messages())
 		<< nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
 	}
-    }
-    searchLog();
-    model_->modelLog();
-}
 
-//#############################################################################
-
-void 
-AlpsKnowledgeBrokerSerial::searchLog() 
-{
-
-    if (msgLevel_ > 0) {
-        std::cout << "Number of nodes processed = " << nodeProcessedNum_ 
-                  << std::endl;
-        std::cout << "Number of nodes left = " << nodeLeftNum_ << std::endl;
-        std::cout << "Tree depth = " << treeDepth_ << std::endl;
-        std::cout << "Search CPU time = " << timer_.getCpuTime() << " seconds"
-                  << std::endl;
-        std::cout << "Search wallclock = "<<timer_.getWallClock()<<" seconds"
-                  << std::endl;
-        std::cout << "Best solution quality = " << getBestQuality() 
-                  << std::endl << std::endl;
+	if (hasKnowledge(ALPS_SOLUTION)) {
+	    messageHandler()->message(ALPS_S_FINAL_SOL, messages())
+		<< getBestQuality() << CoinMessageEol;
+	}
+	else {
+	    messageHandler()->message(ALPS_S_FINAL_NO_SOL, messages())
+		<< CoinMessageEol;
+	}
+	messageHandler()->message(ALPS_S_FINAL_NODE_PROCESSED, messages())
+	    << nodeProcessedNum_ << CoinMessageEol;
+	messageHandler()->message(ALPS_S_FINAL_NODE_LEFT, messages())
+	    << nodeLeftNum_ << CoinMessageEol; 
+	messageHandler()->message(ALPS_S_FINAL_DEPTH, messages())
+	    << treeDepth_ << CoinMessageEol;
+	messageHandler()->message(ALPS_S_FINAL_CPU, messages())
+	    << timer_.getCpuTime() << CoinMessageEol;
+	messageHandler()->message(ALPS_S_FINAL_WALLCLOCK, messages())
+	    << timer_.getWallClock() << CoinMessageEol;
+	
+        if (printSolution && hasKnowledge(ALPS_SOLUTION)) {
+            AlpsSolution *solution = dynamic_cast<AlpsSolution *>
+                (getBestKnowledge(ALPS_SOLUTION).first);
+            solution->print(std::cout);
+        }
     }
     
     if(logFileLevel_ > 0) {
-
 	std::ofstream fout(logfile_.c_str(), std::ofstream::app);
+	fout << std::endl;
+
+	if (hasKnowledge(ALPS_SOLUTION)) {
+	    fout << "Best solution quality = " << getBestQuality() << std::endl;
+	}
+	else {
+	    fout << "Not solution found" << std::endl;
+	}
 	fout << "Number of nodes processed = "<<nodeProcessedNum_ << std::endl;
 	fout << "Number of nodes left = " << nodeLeftNum_ << std::endl;
 	fout << "Tree depth = " << treeDepth_ << std::endl;
@@ -266,19 +285,14 @@ AlpsKnowledgeBrokerSerial::searchLog()
 	     << std::endl;
 	fout << "Search wallclock = " << timer_.getWallClock() <<" seconds"
 	      << std::endl;
-	fout << "Best solution quality = " << getBestQuality() 
-             << std::endl << std::endl;
+	fout << std::endl;
 	
-	
-	// Print soluton.
-	// if (getBestKnowledge(ALPS_SOLUTION).first != NULL) {
-	//dynamic_cast<AlpsSolution* >
-	//    (getBestKnowledge(ALPS_SOLUTION).first)->print(logFout);
-	//}
+        if (printSolution && hasKnowledge(ALPS_SOLUTION)) {
+            AlpsSolution *solution = dynamic_cast<AlpsSolution *>
+                (getBestKnowledge(ALPS_SOLUTION).first);
+            solution->print(fout);
+        }
     }
-    
-
-    
 }
 
 //#############################################################################

@@ -22,7 +22,7 @@
 #include "CoinError.hpp"
 #include "CoinSort.hpp"
 
-#include "AlpsCompareActual.h"
+#include "AlpsSearchStrategy.h"
 #include "AlpsKnowledge.h"
 #include "AlpsNodePool.h"
 #include "AlpsPriorityQueue.h"
@@ -51,8 +51,8 @@ class AlpsSubTree : public AlpsKnowledge {
     AlpsNodePool* diveNodePool_;
     
     /** Diving node comparing rule. */
-    AlpsCompareBase<AlpsTreeNode*> * diveNodeRule_;
-
+    AlpsSearchStrategy<AlpsTreeNode*> * diveNodeRule_;
+    
     //   /** The next index to be assigned to a new search tree node */
     //   AlpsNodeIndex_t nextIndex_;
 
@@ -67,12 +67,6 @@ class AlpsSubTree : public AlpsKnowledge {
 	processed. */
     // Need broker to query model && parameters.
     AlpsKnowledgeBroker*  broker_;
-
-    /** Elite list of nodes. */
-    //    std::multimap<double, AlpsTreeNode*> eliteNodes_;
-    
-    /** The number of elite nodes stored. */
-    //  int eliteSize_;
     
  protected:
 
@@ -87,19 +81,6 @@ class AlpsSubTree : public AlpsKnowledge {
     /** This function replaces \c oldNode with \c newNode in the tree. */
     void replaceNode(AlpsTreeNode* oldNode, AlpsTreeNode* newNode);
 
-    /** Get pointer to active node */
-    inline AlpsTreeNode* getActiveNode() { return activeNode_; }
-
-    /** Set pointer to active node */
-    inline void setActiveNode(AlpsTreeNode *activeNode)
-	{ activeNode_ = activeNode; }
-
-    /** Create children nodes from the given parent node. */
-    void createChildren(AlpsTreeNode* parent,
-			std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, 
-			double> >& children,
-                        AlpsNodePool *kidNodePool = NULL);
-
  public:
     
     /** Default constructor. */
@@ -110,9 +91,22 @@ class AlpsSubTree : public AlpsKnowledge {
         
     /** Destructor. */
     virtual ~AlpsSubTree();
-    
+
  public:
 
+    /** Get pointer to active node */
+    inline AlpsTreeNode* activeNode() { return activeNode_; }
+
+    /** Set pointer to active node */
+    inline void setActiveNode(AlpsTreeNode *activeNode)
+    { activeNode_ = activeNode; }
+
+    /** Create children nodes from the given parent node. */
+    void createChildren(AlpsTreeNode* parent,
+			std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, 
+			double> >& children,
+                        AlpsNodePool *kidNodePool = NULL);
+    
     /** @name query and set member functions
      */
     //@{
@@ -122,19 +116,22 @@ class AlpsSubTree : public AlpsKnowledge {
     /** Set the root node of this subtree. */
     inline void setRoot(AlpsTreeNode* r) { root_ = r; }
 
-    /** Get the node pool. */
-    inline AlpsNodePool* getNodePool() const { return nodePool_; }
+    /** Access the node pool. */
+    inline AlpsNodePool* nodePool() { return nodePool_; }
 
-    /** Set node pool. Delete previous node pool and elements in pool if exit.*/
+    /** Access the node pool. */
+    inline AlpsNodePool* diveNodePool() { return diveNodePool_; }
+
+    /** Set node pool. Delete previous node pool and nodes in pool if exit.*/
     inline void setNodePool(AlpsNodePool* np) { 
-	if (nodePool_ != NULL) {
-	    delete nodePool_; 
-	    nodePool_ = NULL;
-	}
-	nodePool_ = np;
+      if (nodePool_ != NULL) {
+	delete nodePool_; 
+	nodePool_ = NULL;
+      }
+      nodePool_ = np;
     }
 
-    /** Set node pool. Delete previous node pool, but not the elements in pool.*/
+    /** Set node pool. Delete previous node pool, but not the nodes in pool.*/
     inline void changeNodePool(AlpsNodePool* np) { 
 	if (nodePool_ != NULL) {
 	    // Remove all elements first.
@@ -147,26 +144,35 @@ class AlpsSubTree : public AlpsKnowledge {
 	nodePool_ = np;
     }
 
-    /** Get the "best value" of the nodes in node pool. */
-    inline double getBestKnowledgeValue() const { 
-      return nodePool_->getBestKnowledgeValue();
-    }
+    /** Get the quality of the best node in the subtree. */
+    double getBestKnowledgeValue() const;
+
+    /** Get the "best" node in the subtree. */
+    AlpsTreeNode *getBestNode() const;
 
     /** Get the knowledge broker. */
-    inline AlpsKnowledgeBroker*  getKnowledgeBroker() const { return broker_; }
+    inline AlpsKnowledgeBroker*  getKnowledgeBroker() const 
+    { return broker_; }
 
     /** Set a pointer to the knowledge broker. */
     inline void setKnowledgeBroker(AlpsKnowledgeBroker* kb) 
-	{
-	    assert(kb);
-	    broker_ = kb;
-	    //eliteSize_ = kb->getDataPool()->
-	    //getOwnParams()->entry(AlpsOwnParams::eliteSize);
-	    //assert(eliteSize_ > 0);
-	}
-
+    {
+        assert(kb);
+        broker_ = kb;
+    }
+    
     /** Get the quality of this subtree. */
     inline double getQuality() const { return quality_; };
+
+    /** Get the emtimated quality of this subtree. */
+    inline double getSolEstimate() const { 
+        if (root_) {
+            return root_->getSolEstimate();
+        }
+        else {
+            return ALPS_OBJ_MAX;
+        };
+    }
     
     /** Calcuate  and return the quality of this subtree, which is measured
 	by the quality of the specified number of nodes.*/
@@ -183,35 +189,23 @@ class AlpsSubTree : public AlpsKnowledge {
     /** Set the index of the next generated node. */
     void setNextIndex(int next);
 
-#if 0
-    /** Approximate the quality of this subtree. It is cheap than 
-	<code>calculateQuality()<\code> */
-    void approximateQuality(double inc, double rho);
-
-    /** Add a node to node pool and adjust elite list. */
-    void addNode(AlpsTreeNode* node, double quality = ALPS_OBJ_MAX);
-
-    /** Remove the node with highest priority from node pool and adjust 
-	elite list. */
-    void popNode();
-
-    /** Get a pointer the node with highest priority. */
-    AlpsTreeNode* topNode() {   
-	return dynamic_cast<AlpsTreeNode*>
-	    (nodePool_->popKnowledge().first);
-    }
-#endif
-    
     /** Return the number of nodes on this subtree. */
     int getNumNodes() const {
-	assert(nodePool_);
-	return nodePool_->getNumKnowledges() + 
-            diveNodePool_->getNumKnowledges();
+	assert(nodePool_ && diveNodePool_);
+        int nn = 0;
+        if (activeNode_) {
+            if ( (activeNode_->getStatus() != AlpsNodeStatusFathomed) &&
+		 (activeNode_->getStatus() != AlpsNodeStatusBranched) ) {
+                ++nn;
+            }
+        }
+	return (nn + nodePool_->getNumKnowledges() + 
+                diveNodePool_->getNumKnowledges());
     }
 
     /** Set the node comparision rule. */
-    void setNodeCompare(AlpsCompareBase<AlpsTreeNode*>* nc) {
-	nodePool_->setComparison(*nc);
+    void setNodeSelection(AlpsSearchStrategy<AlpsTreeNode*>* nc) {
+	nodePool_->setNodeSelection(*nc);
     }
     //@}
 
@@ -220,7 +214,8 @@ class AlpsSubTree : public AlpsKnowledge {
     AlpsSubTree* splitSubTree(int& returnSize, int size = 10);
     
     /** Explore the subtree from \c root as the root of the subtree for given
-	number of nodes or time, depending on which one reach first. */
+	number of nodes or time, depending on which one reach first. 
+	Only for serial code. */
     virtual AlpsReturnCode exploreSubTree(AlpsTreeNode* root,
 					  int nodeLimit,  
 					  double timeLimit,
@@ -230,7 +225,7 @@ class AlpsSubTree : public AlpsKnowledge {
     /** Explore the subtree for certain amount of work/time. */
     AlpsReturnCode exploreUnitWork(int unitWork,
                                    double unitTime,
-                                   AlpsSolStatus & solStatus,
+                                   AlpsSolStatus & solStatus,/*not for parallel*/
                                    int & numNodesProcessed, /* Output */
                                    int & depth,             /* Output */
                                    bool & betterSolution);  /* Output */

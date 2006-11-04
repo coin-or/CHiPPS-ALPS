@@ -194,6 +194,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     // Create required number of subtrees(nodes) for hubs.
     //------------------------------------------------------
 
+    if (
     messageHandler()->message(ALPS_RAMPUP_MASTER_START, messages())
 	<< globalRank_ << CoinMessageEol;
 
@@ -1434,7 +1435,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
 		// Print tree size    
 		if (display == 1 && nodeProcessedNum_ % nodeInterval == 0) {
 		    messageHandler()->message(ALPS_NODE_COUNT, messages())
-			<< globalRank_ << nodeProcessedNum_ <<getNumNodesLeft()
+			<< globalRank_ << nodeProcessedNum_<<updateNumNodesLeft()
 			<< CoinMessageEol;
 		}
 		rampDownStart = CoinCpuTime();
@@ -1536,8 +1537,8 @@ AlpsKnowledgeBrokerMPI::workerMain()
     // How many node left? If complete search, left 0.
     //------------------------------------------------------
 
-    getNumNodesLeft();
-
+    updateNumNodesLeft();
+    
     //------------------------------------------------------
     // Cancel MPI_Irecv before leaving main().
     //------------------------------------------------------
@@ -3793,15 +3794,13 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
             model_->AlpsPar()->setEntry(AlpsParams::instance, argv[1]);
 	}
     
-	if (model_->AlpsPar()->entry(AlpsParams::inputFromFile) 
-	    == true) {
-	    const char* dataFile = model_->AlpsPar()->
-		entry(AlpsParams::instance).c_str();
-	    
+        std::string dataFile = model_->AlpsPar()->entry(AlpsParams::instance);
+        
+        if (dataFile != "NONE") {   
 	    messageHandler()->message(ALPS_DATAFILE, messages())
-		<< dataFile << CoinMessageEol;
+		<< dataFile.c_str() << CoinMessageEol;
 	    
-	    model.readInstance(dataFile);
+	    model.readInstance(dataFile.c_str());
 	    
 	    if (logFileLevel_ > 0) {
 		
@@ -3880,8 +3879,8 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
     // Deside the cluster size and actual hubNum_.
     //------------------------------------------------------
 
-    int AlpsMsgLevel = model_->AlpsPar()->entry(AlpsParams::msgLevel);
-    messageHandler()->setLogLevel(AlpsMsgLevel);
+    AlpsMsgLevel_ = model_->AlpsPar()->entry(AlpsParams::msgLevel);
+    messageHandler()->setLogLevel(AlpsMsgLevel_);
     
     hubNum_ = model_->AlpsPar()->entry(AlpsParams::hubNum);
 
@@ -4043,8 +4042,8 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
 //#############################################################################
 
 /** Search best solution for a given model. */
-void 
-AlpsKnowledgeBrokerMPI::searchModel(AlpsModel *model) {
+void AlpsKnowledgeBrokerMPI::search(AlpsModel *model) 
+{
     AlpsTreeNode* root = NULL;
     if (getProcRank() == masterRank_) {
 	// Only master need create root.
@@ -4052,13 +4051,12 @@ AlpsKnowledgeBrokerMPI::searchModel(AlpsModel *model) {
 	root = model->createRoot();
     }
     
-    search(root);
+    rootSearch(root);
 }
 
 //#############################################################################
 
-void 
-AlpsKnowledgeBrokerMPI::search(AlpsTreeNode* root)
+void AlpsKnowledgeBrokerMPI::rootSearch(AlpsTreeNode* root)
 {  
 
     timer_.start();
@@ -4169,10 +4167,9 @@ AlpsKnowledgeBrokerMPI::searchLog()
     MPI_Gather(&(timer_.wall_), 1, MPI_DOUBLE, wallClocks, 1, MPI_DOUBLE, 
 	       masterRank_, MPI_COMM_WORLD);
 
-
     if (processType_ == AlpsProcessTypeMaster) {
 
-	if(logFileLevel_ > -0) {
+	if(logFileLevel_ > 0 || msgLevel_ > 0) {
 	    int numWorkers = 0;   // Number of process are processing nodes.
 
 	    int sumSize = 0, aveSize, maxSize = 0, minSize = ALPS_INT_MAX;
@@ -4221,7 +4218,7 @@ AlpsKnowledgeBrokerMPI::searchLog()
 		    
 		    if (tSizes[i] > maxSize) maxSize = tSizes[i];
 		    if (tSizes[i] < minSize) minSize = tSizes[i];
-
+                    
 		    if (tDepths[i] > maxDep) maxDep = tDepths[i];
 		    if (tDepths[i] < minDep) minDep = tDepths[i];
 
@@ -4248,7 +4245,7 @@ AlpsKnowledgeBrokerMPI::searchLog()
 		    rampDowns[i] -= minRampDown;
 		}
 	    }
-
+            
 	    sumIdle -= minIdle * numWorkers;
 	    sumRampDown -= minRampDown * numWorkers;
 	    maxIdle -= minIdle;
@@ -4262,7 +4259,7 @@ AlpsKnowledgeBrokerMPI::searchLog()
 		aveRampDown = sumRampDown / numWorkers;
 		aveRampUp = sumRampUp / numWorkers;
 	    }
-
+            
 	    for (i = 0; i < processNum_; ++i) {
 		if (processTypeList_[i] == AlpsProcessTypeWorker) {
 		    varSize += pow(tSizes[i] - aveSize, 2);
@@ -4284,7 +4281,9 @@ AlpsKnowledgeBrokerMPI::searchLog()
 		varRampUp /= numWorkers;
 	    }
 	    stdRampUp = sqrt(varRampUp);
-
+            
+        }
+        if (logFileLevel_ > 0) {
 	    std::ofstream logFout(logfile_.c_str(), std::ofstream::app);
 	    
 	    logFout << "Number of processes = " << processNum_ << std::endl;
@@ -4380,14 +4379,6 @@ AlpsKnowledgeBrokerMPI::searchLog()
 		    << ", max = " << maxWallClock
 		    << ", min = "<< minWallClock 
 		    <<", total Wall-clocks = " << sumWallClock << std::endl;
-	    std::cout << "Search CPU time = "<<timer_.getCpuTime() <<" seconds"
-		      << ", max = " << maxCpuTime
-		      << ", min = "<< minCpuTime 
-		      << ", total CPU = " << sumCpuTime << std::endl;
-	    std::cout << "Search wallclock  = "<<timer_.getWallClock() <<" seconds"
-		      << ", max = " << maxWallClock
-		      << ", min = "<< minWallClock 
-		      <<", total Wall-clocks = " << sumWallClock << std::endl;
 
 	    //----------------------------------------------
 	    // Solution.
@@ -4401,11 +4392,64 @@ AlpsKnowledgeBrokerMPI::searchLog()
 	    }
             
 	}  // Log if logFileLevel_ > 0
+
+        if (msgLevel_ > 0) {
+            if (getTermStatus() == ALPS_OPTIMAL) {
+                messageHandler()->message(ALPS_T_OPTIMAL, messages())
+                    << nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
+            }
+            else if (getTermStatus() == ALPS_NODE_LIMIT) {
+                messageHandler()->message(ALPS_T_NODE_LIMIT, messages())
+                    << nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
+            }
+            else if (getTermStatus() == ALPS_TIME_LIMIT) {
+                messageHandler()->message(ALPS_T_TIME_LIMIT, messages())
+                    << nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol; 
+            }
+            else if (getTermStatus() == ALPS_FEASIBLE) {
+                messageHandler()->message(ALPS_T_FEASIBLE, messages())
+                    << nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
+            }
+            else {
+                messageHandler()->message(ALPS_T_INFEASIBLE, messages())
+                    << nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
+            }
         
-	messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
-	    << globalRank_ << systemNodeProcessed_ << systemWorkQuantity_ 
-	    << systemSendCount_ << systemRecvCount_ << incumbentValue_ 
-	    << CoinMessageEol;
+	    // Idle.
+	    std::cout << "Average Idle = " << aveIdle << std::endl;
+	    std::cout << "Max Idle = " << maxIdle << std::endl;
+	    std::cout << "Min Idle = " 
+                      << (minIdle != ALPS_DBL_MAX ? minIdle : 0.0) << std::endl;
+	    std::cout << "Std Dev of Idle = " << stdIdle << std::endl;
+	    
+	    // Ramp down.
+	    std::cout << "Average RampDown = " << aveRampDown << std::endl;
+	    std::cout << "Max RampDown = " << maxRampDown << std::endl;
+	    std::cout << "Min RampDown = " 
+                      << (minRampDown != ALPS_DBL_MAX ? minRampDown : 0.0) 
+                      << std::endl;
+	    std::cout << "Std Dev of RampDown = " << stdRampDown << std::endl;
+            
+            messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
+                << globalRank_ << systemNodeProcessed_ << systemWorkQuantity_ 
+                << systemSendCount_ << systemRecvCount_ << incumbentValue_ 
+                << CoinMessageEol;
+            
+	    
+	    // Overall. 
+	    std::cout << "Search CPU time = "<<timer_.getCpuTime() <<" seconds"
+		      << ", max = " << maxCpuTime
+		      << ", min = "<< minCpuTime 
+		      << ", total CPU = " << sumCpuTime << std::endl;
+	    std::cout << "Search wallclock  = "<<timer_.getWallClock() <<" seconds"
+		      << ", max = " << maxWallClock
+		      << ", min = "<< minWallClock 
+		      <<", total Wall-clocks = " << sumWallClock << std::endl;
+            
+            std::cout << "Best solution quality = " << getBestQuality()
+                      << std::endl;
+        } // Print msg if msgLevel_ > 0
+
     }  // Only master log
 
     if (globalRank_ == masterRank_) {
@@ -4609,31 +4653,7 @@ AlpsKnowledgeBrokerMPI::printBestSolution(char* outputFile) const
 {
     if (globalRank_ == masterRank_) {
 	if (getNumKnowledges(ALPS_SOLUTION) <= 0) {
-	    std::cout << "\nSearch do not find any feasible solution."
-		      << std::endl;
-	    return;
-	}
-	if (outputFile != 0) {                // Write to outputFile
-	    std::ofstream os(outputFile);
-	    dynamic_cast<AlpsSolution* >
-		(getBestKnowledge(ALPS_SOLUTION).first)->print(os);
-	}
-	else {                                // Write to std::cout
-	    dynamic_cast<AlpsSolution* >
-		(getBestKnowledge(ALPS_SOLUTION).first)->print(std::cout);
-	}
-    }
-}
-
-//#############################################################################
-
-/** Master prints out the best solution and its quality. */
-void 
-AlpsKnowledgeBrokerMPI::printBestResult(char* outputFile) const 
-{
-    if (globalRank_ == masterRank_) {
-	if (getNumKnowledges(ALPS_SOLUTION) <= 0) {
-	    std::cout << "\nSearch do not find any feasible solution."
+	    std::cout << "\nALPS did not find a solution."
 		      << std::endl;
 	    return;
 	}

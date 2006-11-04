@@ -38,8 +38,9 @@ class AlpsNodePool : public AlpsKnowledgePool {
  public:
     AlpsNodePool() {}
     virtual ~AlpsNodePool() {
+	//std::cout << "- delete nodes pool, size = " << getNumKnowledges() << std::endl;
 	if (!candidateList_.empty()) {
-	    clean();
+            deleteGuts();
 	}
     }
     
@@ -60,6 +61,25 @@ class AlpsNodePool : public AlpsKnowledgePool {
             }
         }
         return bestQuality;
+    }
+
+    /** Get the "best" nodes in node pool. */
+    inline AlpsTreeNode *getBestNode() const { 
+        const std::vector<AlpsTreeNode *>& pool=candidateList_.getContainer();
+        int k;
+        int size = pool.size();
+        double bestQuality = ALPS_OBJ_MAX;
+        AlpsTreeNode * bestNode = NULL;
+        AlpsTreeNode * node = NULL;
+        
+        for (k = 0; k < size; ++k) {
+            node = pool[k];
+            if (node->getQuality() < bestQuality) {
+                bestQuality = node->getQuality();
+                bestNode = node;
+            }
+        }
+        return bestNode;
     }
     
     /** Check whether there are still nodes in the node pool. */
@@ -95,18 +115,20 @@ class AlpsNodePool : public AlpsKnowledgePool {
     inline const AlpsPriorityQueue<AlpsTreeNode*>&
 	getCandidateList() const { return candidateList_; }
     
-    /** Set comparison function and resort heap. */
-    void setComparison(AlpsCompareBase<AlpsTreeNode*>& compare) {
+    /** Set strategy and resort heap. */
+    void setNodeSelection(AlpsSearchStrategy<AlpsTreeNode*>& compare) {
 	candidateList_.setComparison(compare);
     }
 
-    /** Delete all the nodes in the pool. */
-    void clean() {
+    /** Delete all the nodes in the pool and free memory. */
+    void deleteGuts() {
 	std::vector<AlpsTreeNode* > nodeVec = candidateList_.getContainer();
 	for_each(nodeVec.begin(), nodeVec.end(), DeletePtrObject());
+	//std::cout << "-- delete nodes in pool" << std::endl;
+	
     }
 
-    /** Remove all the nodes in the pool. */
+    /** Remove all the nodes in the pool (does not free memory). */
     void clear() {
 	candidateList_.clear();
     }
@@ -115,16 +137,4 @@ class AlpsNodePool : public AlpsKnowledgePool {
 
 #endif
 
-//#############################################################################
-/** This class is used to implement the comparison for the priority queue.   */
-//#############################################################################
 
-//class nodeCompare {
-//
-// public:
-//
-//    inline bool operator()(const AlpsTreeNode* node1,
-//			   const AlpsTreeNode* node2) const {
-//	return(node1->getGoodness() > node2->getGoodness());
-//    }
-//};

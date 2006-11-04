@@ -28,7 +28,6 @@
 #include "AlpsSubTree.h"
 #include "AlpsNodePool.h"
 
-
 //#############################################################################
 
 /** Default constructor. */
@@ -38,13 +37,13 @@ AlpsSubTree::AlpsSubTree()
     //nextIndex_(0), 
     nodePool_(new AlpsNodePool), 
     diveNodePool_(new AlpsNodePool), 
-    diveNodeRule_(new AlpsCompareTreeNodeEstimate),
+    diveNodeRule_(new AlpsNodeSelectionEstimate),
     activeNode_(0),
     quality_(ALPS_OBJ_MAX),
     broker_(0)
     //eliteSize_(-1)
 { 
-    diveNodePool_->setComparison(*diveNodeRule_);
+    diveNodePool_->setNodeSelection(*diveNodeRule_);
 }
 
 //#############################################################################
@@ -56,7 +55,7 @@ AlpsSubTree::AlpsSubTree(AlpsKnowledgeBroker* kb)
     // nextIndex_(0), 
     nodePool_(new AlpsNodePool),
     diveNodePool_(new AlpsNodePool),
-    diveNodeRule_(new AlpsCompareTreeNodeEstimate),
+    diveNodeRule_(new AlpsNodeSelectionEstimate),
     activeNode_(0),
     quality_(ALPS_OBJ_MAX)
 { 
@@ -66,14 +65,15 @@ AlpsSubTree::AlpsSubTree(AlpsKnowledgeBroker* kb)
     //eliteSize_ = kb->getDataPool()->
     //getOwnParams()->entry(AlpsParams::eliteSize);
     
-    diveNodePool_->setComparison(*diveNodeRule_);
+    diveNodePool_->setNodeSelection(*diveNodeRule_);
 }
 
 //#############################################################################
 
 /** Destructor. */
 AlpsSubTree::~AlpsSubTree() 
-{ 
+{
+    //std::cout << "- delete subtree" << std::endl;
     if (nodePool_ != NULL) {
         nodePool_->clear(); // Nodes will be freed by deleting root
         delete nodePool_;
@@ -87,9 +87,11 @@ AlpsSubTree::~AlpsSubTree()
     }
 
     if (root_ != NULL) {
+	//std::cout << "- delete root" << std::endl;
+	
         root_->removeDescendants();
         delete root_;
-	    root_ = NULL;
+	root_ = NULL;
     }
     
     delete diveNodeRule_;
@@ -101,8 +103,7 @@ void
 AlpsSubTree::removeDeadNodes(AlpsTreeNode*& node) throw(CoinError)
 {
     if (!node->isFathomed()) {
-	throw CoinError("node->isFathomed()", "removeDeadNodes", 
-			"AlpsSubTree");   
+	throw CoinError("node->isFathomed()","removeDeadNodes","AlpsSubTree");   
     }
 
     AlpsTreeNode* parent = node->getParent();
@@ -165,7 +166,6 @@ AlpsSubTree::createChildren(
     for (i = 0; i < numChildren; ++i) {
 	AlpsTreeNode* child = parent->createNewTreeNode(children[i].first);
 	parent->setChild(i, child);
-        //child->setSubTree(this);
 	child->setStatus(children[i].second);
 	child->setQuality(children[i].third);
 	child->setParent(parent);
@@ -201,7 +201,6 @@ AlpsSubTree::createChildren(
 			    "createChildren", "AlpsSubTree");
 	}
     }
-
 }
 
 //#############################################################################
@@ -293,7 +292,7 @@ AlpsSubTree::exploreSubTree(AlpsTreeNode* root,
 			    int & depth)             /* Output */
 {
     AlpsReturnCode status = ALPS_OK;
-    AlpsSolStatus solStatus = ALPS_INFEASIBLE;
+    AlpsSolStatus exploreStatus = ALPS_INFEASIBLE;
     
     bool betterSolution = false;
 
@@ -310,15 +309,15 @@ AlpsSubTree::exploreSubTree(AlpsTreeNode* root,
 
     status = exploreUnitWork(nodeLimit,
                              timeLimit,
-                             solStatus,
+                             exploreStatus,
                              numNodesProcessed, /* Output */
                              depth,             /* Output */
                              betterSolution);   /* Output */
 
-    if (solStatus == ALPS_NODE_LIMIT) {
+    if (exploreStatus == ALPS_NODE_LIMIT) {
         broker_->setTermStatus(ALPS_NODE_LIMIT);
     }
-    else if (solStatus == ALPS_TIME_LIMIT) {
+    else if (exploreStatus == ALPS_TIME_LIMIT) {
         broker_->setTermStatus(ALPS_TIME_LIMIT);
     }
     else {
@@ -335,7 +334,6 @@ AlpsSubTree::exploreSubTree(AlpsTreeNode* root,
 }   
 
 //#############################################################################
-
 
 // The implementation is almost same as exploreSubtree, except it will return
 // when the required number of nodes is generated or the nodepool is empty
@@ -356,13 +354,13 @@ AlpsSubTree::rampUp(int& depth, AlpsTreeNode* root)
 	/* Master: set the root node and put it into the queue*/
 	root_ = root;
 	nodePool_->addKnowledge(root_, ALPS_OBJ_MAX);
-	requiredNumNodes = 
-	    broker_->getModel()->AlpsPar()->entry(AlpsParams::masterInitNodeNum);
+	requiredNumNodes = broker_->getModel()->AlpsPar()->
+	    entry(AlpsParams::masterInitNodeNum);
     }
     else {
 	/* Hub. */
-	requiredNumNodes = 
-	    broker_->getModel()->AlpsPar()->entry(AlpsParams::hubInitNodeNum);
+	requiredNumNodes = broker_->getModel()->AlpsPar()->
+	    entry(AlpsParams::hubInitNodeNum);
     }
 
     while( nodePool_->hasKnowledge() &&
@@ -392,6 +390,7 @@ AlpsSubTree::rampUp(int& depth, AlpsTreeNode* root)
 	case AlpsNodeStatusCandidate :
 	case AlpsNodeStatusEvaluated :
 	    ++numNodesProcessed; 
+            activeNode_ = node;
 	    node->setActive(true);
 	    if (node == root_) {
                 node->process(true, true);
@@ -411,8 +410,9 @@ AlpsSubTree::rampUp(int& depth, AlpsTreeNode* root)
 	    case AlpsNodeStatusFathomed :
 		// Based on the parameter deleteNode, we decide whether to
 		// clean up the tree or preserve it for posterity
-		if (deleteNode)
+		if (deleteNode) {
 		    removeDeadNodes(node);
+		}
 		break;
 	    default : 
 		throw CoinError("Impossible Status: branched",
@@ -427,7 +427,6 @@ AlpsSubTree::rampUp(int& depth, AlpsTreeNode* root)
 	}
     }
 
-    //numNodesInPool = nodePool_->getNumKnowledges();
     return numNodesProcessed;
 }
 
@@ -453,7 +452,7 @@ AlpsSubTree::splitSubTree(int& returnSize, int size)
     //------------------------------------------------------
 
     const std::vector<AlpsTreeNode*> nodeVec = 
-	getNodePool()->getCandidateList().getContainer();
+	nodePool()->getCandidateList().getContainer();
 
 
     AlpsTreeNode* subTreeRoot = 0;
@@ -649,16 +648,16 @@ AlpsSubTree::splitSubTree(int& returnSize, int size)
 
     // Splitted subtree's node pool.
     AlpsNodePool* nodePool1 = new AlpsNodePool;
-    nodePool1->setComparison(*(broker_->getNodeCompare()));
+    nodePool1->setNodeSelection(*(broker_->getNodeSelection()));
 
     // Left node pool.
     AlpsNodePool* nodePool2 = new AlpsNodePool;
-    nodePool2->setComparison(*(broker_->getNodeCompare()));
+    nodePool2->setNodeSelection(*(broker_->getNodeSelection()));
 
-    while(getNodePool()->hasKnowledge()) {
+    while(nodePool()->hasKnowledge()) {
 	curNode = dynamic_cast<AlpsTreeNode* >(
-	    getNodePool()->getKnowledge().first);
-	getNodePool()->popKnowledge();
+	    nodePool()->getKnowledge().first);
+	nodePool()->popKnowledge();
 	if (curNode->getSentMark() == 1) {
 	    curNode->setSentMark(2);   // Mark as in subtree's node pool
 	    nodePool1->addKnowledge(curNode, curNode->getQuality());
@@ -772,7 +771,8 @@ AlpsSubTree::decode(AlpsEncoded& encoded) const
     AlpsEncoded* encodedNode = 0;
     AlpsTreeNode* node = 0;
     AlpsNodePool* nodePool = new AlpsNodePool;
-    nodePool->setComparison(*(broker_->getNodeCompare()));
+
+    nodePool->setNodeSelection(*(broker_->getNodeSelection()));
 
     std::vector<AlpsTreeNode* > nodeVector;
 
@@ -874,7 +874,7 @@ AlpsSubTree::decode(AlpsEncoded& encoded) const
     
     st->setNodePool(nodePool);
     st->setKnowledgeBroker(getKnowledgeBroker());
-    st->setNodeCompare(getKnowledgeBroker()->getNodeCompare());
+    st->setNodeSelection(getKnowledgeBroker()->getNodeSelection());
 
     //------------------------------------------------------
     // Clean up.
@@ -895,7 +895,7 @@ AlpsSubTree::decode(AlpsEncoded& encoded) const
 
 #ifdef NF_DEBUG
     std::cout << "decode: finished decoding a subtree, #nodes in pool is " 
-	      << st->getNodePool()->getNumKnowledges() 
+	      << st->nodePool()->getNumKnowledges() 
 	      << "; nodeAdded = " << nodeAdded 
 	      << "; node received  = " << nodeReceived << std::endl;
 #endif
@@ -903,48 +903,211 @@ AlpsSubTree::decode(AlpsEncoded& encoded) const
     return st;
 }
 
-
-
-
-
-
+#if 1
 //#############################################################################
 
 AlpsReturnCode
 AlpsSubTree::exploreUnitWork(int unitWork,
                              double unitTime,
-                             AlpsSolStatus & solStatus,
-                             int & numNodesProcessed, /* Output */
-                             int & depth,             /* Output */
-                             bool & betterSolution)   /* Output */
+                             AlpsSolStatus & exploreStatus, /* Output */
+                             int & numNodesProcessed,       /* Output */
+                             int & depth,                   /* Output */
+                             bool & betterSolution)         /* Output */
 {
+    // Start to count time.
+    broker_->tempTimer().start();
+
     AlpsReturnCode status = ALPS_OK;
     
-    bool diving = false;
-
-    int numChildren = 0;
+    bool forceLog = false;
+    bool checkBetter = false;
         
-    double relBound = ALPS_OBJ_MAX;
-    double startTime = AlpsCpuTime();
     double oldSolQuality = ALPS_OBJ_MAX;
     double newSolQuality = ALPS_OBJ_MAX;
 
-    AlpsTreeNode * node = NULL;
     AlpsTreeNode * tempNode = NULL;
 
     //------------------------------------------------------    
-    // Get parameters.
+    // Get setting/parameters.
     //------------------------------------------------------
-
-    const int msgLevel =
-	broker_->getModel()->AlpsPar()->entry(AlpsParams::msgLevel);
-
-    const int nodeInterval = 
-	broker_->getModel()->AlpsPar()->entry(AlpsParams::nodeInterval);
 
     const bool deleteNode = 
 	broker_->getModel()->AlpsPar()->entry(AlpsParams::deleteDeadNode);
 
+    AlpsSearchStrategy<AlpsTreeNode*> *nodeSel = broker_->getNodeSelection();
+
+    //------------------------------------------------------
+    // Check if required to exit when find a solution.
+    //------------------------------------------------------
+    
+    if (betterSolution) {
+        checkBetter = true;
+        betterSolution = false;
+    }
+    
+    if( broker_->hasKnowledge(ALPS_SOLUTION) ) {
+        oldSolQuality=broker_->getBestKnowledge(ALPS_SOLUTION).second;
+    }    
+
+    //------------------------------------------------------
+    // Process nodes until reach unit limits, or better solution if check.
+    //------------------------------------------------------    
+
+    activeNode_ = NULL;
+    exploreStatus = ALPS_INFEASIBLE;    
+    numNodesProcessed = 0;
+
+    while ( (nodePool_->hasKnowledge() || activeNode_ || 
+	     diveNodePool_->hasKnowledge()) && 
+	    !betterSolution ) {
+	
+	broker_->tempTimer().stop();
+	
+	if (numNodesProcessed >= unitWork) {
+            exploreStatus = ALPS_NODE_LIMIT;
+	    break;
+	}
+	else if ( (broker_->tempTimer().getCpuTime() > unitTime) ||
+                  ((broker_->timer()).reachCpuLimit()) ){
+            exploreStatus = ALPS_TIME_LIMIT;
+	    break;
+	}
+        
+	// Get the next node to be processed.
+        activeNode_ = nodeSel->selectNextNode(this);
+        
+	switch (activeNode_->getStatus()) {
+	case AlpsNodeStatusPregnant: 
+        {            
+	    if (depth < activeNode_->getDepth() + 1) {
+		depth = activeNode_->getDepth() + 1;
+            }
+            nodeSel->createNewNodes(this, activeNode_);
+	    break;
+	}
+	case AlpsNodeStatusCandidate:
+	case AlpsNodeStatusEvaluated:
+	    activeNode_->setActive(true);
+	    if (activeNode_ == root_) {
+                activeNode_->process(true);
+	    }
+	    else {
+                activeNode_->process();
+	    }           
+	    activeNode_->setActive(false); 
+
+	    // Record the new sol quality if have.
+	    if( broker_->hasKnowledge(ALPS_SOLUTION) ) {
+		newSolQuality = 
+		    broker_->getBestKnowledge(ALPS_SOLUTION).second;
+		if (newSolQuality < oldSolQuality) {
+		    if (checkBetter) {
+			betterSolution = true;
+		    }
+		    forceLog = true;
+		    exploreStatus = ALPS_FEASIBLE;
+		    oldSolQuality = newSolQuality;    
+		    // std::cout << "betterSolution value=" << newSolQuality
+		    //  << std::endl;
+		}
+	    }
+
+            // Print node log.
+            broker_->getModel()->nodeLog(activeNode_, forceLog);
+	    forceLog = false;
+
+	    switch (activeNode_->getStatus()) {
+	    case AlpsNodeStatusCandidate :
+	    case AlpsNodeStatusEvaluated :
+	    case AlpsNodeStatusPregnant :
+		break;
+	    case AlpsNodeStatusFathomed :
+		if (deleteNode) {
+		    removeDeadNodes(activeNode_);
+                }
+                activeNode_ = NULL;
+		break;
+	    default : 
+                // AlpsNodeStatus::branched ==> this is impossible
+		throw CoinError("Impossible status: branched", 
+				"exploreSubTree", "AlpsSubTree"); 
+	    }
+
+            // Increment by 1.
+	    ++numNodesProcessed;
+	    break;
+	default : // branched or fathomed
+	    throw CoinError("Impossible status: branched or fathomed", 
+			    "exploreSubTree", "AlpsSubTree"); 
+	}
+    }
+
+    //------------------------------------------------------
+    // Possible reasons for breaking while:
+    // 1 no nodes:        do nothing
+    // 2 reach limits:    move nodes from diving pool to regular pool
+    // 3 better solution: move nodes from diving pool to regular pool
+    //------------------------------------------------------
+
+    if ( (exploreStatus == ALPS_TIME_LIMIT) ||
+         (exploreStatus == ALPS_NODE_LIMIT) ||
+         (exploreStatus == ALPS_FEASIBLE) ) {
+        // Case 2 and 3.
+
+        // Move nodes in diving pool to normal pool.
+        while (diveNodePool_->getNumKnowledges() > 0) {
+            tempNode = dynamic_cast<AlpsTreeNode *>
+                (diveNodePool_->getKnowledge().first);
+            diveNodePool_->popKnowledge();
+            nodePool_->addKnowledge(tempNode, tempNode->getQuality());
+        }
+        if (activeNode_) {
+            nodePool_->addKnowledge(activeNode_, activeNode_->getQuality());
+	    activeNode_ = 0;
+        }
+    }
+    else {
+        // case 1.
+        assert(nodePool_->getNumKnowledges() == 0);
+        assert(diveNodePool_->getNumKnowledges() == 0);
+        assert(activeNode_ == NULL);
+    }
+
+    return status;
+}
+
+#else
+//#############################################################################
+
+AlpsReturnCode
+AlpsSubTree::exploreUnitWork(int unitWork,
+                             double unitTime,
+                             AlpsSolStatus & exploreStatus, /* Output */
+                             int & numNodesProcessed,       /* Output */
+                             int & depth,                   /* Output */
+                             bool & betterSolution)         /* Output */
+{
+    // Start to count time.
+    broker_->tempTimer().start();
+
+    AlpsReturnCode status = ALPS_OK;
+    
+    int numChildren = 0;
+        
+    double oldSolQuality = ALPS_OBJ_MAX;
+    double newSolQuality = ALPS_OBJ_MAX;
+
+    AlpsTreeNode * tempNode = NULL;
+
+    bool forceLog = false;
+    
+    //------------------------------------------------------    
+    // Get parameters.
+    //------------------------------------------------------
+
+    const bool deleteNode = 
+	broker_->getModel()->AlpsPar()->entry(AlpsParams::deleteDeadNode);
+    
     //------------------------------------------------------
     // If need to stop whenever find a better solution.
     //------------------------------------------------------
@@ -963,47 +1126,55 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     // Process nodes until reach unit limits, or better solution if check.
     //------------------------------------------------------    
 
-    solStatus = ALPS_INFEASIBLE;    
+    activeNode_ = NULL;
+    exploreStatus = ALPS_INFEASIBLE;    
     numNodesProcessed = 0;
 
-    while ( (nodePool_->hasKnowledge() || diving) && !betterSolution ) {
+    while ( (nodePool_->hasKnowledge() || activeNode_) && 
+	    !betterSolution ) {
+	
+	broker_->tempTimer().stop();
+	broker_->timer().stop();
 	
 	if (numNodesProcessed >= unitWork) {
-            solStatus = ALPS_NODE_LIMIT;
+            exploreStatus = ALPS_NODE_LIMIT;
 	    break;
 	}
-	else if (AlpsCpuTime() - startTime > unitTime) {
-            solStatus = ALPS_TIME_LIMIT;
+	else if (broker_->tempTimer().getCpuTime() > unitTime) {
+            exploreStatus = ALPS_TIME_LIMIT;
 	    // getKnowledgeBroker()->setTermStatus(ALPS_TIME_LIMIT);
 	    break;
 	}
         
-        if (!node) {
-            node=dynamic_cast<AlpsTreeNode*>(nodePool_->getKnowledge().first); 
-            node->setDiving(false);
+	// Get next node to be processed.
+	if (!activeNode_) {
+            activeNode_ = dynamic_cast<AlpsTreeNode*>
+		(nodePool_->getKnowledge().first); 
+            activeNode_->setDiving(false);
             
 #ifdef NF_DEBUG_MORE
-            std::cout << "======= NOTE[" << node->getIndex() 
-                      << "]: JUMP : depth = " << node->getDepth() 
-                      << ", quality = " << node->getQuality()
-                      << ", estimate = " << node->getSolEstimate()
+            std::cout << "======= NOTE[" << activeNode_->getIndex() 
+                      << "]: JUMP : depth = " << activeNode_->getDepth() 
+                      << ", quality = " << activeNode_->getQuality()
+                      << ", estimate = " << activeNode_->getSolEstimate()
                       << std::endl;
-#endif            
-
+#endif
             nodePool_->popKnowledge();
-            
 	}
         else {
-            node->setDiving(true);
+            activeNode_->setDiving(true);
         }
         
-	switch (node->getStatus()) {
+	switch (activeNode_->getStatus()) {
 	case AlpsNodeStatusPregnant: 
         {            
-	    if (depth < node->getDepth() + 1) {// Record the depth of tree
-		depth = node->getDepth() + 1;
+	    if (depth < activeNode_->getDepth() + 1) {
+		// Record the depth of tree
+		depth = activeNode_->getDepth() + 1;
             }
             
+	    // Should be part of default node selection.
+
             // (1) Move left nodes in diving pool to normal pool.
             while (diveNodePool_->getNumKnowledges() > 0) {
                 tempNode = dynamic_cast<AlpsTreeNode *>
@@ -1014,101 +1185,77 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 
             // (2) Branching to form children descriptions.
 	    std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
-		children = node->branch();
+		children = activeNode_->branch();
             
 	    // (3) Create actual children nodes and store in diving pool
-            createChildren(node, children, diveNodePool_);
+            createChildren(activeNode_, children, diveNodePool_);
             numChildren = diveNodePool_->getNumKnowledges();
             
             // (4) Get a new node for diving pool.
             if (numChildren > 0) {
-                node = dynamic_cast<AlpsTreeNode *>
+                activeNode_ = dynamic_cast<AlpsTreeNode *>
                     (diveNodePool_->getKnowledge().first);
                 diveNodePool_->popKnowledge();
-                diving = true;
             }
             else {
-                node = NULL;
-                diving = false;
+                activeNode_ = NULL;
             }
 	    break;
 	}
 	case AlpsNodeStatusCandidate:
 	case AlpsNodeStatusEvaluated:
-            // Process the node. 
-	    node->setActive(true);
-	    if (node == root_) {
-                node->process(true);
+	    activeNode_->setActive(true);
+
+            // Process the node.
+	    if (activeNode_ == root_) {
+                activeNode_->process(true);
 	    }
 	    else {
-                node->process();
+                activeNode_->process();
 	    }           
-	    node->setActive(false); 
+	    activeNode_->setActive(false); 
 
-	    // Record the new sol quality if have. 
-	    // TODO: replace use a function.
-            if (checkBetter) {
-                if( broker_->hasKnowledge(ALPS_SOLUTION) ) {
-                    newSolQuality = 
-                        broker_->getBestKnowledge(ALPS_SOLUTION).second;
-		    if (newSolQuality < oldSolQuality) {
+	    // Record the new sol quality if have.
+	    if( broker_->hasKnowledge(ALPS_SOLUTION) ) {
+		newSolQuality = 
+		    broker_->getBestKnowledge(ALPS_SOLUTION).second;
+		if (newSolQuality < oldSolQuality) {
+		    if (checkBetter) {
 			betterSolution = true;
-			solStatus = ALPS_FEASIBLE;
-			std::cout << "betterSolution value=" << newSolQuality
-				  << std::endl;
 		    }
+		    forceLog = true;
+		    exploreStatus = ALPS_FEASIBLE;
+		    oldSolQuality = newSolQuality;
+		    
+		    // std::cout << "betterSolution value=" << newSolQuality
+		    //  << std::endl;
 		}
-            }
+	    }
+
+            // Print node log.
+            broker_->getModel()->nodeLog(activeNode_, forceLog);
+	    forceLog = false;
 
             // Increment by 1.
 	    ++numNodesProcessed;
-
-	    if ( (msgLevel > -1) && (numNodesProcessed % nodeInterval == 0) ) {
-                double feasBound = ALPS_OBJ_MAX;
-                relBound = ALPS_OBJ_MAX;
-                if (getKnowledgeBroker()->getNumKnowledges(ALPS_SOLUTION)) {
-                    feasBound = (getKnowledgeBroker()->
-                                 getBestKnowledge(ALPS_SOLUTION)).second;
-                }
-
-
-                relBound = getBestKnowledgeValue();
-                if (node) {
-                    relBound = ALPS_MIN(node->getQuality(), relBound);
-                }
-                if (diveNodePool_->getNumKnowledges() > 0) {
-                    relBound = ALPS_MIN(diveNodePool_->getBestKnowledgeValue(),
-                                        relBound);
-                }
-                getKnowledgeBroker()->messageHandler()->
-                    message(ALPS_S_NODE_COUNT,getKnowledgeBroker()->messages())
-                        << numNodesProcessed 
-                        << getKnowledgeBroker()->getNumNodesLeft()
-                        << relBound
-                        << feasBound
-                        << CoinMessageEol;
-	    }
             
             // Check processing status.
-	    switch (node->getStatus()) {
+	    switch (activeNode_->getStatus()) {
 	    case AlpsNodeStatusCandidate :
 	    case AlpsNodeStatusEvaluated :
 	    case AlpsNodeStatusPregnant :
-                diving = true;
 		break;
 	    case AlpsNodeStatusFathomed :
 		if (deleteNode) {
-		    removeDeadNodes(node);
+		    removeDeadNodes(activeNode_);
                 }
                 if (diveNodePool_->getNumKnowledges() > 0) {
-                    node = dynamic_cast<AlpsTreeNode *>
+                    activeNode_ = dynamic_cast<AlpsTreeNode *>
                         (diveNodePool_->getKnowledge().first);
                     diveNodePool_->popKnowledge();
-                    diving = true;
                 }
                 else {
-                    node = NULL;
-                    diving = false;
+                    activeNode_ = NULL;
                 }
 		break;
 	    default : 
@@ -1132,9 +1279,9 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     // 2 reach limits:    move nodes from diving pool to regular pool
     // 3 better solution: move nodes from diving pool to regular pool
     
-    if ( (solStatus == ALPS_TIME_LIMIT) ||
-         (solStatus == ALPS_NODE_LIMIT) ||
-         (solStatus == ALPS_FEASIBLE) ) {
+    if ( (exploreStatus == ALPS_TIME_LIMIT) ||
+         (exploreStatus == ALPS_NODE_LIMIT) ||
+         (exploreStatus == ALPS_FEASIBLE) ) {
         // Case 2 and 3.
 
         // Move nodes in diving pool to normal pool.
@@ -1144,173 +1291,95 @@ AlpsSubTree::exploreUnitWork(int unitWork,
             diveNodePool_->popKnowledge();
             nodePool_->addKnowledge(tempNode, tempNode->getQuality());
         }
-        if (node) {
-            nodePool_->addKnowledge(node, node->getQuality());
+        if (activeNode_) {
+            nodePool_->addKnowledge(activeNode_, activeNode_->getQuality());
         }
     }
     else {
         // case 1.
         assert(nodePool_->getNumKnowledges() == 0);
         assert(diveNodePool_->getNumKnowledges() == 0);
-        assert(node == NULL);
+        assert(activeNode_ == NULL);
     }
 
     return status;
-}   
-
-
-
-
-
-
-
-
-
-
-
-//#############################################################################
-// FOLLOWING CODE IS REMOVED
-//#############################################################################
-#if 0
-//       approximateQuality(double inc, double rho) instead.
-void
-AlpsSubTree::calculateQuality(double inc, double rho)
-{
-    const int nodeNum = nodePool_->getNumKnowledges();
-    if (nodeNum <= 0) {                  // The subtree has no node
-	quality_ = 0.0;
-	return;
-    }
-
-    const double tolerance = 
-	broker_->getModel()->AlpsPar()->entry(AlpsParams::tolerance);
-  
-    if ( (rho > 1.0 - tolerance) && (rho < 1.0 + tolerance) ) {  // rho == 1
-	quality_ = nodeNum;    // Only the number of nodes counts
-	return;
-    } 
-
-    const int keyNodeNum = 
-	broker_->getModel()->AlpsPar()->entry(AlpsParams::eliteSize);
-
-    int popNodeNum = 0; 
-    int popedNum = 0;
-    int i;
-
-    std::vector<AlpsTreeNode* >::iterator pos;
-  
-    std::pair<const AlpsKnowledge*, double> nodePair;
-  
-    quality_ = 0.0;
-
-    if (keyNodeNum >= nodeNum)   // All the nodes are included    
-	popNodeNum = nodeNum;
-    else                         // Only the important nodes are included
-	popNodeNum = keyNodeNum;
-
-    AlpsTreeNode** keyNodes = new AlpsTreeNode* [popNodeNum]; 
-
-    // Calculate quality_
-    while(popedNum < popNodeNum) {
-	nodePair = nodePool_->getKnowledge();
-	nodePool_->popKnowledge();
-	keyNodes[popedNum] = dynamic_cast<AlpsTreeNode* >(
-	    const_cast<AlpsKnowledge* >(nodePair.first));
-	quality_ += pow(fabs(inc - nodePair.second), rho);
-	++popedNum;
-    }
-
-    // Add the poped nodes back to nodePool_
-    for (i = 0; i < popedNum; ++i)
-	nodePool_->addKnowledge(keyNodes[i], keyNodes[i]->getQuality());
-
-    delete [] keyNodes;
 }
+#endif
 
 //#############################################################################
 
-void
-AlpsSubTree::approximateQuality(double inc, double rho)
+double 
+AlpsSubTree::getBestKnowledgeValue() const
 {
-    const int nodeNum = nodePool_->getNumKnowledges();
-    if (nodeNum <= 0) {                  // The subtree has no node
-	quality_ = 0.0;
-	return;
-    }
-
-    const double tolerance = 
-	broker_->getModel()->AlpsPar()->entry(AlpsParams::tolerance);
-  
-    if ( (rho > 1.0 - tolerance) && (rho < 1.0 + tolerance) ) {  // rho == 1
-	quality_ = nodeNum;    // Only the number of nodes counts
-	return;
-    } 
-
-    const int keyNodeNum = 
-	broker_->getModel()->AlpsPar()->entry(AlpsParams::eliteSize);
-
-    int popNodeNum = 0;
-  
-    std::vector<AlpsTreeNode* > allNodes = 
-	nodePool_->getCandidateList().getContainer();
-    std::vector<AlpsTreeNode* >::iterator pos = allNodes.begin();
- 
-    std::pair<const AlpsKnowledge*, double> nodePair;
-  
-    quality_ = 0.0;
-
-    if (keyNodeNum >= nodeNum)       // All the nodes in pool are included
-	popNodeNum = nodeNum;          
-    else                             // Only the important nodes are included
-	popNodeNum = keyNodeNum;
-
-    pos = allNodes.begin() + popNodeNum;
-    quality_ = std::for_each(allNodes.begin(), pos, 
-			      TotalWorkload(inc, rho)).result(); 
-
-}
-
-//#############################################################################
-// Add a node to node pool and adjust elite list. 
-void 
-AlpsSubTree::addNode(AlpsTreeNode* node, double quality)
-{
-    nodePool_->addKnowledge(node, quality);
-    assert(eliteSize_ > 0);
-    if (eliteList_.size() < eliteSize_) {
-	eliteList_.insert(std::pair<double, AlpsTreeNode*>(quality, node));
-    }
-    else {  // ==   
-	std::multimap<double, AlpsTreeNode*>::iterator posEnd = 
-	    eliteList_.end();
-	--posEnd;
-	if (quality < posEnd->first) {
-	    eliteList_.insert(std::pair<double, AlpsTreeNode*>
-			      (quality, node));
-	    while(eliteList_.size() > eliteSize_) {
-		posEnd = eliteList_.end();
-		eliteList_.erase(--pos);
+    double bv1 = ALPS_OBJ_MAX;
+    double bv2 = ALPS_OBJ_MAX;
+    bv1 = nodePool_->getBestKnowledgeValue();
+    bv2 = diveNodePool_->getBestKnowledgeValue();
+    if (bv1 < bv2) {
+	if (activeNode_) {
+	    if (activeNode_->getQuality() < bv1){
+		return activeNode_->getQuality();
 	    }
+	    else {
+		return bv1;
+	    }
+	}
+	else {
+	    return bv1;
+	}
+    }
+    else {
+	if ( (activeNode_) &&
+	     (activeNode_->getStatus() != AlpsNodeStatusFathomed) ) {
+	    if (activeNode_->getQuality() < bv2){
+		return activeNode_->getQuality();
+	    }
+	    else {
+		return bv2;
+	    }
+	}
+	else {
+	    return bv2;
 	}
     }
 }
 
 //#############################################################################
 
-void 
-AlpsSubTree::popNode()
+AlpsTreeNode * 
+AlpsSubTree::getBestNode() const 
 {
-    AlpsTreeNode* node = topNode();
-    nodePool_->popKnowledge();
-    std::multimap<double, AlpsTreeNode*>::iterator pos1 = eliteList_.begin();
-    std::multimap<double, AlpsTreeNode*>::iterator pos2 = eliteList_.end();
-    for (; pos1 != pos2; ++pos1) {
-	if (pos1->second == node) break;
+    AlpsTreeNode *bn2 = NULL;
+    AlpsTreeNode *bestNode = NULL;
+
+    bestNode = nodePool_->getBestNode();
+    bn2 = diveNodePool_->getBestNode();
+    
+    if (bn2) {
+	if (bestNode) {
+	    if (bestNode->getQuality() > bn2->getQuality()) {
+		bestNode = bn2;
+	    }
+	}
+	else {
+	    bestNode = bn2;
+	}
     }
-    if (pos1 != pos2) {
-	eliteNodes.erase(pos1);
+    
+    if (activeNode_ && 
+	(activeNode_->getStatus() != AlpsNodeStatusFathomed) ) {
+	
+	if (bestNode) {
+	    if (bestNode->getQuality() > activeNode_->getQuality()) {
+		bestNode = activeNode_;
+	    }
+	}
+	else {
+	    bestNode = activeNode_;
+	}
     }
+
+    return bestNode;
 }
-#endif
 
 //#############################################################################

@@ -34,7 +34,7 @@ class AlpsSubTreePool : public AlpsKnowledgePool {
     AlpsSubTreePool() {}
     virtual ~AlpsSubTreePool() {
 	if (!subTreeList_.empty()) {
-	    clean();
+	    deleteGuts();
 	}
     }
    
@@ -43,7 +43,7 @@ class AlpsSubTreePool : public AlpsKnowledgePool {
   
     /** Check whether there is a subtree in the subtree pool. */
     inline bool hasKnowledge() const{ return ! (subTreeList_.empty()); }
-
+    
     /** Get a subtree from subtree pool, doesn't remove it from the pool*/
     inline std::pair<AlpsKnowledge*, double> getKnowledge() const {
 	return std::make_pair( subTreeList_.top(), 
@@ -66,12 +66,12 @@ class AlpsSubTreePool : public AlpsKnowledgePool {
 	getSubTreeList() const { return subTreeList_; }
 
     /** Set comparison function and resort heap. */
-    void setComparison(AlpsCompareBase<AlpsSubTree*>& compare) {
+    void setComparison(AlpsSearchStrategy<AlpsSubTree*>& compare) {
 	subTreeList_.setComparison(compare);
     }
 
     /** Delete the subtrees in the pool. */
-    void clean() {
+    void deleteGuts() {
 	std::vector<AlpsSubTree* > treeVec = subTreeList_.getContainer();
 	for_each(treeVec.begin(), treeVec.end(), DeletePtrObject());
     }

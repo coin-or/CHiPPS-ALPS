@@ -70,31 +70,11 @@ class AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
         }
     }
 
-    /** The process outputs the best solution that it finds 
-	to a file or std::out. */
-    virtual void printBestSolution(char* outputFile = 0) const {
-	if (getNumKnowledges(ALPS_SOLUTION) <= 0) {
-	    std::cout << "\nSearch do not find any feasible solution."
-		      << std::endl;
-	    return;
-	}    
-	if (outputFile != 0) {   // Write to outputFile
-	    std::ofstream os("outputFile");
-	    dynamic_cast<AlpsSolution* >
-		(getBestKnowledge(ALPS_SOLUTION).first)->print(os);
-	}
-	else {                   // Write to std::cout
-	    dynamic_cast<AlpsSolution* >
-		(getBestKnowledge(ALPS_SOLUTION).first)->print(std::cout);
-	}
-    
-    }
-
     /** The process outputs the best solution and the quality 
 	that it finds to a file or std::out. */
-    virtual void printBestResult(char* outputFile = 0) const {
+    virtual void printBestSolution(char* outputFile = 0) const {
 	if (getNumKnowledges(ALPS_SOLUTION) <= 0) {
-	    std::cout << "\nSearch do not find any feasible solution."
+	    std::cout << "\nALPS did not find a solution."
 		      << std::endl;
 	    return;
 	}
@@ -121,7 +101,7 @@ class AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
                                   AlpsModel& model);
     
     /** Search for best solution. */
-    virtual void search(AlpsTreeNode* root);
+    virtual void rootSearch(AlpsTreeNode* root);
     
 };
 #endif

@@ -53,12 +53,11 @@ int main(int argc, char* argv[])
 	AlpsTreeNode* root = new KnapTreeNode(&model);
 
 	// 4: Sovle the problem
-	broker.search(root);
+	broker.rootSearch(root);
     
 	// 5: Report the best solution found and its ojective value
-	// broker.printBestResult("result");
-	broker.printBestResult();
-
+	broker.printBestSolution();
+        
 #ifdef NF_DEBUG
 	const int numSol = broker.getNumKnowledges(ALPS_SOLUTION);
 	broker.messageHandler()->message(ALPS_SOLUTION_COUNT,broker.messages())

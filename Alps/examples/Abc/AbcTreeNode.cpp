@@ -126,7 +126,7 @@ AbcTreeNode::process(bool isRoot, bool rampUp)
     assert(nodeInterval > 0);
 
     if(m->getNodeCount() % nodeInterval == 0){
-	const int nodeLeft = getKnowledgeBroker()->getNumNodesLeft();
+	const int nodeLeft = getKnowledgeBroker()->updateNumNodesLeft();
 	m->messageHandler()->message(ABC_STATUS, m->messages())
 	    << getKnowledgeBroker()->getProcRank() << (m->getNodeCount()) 
 	    << nodeLeft <<  m->getCutoff() << parentObjValue << CoinMessageEol;

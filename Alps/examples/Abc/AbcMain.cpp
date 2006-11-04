@@ -107,12 +107,8 @@ int main(int argc, char* argv[])
 	// NOTE: root will be deleted by ALPS 
 	AlpsTreeNode* root = new AbcTreeNode(&model);
 
-	// Sovle the problem
-	broker.search(root);
-	
-	// Report the best solution found and its ojective value
-	// broker.printBestResult("result");
-	//broker.printBestResult();
+	// Search for solutions from give root.
+	broker.rootSearch(root);
     }
     catch(CoinError& er) {
 	std::cerr << "ERROR:" << er.message() << std::endl

@@ -22,7 +22,7 @@
 
 #include "CoinMessageHandler.hpp"
 
-#include "AlpsCompareActual.h"
+#include "AlpsSearchStrategy.h"
 #include "AlpsEnumProcessT.h"
 #include "AlpsKnowledge.h"
 #include "AlpsKnowledgePool.h"
@@ -80,7 +80,7 @@ class AlpsKnowledgeBroker {
     /** Point to the subtree that being explored. */
     AlpsSubTree* workingSubTree_;
     
-    /** Indicate whether needWorkingSubTree_ points to 0. */
+    /** Indicate whether need a new subtree. */
     bool needWorkingSubTree_;
 
     /** The index to be assigned to a new search tree node. */
@@ -98,16 +98,19 @@ class AlpsKnowledgeBroker {
      */
     //@{
     /***/
-    /** Timer. */
+    /** Main timer. */
     AlpsTimer timer_;
 
-    /** The number of nodes processed. */
+    /** Secondary timer. */
+    AlpsTimer tempTimer_;
+
+    /** The number of nodes have been processed. */
     int nodeProcessedNum_;
     
-    /** The number of nodes in pool. */
+    /** The number of nodes left. */
     int nodeLeftNum_;
-
-    /** The depth of the tree explored. */
+    
+    /** The depth of the tree. */
     int treeDepth_;
 
     /** The status of termination. */
@@ -118,11 +121,11 @@ class AlpsKnowledgeBroker {
      *
      */
     //@{
-    /** Tree comparison criterion. */
-    AlpsCompareBase<AlpsSubTree*>* treeCompare_;
+    /** Tree selection criterion. */
+    AlpsSearchStrategy<AlpsSubTree*>* treeSelection_;
 
     /** Node comparison criterion. */
-    AlpsCompareBase<AlpsTreeNode*>* nodeCompare_;
+    AlpsSearchStrategy<AlpsTreeNode*>* nodeSelection_;
     //@}
     
     /** @name message handling
@@ -136,11 +139,11 @@ class AlpsKnowledgeBroker {
     CoinMessages messages_;
 
     /** The leve of printing message to screen. 
-        (-1: no; 0: default; 1: basic; 2: verbose) */
+        (0: no; 1: basic; 2: moderate, 3: verbose) */
     int msgLevel_;
     
     /** The degree of log file.
-        (-1: no; 0: default; 1: basic; 2: verbose) */
+        (0: no; 1: basic; 2: moderate, 3: verbose) */
     int logFileLevel_;
 
     /** The log file. */
@@ -192,13 +195,12 @@ class AlpsKnowledgeBroker {
 				  AlpsModel& model) = 0;
 
     /** Explore the tree rooted as the given root. */
-    virtual void search(AlpsTreeNode* root) = 0;  
+    virtual void rootSearch(AlpsTreeNode* root) = 0;  
 
     /** Search best solution for a given model. */
-    virtual void searchModel(AlpsModel *model) {
-
+    virtual void search(AlpsModel *model) {   
 	AlpsTreeNode* root = model->createRoot();
-	search(root);
+	rootSearch(root);
     }
     //@}
 
@@ -222,66 +224,7 @@ class AlpsKnowledgeBroker {
      */
     //@{
     /** Set up knowledge pools for this broker. */
-    inline void setupKnowledgePools() {
-	pools_ = new std::map<AlpsKnowledgeType, AlpsKnowledgePool*>;
-	pools_->insert( std::pair<AlpsKnowledgeType, AlpsKnowledgePool*>
-			( ALPS_SOLUTION, solPool_ ) );
-	pools_->insert( std::pair<AlpsKnowledgeType, AlpsKnowledgePool*>
-			( ALPS_SUBTREE, subTreePool_ ) );
-	
-	//--------------------------------------------------
-	// NOTE: User can add her own rules by broker.setTreeCompare().
-	//--------------------------------------------------
-
-	const int treeCompareRule = 
-	    model_->AlpsPar()->entry(AlpsParams::subTreeCompareRule);
-	
-	if (treeCompareRule == 0) {      // Best Quality
-	    treeCompare_ = new AlpsCompareSubTreeBest;
-	}
-	else if (treeCompareRule == 1) { // Quantity
-	    treeCompare_ = new AlpsCompareSubTreeQuantity;
-	}
-	else if (treeCompareRule == 2) { // the depth of root
-	    treeCompare_ = new AlpsCompareSubTreeBreadth;
-	}
-	else if (treeCompareRule == 3) { // Hybrid
-	    // Not implement
-	    throw CoinError("Sorry, hybrid tree comparison isn't implemented", 
-			    "setupKnowledgePools", "AlpsSubTree"); 
-	}
-	else {
-	    std::cout << "treeCompareRule = " << treeCompareRule << std::endl;
-	    throw CoinError("Unknown subtree compare rule", 
-			"getGoodness", "AlpsSubTree"); 
-	}
-	subTreePool_->setComparison(*treeCompare_);
-
-	//--------------------------------------------------
-	// NOTE: User can add her own rules by broker.setNodeCompare().
-	//--------------------------------------------------
-
-	const int strategy =
-	    model_->AlpsPar()->entry(AlpsParams::nodeSelStrategy);
-	if (strategy == 0) {        // best bound
-	    nodeCompare_ = new AlpsCompareTreeNodeBest;
-	}
-	else if (strategy == 1) {   // depth first
-	    nodeCompare_ = new AlpsCompareTreeNodeDepth;
-	}
-	else if (strategy == 2) {   // best estimate
-	    nodeCompare_ = new AlpsCompareTreeNodeEstimate;
-	}
-	else if (strategy == 3) {   // breath first
-	    nodeCompare_ = new AlpsCompareTreeNodeBreadth;
-	}
-	else {
-            std::cout << "ERROR: unknown searchStrategy " << strategy 
-                      << std::endl;
-	    throw CoinError("Unknown search strategy", 
-			    "setupKnowledgePools", "AlpsSubTree"); 
-	}
-    }
+    void setupKnowledgePools();
     
     /** Add a knowledge pool into the Knowledge pools */
     inline void addKnowledgePool(AlpsKnowledgeType kt, AlpsKnowledgePool* kp) {
@@ -290,47 +233,48 @@ class AlpsKnowledgeBroker {
 	    pools_->insert
 		(std::pair<AlpsKnowledgeType, AlpsKnowledgePool*>(kt, kp));
 	}
-	else
+	else {
 	    throw CoinError("Broker doesn't manage this type of knowledge", 
 			    "addKnowledgePool()", "AlpsKnowledgeBroker"); 
+        }
     }
   
     /** Retrieve a knowledge pool in the Knowledge base */
     inline  AlpsKnowledgePool* getKnowledgePool(AlpsKnowledgeType kt) const { 
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) 
+	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
 	    return (*pools_)[kt];
-	else
+        }
+	else {
 	    throw CoinError("Broker doesn't manage this type of knowledge", 
 			    "getKnowledgePool()", "AlpsKnowledgeBroker"); 
+        }
     }
 
     /** Query the number of knowledge in the given type of a knowledge pool. */
-    virtual int getNumKnowledges(AlpsKnowledgeType kt) const {
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE)
-	    return getKnowledgePool(kt)->getNumKnowledges();
-	else
-	    throw CoinError("Broker doesn't manage this type of knowledge", 
-			    "getNumKnowledgePool()", "AlpsKnowledgeBroker"); 
-    }
-
+    virtual int getNumKnowledges(AlpsKnowledgeType kt) const;
+    
     /** Query the max number of knowledge can be stored in a given 
-	type of knowledge pools.*/
+	type of knowledge pools. */
     virtual int getMaxNumKnowledges(AlpsKnowledgeType kt) const {
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE)
+	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
 	    return getKnowledgePool(kt)->getMaxNumKnowledges();
-	else
+        }
+	else {
 	    throw CoinError("Broker doesn't manage this type of knowledge", 
 			    "getMaxNumKnowledges()", "AlpsKnowledgeBroker"); 
+        }
     }
 
     /** Set the max number of knowledge can be stored in a given 
 	type o fknowledge pools. */
     virtual void setMaxNumKnowledges(AlpsKnowledgeType kt, int num) {
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE)
+	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
 	    getKnowledgePool(kt)->setMaxNumKnowledges(num);
-	else
+        }
+	else {
 	    throw CoinError("Broker doesn't manage this type of knowledge", 
 			    "setMaxNumKnowledges()", "AlpsKnowledgeBroker"); 
+        }
     }
 
     /** Query whether there are knowledges in the given type of 
@@ -346,55 +290,56 @@ class AlpsKnowledgeBroker {
     /** Get a knowledge, but doesn't remove it from the pool*/
     virtual std::pair<AlpsKnowledge*, double> 
 	getKnowledge(AlpsKnowledgeType kt) const {
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE)   
+	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
 	    return getKnowledgePool(kt)->getKnowledge();
-	else
+        }
+	else {
 	    throw CoinError("Broker doesn't manage this type of knowledge", 
 			    "getKnowledge()", "AlpsKnowledgeBroker"); 
+        }
     }
 
     /** Remove the a knowledge from the given type of knowledge pools.*/
     virtual void popKnowledge(AlpsKnowledgeType kt) {
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE)
+	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
 	    getKnowledgePool(kt)->popKnowledge();
-	else
+        }
+	else {
 	    throw CoinError("Broker doesn't manage this type of knowledge", 
 			    "popKnowledge()", "AlpsKnowledgeBroker"); 
+        }
     } 
 
     /** Get the best knowledge in the given type of knowledge pools. */
     virtual std::pair<AlpsKnowledge*, double> 
-	getBestKnowledge(AlpsKnowledgeType kt) const { 
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE)
-	    return getKnowledgePool(kt)->getBestKnowledge();
-	else
-	    throw CoinError("Broker doesn't manage this type of knowledge", 
-			    "getBestKnowledge()", "AlpsKnowledgeBroker"); 
-    }
+	getBestKnowledge(AlpsKnowledgeType kt) const;
 
     /** Get all knowledges in the given type of knowledge pools. */
     virtual void getAllKnowledges (AlpsKnowledgeType kt, 
 				   std::vector<std::pair<AlpsKnowledge*, 
 				   double> >& kls)  const { 
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE)
+	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
 	    getKnowledgePool(kt)->getAllKnowledges(kls);
-	else
+        }
+	else {
 	    throw CoinError("Broker doesn't manage this type of knowledge", 
 			    "popKnowledge()", "AlpsKnowledgeBroker"); 
+        }
     }
 
     /** Add a knowledge in the given type of knowledge pools. */
     virtual void addKnowledge(AlpsKnowledgeType kt, 
 			      AlpsKnowledge* kl, 
 			      double value ) { 
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE)
+	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
 	    getKnowledgePool(kt)->addKnowledge(kl, value);
-	else
+        }
+	else {
 	    throw CoinError("Broker doesn't manage this type of knowledge", 
 			    "popKnowledge()", "AlpsKnowledgeBroker"); 
+        }
     }
     //@}
-
 
     /** @name Querty and set statistics
      *
@@ -404,22 +349,11 @@ class AlpsKnowledgeBroker {
 	return nodeProcessedNum_;
     }
 
-    /** Query the number of left nodes on this process. */
-    virtual int getNumNodesLeft() {
-	nodeLeftNum_ = 0;
-	if (workingSubTree_ != 0)
-	    nodeLeftNum_ += workingSubTree_->getNumNodes();
-   
-	std::vector<AlpsSubTree*> subTreeVec = 
-	    subTreePool_->getSubTreeList().getContainer();
-	std::vector<AlpsSubTree*>::iterator pos1 = subTreeVec.begin();
-	std::vector<AlpsSubTree*>::iterator pos2 = subTreeVec.end();
-	for ( ; pos1 != pos2; ++pos1) {
-	    nodeLeftNum_ += (*pos1)->getNumNodes();
-	}
-	
-	return 	nodeLeftNum_;
-    }
+    /** Update the number of left nodes on this process. */
+    virtual int updateNumNodesLeft();
+    
+    /** Query the best node in the subtree pool. Return NULL if no node exits. */
+    virtual AlpsTreeNode* getBestNode() const;
 
     /** Query search termination status. */
     AlpsSolStatus getTermStatus() const {
@@ -434,6 +368,11 @@ class AlpsKnowledgeBroker {
     /** Query timer. */
     AlpsTimer & timer() {
 	return timer_;
+    }
+
+    /** Query secondary timer. */
+    AlpsTimer & tempTimer() {
+	return tempTimer_;
     }
 
     /** Search statistics log. */
@@ -463,10 +402,6 @@ class AlpsKnowledgeBroker {
     /** The process (serial) / the master (parallel) outputs the best 
 	solution that it knows to a file or std::out. */
     virtual void printBestSolution(char* outputFile = 0) const = 0;
-	
-    /** The process (serial) / the master (parallel) outputs the best 
-	solution found and its objective value to a file or std::out. */
-    virtual void printBestResult(char* outputFile = 0) const = 0;
     //@}
 
     /** Qeury the global rank of process. Note: not useful for serial code.*/
@@ -502,38 +437,47 @@ class AlpsKnowledgeBroker {
      *  
      */
     //@{
-    AlpsCompareBase<AlpsSubTree*>* getTreeCompare() const { 
-	return treeCompare_; 
+    AlpsSearchStrategy<AlpsSubTree*>* getSubTreeSelection() const { 
+	return treeSelection_; 
     }
-    void setTreeCompare(AlpsCompareBase<AlpsSubTree*>* tc) {
-	treeCompare_ = tc;
-	subTreePool_->setComparison(*treeCompare_);
+    void setSubTreeSelection(AlpsSearchStrategy<AlpsSubTree*>* tc) {
+        if (treeSelection_) delete treeSelection_;
+	treeSelection_ = tc;
+	subTreePool_->setComparison(*treeSelection_);
     }
-    AlpsCompareBase<AlpsTreeNode*>* getNodeCompare() const {
-	return nodeCompare_;
+    AlpsSearchStrategy<AlpsTreeNode*>* getNodeSelection() const {
+	return nodeSelection_;
     }
-    void setNodeCompare(AlpsCompareBase<AlpsTreeNode*>* nc) {
-	nodeCompare_ = nc;
+    void setNodeSelection(AlpsSearchStrategy<AlpsTreeNode*>* nc) {
+        if (nodeSelection_) delete nodeSelection_;
+	nodeSelection_ = nc;
     }
     //@}
    
-    /**@name Message handling */
+    /**@name Message and log file handling */
     //@{
-    /// Pass in Message handler (not deleted at end)
+    /** Pass in Message handler (not deleted at end). */
     void passInMessageHandler(CoinMessageHandler * handler);
-    /// Set language
+
+    /** Set language. */
     void newLanguage(CoinMessages::Language language);
     void setLanguage(CoinMessages::Language language)
-	{ newLanguage(language); }
-    /// Return handler
-    CoinMessageHandler * messageHandler() const
-	{ return handler_; }
-    /// Return messages
-    CoinMessages messages() 
-	{ return messages_; }
-    /// Return pointer to messages
-    CoinMessages * messagesPointer() 
-	{ return &messages_; }
+    { newLanguage(language); }
+
+    /** Return handler. */
+    CoinMessageHandler * messageHandler() const { return handler_; }
+
+    /** Return messages. */
+    CoinMessages messages() { return messages_; }
+
+    /** Return pointer to messages. */
+    CoinMessages * messagesPointer() { return &messages_; }
+
+    /** Return msg level. */
+    int getMsgLevel() { return msgLevel_; }
+
+    /** Return log file level. */
+    int getlogFileLevel() { return logFileLevel_; }
     //@}
 };
 #endif

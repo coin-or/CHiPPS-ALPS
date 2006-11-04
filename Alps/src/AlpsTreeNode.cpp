@@ -19,13 +19,14 @@
 #include "AlpsTreeNode.h"
 #include "AlpsSubTree.h"
 
-//#############################################################################//#############################################################################
+//#############################################################################
+//#############################################################################
 
 void
 AlpsTreeNode::removeChild(AlpsTreeNode*& child) throw(CoinError)
 {
 
-#ifdef NF_DEBUG_MORE
+#if 0
     std::cout << "removeChild: Begin: numChildren_=" << numChildren_ 
               << ", index_=" << index_
               << ", depth_=" << depth_ << std::endl;
@@ -67,15 +68,16 @@ AlpsTreeNode::removeChild(AlpsTreeNode*& child) throw(CoinError)
 #endif
 
     AlpsTreeNode *childToDel = child;
-    child = NULL;
 
     // Recursely delete its descendants.
     childToDel->removeDescendants();
 
-#ifdef NF_DEBUG_MORE
+#if 0
     std::cout << "removeChild: End: numChildren_="<<numChildren_ 
               << ", index_=" << index_
-              << ", depth_=" << depth_ << std::endl;
+              << ", depth_=" << depth_ 
+	      << ", children_[i] index = "<< children_[i]->getIndex() 
+	      << std::endl;
 #endif
     
     // Delete child node.

@@ -20,8 +20,8 @@ lib_LTLIBRARIES = libAlps.la
 libAlps_la_SOURCES = \
 	AlpsConfig.h \
 	AlpsAix43.h \
-	AlpsCompareActual.cpp AlpsCompareActual.h \
-	AlpsCompareBase.h \
+	AlpsSearchStrategy.cpp AlpsSearchStrategy.h \
+	AlpsSearchStrategyBase.h \
 	AlpsCygwin.h \
 	AlpsEncoded.h \
 	AlpsEnumProcessT.h \
@@ -87,8 +87,8 @@ DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` -I$(top_builddir)/inc
 include_HEADERS = \
 	../inc/config_alps.h \
 	Alps.h \
-	AlpsCompareActual.h \
-	AlpsCompareBase.h \
+	AlpsSearchStrategy.h \
+	AlpsSearchStrategyBase.h \
 	AlpsEncoded.h \
 	AlpsEnumProcessT.h \
 	AlpsHelperFunctions.h \
