@@ -22,7 +22,7 @@
 #include "CoinError.hpp"
 #include "CoinSort.hpp"
 
-#include "AlpsCompareActual.h"
+#include "AlpsSearchStrategy.h"
 #include "AlpsKnowledge.h"
 #include "AlpsNodePool.h"
 #include "AlpsPriorityQueue.h"

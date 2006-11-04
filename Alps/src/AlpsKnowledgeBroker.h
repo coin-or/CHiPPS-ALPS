@@ -22,7 +22,7 @@
 
 #include "CoinMessageHandler.hpp"
 
-#include "AlpsCompareActual.h"
+#include "AlpsSearchStrategy.h"
 #include "AlpsEnumProcessT.h"
 #include "AlpsKnowledge.h"
 #include "AlpsKnowledgePool.h"

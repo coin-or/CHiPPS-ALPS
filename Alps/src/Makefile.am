@@ -87,8 +87,8 @@ DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` -I$(top_builddir)/inc
 include_HEADERS = \
 	../inc/config_alps.h \
 	Alps.h \
-	AlpsCompareActual.h \
-	AlpsCompareBase.h \
+	AlpsSearchStrategy.h \
+	AlpsSearchStrategyBase.h \
 	AlpsEncoded.h \
 	AlpsEnumProcessT.h \
 	AlpsHelperFunctions.h \

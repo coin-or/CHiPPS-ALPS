@@ -19,7 +19,7 @@
 #include <queue>
 #include <vector>
 #include "CoinHelperFunctions.hpp"
-#include "AlpsCompareBase.h"
+#include "AlpsSearchStrategyBase.h"
 
 //#############################################################################
 
