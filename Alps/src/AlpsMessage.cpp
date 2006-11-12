@@ -34,7 +34,7 @@ static Alps_message us_english[] =
     {ALPS_DONATE_FAIL, 73, 3, "Worker[%d] fail to donate a subtree to %d, tag %d"},
     {ALPS_DONATE_SPLIT, 74, 3, "Worker[%d] donate a splitted subtree to %d, tag %d"},
     {ALPS_DONATE_WHOLE, 75, 3, "Worker[%d] donate a whole subtree to %d, tag %d"},
-    {ALPS_DATAFILE, 2, 1, "Data file is %s"},
+    {ALPS_DATAFILE, 2, 1, "Data file: %s"},
     {ALPS_LAUNCH, 4, 1, "Launched %d processes"},
     {ALPS_LOADBAL_HUB, 5, 3, "Hub[%d] balances the workload of its workers %d times"},
     {ALPS_LOADBAL_HUB_FAIL, 6, 3, "Hub[%d] failed to find a process to donate work to process %d"},
