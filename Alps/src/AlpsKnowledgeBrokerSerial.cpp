@@ -125,6 +125,7 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
     //--------------------------------------------------
     
     model.setupSelf();
+    model.preprocess();
 
     //--------------------------------------------------
     // Set up messege, logfile.
@@ -202,6 +203,8 @@ AlpsKnowledgeBrokerSerial::rootSearch(AlpsTreeNode* root)
 					     treeDepth_);
     
     updateNumNodesLeft();
+
+    model_->postprocess();
     
     timer_.stop();
     

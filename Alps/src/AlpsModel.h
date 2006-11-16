@@ -82,6 +82,12 @@ class AlpsModel : public AlpsKnowledge {
     /** Do necessary work to make model ready for use, such as classify 
 	variable and constraint types.*/
     virtual bool setupSelf() { return true; }
+
+    /** Preprocessing the model. */
+    virtual void preprocess() {}
+
+    /** Postprocessing results. */
+    virtual void postprocess() {}
     
     /** Create the root node. Default: do nothing */
     virtual AlpsTreeNode * createRoot() {
