@@ -120,12 +120,13 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
     }
     
     //--------------------------------------------------
-    // Do some require work to make the model usable.
+    // Preprecesss the model, and
+    // do some require work to make the model usable.
     // May adjust parameters like msg level in user's code.
     //--------------------------------------------------
-    
-    model.setupSelf();
+
     model.preprocess();
+    model.setupSelf();
 
     //--------------------------------------------------
     // Set up messege, logfile.
