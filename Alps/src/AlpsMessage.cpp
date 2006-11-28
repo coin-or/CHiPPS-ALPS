@@ -44,6 +44,7 @@ static Alps_message us_english[] =
     {ALPS_LOADBAL_WORKER_ASK, 10, 3, "Worker[%d] asks its hub (%d) for work"},
     {ALPS_MSG_HOW, 13, 3, "Process[%d] %s count %d in %s"},
     {ALPS_NODE_COUNT, 15, 3, "Worker[%d] processed %d nodes, %d nodes are left"},
+    {ALPS_P_VERSION, 100, 1, "ALPS version 0.9 (Parallel, MPI)"},
     {ALPS_PARAMFILE, 18, 1, "Parameter file: %s"},
     {ALPS_RAMPUP_HUB, 19, 1, "Hub[%d] took %g seconds, processed %d nodes, node pool has %d nodes"},
     {ALPS_RAMPUP_HUB_FAIL, 20, 1, "Hub[%d] failed to generate enought subtrees (nodes) and finish search by itself"},
@@ -77,7 +78,7 @@ static Alps_message us_english[] =
     {ALPS_S_FINAL_DEPTH, 96, 1, "Tree depth: %d"},
     {ALPS_S_FINAL_CPU, 97, 1, "Search CPU time: %.2f seconds"},
     {ALPS_S_FINAL_WALLCLOCK, 98, 1, "Search wall-clock time: %.2f seconds"},
-    {ALPS_S_VERSION, 1, 1, "ALPS version %s (Serial)"},
+    {ALPS_S_VERSION, 1, 1, "ALPS version 0.9 (Serial)"},
     {ALPS_DUMMY_END, 999999, 0, ""}
 };
 

@@ -147,7 +147,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     workerWorkQuantities_[0] = workQuantity_;
 
     AlpsNodePool* tempNodePool = new AlpsNodePool;
-    tempNodePool->setComparison(*getNodeCompare());
+    tempNodePool->setNodeSelection(*getNodeSelection());
 
     root->setKnowledgeBroker(this); 
     root->setQuality(ALPS_OBJ_MAX);
@@ -194,10 +194,11 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     // Create required number of subtrees(nodes) for hubs.
     //------------------------------------------------------
 
-    if (
-    messageHandler()->message(ALPS_RAMPUP_MASTER_START, messages())
-	<< globalRank_ << CoinMessageEol;
-
+    if (msgLevel_ > 0) {
+	messageHandler()->message(ALPS_RAMPUP_MASTER_START, messages())
+	    << globalRank_ << CoinMessageEol;
+    }
+    
     double rampUpStart = CoinCpuTime();
 
     AlpsSubTree* subTree = dynamic_cast<AlpsSubTree*>
@@ -205,12 +206,12 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	->newSubTree();
 	
     subTree->setKnowledgeBroker(this);
-    subTree->setNodeCompare(nodeCompare_);
+    subTree->setNodeSelection(nodeSelection_);
     subTree->setNextIndex(1); // One more than root's index
 
     nodeProcessedNum_ += subTree->rampUp(treeDepth_, root);
 
-    int numGenNodes = subTree->getNodePool()->getNumKnowledges();
+    int numGenNodes = subTree->nodePool()->getNumKnowledges();
 
     //------------------------------------------------------
     // Spawn hub/worker processes (For dynamic process management only) 
@@ -240,8 +241,8 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 		}
 		else {
 		    AlpsTreeNode* nodeM = dynamic_cast<AlpsTreeNode* >
-			(subTree->getNodePool()->getKnowledge().first);
-		    subTree->getNodePool()->popKnowledge();
+			(subTree->nodePool()->getKnowledge().first);
+		    subTree->nodePool()->popKnowledge();
 		    tempNodePool->addKnowledge(nodeM, nodeM->getQuality());
 		}
 		++numSent;
@@ -259,7 +260,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	AlpsTreeNode* nodeT = dynamic_cast<AlpsTreeNode* > 
 	    (tempNodePool->getKnowledge().first); 
 	double valT = tempNodePool->getKnowledge().second;
-	subTree->getNodePool()->addKnowledge(nodeT, valT);
+	subTree->nodePool()->addKnowledge(nodeT, valT);
 	tempNodePool->popKnowledge();
     }
 
@@ -307,7 +308,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     int treeSizeByHub = subTree->rampUp(treeDepth_);
 
     nodeProcessedNum_ += treeSizeByHub;
-    const int numNode2 = subTree->getNodePool()->getNumKnowledges();
+    const int numNode2 = subTree->nodePool()->getNumKnowledges();
  
     if (numNode2 == 0) {
 	messageHandler()->message(ALPS_RAMPUP_HUB_FAIL, messages())
@@ -459,7 +460,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	//**------------------------------------------------
 
 	const int reportInt = 
-	    model_->AlpsPar()->entry(AlpsParams::nodeInterval);
+	    model_->AlpsPar()->entry(AlpsParams::nodeLogInterval);
 
 	assert(reportInt > 0);
 
@@ -759,8 +760,8 @@ AlpsKnowledgeBrokerMPI::hubMain()
     const double changeWorkThreshold = model_->AlpsPar()->
 	entry(AlpsParams::changeWorkThreshold);
     const double rho = model_->AlpsPar()->entry(AlpsParams::rho);
-    const int hubReportFreqency = 
-	model_->AlpsPar()->entry(AlpsParams::hubReportFreqency);
+    //const int hubReportFreqency = 
+//	model_->AlpsPar()->entry(AlpsParams::hubReportFreqency);
 
     //------------------------------------------------------
     // Initialization and setup.
@@ -786,7 +787,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
     AlpsSubTree* subTree = dynamic_cast<AlpsSubTree*>
     (const_cast<AlpsKnowledge *>(decoderObject("ALPS_SUBTREE")))->newSubTree();
     subTree->setKnowledgeBroker(this);
-    subTree->setNodeCompare(nodeCompare_);
+    subTree->setNodeSelection(nodeSelection_);
 
     //------------------------------------------------------
     // Hub's Ramp-up.
@@ -837,7 +838,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	<< globalRank_ << CoinMessageEol;
     nodeProcessedNum_ += subTree->rampUp(treeDepth_);
     
-    const int numNode = subTree->getNodePool()->getNumKnowledges();
+    const int numNode = subTree->nodePool()->getNumKnowledges();
     
     if (numNode == 0) {
 	messageHandler()->message(ALPS_RAMPUP_HUB_FAIL, messages())
@@ -857,11 +858,11 @@ AlpsKnowledgeBrokerMPI::hubMain()
 			(const_cast<AlpsKnowledge *>(
 			    decoderObject("ALPS_SUBTREE")))->newSubTree();
 		    myTree->setKnowledgeBroker(this);
-		    myTree->setNodeCompare(nodeCompare_);
+		    myTree->setNodeSelection(nodeSelection_);
 		    
 		    AlpsTreeNode* node = static_cast<AlpsTreeNode* >
-			(subTree->getNodePool()->getKnowledge().first);
-		    subTree->getNodePool()->popKnowledge();
+			(subTree->nodePool()->getKnowledge().first);
+		    subTree->nodePool()->popKnowledge();
 
 		    node->setKnowledgeBroker(this);
 		    node->modifyDesc()->setModel(model_);
@@ -869,7 +870,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
 		    node->setParentIndex(-1);
 		    node->setNumChildren(0);
 		    node->setStatus(AlpsNodeStatusCandidate);
-		    myTree->getNodePool()->addKnowledge(node, 
+		    myTree->nodePool()->addKnowledge(node, 
                                                         node->getQuality());
 		    assert(myTree->getNumNodes() == 1);
 		    myTree->setRoot(node); // Don't forget!
@@ -934,14 +935,14 @@ AlpsKnowledgeBrokerMPI::hubMain()
 
     MPI_Request request;
     int flag = 1;
-    int reportCount = 0;
+    //int reportCount = 0; // don't know what's the use, 11/27/06
     char* buffer = new char [largeSize];
     
     MPI_Irecv(buffer, largeSize, MPI_PACKED, MPI_ANY_SOURCE, 
 	      MPI_ANY_TAG, MPI_COMM_WORLD, &request);
 
     while (true) {
-	++reportCount;
+	//++reportCount;
 	flag = 1;
 	startTime = CoinCpuTime();
 	
@@ -981,7 +982,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	if ( hubWork_ == true && 
 	     (workingSubTree_ != 0 || hasKnowledge(ALPS_SUBTREE) ) ) {
 
-	    reportCount = hubReportFreqency;
+	    //reportCount = hubReportFreqency;
 
 	    // NOTE: will stop when there is a better solution.
 	    bool betterSolution = true;
@@ -1066,7 +1067,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	if ((clusterSendCount_ || clusterRecvCount_ || !blockHubReport_)) {
 	    //&& reportCount == hubReportFreqency) {
 
-	    reportCount = 0;
+	    //reportCount = 0;
 	    incSendCount("hubMain()-hubReportStatus");
 
 	    refreshClusterStatus();  // IMPORTANT: report latest state
@@ -1260,10 +1261,8 @@ AlpsKnowledgeBrokerMPI::workerMain()
     
     const int unitNodes    =
 	model_->AlpsPar()->entry(AlpsParams::unitWorkNodes);
-    const int display      =
-	model_->AlpsPar()->entry(AlpsParams::display);
-    const int nodeInterval =
-	model_->AlpsPar()->entry(AlpsParams::nodeInterval);
+    const int nodeLogInterval =
+	model_->AlpsPar()->entry(AlpsParams::nodeLogInterval);
     
     const int largeSize    = 
 	model_->AlpsPar()->entry(AlpsParams::largeSize);
@@ -1314,7 +1313,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
 	    (const_cast<AlpsKnowledge *>(decoderObject("ALPS_SUBTREE")))->
 	    newSubTree();
 	subTree->setKnowledgeBroker(this);
-	subTree->setNodeCompare(nodeCompare_);
+	subTree->setNodeSelection(nodeSelection_);
 
 	//NOTE: hub rank is masterRank_ in clusterComm_.
 	receiveSizeNode(masterRank_, subTree, clusterComm_, &status);
@@ -1433,7 +1432,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
 		}
 		
 		// Print tree size    
-		if (display == 1 && nodeProcessedNum_ % nodeInterval == 0) {
+		if (msgLevel_ == 1 && nodeProcessedNum_ % nodeLogInterval == 0) {
 		    messageHandler()->message(ALPS_NODE_COUNT, messages())
 			<< globalRank_ << nodeProcessedNum_<<updateNumNodesLeft()
 			<< CoinMessageEol;
@@ -3481,9 +3480,9 @@ AlpsKnowledgeBrokerMPI::receiveSizeNode(int sender,
 	// Can not do this since there are other status.
 	// node->setStatus(AlpsNodeStatusCandidate);
 
-	st->getNodePool()->addKnowledge(node, node->getQuality());
+	st->nodePool()->addKnowledge(node, node->getQuality());
 	assert(st->getNumNodes() > 0);
-	if ( (st->getNodePool()->getNumKnowledges() ) == 1) {
+	if ( (st->nodePool()->getNumKnowledges() ) == 1) {
 	    // Make the first node as root.
 	    st->setRoot(node);
         }
@@ -3547,7 +3546,7 @@ AlpsKnowledgeBrokerMPI::receiveSubTree(char*& buf,
 	    (const_cast<AlpsKnowledge *>(decoderObject("ALPS_SUBTREE")))->
 	    newSubTree();
 	tempST->setKnowledgeBroker(this);
-	tempST->setNodeCompare(nodeCompare_);	
+	tempST->setNodeSelection(nodeSelection_);	
         
 	AlpsSubTree* subTree = 
 	    dynamic_cast<AlpsSubTree* >(tempST->decode(*encodedST) );
@@ -3639,11 +3638,11 @@ AlpsKnowledgeBrokerMPI::sendSizeNode(const int target,
     int position = -1;
 
     AlpsTreeNode* node = dynamic_cast<AlpsTreeNode* >
-	(st->getNodePool()->getKnowledge().first);
+	(st->nodePool()->getKnowledge().first);
 
     AlpsEncoded* enc = node->encode();
     
-    st->getNodePool()->popKnowledge();
+    st->nodePool()->popKnowledge();
 
     delete node;   // Since sending to other process
     
@@ -3879,8 +3878,8 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
     // Deside the cluster size and actual hubNum_.
     //------------------------------------------------------
 
-    AlpsMsgLevel_ = model_->AlpsPar()->entry(AlpsParams::msgLevel);
-    messageHandler()->setLogLevel(AlpsMsgLevel_);
+    msgLevel_ = model_->AlpsPar()->entry(AlpsParams::msgLevel);
+    messageHandler()->setLogLevel(msgLevel_);
     
     hubNum_ = model_->AlpsPar()->entry(AlpsParams::hubNum);
 
@@ -4035,7 +4034,7 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
     // Set max number of solutions.
     //------------------------------------------------------
 
-    const int mns = model_->AlpsPar()->entry(AlpsParams::maxNumSolustion);
+    const int mns = model_->AlpsPar()->entry(AlpsParams::solLimit);
     setMaxNumKnowledges(ALPS_SOLUTION, mns);
 }
 
@@ -4169,36 +4168,37 @@ AlpsKnowledgeBrokerMPI::searchLog()
 
     if (processType_ == AlpsProcessTypeMaster) {
 
+
+	int numWorkers = 0;   // Number of process are processing nodes.
+	
+	int sumSize = 0, aveSize, maxSize = 0, minSize = ALPS_INT_MAX;
+	int sumDep = 0, aveDep, maxDep = 0, minDep = ALPS_INT_MAX; 
+	
+	double sumIdle = 0.0, aveIdle = 0.0;
+	double maxIdle = 0.0, minIdle = ALPS_DBL_MAX;
+	
+	double sumRampUp = 0.0, aveRampUp = 0.0;
+	double maxRampUp = 0.0, minRampUp = ALPS_DBL_MAX;
+	
+	double sumRampDown = 0.0, aveRampDown = 0.0;
+	double maxRampDown = 0.0, minRampDown = ALPS_DBL_MAX;
+	
+	double sumCpuTime = 0.0, aveCpuTime = 0.0;
+	double maxCpuTime = 0.0, minCpuTime = ALPS_DBL_MAX;
+	
+	double sumWallClock = 0.0, aveWallClock = 0.0;
+	double maxWallClock = 0.0, minWallClock = ALPS_DBL_MAX;
+	
+	double varSize = 0.0, stdSize = 0.0;
+	double varDep = 0.0, stdDep = 0.0;
+	double varIdle = 0.0, stdIdle = 0.0;
+	double varRampUp = 0.0, stdRampUp = 0.0;
+	double varRampDown = 0.0, stdRampDown = 0.0;
+	
+	int totalTreeSize = 0;
+	int totalNodeLeft = 0;
+	
 	if(logFileLevel_ > 0 || msgLevel_ > 0) {
-	    int numWorkers = 0;   // Number of process are processing nodes.
-
-	    int sumSize = 0, aveSize, maxSize = 0, minSize = ALPS_INT_MAX;
-	    int sumDep = 0, aveDep, maxDep = 0, minDep = ALPS_INT_MAX; 
-
-	    double sumIdle = 0.0, aveIdle = 0.0;
-	    double maxIdle = 0.0, minIdle = ALPS_DBL_MAX;
-
-	    double sumRampUp = 0.0, aveRampUp = 0.0;
-	    double maxRampUp = 0.0, minRampUp = ALPS_DBL_MAX;
-
-	    double sumRampDown = 0.0, aveRampDown = 0.0;
-	    double maxRampDown = 0.0, minRampDown = ALPS_DBL_MAX;
-
-	    double sumCpuTime = 0.0, aveCpuTime = 0.0;
-	    double maxCpuTime = 0.0, minCpuTime = ALPS_DBL_MAX;
-
-	    double sumWallClock = 0.0, aveWallClock = 0.0;
-	    double maxWallClock = 0.0, minWallClock = ALPS_DBL_MAX;
-	    
-	    double varSize = 0.0, stdSize = 0.0;
-	    double varDep = 0.0, stdDep = 0.0;
-	    double varIdle = 0.0, stdIdle = 0.0;
-	    double varRampUp = 0.0, stdRampUp = 0.0;
-	    double varRampDown = 0.0, stdRampDown = 0.0;
-
-	    int totalTreeSize = 0;
-	    int totalNodeLeft = 0;
-
 	    for(i = 0; i < processNum_; ++i) {
 		totalTreeSize += tSizes[i];
 		totalNodeLeft += tLefts[i];
@@ -4493,7 +4493,7 @@ AlpsKnowledgeBrokerMPI::doOneUnitWork(int unitWork,
                                                  treeDepth_,
                                                  betterSolution);
         
-        if ( !(workingSubTree_->getNodePool()->hasKnowledge()) ) {
+        if ( !(workingSubTree_->nodePool()->hasKnowledge()) ) {
             delete workingSubTree_;  // Empty subtree
             workingSubTree_ = NULL;
             needWorkingSubTree_ = true;
@@ -4518,7 +4518,7 @@ AlpsKnowledgeBrokerMPI::doOneUnitWork(int unitWork,
                                                  treeDepth_,
                                                  betterSolution);
         
-        if ( !( workingSubTree_->getNodePool()->hasKnowledge() ) ) {
+        if ( !( workingSubTree_->nodePool()->hasKnowledge() ) ) {
             delete workingSubTree_;   // Empty subtree
             workingSubTree_ = 0;
             needWorkingSubTree_ = true;

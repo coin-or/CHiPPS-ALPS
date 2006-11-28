@@ -516,8 +516,9 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     }
     /** The master queries the quality of the best solution it knowns. */
     virtual double getBestQuality() const {
-	if (globalRank_ == masterRank_) 
+	if (globalRank_ == masterRank_) {
 	    return getBestKnowledge(ALPS_SOLUTION).second;   
+	}
     }
 
     /** Master prints out the best solution that it knows. */

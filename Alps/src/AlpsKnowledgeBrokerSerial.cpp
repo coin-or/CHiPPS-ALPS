@@ -26,7 +26,7 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
 					    AlpsModel& model) {
 
     messageHandler()->message(ALPS_S_VERSION, messages())
-	<< "0.9" << CoinMessageEol;
+	<< CoinMessageEol;
     
     // Store a pointer to model
     model.setKnowledgeBroker(this);
