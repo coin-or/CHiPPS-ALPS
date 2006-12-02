@@ -524,9 +524,6 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** Master prints out the best solution that it knows. */
     virtual void printBestSolution(char* outputFile = 0) const;
 
-    /** Master prints out the best solution and its quality. */
-    virtual void printBestResult(char* outputFile = 0) const;
-
     /** Log search statistics. */
     virtual void searchLog();
     //@}
