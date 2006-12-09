@@ -405,11 +405,11 @@ class AlpsKnowledgeBroker {
     //@}
 
     /** Qeury the global rank of process. Note: not useful for serial code.*/
-    virtual int getProcRank() const { return -10; }
-
+    virtual int getProcRank() const { return 0; }
+    
     /** Query the type (master, hub, or worker) of the process */
-    virtual AlpsProcessType getProcType() 
-	{ return AlpsProcessTypeWorker; } /* Serial is worker!*/
+    virtual AlpsProcessType getProcType() const
+    { return AlpsProcessTypeWorker; } /* Serial is worker!*/
     
     
     /** @name Query and set node index

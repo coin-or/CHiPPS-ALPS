@@ -471,10 +471,10 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     ~AlpsKnowledgeBrokerMPI();
     
     /** Query the global rank of the process. */
-    int getProcRank() const { return globalRank_; }
-
+    virtual int getProcRank() const { return globalRank_; }
+    
     /** Query the type (master, hub, or worker) of the process. */
-    AlpsProcessType getProcType() const { return processType_; }
+    virtual AlpsProcessType getProcType() const { return processType_; }
     
     /** This function
      * <ul>

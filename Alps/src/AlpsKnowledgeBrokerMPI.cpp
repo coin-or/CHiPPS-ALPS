@@ -1876,8 +1876,10 @@ AlpsKnowledgeBrokerMPI::donateWork(char*& buf,
 	// Since sent to other process, delete it.
 	delete aSubTree; 
 	
-	messageHandler()->message(ALPS_DONATE_WHOLE, messages()) 
-	    << globalRank_ << receiverID << status->MPI_TAG << CoinMessageEol;
+        if (msgLevel_ > 100) {
+            messageHandler()->message(ALPS_DONATE_WHOLE, messages()) 
+                << globalRank_ << receiverID << status->MPI_TAG << CoinMessageEol;
+        }
     }
     else if (workingSubTree_ != 0) {     // Option 2
 	int treeSize;
@@ -1889,9 +1891,11 @@ AlpsKnowledgeBrokerMPI::donateWork(char*& buf,
 	    // Since sent to other process, delete it.
 	    delete aSubTree;
 	    
-	    messageHandler()->message(ALPS_DONATE_SPLIT, messages()) 
-		<< globalRank_ << receiverID << status->MPI_TAG 
-		<< CoinMessageEol;
+            if (msgLevel_ > 100) {
+                messageHandler()->message(ALPS_DONATE_SPLIT, messages()) 
+                    << globalRank_ << receiverID << status->MPI_TAG 
+                    << CoinMessageEol;
+            }
 	}
     }   
 
@@ -4681,8 +4685,11 @@ AlpsKnowledgeBrokerMPI::printBestSolution(char* outputFile) const
 void 
 AlpsKnowledgeBrokerMPI::incSendCount(const char* how, int s) 
 { 
-    messageHandler()->message(ALPS_MSG_HOW, messages())
-	<< globalRank_ << "increment send" << s << how << CoinMessageEol;
+    if (msgLevel_ > 100) {
+        messageHandler()->message(ALPS_MSG_HOW, messages())
+            << globalRank_ << "increment send" << s << how << CoinMessageEol;
+    }
+    
     sendCount_ += s; 
 }
 
@@ -4692,8 +4699,11 @@ AlpsKnowledgeBrokerMPI::incSendCount(const char* how, int s)
 void
 AlpsKnowledgeBrokerMPI::decSendCount(const char* how, int s)
 { 
-    messageHandler()->message(ALPS_MSG_HOW, messages())
-	<< globalRank_ << "decrement send" << s << how << CoinMessageEol;
+    if (msgLevel_ > 100) {
+        messageHandler()->message(ALPS_MSG_HOW, messages())
+            << globalRank_ << "decrement send" << s << how << CoinMessageEol;
+    }
+    
     sendCount_ -= s; 
 }
 
@@ -4703,8 +4713,11 @@ AlpsKnowledgeBrokerMPI::decSendCount(const char* how, int s)
 void 
 AlpsKnowledgeBrokerMPI::incRecvCount(const char* how, int s) 
 {
-    messageHandler()->message(ALPS_MSG_HOW, messages())
-	<< globalRank_ << "increment recieve" << s << how << CoinMessageEol;
+    if (msgLevel_ > 100) {
+        messageHandler()->message(ALPS_MSG_HOW, messages())
+            << globalRank_ << "increment recieve" << s << how <<CoinMessageEol;
+    }
+    
     recvCount_ += s; 
 }
     
@@ -4714,8 +4727,11 @@ AlpsKnowledgeBrokerMPI::incRecvCount(const char* how, int s)
 void 
 AlpsKnowledgeBrokerMPI::decRecvCount(const char* how, int s) 
 { 
-    messageHandler()->message(ALPS_MSG_HOW, messages())
-	<< globalRank_  << "decrement recieve" << s << how << CoinMessageEol;
+    if (msgLevel_ > 100) {
+        messageHandler()->message(ALPS_MSG_HOW, messages())
+            << globalRank_  << "decrement recieve" <<s<< how<< CoinMessageEol;
+    }
+    
     recvCount_ -= s;
 }
 
