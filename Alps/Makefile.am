@@ -1,130 +1,113 @@
-# Copyright (C) 2006 International Business Machines and others.
-# All Rights Reserved.
-# This file is distributed under the Common Public License.
+#==========================================================================#
+# This file is part of the Abstract Library for Parallel Search (ALPS).    #
+#                                                                          #
+# ALPS is distributed under the Common Public License as part of the       #
+# COIN-OR repository (http://www.coin-or.org).                             #
+#                                                                          #
+# Authors: Yan Xu, SAS Institute Inc.                                      #
+#          Ted Ralphs, Lehigh University                                   #
+#          Laszlo Ladanyi, IBM T.J. Watson Research Center                 #
+#          Matthew Saltzman, Clemson University                            #
+#                                                                          #
+#                                                                          #
+# Copyright (C) 2001-2006, Lehigh University, Yan Xu, and Ted Ralphs.      #
+# All Rights Reserved.                                                     #
+#==========================================================================#
 
-## $Id: Makefile.am 790 2006-06-03 03:20:11Z andreasw $
-
-# Author:  Andreas Waechter           IBM    2006-04-13
+## $Id: Makefile.am 788 2006-06-01 18:57:08Z andreasw $
 
 AUTOMAKE_OPTIONS = foreign
 
 ########################################################################
-#                               libAlps                                #
+#                          Subdirectories                              #
 ########################################################################
 
-# Name of the library compiled in this directory.  We want it to be installed
-# in the 'lib' directory
-lib_LTLIBRARIES = libAlps.la
+SUBDIRS = src
 
-# List all source files for this library, including headers
-libAlps_la_SOURCES = \
-	AlpsConfig.h \
-	AlpsAix43.h \
-	AlpsSearchStrategy.cpp AlpsSearchStrategy.h \
-	AlpsSearchStrategyBase.h \
-	AlpsCygwin.h \
-	AlpsEncoded.h \
-	AlpsEnumProcessT.h \
-	Alps.h \
-	AlpsHelperFunctions.h \
-	AlpsKnowledgeBroker.cpp AlpsKnowledgeBroker.h \
-	AlpsKnowledge.cpp AlpsKnowledge.h \
-	AlpsKnowledgePool.h \
-	AlpsLicense.h \
-	AlpsLinux.h \
-	AlpsMACH.h \
-	AlpsMessage.cpp AlpsMessage.h \
-	AlpsMessageTag.h \
-	AlpsModel.cpp AlpsModel.h \
-	AlpsNodeDesc.h \
-	AlpsNodePool.h \
-	AlpsOs.h \
-	AlpsParameterBase.cpp AlpsParameterBase.h \
-	AlpsParams.cpp AlpsParams.h \
-	AlpsPriorityQueue.h \
-	AlpsSolution.h \
-	AlpsSolutionPool.h \
-	AlpsSubTree.cpp AlpsSubTree.h \
-	AlpsSubTreePool.h \
-	AlpsSunos.h \
-	AlpsTime.h \
-	AlpsTreeNode.cpp AlpsTreeNode.h
+# We don't want to compile the test subdirectory, unless the test target is
+# specified.  But we need to list it as subdirectory to make sure that it is
+# included in the tarball
 
-if COIN_HAS_MPI
-libAlps_la_SOURCES += AlpsKnowledgeBrokerMPI.cpp AlpsKnowledgeBrokerMPI.h
-else
-libAlps_la_SOURCES += AlpsKnowledgeBrokerSerial.cpp AlpsKnowledgeBrokerSerial.h
+if ALWAYS_FALSE
+  SUBDIRS += test
 endif
 
-# This is for libtool (on Windows)
-libAlps_la_LDFLAGS = $(LT_LDFLAGS)
-
 ########################################################################
-#                            Additional flags                          #
+#             Additional files to be included in tarball               #
 ########################################################################
 
-# Here list all include flags, relative to this "srcdir" directory.  This
-# "cygpath" stuff is necessary to compile with native compilers on Windows.
-AM_CPPFLAGS = \
-	-I`$(CYGPATH_W) $(COINUTILSSRCDIR)/src` \
-	-I`$(CYGPATH_W) $(COINUTILSOBJDIR)/inc`
+# Here we need include all files that are not mentioned in other Makefiles
 
-# Include MPI header directory if MPI is used
-if COIN_HAS_MPI
-AM_CPPFLAGS +=  -I`$(CYGPATH_W) $(MPIINCDIR)`
-endif
+EXTRA_DIST = \
+	examples/Abc/AbcBranchActual.cpp \
+	examples/Abc/AbcBranchActual.h \
+	examples/Abc/AbcBranchBase.cpp \
+	examples/Abc/AbcBranchBase.h \
+	examples/Abc/AbcCutGenerator.cpp \
+	examples/Abc/AbcCutGenerator.h \
+	examples/Abc/AbcHeuristic.cpp \
+	examples/Abc/AbcHeuristic.h \
+	examples/Abc/AbcMain.cpp \
+	examples/Abc/AbcMessage.cpp \
+	examples/Abc/AbcMessage.h \
+	examples/Abc/AbcModel.cpp \
+	examples/Abc/AbcModel.h \
+	examples/Abc/AbcNodeDesc.h \
+	examples/Abc/AbcParams.cpp \
+	examples/Abc/AbcParams.h \
+	examples/Abc/abc.par.in \
+	examples/Abc/abc.pbs \
+	examples/Abc/AbcSolution.cpp \
+	examples/Abc/AbcSolution.h \
+	examples/Abc/AbcTreeNode.cpp \
+	examples/Abc/AbcTreeNode.h \
+	examples/Abc/AUTHORS \
+	examples/Abc/INSTALL \
+	examples/Abc/LICENSE \
+	examples/Abc/Makefile.in \
+	examples/Abc/README \
+	examples/Abc/data/egout.mps \
+	examples/Abc/data/flugpl.mps \
+	examples/Abc/data/gen.mps \
+	examples/Abc/data/knap1.mps \
+	examples/Abc/data/knap2.mps \
+	examples/Abc/data/knap3.mps
 
-# This line is necessary to allow VPATH compilation with MS compilers
-# on Cygwin
-DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` -I$(top_builddir)/inc
 
 ########################################################################
-#                Headers that need to be installed                     #
+#                           Extra Targets                              #
 ########################################################################
 
-# Here list all the header files that are required by a user of the library,
-# and that therefore should be installed in 'install'
-include_HEADERS = \
-	../inc/config_alps.h \
-	Alps.h \
-	AlpsSearchStrategy.h \
-	AlpsSearchStrategyBase.h \
-	AlpsEncoded.h \
-	AlpsEnumProcessT.h \
-	AlpsHelperFunctions.h \
-	AlpsKnowledge.h \
-	AlpsKnowledgeBroker.h \
-	AlpsKnowledgeBrokerMPI.h \
-	AlpsKnowledgeBrokerSerial.h \
-	AlpsKnowledgePool.h \
-	AlpsMessage.h \
-	AlpsModel.h \
-	AlpsNodeDesc.h \
-	AlpsNodePool.h \
-	AlpsParams.h \
-	AlpsParameterBase.h \
-	AlpsPriorityQueue.h \
-	AlpsSolution.h \
-	AlpsSolutionPool.h \
-	AlpsSubTree.h \
-	AlpsSubTreePool.h \
-	AlpsTime.h \
-	AlpsTreeNode.h
+test: all
+	cd test; make test
 
-#############################################################################
-# Create the Config.h file that always defines HAVE_CONFIG_H and install it #
-#############################################################################
+unitTest: test
 
-# You only need to adapt the following line
-ConfigHeader = AlpsConfig.h
+clean-local:
+	if test -r test/Makefile; then cd test; make clean; fi
+
+distclean-local:
+	if test -r test/Makefile; then cd test; make distclean; fi
+
+.PHONY: test unitTest
+
+########################################################################
+#                  Installation of the addlibs file                    #
+########################################################################
+
+addlibsfile = alps_addlibs.txt
 
 install-exec-local:
-	echo "#ifndef HAVE_CONFIG_H" >bla
-	echo "#define HAVE_CONFIG_H" >>bla
-	echo "#endif" >> bla
-	cat $(srcdir)/$(ConfigHeader) >> bla
-	$(install_sh_DATA) bla $(DESTDIR)$(includedir)/$(ConfigHeader)
-	rm -f bla
+	$(install_sh_DATA) $(addlibsfile) $(DESTDIR)$(libdir)/$(addlibsfile)
 
 uninstall-local:
-	rm -f $(DESTDIR)$(includedir)/$(ConfigHeader)
+	rm -f $(DESTDIR)$(libdir)/$(addlibsfile)
+
+########################################################################
+#                         Maintainer Stuff                             #
+########################################################################
+
+# Files that are generated and should be cleaned with make distclean
+DISTCLEANFILES =
+
+include ../BuildTools/Makemain.inc

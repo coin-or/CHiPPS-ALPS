@@ -3732,7 +3732,7 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
 
     // CORRECTME
     // NOTE: masterRank_ is 0 or 1 (debug). Must smaller than cluster size.
-    masterRank_ = 1;
+    masterRank_ = 0;
  
     int color, i;
     int key   = globalRank_;
