@@ -3858,9 +3858,9 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
 
 	// modifyDataPool()->setAppParams(&userParams);// setupself needs userPar
 
+	model.preprocess();
 	model.setupSelf();
-	std::cout << "Here1" << std::endl;	
-
+	std::cout << "Here1" << std::endl;
     }
 
 
@@ -4089,6 +4089,7 @@ void AlpsKnowledgeBrokerMPI::rootSearch(AlpsTreeNode* root)
 
     searchLog();
     if (processType_ == AlpsProcessTypeMaster) {
+	model_->postprocess();
 	model_->modelLog();
     }
 }

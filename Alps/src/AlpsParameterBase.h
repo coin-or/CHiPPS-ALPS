@@ -233,24 +233,14 @@ class AlpsParameterSet {
     void writeToStream(std::ostream& outstream) const;
   
     /** The constructor allocate memory for parameters. */
-
-/*
     AlpsParameterSet(int c, int i, int d, int s, int sa) :
-    keys_(),
+	keys_(),
 	cpar_(new char[c]),
 	ipar_(new int[i]),
 	dpar_(new double[d]),
-	spar_(new std::string[s])//,
-	//sapar_(new std::vector<std::string>[sa])
-	*/
-
-    AlpsParameterSet(int c, int i, int d, int s, int sa)
-    {
-	cpar_ = new char [c];
-	ipar_ = new int [i];
-	dpar_ = new double [d];
-	spar_ = new std::string [s];
-    }
+	spar_(new std::string[s]),
+	sapar_(new std::vector<std::string>[sa]) 
+	{}
     
     /** The destructor deletes all data members. */
     virtual ~AlpsParameterSet() {
@@ -260,7 +250,7 @@ class AlpsParameterSet {
 	delete[] ipar_; ipar_ = 0;
 	delete[] dpar_; dpar_ = 0;
 	delete[] spar_; spar_ = 0;
-	//delete[] sapar_; sapar_ = 0;
+	delete[] sapar_; sapar_ = 0;
     }
 };
 
