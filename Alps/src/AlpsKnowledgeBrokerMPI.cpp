@@ -146,9 +146,6 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     workerWorkQualities_[0] = workQuality_;
     workerWorkQuantities_[0] = workQuantity_;
 
-    AlpsNodePool* tempNodePool = new AlpsNodePool;
-    tempNodePool->setNodeSelection(*getNodeSelection());
-
     root->setKnowledgeBroker(this); 
     root->setQuality(ALPS_OBJ_MAX);
     root->setDepth(0);
@@ -198,19 +195,25 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	messageHandler()->message(ALPS_RAMPUP_MASTER_START, messages())
 	    << globalRank_ << CoinMessageEol;
     }
-    
-    double rampUpStart = CoinCpuTime();
 
+    // Temporary store node for hub 0(master)
+    AlpsNodePool* tempNodePool = new AlpsNodePool;
+
+    // Best-first node selection duraing rampup
+    AlpsNodeSelectionBest *rampupNodeSel = new AlpsNodeSelectionBest;    
+
+    double rampUpStart = CoinCpuTime();
     AlpsSubTree* subTree = dynamic_cast<AlpsSubTree*>
 	(const_cast<AlpsKnowledge *>(decoderObject("ALPS_SUBTREE")))
 	->newSubTree();
-	
+
+    tempNodePool->setNodeSelection(*rampupNodeSel);	
     subTree->setKnowledgeBroker(this);
-    subTree->setNodeSelection(nodeSelection_);
+    subTree->setNodeSelection(rampupNodeSel);
     subTree->setNextIndex(1); // One more than root's index
-
+    
     nodeProcessedNum_ += subTree->rampUp(treeDepth_, root);
-
+    
     int numGenNodes = subTree->nodePool()->getNumKnowledges();
 
     //------------------------------------------------------
@@ -371,6 +374,9 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     //------------------------------------------------------
 
     setPhase(ALPS_PHASE_SEARCH);
+
+    /* Reset to normal selection. */
+    subTree->setNodeSelection(nodeSelection_);
 
 #ifdef NF_DEBUG
     std::cout << "MASTER: after rampup." << std::endl;
@@ -713,6 +719,8 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	buffer = 0; 
     }
     delete [] buf;
+
+    delete rampupNodeSel;
 }
 
 //#############################################################################
@@ -784,10 +792,13 @@ AlpsKnowledgeBrokerMPI::hubMain()
 
     double rampUpStart = CoinCpuTime();
 
+    // Best-first node selection duraing rampup
+    AlpsNodeSelectionBest *rampupNodeSel = new AlpsNodeSelectionBest;    
+
     AlpsSubTree* subTree = dynamic_cast<AlpsSubTree*>
     (const_cast<AlpsKnowledge *>(decoderObject("ALPS_SUBTREE")))->newSubTree();
     subTree->setKnowledgeBroker(this);
-    subTree->setNodeSelection(nodeSelection_);
+    subTree->setNodeSelection(rampupNodeSel);
 
     //------------------------------------------------------
     // Hub's Ramp-up.
@@ -923,6 +934,9 @@ AlpsKnowledgeBrokerMPI::hubMain()
     //------------------------------------------------------
 
     setPhase(ALPS_PHASE_SEARCH);
+
+    /* Reset to normal selection. */
+    subTree->setNodeSelection(nodeSelection_);
     
     //======================================================
     // HUB SCHEDULER:
@@ -1228,7 +1242,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	delete [] buffer; 
 	buffer = 0; 
     }
-
+    delete rampupNodeSel;
 }
 
 //#############################################################################
@@ -3864,7 +3878,7 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
 
 	model.preprocess();
 	model.setupSelf();
-	std::cout << "Here1" << std::endl;
+	//std::cout << "Here1" << std::endl;
     }
 
 

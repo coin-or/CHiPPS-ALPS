@@ -362,10 +362,10 @@ AlpsSubTree::rampUp(int& depth, AlpsTreeNode* root)
 	requiredNumNodes = broker_->getModel()->AlpsPar()->
 	    entry(AlpsParams::hubInitNodeNum);
     }
-
+    
     while( nodePool_->hasKnowledge() &&
 	   (nodePool_->getNumKnowledges() < requiredNumNodes) ) { 
- 
+        
 	node = dynamic_cast<AlpsTreeNode*>
 	    (const_cast<AlpsKnowledge*>(nodePool_->getKnowledge().first) ); 
         
