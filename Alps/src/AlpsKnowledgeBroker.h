@@ -409,7 +409,7 @@ class AlpsKnowledgeBroker {
     
     /** Query the type (master, hub, or worker) of the process */
     virtual AlpsProcessType getProcType() const
-    { return AlpsProcessTypeWorker; } /* Serial is worker!*/
+    { return AlpsProcessTypeMaster; } /* Serial is master */
     
     
     /** @name Query and set node index
