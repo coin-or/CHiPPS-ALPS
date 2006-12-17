@@ -60,6 +60,10 @@ void AlpsParams::createKeywordList() {
 			     AlpsParameter(AlpsIntPar, 
 					   hubInitNodeNum)));
    //
+   keys_.push_back(make_pair(std::string("Alps_hubMsgLevel"),
+			     AlpsParameter(AlpsIntPar, 
+					   hubMsgLevel)));
+   //
    keys_.push_back(make_pair(std::string("Alps_hubNum"),
 			     AlpsParameter(AlpsIntPar, 
 					   hubNum)));
@@ -119,6 +123,10 @@ void AlpsParams::createKeywordList() {
    keys_.push_back(make_pair(std::string("Alps_unitWorkNodes"),
 			     AlpsParameter(AlpsIntPar, 
 					   unitWorkNodes)));
+   //
+   keys_.push_back(make_pair(std::string("Alps_workerMsgLevel"),
+			     AlpsParameter(AlpsIntPar, 
+					   workerMsgLevel)));
 
    //-------------------------------------------------------
    // DoublePar
@@ -192,6 +200,7 @@ void AlpsParams::setDefaultEntries() {
   setEntry(bufSpare, 256);
   setEntry(eliteSize, 2);
   setEntry(hubInitNodeNum, 2);
+  setEntry(hubMsgLevel, 0);
   setEntry(hubNum, 1);
   setEntry(largeSize, 1048576);  // 2^21
   setEntry(logFileLevel, 0);
@@ -207,6 +216,7 @@ void AlpsParams::setDefaultEntries() {
   setEntry(smallSize, 256);      // 2^8
   setEntry(solLimit, ALPS_INT_MAX);
   setEntry(unitWorkNodes, 50);
+  setEntry(workerMsgLevel, 0);
 
   // DoublePar
   setEntry(changeWorkThreshold, 0.05);

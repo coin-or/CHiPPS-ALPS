@@ -226,8 +226,10 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     //------------------------------------------------------
     
     if (numGenNodes <= 0) {
-	messageHandler()->message(ALPS_RAMPUP_MASTER_FAIL, messages())
-	    << globalRank_ << CoinMessageEol;
+        if (msgLevel_ > 0) {
+            messageHandler()->message(ALPS_RAMPUP_MASTER_FAIL, messages())
+                << globalRank_ << CoinMessageEol;
+        }
     }
     else {
 	int numSent = 0;
@@ -288,8 +290,10 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	    incumbentID_ = globalRank_;
 	    //masterSendHubsIncumbent();
 	    sendIncumbent();
-	    messageHandler()->message(ALPS_RAMPUP_MASTER_SOL, messages())
-		<< globalRank_ << incVal << CoinMessageEol;
+            if (msgLevel_ > 0) {
+                messageHandler()->message(ALPS_RAMPUP_MASTER_SOL, messages())
+                    << globalRank_ << incVal << CoinMessageEol;
+            }
 	} 
     }
     
@@ -297,16 +301,20 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     // Print out statistics about root ramp up.
     //------------------------------------------------------
 
-    messageHandler()->message(ALPS_RAMPUP_MASTER, messages())
-	<< globalRank_ << rampUpTimeMaster << nodeProcessedNum_ << numGenNodes
-	<< CoinMessageEol;
+    if (msgLevel_ > 0) {
+        messageHandler()->message(ALPS_RAMPUP_MASTER, messages())
+            << globalRank_ << rampUpTimeMaster << nodeProcessedNum_ << numGenNodes
+            << CoinMessageEol;
+    }
  
     //------------------------------------------------------
     // Generate and send required number of nodes for master's workers.
     //------------------------------------------------------
 
-    messageHandler()->message(ALPS_RAMPUP_HUB_START, messages())
-	<< globalRank_ << CoinMessageEol;
+    if (msgLevel_ > 0) {
+        messageHandler()->message(ALPS_RAMPUP_HUB_START, messages())
+            << globalRank_ << CoinMessageEol;
+    }
     
     int treeSizeByHub = subTree->rampUp(treeDepth_);
 
@@ -314,8 +322,10 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     const int numNode2 = subTree->nodePool()->getNumKnowledges();
  
     if (numNode2 == 0) {
-	messageHandler()->message(ALPS_RAMPUP_HUB_FAIL, messages())
-	    << globalRank_ << CoinMessageEol;
+        if (msgLevel_ > 0) {
+            messageHandler()->message(ALPS_RAMPUP_HUB_FAIL, messages())
+                << globalRank_ << CoinMessageEol;
+        }
     }
     else {    // Send nodes to my workers
 	int numSent2 = 0;
@@ -349,9 +359,11 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 
     rampUpTime_ = CoinCpuTime() - rampUpStart;
 
-    messageHandler()->message(ALPS_RAMPUP_HUB, messages())
-	<< globalRank_ << (rampUpTime_ - rampUpTimeMaster) 
-	<< treeSizeByHub << numNode2 << CoinMessageEol;
+    if (msgLevel_ > 0) {
+        messageHandler()->message(ALPS_RAMPUP_HUB, messages())
+            << globalRank_ << (rampUpTime_ - rampUpTimeMaster) 
+            << treeSizeByHub << numNode2 << CoinMessageEol;
+    }
 
     //------------------------------------------------------
     // If have better solution, broadcast its value and process id.
@@ -364,8 +376,10 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	    incumbentID_ = globalRank_;
 	    // masterSendHubsIncumbent();
 	    sendIncumbent();
-	    messageHandler()->message(ALPS_RAMPUP_HUB_SOL, messages())
-		<< globalRank_ << incVal << CoinMessageEol;
+            if (msgLevel_ > 0) {
+                messageHandler()->message(ALPS_RAMPUP_HUB_SOL, messages())
+                    << globalRank_ << incVal << CoinMessageEol;
+            }
 	} 
     }
 
@@ -471,10 +485,13 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	assert(reportInt > 0);
 
 	if (reportIntCount % reportInt == 0) {
-	    messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
-		<< globalRank_ << systemNodeProcessed_ << systemWorkQuantity_ 
-		<< systemSendCount_ << systemRecvCount_ << incumbentValue_ 
-		<< CoinMessageEol;
+            if (msgLevel_ > 0) {
+                messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
+                    << globalRank_ << systemNodeProcessed_ << systemWorkQuantity_ 
+                    << systemSendCount_ << systemRecvCount_ << incumbentValue_ 
+                    << CoinMessageEol;
+            }
+            
 #ifdef NF_DEBUG
 	    std::cout << "Master: ";
 	    for (i = 0; i < hubNum_; ++i) {
@@ -613,8 +630,10 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 #endif
 	    // True idle, tell others to terminate.
 	    if (terminate) {
-		messageHandler()->message(ALPS_TERM_MASTER_INFORM, messages())
-		    << globalRank_ << "exit" << CoinMessageEol;
+                if (msgLevel_ > 0) {
+                    messageHandler()->message(ALPS_TERM_MASTER_INFORM, messages())
+                        << globalRank_ << "exit" << CoinMessageEol;
+                }
 		
 		// Send instruction to my hubs (as the master)
 		for (i = 0; i < hubNum_; ++i) {
@@ -644,9 +663,12 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 		break;  // Break *,  Master terminates
 	    } 
 	    else {  // Not true idle yet
-		messageHandler()->message(ALPS_TERM_MASTER_INFORM, messages())
-		    << globalRank_ << "continue" << CoinMessageEol;
-		blockTermCheck_ = true;
+                if (msgLevel_ > 0) {
+                    messageHandler()->message(ALPS_TERM_MASTER_INFORM, messages())
+                        << globalRank_ << "continue" << CoinMessageEol;
+                }
+                
+                blockTermCheck_ = true;
 
 		// Send instruction to the hubs (as the master)
 		for (i = 0; i < hubNum_; ++i) {
@@ -676,8 +698,10 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 		masterBalanceHubs();
 		++masterCheckCount;
 		if (masterCheckCount % 5 == 0) {
-		    messageHandler()->message(ALPS_LOADBAL_MASTER, messages())
-			<< globalRank_ << masterCheckCount << CoinMessageEol;
+                    if (msgLevel_ > 0) {
+                        messageHandler()->message(ALPS_LOADBAL_MASTER, messages())
+                            << globalRank_ << masterCheckCount << CoinMessageEol;
+                    }
 		}
 	    }
 	}
@@ -686,9 +710,11 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	    if (clusterSize_ > 2 && intraCB) {
 		hubBalanceWorkers();
 		++hubCheckCount;
-		if (hubCheckCount%5 == 0) {
-		    messageHandler()->message(ALPS_LOADBAL_HUB, messages())
-			<< globalRank_ << hubCheckCount << CoinMessageEol;
+		if (hubCheckCount % 5 == 0) {
+                    if (msgLevel_ > 0) {
+                        messageHandler()->message(ALPS_LOADBAL_HUB, messages())
+                            << globalRank_ << hubCheckCount << CoinMessageEol;
+                    }
 		}
 	    }
 	}
@@ -753,6 +779,8 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	model_->AlpsPar()->entry(AlpsParams::largeSize);
     const int medSize      = 
 	model_->AlpsPar()->entry(AlpsParams::mediumSize);
+    const int hubMsgLevel  = 
+        model_->AlpsPar()->entry(AlpsParams::hubMsgLevel);
     const int smallSize    = 
 	model_->AlpsPar()->entry(AlpsParams::smallSize);
     const bool intraCB     = 
@@ -768,8 +796,6 @@ AlpsKnowledgeBrokerMPI::hubMain()
     const double changeWorkThreshold = model_->AlpsPar()->
 	entry(AlpsParams::changeWorkThreshold);
     const double rho = model_->AlpsPar()->entry(AlpsParams::rho);
-    //const int hubReportFreqency = 
-//	model_->AlpsPar()->entry(AlpsParams::hubReportFreqency);
 
     //------------------------------------------------------
     // Initialization and setup.
@@ -794,12 +820,12 @@ AlpsKnowledgeBrokerMPI::hubMain()
 
     // Best-first node selection duraing rampup
     AlpsNodeSelectionBest *rampupNodeSel = new AlpsNodeSelectionBest;    
-
+    
     AlpsSubTree* subTree = dynamic_cast<AlpsSubTree*>
-    (const_cast<AlpsKnowledge *>(decoderObject("ALPS_SUBTREE")))->newSubTree();
+        (const_cast<AlpsKnowledge *>(decoderObject("ALPS_SUBTREE")))->newSubTree();
     subTree->setKnowledgeBroker(this);
     subTree->setNodeSelection(rampupNodeSel);
-
+    
     //------------------------------------------------------
     // Hub's Ramp-up.
     //------------------------------------------------------
@@ -828,14 +854,18 @@ AlpsKnowledgeBrokerMPI::hubMain()
     while(true) {
 	// NOTE: master's rank is always 0 in hubComm_.
 	receiveSizeNode(0, subTree, hubComm_, &status);
-#ifdef NF_DEBUG
-	std::cout << "HUB " << globalRank_ << ": received a node from master "
-		  << masterRank_ << std::endl;
-#endif
+
+        if (hubMsgLevel > 100) {
+            std::cout << "HUB " << globalRank_ << ": received a node from master "
+                      << masterRank_ << std::endl;
+        }
 	
 	if (status.MPI_TAG == AlpsMsgFinishInit) {
-	    messageHandler()->message(ALPS_RAMPUP_HUB_RECV, messages())
-		<< globalRank_ << masterRank_ << CoinMessageEol;
+            if (hubMsgLevel > 0) {
+                messageHandler()->message(ALPS_RAMPUP_HUB_RECV, messages())
+                    << globalRank_ << masterRank_ << CoinMessageEol;
+            }
+            
 	    break;
 	}
     }
@@ -845,15 +875,20 @@ AlpsKnowledgeBrokerMPI::hubMain()
     // hub's workers.
     //------------------------------------------------------
 
-    messageHandler()->message(ALPS_RAMPUP_HUB_START, messages())
-	<< globalRank_ << CoinMessageEol;
+    if (hubMsgLevel > 0) {
+        messageHandler()->message(ALPS_RAMPUP_HUB_START, messages())
+            << globalRank_ << CoinMessageEol;
+    }
+
     nodeProcessedNum_ += subTree->rampUp(treeDepth_);
     
     const int numNode = subTree->nodePool()->getNumKnowledges();
     
     if (numNode == 0) {
-	messageHandler()->message(ALPS_RAMPUP_HUB_FAIL, messages())
-	    << globalRank_ << CoinMessageEol;
+        if (hubMsgLevel > 0) {
+            messageHandler()->message(ALPS_RAMPUP_HUB_FAIL, messages())
+                << globalRank_ << CoinMessageEol;
+        }
     }
     else {    // Distribute nodes
 	int numSent = 0;
@@ -908,9 +943,12 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	}
     }
     rampUpTime_ = CoinCpuTime() - rampUpStart;
-    messageHandler()->message(ALPS_RAMPUP_HUB, messages())
-	<< globalRank_ << rampUpTime_ << nodeProcessedNum_ << numNode
-	<< CoinMessageEol;
+
+    if (hubMsgLevel > 0) {
+        messageHandler()->message(ALPS_RAMPUP_HUB, messages())
+            << globalRank_ << rampUpTime_ << nodeProcessedNum_ << numNode
+            << CoinMessageEol;
+    }
 
     //------------------------------------------------------
     // If have better solution, broadcast its value and process id.
@@ -924,8 +962,10 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	    //sendMasterIncumbent();      // Tell master
 	    //hubSendWorkersIncumbent();  // Unpack with return false later
 	    sendIncumbent();
-	    messageHandler()->message(ALPS_RAMPUP_HUB_SOL, messages())
-		<< globalRank_ << incVal << CoinMessageEol;
+            if (hubMsgLevel > 0) {
+                messageHandler()->message(ALPS_RAMPUP_HUB_SOL, messages())
+                    << globalRank_ << incVal << CoinMessageEol;
+            }
 	}
     }
 
@@ -976,7 +1016,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	// Check if all my workers have reported.
 	//**------------------------------------------------
 
-	if ( ! allWorkerReported ) {
+	if ( !allWorkerReported ) {
 	    workerWorkQualities_[masterRank_] = workQuality_;
 	    workerWorkQuantities_[masterRank_] = workQuantity_;
 	    workerReported_[masterRank_] = true;
@@ -1048,8 +1088,10 @@ AlpsKnowledgeBrokerMPI::hubMain()
 		    incumbentID_ = globalRank_;
 		    // sendMasterIncumbent();
 		    sendIncumbent();
-		    messageHandler()->message(ALPS_SOLUTION_SEARCH, messages())
-			<< globalRank_ << incVal << CoinMessageEol;
+                    if (hubMsgLevel > 0) {
+                        messageHandler()->message(ALPS_SOLUTION_SEARCH, messages())
+                            << globalRank_ << incVal << CoinMessageEol;
+                    }
 		} 
 	    }
 	}
@@ -1165,8 +1207,11 @@ AlpsKnowledgeBrokerMPI::hubMain()
 
 
 	    if(reply == 'T') {
-		messageHandler()->message(ALPS_TERM_HUB_INFORM, messages())
-		    << globalRank_<< "exit" << CoinMessageEol;
+                if (hubMsgLevel > 0) {
+                    messageHandler()->message(ALPS_TERM_HUB_INFORM, messages())
+                        << globalRank_<< "exit" << CoinMessageEol;
+                }
+                
 		// Send instruction to my workers
 		for (i = 0; i < clusterSize_; ++i) {
 		    if (i != clusterRank_) {
@@ -1183,8 +1228,10 @@ AlpsKnowledgeBrokerMPI::hubMain()
 		break;    // Break * and terminate
 	    }
 	    else {
-		messageHandler()->message(ALPS_TERM_HUB_INFORM, messages())
-		    << globalRank_<< "continue" << CoinMessageEol;
+                if (hubMsgLevel > 0) {
+                    messageHandler()->message(ALPS_TERM_HUB_INFORM, messages())
+                        << globalRank_<< "continue" << CoinMessageEol;
+                }
 		for (i = 0; i < clusterSize_; ++i) {
 		    if (i != clusterRank_) {
 			reply = 'C';
@@ -1212,8 +1259,10 @@ AlpsKnowledgeBrokerMPI::hubMain()
 		hubBalanceWorkers();
 		++hubCheckCount;
 		if (hubCheckCount%5 == 0) {
-		    messageHandler()->message(ALPS_LOADBAL_HUB, messages())
-			<< globalRank_ << hubCheckCount << CoinMessageEol;
+                    if (hubMsgLevel > 0) {
+                        messageHandler()->message(ALPS_LOADBAL_HUB, messages())
+                            << globalRank_ << hubCheckCount << CoinMessageEol;
+                    }
 		}
 	    }
 	}
@@ -1284,6 +1333,9 @@ AlpsKnowledgeBrokerMPI::workerMain()
 	model_->AlpsPar()->entry(AlpsParams::mediumSize);
     const int smallSize    = 
 	model_->AlpsPar()->entry(AlpsParams::smallSize);
+
+    const int workerMsgLevel  = 
+        model_->AlpsPar()->entry(AlpsParams::workerMsgLevel);
  
     const double zeroLoad  = 
 	model_->AlpsPar()->entry(AlpsParams::zeroLoad); 
@@ -1333,8 +1385,10 @@ AlpsKnowledgeBrokerMPI::workerMain()
 	receiveSizeNode(masterRank_, subTree, clusterComm_, &status);
 
 	if (status.MPI_TAG == AlpsMsgFinishInit) {
-	    messageHandler()->message(ALPS_RAMPUP_WORKER_RECV, messages())
-		<< globalRank_ << myHubRank_ << CoinMessageEol;
+            if (workerMsgLevel > 0) {
+                messageHandler()->message(ALPS_RAMPUP_WORKER_RECV, messages())
+                    << globalRank_ << myHubRank_ << CoinMessageEol;
+            }
 	    break;
 	}
 
@@ -1351,9 +1405,11 @@ AlpsKnowledgeBrokerMPI::workerMain()
     std::cout << "WORKER["<< globalRank_ << "]: after rampup." << std::endl;
 #endif
 
-    messageHandler()->message(ALPS_SEARCH_WORKER_START, messages())
-	<<globalRank_ << CoinMessageEol;
-
+    if (workerMsgLevel > 0) {
+        messageHandler()->message(ALPS_SEARCH_WORKER_START, messages())
+            <<globalRank_ << CoinMessageEol;
+    }
+    
     //======================================================
     // WORKER SCHEDULER:
     // (1) Listen and process messages until no message is in msg queue.
@@ -1447,9 +1503,11 @@ AlpsKnowledgeBrokerMPI::workerMain()
 		
 		// Print tree size    
 		if (msgLevel_ == 1 && nodeProcessedNum_ % nodeLogInterval == 0) {
-		    messageHandler()->message(ALPS_NODE_COUNT, messages())
-			<< globalRank_ << nodeProcessedNum_<<updateNumNodesLeft()
-			<< CoinMessageEol;
+                    if (workerMsgLevel > 0) {
+                        messageHandler()->message(ALPS_NODE_COUNT, messages())
+                            << globalRank_ << nodeProcessedNum_<<updateNumNodesLeft()
+                            << CoinMessageEol;
+                    }
 		}
 		rampDownStart = CoinCpuTime();
 	    } 
@@ -1472,8 +1530,10 @@ AlpsKnowledgeBrokerMPI::workerMain()
 			      << incumbentValue_ << std::endl;
 #endif 
 		    sendIncumbent();
-		    messageHandler()->message(ALPS_SOLUTION_SEARCH, messages())
-			<< globalRank_ << incVal << CoinMessageEol;
+                    if (workerMsgLevel > 0) {
+                        messageHandler()->message(ALPS_SOLUTION_SEARCH, messages())
+                            << globalRank_ << incVal << CoinMessageEol;
+                    }
 		} 
 	    }
 
@@ -1533,13 +1593,17 @@ AlpsKnowledgeBrokerMPI::workerMain()
 	
 	    if(reply == 'T') {
 		terminate = true;
-		messageHandler()->message(ALPS_TERM_WORKER_INFORM, messages())
-		    << globalRank_ << "exit" << CoinMessageEol;	
+                if (workerMsgLevel > 0) {
+                    messageHandler()->message(ALPS_TERM_WORKER_INFORM, messages())
+                        << globalRank_ << "exit" << CoinMessageEol;	
+                }
 		break;  // Break * and terminate
 	    }
 	    else {
-		messageHandler()->message(ALPS_TERM_WORKER_INFORM, messages())
-		    << globalRank_ << "continue" << CoinMessageEol;
+                if (workerMsgLevel > 0) {
+                    messageHandler()->message(ALPS_TERM_WORKER_INFORM, messages())
+                        << globalRank_ << "continue" << CoinMessageEol;
+                }
 		blockTermCheck_ = true;
 		terminate = false;
 	    }
@@ -1920,10 +1984,11 @@ AlpsKnowledgeBrokerMPI::donateWork(char*& buf,
 #endif
 	MPI_Send(dummyBuf, 0, MPI_PACKED, receiverID, tag, MPI_COMM_WORLD);
 
-	messageHandler()->message(ALPS_DONATE_FAIL, messages()) 
-	    << globalRank_ << receiverID << status->MPI_TAG << CoinMessageEol;
+        if (msgLevel_ > 100) {
+            messageHandler()->message(ALPS_DONATE_FAIL, messages()) 
+                << globalRank_ << receiverID << status->MPI_TAG << CoinMessageEol;
+        }
     }
-    
 
 #ifdef NF_DEBUG_MORE
     updateWorkloadInfo();
@@ -2006,8 +2071,10 @@ AlpsKnowledgeBrokerMPI::hubBalanceWorkers()
     const double zeroQuantity = 
 	model_->AlpsPar()->entry(AlpsParams::zeroLoad);
     if (clusterWorkQuantity_ < zeroQuantity) {
-	messageHandler()->message(ALPS_LOADBAL_MASTER_NO, messages())
-	    << globalRank_ << systemWorkQuantity_ << CoinMessageEol;
+        if (msgLevel_ > 100) {
+            messageHandler()->message(ALPS_LOADBAL_MASTER_NO, messages())
+                << globalRank_ << systemWorkQuantity_ << CoinMessageEol;
+        }
 	return;
     }
 
@@ -2196,8 +2263,10 @@ AlpsKnowledgeBrokerMPI::hubSatisfyWorkerRequest(char*& buf, MPI_Status* status)
 		 requestor,
 		 AlpsMsgSubTreeByWorker, 
 		 MPI_COMM_WORLD);
-	messageHandler()->message(ALPS_LOADBAL_HUB_FAIL, messages())
-	    << globalRank_ << requestor << CoinMessageEol;
+        if (msgLevel_ > 100) {
+            messageHandler()->message(ALPS_LOADBAL_HUB_FAIL, messages())
+                << globalRank_ << requestor << CoinMessageEol;
+        }
     }
     incSendCount("hubSatisfyWorkerRequest");
 
@@ -2437,8 +2506,10 @@ AlpsKnowledgeBrokerMPI::hubsShareWork(char*& buf,
 	}
     }
     else {
-	messageHandler()->message(ALPS_LOADBAL_HUB_FAIL, messages())
-	    << globalRank_ << receiverID << CoinMessageEol;
+        if (msgLevel_ > 100) {
+            messageHandler()->message(ALPS_LOADBAL_HUB_FAIL, messages())
+                << globalRank_ << receiverID << CoinMessageEol;
+        }
     }
 
     if (buffer != 0) {
@@ -2457,8 +2528,10 @@ AlpsKnowledgeBrokerMPI::masterBalanceHubs()
     const double zeroQuantity = 
 	model_->AlpsPar()->entry(AlpsParams::zeroLoad);
     if (systemWorkQuantity_ < zeroQuantity) {
-	messageHandler()->message(ALPS_LOADBAL_MASTER_NO, messages())
-	    << globalRank_ << systemWorkQuantity_ << CoinMessageEol;
+        if (msgLevel_ > 100) {
+            messageHandler()->message(ALPS_LOADBAL_MASTER_NO, messages())
+                << globalRank_ << systemWorkQuantity_ << CoinMessageEol;
+        }
 	return;
     }
     
@@ -3780,8 +3853,10 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
 	// Print how many processes have been launched.
 	//--------------------------------------------------
 
-	messageHandler()->message(ALPS_LAUNCH, messages())
-	    << processNum_ << CoinMessageEol;
+        if (msgLevel_ > 0) {
+            messageHandler()->message(ALPS_LAUNCH, messages())
+                << processNum_ << CoinMessageEol;
+        }
 
 	//--------------------------------------------------
 	// Read in params.
@@ -3790,9 +3865,11 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
 	model.readParameters(argc, argv);
 	//model.readParameters(argv[1]);
 	
-	messageHandler()->message(ALPS_PARAMFILE, messages())
-	    << argv[1] << CoinMessageEol;
-
+        if (msgLevel_ > 0) {
+            messageHandler()->message(ALPS_PARAMFILE, messages())
+                << argv[1] << CoinMessageEol;
+        }
+        
 	//--------------------------------------------------
 	// Set up logfile if requred.
 	//--------------------------------------------------
@@ -3814,8 +3891,10 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
         std::string dataFile = model_->AlpsPar()->entry(AlpsParams::instance);
         
         if (dataFile != "NONE") {   
-	    messageHandler()->message(ALPS_DATAFILE, messages())
-		<< dataFile.c_str() << CoinMessageEol;
+            if (msgLevel_ > 0) {
+                messageHandler()->message(ALPS_DATAFILE, messages())
+                    << dataFile.c_str() << CoinMessageEol;
+            }
 	    
 	    model.readInstance(dataFile.c_str());
 	    
