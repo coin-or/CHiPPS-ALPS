@@ -241,8 +241,10 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 		if (hubRanks_[i] != globalRank_) { 
 		    sendSizeNode(i, subTree, hubComm_);	
 		    // NOTE: master's rank is always 0 in hubComm_.
-		    std::cout << "master send a node to hub " << hubRanks_[i]
-			      << std::endl;
+                    if (msgLevel_ > 100) {
+                        std::cout << "master send a node to hub " << hubRanks_[i]
+                                  << std::endl;
+                    }
 		}
 		else {
 		    AlpsTreeNode* nodeM = dynamic_cast<AlpsTreeNode* >
@@ -4494,23 +4496,28 @@ AlpsKnowledgeBrokerMPI::searchLog()
         if (msgLevel_ > 0) {
             if (getTermStatus() == ALPS_OPTIMAL) {
                 messageHandler()->message(ALPS_T_OPTIMAL, messages())
-                    << nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
+                    << systemNodeProcessed_ << systemWorkQuantity_ 
+                    << CoinMessageEol;
             }
             else if (getTermStatus() == ALPS_NODE_LIMIT) {
                 messageHandler()->message(ALPS_T_NODE_LIMIT, messages())
-                    << nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
+                    << systemNodeProcessed_ << systemWorkQuantity_ 
+                    << CoinMessageEol;
             }
             else if (getTermStatus() == ALPS_TIME_LIMIT) {
                 messageHandler()->message(ALPS_T_TIME_LIMIT, messages())
-                    << nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol; 
+                    << systemNodeProcessed_ << systemWorkQuantity_ 
+                    << CoinMessageEol; 
             }
             else if (getTermStatus() == ALPS_FEASIBLE) {
                 messageHandler()->message(ALPS_T_FEASIBLE, messages())
-                    << nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
+                    << systemNodeProcessed_ << systemWorkQuantity_ 
+                    << CoinMessageEol;
             }
             else {
                 messageHandler()->message(ALPS_T_INFEASIBLE, messages())
-                    << nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
+                    << systemNodeProcessed_ << systemWorkQuantity_ 
+                    << CoinMessageEol;
             }
         
 	    // Idle.
