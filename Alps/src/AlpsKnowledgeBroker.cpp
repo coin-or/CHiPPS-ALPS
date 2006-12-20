@@ -45,6 +45,8 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     treeSelection_(0),
     nodeSelection_(0),
     msgLevel_(2),
+    hubMsgLevel_(0),
+    workerMsgLevel_(0),
     logFileLevel_(0)
 {
     registerClass("ALPS_SUBTREE", new AlpsSubTree(this));

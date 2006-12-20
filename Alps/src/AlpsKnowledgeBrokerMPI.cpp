@@ -781,8 +781,6 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	model_->AlpsPar()->entry(AlpsParams::largeSize);
     const int medSize      = 
 	model_->AlpsPar()->entry(AlpsParams::mediumSize);
-    const int hubMsgLevel  = 
-        model_->AlpsPar()->entry(AlpsParams::hubMsgLevel);
     const int smallSize    = 
 	model_->AlpsPar()->entry(AlpsParams::smallSize);
     const bool intraCB     = 
@@ -857,13 +855,13 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	// NOTE: master's rank is always 0 in hubComm_.
 	receiveSizeNode(0, subTree, hubComm_, &status);
 
-        if (hubMsgLevel > 100) {
+        if (hubMsgLevel_ > 100) {
             std::cout << "HUB " << globalRank_ << ": received a node from master "
                       << masterRank_ << std::endl;
         }
 	
 	if (status.MPI_TAG == AlpsMsgFinishInit) {
-            if (hubMsgLevel > 0) {
+            if (hubMsgLevel_ > 0) {
                 messageHandler()->message(ALPS_RAMPUP_HUB_RECV, messages())
                     << globalRank_ << masterRank_ << CoinMessageEol;
             }
@@ -877,7 +875,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
     // hub's workers.
     //------------------------------------------------------
 
-    if (hubMsgLevel > 0) {
+    if (hubMsgLevel_ > 0) {
         messageHandler()->message(ALPS_RAMPUP_HUB_START, messages())
             << globalRank_ << CoinMessageEol;
     }
@@ -887,7 +885,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
     const int numNode = subTree->nodePool()->getNumKnowledges();
     
     if (numNode == 0) {
-        if (hubMsgLevel > 0) {
+        if (hubMsgLevel_ > 0) {
             messageHandler()->message(ALPS_RAMPUP_HUB_FAIL, messages())
                 << globalRank_ << CoinMessageEol;
         }
@@ -946,7 +944,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
     }
     rampUpTime_ = CoinCpuTime() - rampUpStart;
 
-    if (hubMsgLevel > 0) {
+    if (hubMsgLevel_ > 0) {
         messageHandler()->message(ALPS_RAMPUP_HUB, messages())
             << globalRank_ << rampUpTime_ << nodeProcessedNum_ << numNode
             << CoinMessageEol;
@@ -964,7 +962,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	    //sendMasterIncumbent();      // Tell master
 	    //hubSendWorkersIncumbent();  // Unpack with return false later
 	    sendIncumbent();
-            if (hubMsgLevel > 0) {
+            if (hubMsgLevel_ > 0) {
                 messageHandler()->message(ALPS_RAMPUP_HUB_SOL, messages())
                     << globalRank_ << incVal << CoinMessageEol;
             }
@@ -1090,7 +1088,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
 		    incumbentID_ = globalRank_;
 		    // sendMasterIncumbent();
 		    sendIncumbent();
-                    if (hubMsgLevel > 0) {
+                    if (hubMsgLevel_ > 0) {
                         messageHandler()->message(ALPS_SOLUTION_SEARCH, messages())
                             << globalRank_ << incVal << CoinMessageEol;
                     }
@@ -1209,7 +1207,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
 
 
 	    if(reply == 'T') {
-                if (hubMsgLevel > 0) {
+                if (hubMsgLevel_ > 0) {
                     messageHandler()->message(ALPS_TERM_HUB_INFORM, messages())
                         << globalRank_<< "exit" << CoinMessageEol;
                 }
@@ -1230,7 +1228,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
 		break;    // Break * and terminate
 	    }
 	    else {
-                if (hubMsgLevel > 0) {
+                if (hubMsgLevel_ > 0) {
                     messageHandler()->message(ALPS_TERM_HUB_INFORM, messages())
                         << globalRank_<< "continue" << CoinMessageEol;
                 }
@@ -1261,7 +1259,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
 		hubBalanceWorkers();
 		++hubCheckCount;
 		if (hubCheckCount%5 == 0) {
-                    if (hubMsgLevel > 0) {
+                    if (hubMsgLevel_ > 0) {
                         messageHandler()->message(ALPS_LOADBAL_HUB, messages())
                             << globalRank_ << hubCheckCount << CoinMessageEol;
                     }
@@ -3843,33 +3841,31 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
     //------------------------------------------------------
 
     if (globalRank_ == masterRank_) {
-	std::cout << std::endl;
-	std::cout << "************************************" << std::endl;
-	std::cout << "* ALPS Version 0.6 (Parallel: MPI) *" << std::endl;
-	std::cout << "************************************" << std::endl 
-		  << std::endl;
-
-	//std::cout << "argc=" << argc << std::endl;
-	
-	//--------------------------------------------------
-	// Print how many processes have been launched.
-	//--------------------------------------------------
-
-        if (msgLevel_ > 0) {
-            messageHandler()->message(ALPS_LAUNCH, messages())
-                << processNum_ << CoinMessageEol;
-        }
 
 	//--------------------------------------------------
 	// Read in params.
 	//--------------------------------------------------
 	
 	model.readParameters(argc, argv);
-	//model.readParameters(argv[1]);
+        
+        msgLevel_ = model_->AlpsPar()->entry(AlpsParams::msgLevel);
+
+        if (msgLevel_ > 0) {
+            messageHandler()->message(ALPS_P_VERSION, messages())
+                << CoinMessageEol;
+        }
+
+	//std::cout << "argc=" << argc << std::endl;
 	
         if (msgLevel_ > 0) {
+            messageHandler()->message(ALPS_LAUNCH, messages())
+                << processNum_ << CoinMessageEol;
+        }
+
+        // 12/20/06, do we need print parameter file name?
+        if (msgLevel_ > 100) {
             messageHandler()->message(ALPS_PARAMFILE, messages())
-                << argv[1] << CoinMessageEol;
+                << argv[2] << CoinMessageEol;
         }
         
 	//--------------------------------------------------
@@ -3978,6 +3974,8 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
     //------------------------------------------------------
 
     msgLevel_ = model_->AlpsPar()->entry(AlpsParams::msgLevel);
+    hubMsgLevel_ = model_->AlpsPar()->entry(AlpsParams::hubMsgLevel);
+    workerMsgLevel_ = model_->AlpsPar()->entry(AlpsParams::workerMsgLevel);
     messageHandler()->setLogLevel(msgLevel_);
     
     hubNum_ = model_->AlpsPar()->entry(AlpsParams::hubNum);

@@ -138,9 +138,17 @@ class AlpsKnowledgeBroker {
     /** Alps messages. */
     CoinMessages messages_;
 
-    /** The leve of printing message to screen. 
+    /** The leve of printing message to screen of the master and general message. 
         (0: no; 1: basic; 2: moderate, 3: verbose) */
     int msgLevel_;
+
+    /** The leve of printing message to screen of hubs. 
+        (0: no; 1: basic; 2: moderate, 3: verbose) */
+    int hubMsgLevel_;
+
+    /** The leve of printing message to screen of workers. 
+        (0: no; 1: basic; 2: moderate, 3: verbose) */
+    int workerMsgLevel_;
     
     /** The degree of log file.
         (0: no; 1: basic; 2: moderate, 3: verbose) */
@@ -475,6 +483,12 @@ class AlpsKnowledgeBroker {
 
     /** Return msg level. */
     int getMsgLevel() { return msgLevel_; }
+
+    /** Return msg level. */
+    int getHubMsgLevel() { return hubMsgLevel_; }
+
+    /** Return msg level. */
+    int getMasterMsgLevel() { return workerMsgLevel_; }
 
     /** Return log file level. */
     int getlogFileLevel() { return logFileLevel_; }
