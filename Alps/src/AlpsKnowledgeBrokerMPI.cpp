@@ -1013,6 +1013,17 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	}
 
 	//**------------------------------------------------
+        // if forceTerminate_ == true;
+	//**------------------------------------------------
+        
+        if (forceTerminate_) {
+            //if (hubMsgLevel_ > 0) {
+                std::cout << "Asked to terminate by Master" << std::endl;
+                //}
+            return;
+        }
+        
+	//**------------------------------------------------
 	// Check if all my workers have reported.
 	//**------------------------------------------------
 
@@ -1440,6 +1451,14 @@ AlpsKnowledgeBrokerMPI::workerMain()
 	    if (flag) { // Receive a msg
 		allMsgReceived = false;
 		processMessage(buffer, status, request);
+                
+                if (forceTerminate_) {
+                    // Do we want to clean up (msg, etc.)?
+                    //if (workerMsgLevel_ > 0) {
+                        std::cout << "Asked to terminate by Master" << std::endl;
+                        //}
+                    return;
+                }
 	    } 
 	    else {
 		allMsgReceived = true; 
@@ -1772,9 +1791,9 @@ AlpsKnowledgeBrokerMPI::processMessage(char *&buf,
 	
 	break;
     AlpsMsgForceTerm:
-        
+        forceTerminate_ = true;
         break;
-    default: 
+    default:
 	std::cout << "PROC " << globalRank_ 
 		  << " : recved UNKNOWN message. tag = " 
 		  << status.MPI_TAG <<  std::endl; 
@@ -4200,6 +4219,7 @@ void
 AlpsKnowledgeBrokerMPI::masterForceHubTerm()
 {
     char* buf = 0;
+    forceTerminate_ = true;
     for (int i = 0; i < hubNum_; ++i) {
 	if (i != masterRank_) {
 	    MPI_Send(buf, 0, MPI_PACKED, hubRanks_[i], 
@@ -4215,6 +4235,7 @@ void
 AlpsKnowledgeBrokerMPI::hubForceWorkerTerm()
 {
     char* buf = 0;
+    forceTerminate_ = true;
     for (int i = 0; i < clusterSize_; ++i) {
 	if (i != clusterRank_) {
 	    MPI_Send(buf, 0, MPI_PACKED, globalRank_+i, 

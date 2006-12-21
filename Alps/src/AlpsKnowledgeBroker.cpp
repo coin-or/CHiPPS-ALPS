@@ -78,11 +78,11 @@ AlpsKnowledgeBroker:: ~AlpsKnowledgeBroker()
 	workingSubTree_ = 0;
     }
     if (nodeSelection_ != 0){
-	delete  nodeSelection_;
+	delete nodeSelection_;
 	nodeSelection_ = 0;
     }
     if (treeSelection_ != 0){
-	delete  treeSelection_;
+	delete treeSelection_;
 	treeSelection_ = 0;
     }
     if (handler_ != 0) {
