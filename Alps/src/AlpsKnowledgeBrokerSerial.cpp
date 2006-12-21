@@ -226,19 +226,19 @@ AlpsKnowledgeBrokerSerial::searchLog()
     
     if (msgLevel_ > 0) {
 	std::cout << std::endl;
-	if (getTermStatus() == ALPS_OPTIMAL) {
+	if (getSolStatus() == ALPS_OPTIMAL) {
 	    messageHandler()->message(ALPS_T_OPTIMAL, messages())
 		<< nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
 	}
-	else if (getTermStatus() == ALPS_NODE_LIMIT) {
+	else if (getSolStatus() == ALPS_NODE_LIMIT) {
 	    messageHandler()->message(ALPS_T_NODE_LIMIT, messages())
 		<< nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
 	}
-	else if (getTermStatus() == ALPS_TIME_LIMIT) {
+	else if (getSolStatus() == ALPS_TIME_LIMIT) {
 	    messageHandler()->message(ALPS_T_TIME_LIMIT, messages())
 		<< nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol; 
 	}
-	else if (getTermStatus() == ALPS_FEASIBLE) {
+	else if (getSolStatus() == ALPS_FEASIBLE) {
 	    messageHandler()->message(ALPS_T_FEASIBLE, messages())
 		<< nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
 	}

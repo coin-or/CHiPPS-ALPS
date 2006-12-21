@@ -466,13 +466,13 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 
 	// NOTE: Use wall clock time for parallel.
 	if (timer_.reachWallLimit()) {
-	    setTermStatus(ALPS_TIME_LIMIT);
+	    setSolStatus(ALPS_TIME_LIMIT);
 	    masterForceHubTerm();
 	    return;
 	    //	    goto TERMINATION;
 	}
 	else if (systemWorkQuantity_ >= nodeLimit) {
-	    setTermStatus(ALPS_NODE_LIMIT);
+	    setSolStatus(ALPS_NODE_LIMIT);
 	    masterForceHubTerm();
 	    return;
 	}    
@@ -1771,7 +1771,9 @@ AlpsKnowledgeBrokerMPI::processMessage(char *&buf,
 	}
 	
 	break;
-	
+    AlpsMsgForceTerm:
+        
+        break;
     default: 
 	std::cout << "PROC " << globalRank_ 
 		  << " : recved UNKNOWN message. tag = " 
@@ -4492,22 +4494,22 @@ AlpsKnowledgeBrokerMPI::searchLog()
 	}  // Log if logFileLevel_ > 0
 
         if (msgLevel_ > 0) {
-            if (getTermStatus() == ALPS_OPTIMAL) {
+            if (getSolStatus() == ALPS_OPTIMAL) {
                 messageHandler()->message(ALPS_T_OPTIMAL, messages())
                     << systemNodeProcessed_ << systemWorkQuantity_ 
                     << CoinMessageEol;
             }
-            else if (getTermStatus() == ALPS_NODE_LIMIT) {
+            else if (getSolStatus() == ALPS_NODE_LIMIT) {
                 messageHandler()->message(ALPS_T_NODE_LIMIT, messages())
                     << systemNodeProcessed_ << systemWorkQuantity_ 
                     << CoinMessageEol;
             }
-            else if (getTermStatus() == ALPS_TIME_LIMIT) {
+            else if (getSolStatus() == ALPS_TIME_LIMIT) {
                 messageHandler()->message(ALPS_T_TIME_LIMIT, messages())
                     << systemNodeProcessed_ << systemWorkQuantity_ 
                     << CoinMessageEol; 
             }
-            else if (getTermStatus() == ALPS_FEASIBLE) {
+            else if (getSolStatus() == ALPS_FEASIBLE) {
                 messageHandler()->message(ALPS_T_FEASIBLE, messages())
                     << systemNodeProcessed_ << systemWorkQuantity_ 
                     << CoinMessageEol;

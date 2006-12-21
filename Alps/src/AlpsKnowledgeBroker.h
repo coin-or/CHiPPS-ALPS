@@ -113,8 +113,8 @@ class AlpsKnowledgeBroker {
     /** The depth of the tree. */
     int treeDepth_;
 
-    /** The status of termination. */
-    AlpsSolStatus termStatus_;
+    /** The status of search when terminated. */
+    AlpsSolStatus solStatus_;
     //@}
     
     /** @name compare base
@@ -364,13 +364,13 @@ class AlpsKnowledgeBroker {
     virtual AlpsTreeNode* getBestNode() const;
 
     /** Query search termination status. */
-    AlpsSolStatus getTermStatus() const {
-	return termStatus_;
+    AlpsSolStatus getSolStatus() const {
+	return solStatus_;
     }
 
     /** Set terminate status. */
-    void setTermStatus(AlpsSolStatus status) {
-	termStatus_ = status;
+    void setSolStatus(AlpsSolStatus status) {
+	solStatus_ = status;
     }
 
     /** Query timer. */

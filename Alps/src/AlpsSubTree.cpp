@@ -315,18 +315,18 @@ AlpsSubTree::exploreSubTree(AlpsTreeNode* root,
                              betterSolution);   /* Output */
 
     if (exploreStatus == ALPS_NODE_LIMIT) {
-        broker_->setTermStatus(ALPS_NODE_LIMIT);
+        broker_->setSolStatus(ALPS_NODE_LIMIT);
     }
     else if (exploreStatus == ALPS_TIME_LIMIT) {
-        broker_->setTermStatus(ALPS_TIME_LIMIT);
+        broker_->setSolStatus(ALPS_TIME_LIMIT);
     }
     else {
         // Search to end.
         if (broker_->hasKnowledge(ALPS_SOLUTION)) {
-            broker_->setTermStatus(ALPS_OPTIMAL);
+            broker_->setSolStatus(ALPS_OPTIMAL);
         }
         else {
-            broker_->setTermStatus(ALPS_INFEASIBLE);
+            broker_->setSolStatus(ALPS_INFEASIBLE);
         }
     }
 
@@ -1142,7 +1142,7 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 	}
 	else if (broker_->tempTimer().getCpuTime() > unitTime) {
             exploreStatus = ALPS_TIME_LIMIT;
-	    // getKnowledgeBroker()->setTermStatus(ALPS_TIME_LIMIT);
+	    // getKnowledgeBroker()->setSolStatus(ALPS_TIME_LIMIT);
 	    break;
 	}
         
