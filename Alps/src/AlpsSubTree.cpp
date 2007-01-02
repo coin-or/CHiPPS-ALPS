@@ -920,7 +920,7 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     AlpsReturnCode status = ALPS_OK;
     
     bool forceLog = false;
-    bool checkBetter = false;
+    bool exitIfBetter = false;
         
     double oldSolQuality = ALPS_OBJ_MAX;
     double newSolQuality = ALPS_OBJ_MAX;
@@ -941,7 +941,8 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     //------------------------------------------------------
     
     if (betterSolution) {
-        checkBetter = true;
+        // Need exit when find better a solution.
+        exitIfBetter = true;
         betterSolution = false;
     }
     
@@ -1001,7 +1002,7 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 		newSolQuality = 
 		    broker_->getBestKnowledge(ALPS_SOLUTION).second;
 		if (newSolQuality < oldSolQuality) {
-		    if (checkBetter) {
+		    if (exitIfBetter) {
 			betterSolution = true;
 		    }
 		    forceLog = true;
@@ -1112,9 +1113,9 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     // If need to stop whenever find a better solution.
     //------------------------------------------------------
 
-    bool checkBetter = false;
+    bool exitIfBetter = false;
     if (betterSolution) {
-        checkBetter = true;
+        exitIfBetter = true;
         betterSolution = false;
     }
     
@@ -1220,7 +1221,7 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 		newSolQuality = 
 		    broker_->getBestKnowledge(ALPS_SOLUTION).second;
 		if (newSolQuality < oldSolQuality) {
-		    if (checkBetter) {
+		    if (exitIfBetter) {
 			betterSolution = true;
 		    }
 		    forceLog = true;

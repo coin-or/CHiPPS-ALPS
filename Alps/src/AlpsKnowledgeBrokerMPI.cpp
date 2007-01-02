@@ -465,19 +465,21 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	//**------------------------------------------------
 
 	// NOTE: Use wall clock time for parallel.
-	if (timer_.reachWallLimit()) {
-	    setSolStatus(ALPS_TIME_LIMIT);
-	    masterForceHubTerm();
-	    return;
-	    //	    goto TERMINATION;
-	}
-	else if (systemNodeProcessed_ >= nodeLimit) {
-            std::cout << "==== Master ask hubs terminate due to reaching node limit "
-                      << nodeLimit << std::endl;
-	    setSolStatus(ALPS_NODE_LIMIT);
-	    masterForceHubTerm();
-	    return;
-	}    
+        if (!forceTerminate_) {
+            forceTerminate_ = true;
+            if (timer_.reachWallLimit()) {
+                setSolStatus(ALPS_TIME_LIMIT);
+                masterForceHubTerm();
+                hubForceWorkerTerm();
+            }
+            else if (systemNodeProcessed_ >= nodeLimit) {
+                std::cout << "==== Master ask hubs terminate due to reaching node limit "
+                          << nodeLimit << std::endl;
+                setSolStatus(ALPS_NODE_LIMIT);
+                masterForceHubTerm();
+                hubForceWorkerTerm();
+            }
+        }
 	
 	//**------------------------------------------------
         // Print workload information to screen.
@@ -510,7 +512,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 #endif
 	}
 	++reportIntCount;
-
+        
 	//**------------------------------------------------
 	// If terminate check can be activated.
 	//**------------------------------------------------
@@ -958,7 +960,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
 
     if (hasKnowledge(ALPS_SOLUTION)) {
 	double incVal = getBestKnowledge(ALPS_SOLUTION).second;
-	if(incVal < incumbentValue_) {  // Assume Minimization
+	if(incVal < incumbentValue_) {    // Assume Minimization
 	    incumbentValue_ = incVal;
 	    incumbentID_ = globalRank_;
 	    //sendMasterIncumbent();      // Tell master
@@ -1023,9 +1025,12 @@ AlpsKnowledgeBrokerMPI::hubMain()
             std::cout << "HUB["<< globalRank_ << "] is asked to terminate by Master"
                       << std::endl;
             //}
-            
+
+            // Delete all subtrees if hub work.
+            if (hubWork_) {   
+                deleteSubTrees();
+            }
             hubForceWorkerTerm();
-            return;
         }
         
 	//**------------------------------------------------
@@ -1049,8 +1054,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	// If hub work, do one unit of work.
 	//**------------------------------------------------
 
-	if ( hubWork_ == true && 
-	     (workingSubTree_ != 0 || hasKnowledge(ALPS_SUBTREE) ) ) {
+	if ( hubWork_ && (workingSubTree_ != 0 || hasKnowledge(ALPS_SUBTREE)) ) {
 
 	    //reportCount = hubReportFreqency;
 
@@ -1397,7 +1401,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
 	subTree->setKnowledgeBroker(this);
 	subTree->setNodeSelection(nodeSelection_);
 
-	//NOTE: hub rank is masterRank_ in clusterComm_.
+	// NOTE: hub rank is masterRank_ in clusterComm_.
 	receiveSizeNode(masterRank_, subTree, clusterComm_, &status);
 
 	if (status.MPI_TAG == AlpsMsgFinishInit) {
@@ -1451,12 +1455,10 @@ AlpsKnowledgeBrokerMPI::workerMain()
 	//**------------------------------------------------
 	
 	while (true) {
-	    
 	    MPI_Test(&request, &flag, &status);
 	    if (flag) { // Receive a msg
 		allMsgReceived = false;
 		processMessages(buffer, status, request);
-                
 	    } 
 	    else {
 		allMsgReceived = true; 
@@ -1474,9 +1476,11 @@ AlpsKnowledgeBrokerMPI::workerMain()
             std::cout << "Worker[" << globalRank_ 
                       << "] is asked to terminate by its hub" << std::endl;
             //}
-            return;
+            
+            // Remove nodes from node pools
+            deleteSubTrees();
         }
-
+        
 	idleStart = CoinCpuTime();
 	
 	//**------------------------------------------------
@@ -1886,7 +1890,7 @@ AlpsKnowledgeBrokerMPI::updateWorkloadInfo()
     const double rho = 
 	model_->AlpsPar()->entry(AlpsParams::rho);
     workQuality_ = ALPS_OBJ_MAX;  // Worst ever possible
-    workQuantity_ = 0.0;              // No work
+    workQuantity_ = 0.0;          // No work
     
     if (workingSubTree_ == NULL && subTreePool_->hasKnowledge() == false) {
 	return;
@@ -1898,11 +1902,14 @@ AlpsKnowledgeBrokerMPI::updateWorkloadInfo()
     pos1 = subTreeVec.begin();
     pos2 = subTreeVec.end();
 
-    if (pos1 != pos2) workQuality_ = (*pos1)->getQuality();//Best in pool
+    if (pos1 != pos2) {
+        workQuality_ = (*pos1)->getQuality();//Best in pool
+    }
 
     for (; pos1 != pos2; ++pos1) {
 	if ((*pos1)->getNumNodes() > 5) {
-	    count = 5;
+	    //count = 5;
+            count = (*pos1)->getNumNodes();
 	}
 	else {
 	    count = (*pos1)->getNumNodes();
@@ -1916,7 +1923,8 @@ AlpsKnowledgeBrokerMPI::updateWorkloadInfo()
 	    workQuality_ = workingSubTree_->getQuality();
 	}
 	if (workingSubTree_->getNumNodes() > 5) {
-	    count = 5;
+	    //count = 5;
+	    count = workingSubTree_->getNumNodes();
 	}
 	else {
 	    count = workingSubTree_->getNumNodes();
@@ -3828,6 +3836,17 @@ AlpsKnowledgeBrokerMPI::sendFinishInit(const int target,
 {
     char* dummyBuf = 0;
     MPI_Send(dummyBuf, 0, MPI_PACKED, target, AlpsMsgFinishInit, comm);
+}
+
+//#############################################################################
+
+void AlpsKnowledgeBrokerMPI::deleteSubTrees()
+{
+    if (workingSubTree_) {
+        delete workingSubTree_;
+        workingSubTree_ = NULL;
+    }
+    subTreePool_-> deleteGuts();
 }
 
 //#############################################################################

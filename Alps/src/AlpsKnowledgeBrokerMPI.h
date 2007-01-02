@@ -445,6 +445,9 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     void sendFinishInit(const int target, MPI_Comm comm);
     //@}
 
+    /** Delete subTrees in pools and the active subtree. */
+    void deleteSubTrees();
+
  public:
 
     /** Default construtor. 

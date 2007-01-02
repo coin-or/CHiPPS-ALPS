@@ -124,11 +124,11 @@ class AlpsSubTree : public AlpsKnowledge {
 
     /** Set node pool. Delete previous node pool and nodes in pool if exit.*/
     inline void setNodePool(AlpsNodePool* np) { 
-      if (nodePool_ != NULL) {
-	delete nodePool_; 
-	nodePool_ = NULL;
-      }
-      nodePool_ = np;
+        if (nodePool_ != NULL) {
+            delete nodePool_; 
+            nodePool_ = NULL;
+        }
+        nodePool_ = np;
     }
 
     /** Set node pool. Delete previous node pool, but not the nodes in pool.*/
@@ -151,12 +151,10 @@ class AlpsSubTree : public AlpsKnowledge {
     AlpsTreeNode *getBestNode() const;
 
     /** Get the knowledge broker. */
-    inline AlpsKnowledgeBroker*  getKnowledgeBroker() const 
-    { return broker_; }
-
+    inline AlpsKnowledgeBroker*  getKnowledgeBroker() const { return broker_; }
+    
     /** Set a pointer to the knowledge broker. */
-    inline void setKnowledgeBroker(AlpsKnowledgeBroker* kb) 
-    {
+    inline void setKnowledgeBroker(AlpsKnowledgeBroker* kb) {
         assert(kb);
         broker_ = kb;
     }
@@ -229,7 +227,7 @@ class AlpsSubTree : public AlpsKnowledge {
                                    int & numNodesProcessed, /* Output */
                                    int & depth,             /* Output */
                                    bool & betterSolution);  /* Output */
-
+    
     /** Generate certain number (specified by a parameter) of nodes. 
 	This function is used by master and hubs. */
     virtual int rampUp(int& depth, AlpsTreeNode* root = NULL);
@@ -249,9 +247,19 @@ class AlpsSubTree : public AlpsKnowledge {
     virtual AlpsSubTree* newSubTree() const {
 	return new AlpsSubTree;
     }
+
+    /** Remove nodes in pools in the subtree. Do not free memory. */
+    void clearNodePools() 
+    {
+        if (nodePool_) {
+            nodePool_->clear();
+        }
+        if (diveNodePool_) {
+            diveNodePool_->clear();
+        }
+    }
 };
 #endif
-
 
 //#############################################################################
 // The way to create children:
