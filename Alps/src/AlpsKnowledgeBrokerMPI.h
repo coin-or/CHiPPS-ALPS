@@ -261,8 +261,8 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
                                  bool & betterSolution);
     
     /** Processing messages. */
-    void processMessage(char *&buffer, MPI_Status &status, MPI_Request &request);
-
+    void processMessages(char *&buffer, MPI_Status &status, MPI_Request &request);
+    
     //------------------------------------------------------
 
     /** @name Knowledge sharing functions

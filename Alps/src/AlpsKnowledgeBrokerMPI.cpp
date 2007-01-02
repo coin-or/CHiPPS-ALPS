@@ -418,7 +418,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	while ( CoinCpuTime() - startTime < period ) {
 	    MPI_Test(&request, &flag, &status);
 	    if (flag) { // Receive a msg
-		processMessage(buffer, status, request);
+		processMessages(buffer, status, request);
 	    }
 	}
 	
@@ -471,7 +471,9 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	    return;
 	    //	    goto TERMINATION;
 	}
-	else if (systemWorkQuantity_ >= nodeLimit) {
+	else if (systemNodeProcessed_ >= nodeLimit) {
+            std::cout << "==== Master ask hubs terminate due to reaching node limit "
+                      << nodeLimit << std::endl;
 	    setSolStatus(ALPS_NODE_LIMIT);
 	    masterForceHubTerm();
 	    return;
@@ -1008,18 +1010,21 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	while ( CoinCpuTime() - startTime < period ) {
 	    MPI_Test(&request, &flag, &status);
 	    if (flag) { // Receive a msg
-		processMessage(buffer, status, request);
+		processMessages(buffer, status, request);
 	    }
 	}
-
+        
 	//**------------------------------------------------
         // if forceTerminate_ == true;
 	//**------------------------------------------------
         
         if (forceTerminate_) {
             //if (hubMsgLevel_ > 0) {
-                std::cout << "Asked to terminate by Master" << std::endl;
-                //}
+            std::cout << "HUB["<< globalRank_ << "] is asked to terminate by Master"
+                      << std::endl;
+            //}
+            
+            hubForceWorkerTerm();
             return;
         }
         
@@ -1450,21 +1455,27 @@ AlpsKnowledgeBrokerMPI::workerMain()
 	    MPI_Test(&request, &flag, &status);
 	    if (flag) { // Receive a msg
 		allMsgReceived = false;
-		processMessage(buffer, status, request);
+		processMessages(buffer, status, request);
                 
-                if (forceTerminate_) {
-                    // Do we want to clean up (msg, etc.)?
-                    //if (workerMsgLevel_ > 0) {
-                        std::cout << "Asked to terminate by Master" << std::endl;
-                        //}
-                    return;
-                }
 	    } 
 	    else {
 		allMsgReceived = true; 
 		break;
 	    }
 	}
+
+	//**------------------------------------------------
+        // if forceTerminate_ == true;
+	//**------------------------------------------------
+
+        if (forceTerminate_) {
+            // Do we want to clean up (msg, etc.)?
+            //if (workerMsgLevel_ > 0) {
+            std::cout << "Worker[" << globalRank_ 
+                      << "] is asked to terminate by its hub" << std::endl;
+            //}
+            return;
+        }
 
 	idleStart = CoinCpuTime();
 	
@@ -1664,9 +1675,9 @@ AlpsKnowledgeBrokerMPI::workerMain()
 
 // Process messages. 
 void 
-AlpsKnowledgeBrokerMPI::processMessage(char *&buf, 
-				       MPI_Status &status, 
-				       MPI_Request &request)
+AlpsKnowledgeBrokerMPI::processMessages(char *&buf, 
+                                        MPI_Status &status, 
+                                        MPI_Request &request)
 {
     int count;
     
@@ -1790,7 +1801,7 @@ AlpsKnowledgeBrokerMPI::processMessage(char *&buf,
 	}
 	
 	break;
-    AlpsMsgForceTerm:
+    case AlpsMsgForceTerm:
         forceTerminate_ = true;
         break;
     default:
@@ -4188,8 +4199,11 @@ void AlpsKnowledgeBrokerMPI::rootSearch(AlpsTreeNode* root)
     else if(processType_ == AlpsProcessTypeHub) {
 	hubMain();
     } 
-    else {
+    else if (processType_ == AlpsProcessTypeWorker){
 	workerMain();
+    }
+    else {
+        assert(0);
     }
 
     //------------------------------------------------------
