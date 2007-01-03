@@ -74,6 +74,8 @@ class AlpsSubTreePool : public AlpsKnowledgePool {
     void deleteGuts() {
 	std::vector<AlpsSubTree* > treeVec = subTreeList_.getContainer();
 	for_each(treeVec.begin(), treeVec.end(), DeletePtrObject());
+        subTreeList_.clear();
+        assert(subTreeList_.size() == 0);
     }
 };
 

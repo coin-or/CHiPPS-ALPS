@@ -75,7 +75,6 @@ class AlpsPriorityQueue {
 
     /** Remove all elements from the vector. But not delete them. */
     void clear() { vec_.clear(); }
-    
 };
 
 //#############################################################################

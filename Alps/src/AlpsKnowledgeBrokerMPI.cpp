@@ -526,7 +526,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	    blockTermCheck_ = false;   // Activate termination check
 	}
 
-#ifdef NF_DEBUG
+#if 0
 	std::cout << "blockTermCheck_=" << blockTermCheck_
 		  << ", allWorkerReported=" << allWorkerReported
 		  << ", allHubReported_=" << allHubReported_
@@ -771,7 +771,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
     bool allMsgReceived    = false;
     bool allWorkerReported = false;   // Workers report load at least once
     bool terminate         = false;
-
+    bool askedTerminate    = false;
     MPI_Status status;
 
     AlpsReturnCode rCode   = ALPS_OK;
@@ -1020,12 +1020,14 @@ AlpsKnowledgeBrokerMPI::hubMain()
         // if forceTerminate_ == true;
 	//**------------------------------------------------
         
-        if (forceTerminate_) {
+        if (forceTerminate_ && !askedTerminate) {
             //if (hubMsgLevel_ > 0) {
             std::cout << "HUB["<< globalRank_ << "] is asked to terminate by Master"
                       << std::endl;
             //}
 
+            askedTerminate = true;
+            
             // Delete all subtrees if hub work.
             if (hubWork_) {   
                 deleteSubTrees();
@@ -1333,6 +1335,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
 
     bool terminate         = false;
     bool allMsgReceived    = false;
+    bool askedTerminate    = false;
     
     MPI_Status status;
     AlpsReturnCode rCode = ALPS_OK;
@@ -1470,13 +1473,15 @@ AlpsKnowledgeBrokerMPI::workerMain()
         // if forceTerminate_ == true;
 	//**------------------------------------------------
 
-        if (forceTerminate_) {
+        if (forceTerminate_ && !askedTerminate) {
             // Do we want to clean up (msg, etc.)?
             //if (workerMsgLevel_ > 0) {
             std::cout << "Worker[" << globalRank_ 
                       << "] is asked to terminate by its hub" << std::endl;
             //}
             
+            askedTerminate = true;
+
             // Remove nodes from node pools
             deleteSubTrees();
         }
@@ -1584,7 +1589,6 @@ AlpsKnowledgeBrokerMPI::workerMain()
 		if (workQuantity_ < zeroLoad) {
 		    blockWorkerReport_ = true;
 		}
-#if 1
 		if ( intraCB && 
 		     (workQuantity_ < needWorkThreshold) && 
 		     (blockAskForWork_ == false) ) {
@@ -1593,9 +1597,8 @@ AlpsKnowledgeBrokerMPI::workerMain()
 		    incSendCount("workerAskForWork");
 		    blockAskForWork_ = true;
 		}
-#endif
                 
-#ifdef NF_DEBUG
+#if 0
 		std::cout << "WORKER: " << globalRank_ 
 			  << " after updateWorkloadInfo() = "
 		    	  << workQuantity_ << std::endl;
@@ -1603,7 +1606,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
 	    }
 	} 
 	else { 
-#ifdef NF_DEBUG
+#if 0
 	    std::cout << "WORKER[" << globalRank_ << "] check termination."
 		      << std::endl;
 #endif
@@ -1807,6 +1810,7 @@ AlpsKnowledgeBrokerMPI::processMessages(char *&buf,
 	break;
     case AlpsMsgForceTerm:
         forceTerminate_ = true;
+        decRecvCount("Processing msg: AlpsMsgForceTerm"); 
         break;
     default:
 	std::cout << "PROC " << globalRank_ 
