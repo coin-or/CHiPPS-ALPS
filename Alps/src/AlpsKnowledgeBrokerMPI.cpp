@@ -470,12 +470,14 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
             if (timer_.reachWallLimit()) {
                 setSolStatus(ALPS_TIME_LIMIT);
                 masterForceHubTerm();
+                systemWorkQuantityForce_ = systemWorkQuantity_;
                 hubForceWorkerTerm();
             }
             else if (systemNodeProcessed_ >= nodeLimit) {
                 std::cout << "==== Master ask hubs terminate due to reaching node limit "
                           << nodeLimit << std::endl;
                 setSolStatus(ALPS_NODE_LIMIT);
+                systemWorkQuantityForce_ = systemWorkQuantity_;
                 masterForceHubTerm();
                 hubForceWorkerTerm();
             }
@@ -492,10 +494,22 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 
 	if (reportIntCount % reportInt == 0) {
             if (msgLevel_ > 0) {
-                messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
-                    << globalRank_ << systemNodeProcessed_ << systemWorkQuantity_ 
-                    << systemSendCount_ << systemRecvCount_ << incumbentValue_ 
-                    << CoinMessageEol;
+                if (forceTerminate_ == false) {
+                    messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
+                        << globalRank_ 
+                        << systemNodeProcessed_ << systemWorkQuantity_ 
+                        << systemSendCount_ << systemRecvCount_ 
+                        << incumbentValue_ 
+                        << CoinMessageEol;
+                }
+                else {
+                    messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
+                        << globalRank_ 
+                        << systemNodeProcessed_ << systemWorkQuantityForce_ 
+                        << systemSendCount_ << systemRecvCount_ 
+                        << incumbentValue_ 
+                        << CoinMessageEol;   
+                }
             }
             
 #ifdef NF_DEBUG
@@ -4236,6 +4250,16 @@ void AlpsKnowledgeBrokerMPI::rootSearch(AlpsTreeNode* root)
     MPI_Barrier(MPI_COMM_WORLD);
     collectBestSolution(masterRank_);
 
+    // Search to end.
+    if (processType_ == AlpsProcessTypeMaster && solStatus_ == ALPS_UNKNOWN) {
+        if (hasKnowledge(ALPS_SOLUTION)) {
+            setSolStatus(ALPS_OPTIMAL);
+        }
+        else {
+            setSolStatus(ALPS_INFEASIBLE);
+        }
+    }
+    
     timer_.stop();
     
     //------------------------------------------------------
@@ -4559,12 +4583,12 @@ AlpsKnowledgeBrokerMPI::searchLog()
             }
             else if (getSolStatus() == ALPS_NODE_LIMIT) {
                 messageHandler()->message(ALPS_T_NODE_LIMIT, messages())
-                    << systemNodeProcessed_ << systemWorkQuantity_ 
+                    << systemNodeProcessed_ << systemWorkQuantityForce_ 
                     << CoinMessageEol;
             }
             else if (getSolStatus() == ALPS_TIME_LIMIT) {
                 messageHandler()->message(ALPS_T_TIME_LIMIT, messages())
-                    << systemNodeProcessed_ << systemWorkQuantity_ 
+                    << systemNodeProcessed_ << systemWorkQuantityForce_
                     << CoinMessageEol; 
             }
             else if (getSolStatus() == ALPS_FEASIBLE) {
@@ -4728,6 +4752,7 @@ AlpsKnowledgeBrokerMPI::init()
     workQuantity_ = 0.0;
     clusterWorkQuantity_ = 0.0;
     systemWorkQuantity_ = 0.0;
+    systemWorkQuantityForce_ = 0.0;
     hubWorkQuantities_ = 0;
     workerWorkQuantities_ = 0;
     workerReported_ = 0;

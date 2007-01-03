@@ -130,6 +130,9 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** The workload quantity of the whole system. */
     double systemWorkQuantity_;
+    
+    /** The workload quantity of the whole system before forcing termination. */
+    double systemWorkQuantityForce_;
 
     /** The workload quantities of all clusters/hubs. */
     double* hubWorkQuantities_;

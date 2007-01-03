@@ -41,7 +41,7 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     nodeProcessedNum_(0),
     nodeLeftNum_(0),
     treeDepth_(0),
-    solStatus_(ALPS_OPTIMAL),
+    solStatus_(ALPS_UNKNOWN),
     treeSelection_(0),
     nodeSelection_(0),
     msgLevel_(2),

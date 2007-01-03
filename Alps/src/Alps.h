@@ -60,7 +60,8 @@ enum AlpsKnowledgeType {
 //#############################################################################
 
 enum AlpsSolStatus {
-    ALPS_OPTIMAL = 0,
+    ALPS_UNKNOWN = -1,
+    ALPS_OPTIMAL,
     ALPS_TIME_LIMIT, 
     ALPS_NODE_LIMIT,
     ALPS_FEASIBLE,

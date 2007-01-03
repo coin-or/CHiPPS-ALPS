@@ -320,6 +320,9 @@ AlpsSubTree::exploreSubTree(AlpsTreeNode* root,
     else if (exploreStatus == ALPS_TIME_LIMIT) {
         broker_->setSolStatus(ALPS_TIME_LIMIT);
     }
+    else if (exploreStatus == ALPS_UNBOUNDED) {
+        broker_->setSolStatus(ALPS_UNBOUNDED);
+    }
     else {
         // Search to end.
         if (broker_->hasKnowledge(ALPS_SOLUTION)) {
