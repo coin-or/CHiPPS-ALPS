@@ -88,9 +88,6 @@ class AlpsKnowledgeBroker {
 
     /** The maximum index can been assigned on this process. */
     AlpsNodeIndex_t maxIndex_;
-
-    /** The approximate memory size (bytes) of a node with full description. */
-    int nodeMemSize_;
     //@}                       
 
     /** @name Statistics
@@ -157,6 +154,12 @@ class AlpsKnowledgeBroker {
     /** The log file. */
     std::string logfile_;
     //@}
+
+    /** The approximate memory size (bytes) of a node with full description. */
+    int nodeMemSize_;
+
+    /** The size of largest message buffer can be sent or received. */
+    int largeSize_;
 
  public:
 
@@ -394,7 +397,9 @@ class AlpsKnowledgeBroker {
     int getNodeMemSize() { return nodeMemSize_; }
     void setNodeMemSize(int ms) { nodeMemSize_ = ms; }
     //@}
-	 
+
+    int getLargeSize() { return largeSize_; }
+
     /** @name Report the best result
      *  
      */

@@ -131,7 +131,7 @@ void
 AlpsSubTree::replaceNode(AlpsTreeNode* oldNode, AlpsTreeNode* newNode)
 {
     AlpsTreeNode* parent = oldNode->getParent();
-
+    
     oldNode->removeDescendants();
 
     if (parent) {
@@ -461,10 +461,9 @@ AlpsSubTree::splitSubTree(int& returnSize, int size)
     AlpsTreeNode* subTreeRoot = 0;
     AlpsTreeNode* rootParent = 0;
 
-    const int LS = broker_->getModel()->AlpsPar()->entry(AlpsParams::largeSize);
-
+    int LS = broker_->getLargeSize();
     int maxAllowNodes = LS / getKnowledgeBroker()->getNodeMemSize();
-
+    
 #if 0
     //------------------------------------------------------
     // This is a way to find the subtree root. Do a breath first search
@@ -516,24 +515,9 @@ AlpsSubTree::splitSubTree(int& returnSize, int size)
     // maximum nodes allowed. 
     //------------------------------------------------------
 
+    // Initially, subtree root is the best leaf node.
     subTreeRoot = dynamic_cast<AlpsTreeNode*>(nodePool_->getKnowledge().first);
 
-#if 0
-    int depthUp = 1;  // IMPORTANT: avoid numNodes = 1 case
-    int numCount = 1;
-
-    while(subTreeRoot != root_) {
-	++depthUp;
-	//std::cout << "depthUp = " << depthUp << std::endl;
-	
-	numCount += static_cast<int>(pow(2, static_cast<double>(depthUp)));
-	if ((numCount  > maxAllowNodes) || (numCount * 2 > numNode)) {
-	    break;
-	}
-	subTreeRoot = subTreeRoot->getParent();
-    }
-#endif
-    
     //------------------------------------------------------
     // Find the root of subtree by doing depth first search.
     //------------------------------------------------------
@@ -544,6 +528,9 @@ AlpsSubTree::splitSubTree(int& returnSize, int size)
     int numInPool = 0;
     
     while (subTreeRoot != root_) {
+
+        // First time, just the best leaf node, then if no enough nodes,
+        // backtrack to its parent, and repeat this process until enough.
 	preSubTreeRoot = subTreeRoot;
 	subTreeRoot = subTreeRoot->getParent();
 
@@ -552,7 +539,8 @@ AlpsSubTree::splitSubTree(int& returnSize, int size)
 	
 	std::stack<AlpsTreeNode* > nodeStack;
 	curNode = 0;
-	nodeStack.push(subTreeRoot);           // The first is root
+	nodeStack.push(subTreeRoot); 
+
 	while( !nodeStack.empty() ) {
 	    curNode = nodeStack.top(); 
 	    if (!curNode->isFathomed() && !curNode->isBranched()){
@@ -567,7 +555,7 @@ AlpsSubTree::splitSubTree(int& returnSize, int size)
 	    }
 	}
 	// 4.1 looks fine
-	if ((4.1 * numInPool > numNode) || numSendNode > maxAllowNodes) {
+	if ((4.1 * numInPool > numNode) || numSendNode >= maxAllowNodes) {
 	    break;
 	}
 	

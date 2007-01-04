@@ -37,7 +37,6 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     needWorkingSubTree_(true),// Initially workingSubTree_ points to NULL
     nextIndex_(0),
     maxIndex_(INT_MAX),
-    nodeMemSize_(0),
     nodeProcessedNum_(0),
     nodeLeftNum_(0),
     treeDepth_(0),
@@ -47,7 +46,8 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     msgLevel_(2),
     hubMsgLevel_(0),
     workerMsgLevel_(0),
-    logFileLevel_(0)
+    logFileLevel_(0),
+    nodeMemSize_(0)
 {
     registerClass("ALPS_SUBTREE", new AlpsSubTree(this));
     handler_ = new CoinMessageHandler();

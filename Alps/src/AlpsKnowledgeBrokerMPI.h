@@ -230,7 +230,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** Indicate whether a worker need to as for work from its hub */
     bool blockAskForWork_;
-    
+
  protected:
 
     /** Initialize member data. */
@@ -441,7 +441,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     void sendSizeNode(const int target, AlpsSubTree*& st, MPI_Comm comm);
 
     /** Send a given subtree to the target process. */
-    void sendSubTree(const int target, AlpsSubTree*& st, int tag);
+    bool sendSubTree(const int target, AlpsSubTree*& st, int tag);
 
     /** Send finish initialization signal to the target process. */
     // NOTE: comm is hubComm_ or clusterComm_.
@@ -525,6 +525,9 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 	if (globalRank_ == masterRank_) {
 	    return getBestKnowledge(ALPS_SOLUTION).second;   
 	}
+        else {
+            return ALPS_OBJ_MAX;
+        }
     }
 
     /** Master prints out the best solution that it knows. */
