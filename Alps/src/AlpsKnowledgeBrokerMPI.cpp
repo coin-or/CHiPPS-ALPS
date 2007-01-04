@@ -468,18 +468,24 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
         if (!forceTerminate_) {
             forceTerminate_ = true;
             if (timer_.reachWallLimit()) {
+                systemWorkQuantityForce_ = systemWorkQuantity_;
                 setSolStatus(ALPS_TIME_LIMIT);
                 masterForceHubTerm();
-                systemWorkQuantityForce_ = systemWorkQuantity_;
                 hubForceWorkerTerm();
+		if (msgLevel_ > 0) {
+		    messageHandler()->message(ALPS_TERM_FORCE_TIME, messages())
+			<< timer_.limit_ << CoinMessageEol;
+		}
             }
             else if (systemNodeProcessed_ >= nodeLimit) {
-                std::cout << "==== Master ask hubs terminate due to reaching node limit "
-                          << nodeLimit << std::endl;
-                setSolStatus(ALPS_NODE_LIMIT);
                 systemWorkQuantityForce_ = systemWorkQuantity_;
+                setSolStatus(ALPS_NODE_LIMIT);
                 masterForceHubTerm();
                 hubForceWorkerTerm();
+		if (msgLevel_ > 0) {
+		    messageHandler()->message(ALPS_TERM_FORCE_NODE, messages())
+			<< nodeLimit << CoinMessageEol;
+		}
             }
         }
 	
@@ -494,21 +500,23 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 
 	if (reportIntCount % reportInt == 0) {
             if (msgLevel_ > 0) {
-                if (forceTerminate_ == false) {
-                    messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
-                        << globalRank_ 
-                        << systemNodeProcessed_ << systemWorkQuantity_ 
-                        << systemSendCount_ << systemRecvCount_ 
-                        << incumbentValue_ 
-                        << CoinMessageEol;
-                }
-                else {
+                if (forceTerminate_) {
+		    //d::cout << "******systemWorkQuantityForce_ = " << systemWorkQuantityForce_<< std::endl;
+
                     messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
                         << globalRank_ 
                         << systemNodeProcessed_ << systemWorkQuantityForce_ 
                         << systemSendCount_ << systemRecvCount_ 
                         << incumbentValue_ 
                         << CoinMessageEol;   
+                }
+                else {
+                    messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
+                        << globalRank_ 
+                        << systemNodeProcessed_ << systemWorkQuantity_ 
+                        << systemSendCount_ << systemRecvCount_ 
+                        << incumbentValue_ 
+                        << CoinMessageEol;
                 }
             }
             
@@ -1036,8 +1044,8 @@ AlpsKnowledgeBrokerMPI::hubMain()
         
         if (forceTerminate_ && !askedTerminate) {
             //if (hubMsgLevel_ > 0) {
-            std::cout << "HUB["<< globalRank_ << "] is asked to terminate by Master"
-                      << std::endl;
+            //std::cout << "HUB["<< globalRank_ << "] is asked to terminate by Master"
+	    //        << std::endl;
             //}
 
             askedTerminate = true;
@@ -1490,8 +1498,8 @@ AlpsKnowledgeBrokerMPI::workerMain()
         if (forceTerminate_ && !askedTerminate) {
             // Do we want to clean up (msg, etc.)?
             //if (workerMsgLevel_ > 0) {
-            std::cout << "Worker[" << globalRank_ 
-                      << "] is asked to terminate by its hub" << std::endl;
+            //std::cout << "Worker[" << globalRank_ 
+	    //        << "] is asked to terminate by its hub" << std::endl;
             //}
             
             askedTerminate = true;
@@ -4046,8 +4054,9 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
     hubMsgLevel_ = model_->AlpsPar()->entry(AlpsParams::hubMsgLevel);
     workerMsgLevel_ = model_->AlpsPar()->entry(AlpsParams::workerMsgLevel);
     messageHandler()->setLogLevel(msgLevel_);
-    
     hubNum_ = model_->AlpsPar()->entry(AlpsParams::hubNum);
+
+    timer_.limit_ = model_->AlpsPar()->entry(AlpsParams::timeLimit);    
 
     while(true) {
 	if (hubNum_ > 0) {
@@ -4582,14 +4591,36 @@ AlpsKnowledgeBrokerMPI::searchLog()
                     << CoinMessageEol;
             }
             else if (getSolStatus() == ALPS_NODE_LIMIT) {
-                messageHandler()->message(ALPS_T_NODE_LIMIT, messages())
-                    << systemNodeProcessed_ << systemWorkQuantityForce_ 
-                    << CoinMessageEol;
+		if (forceTerminate_) {
+		    messageHandler()->message(ALPS_T_NODE_LIMIT, messages())
+			<< systemNodeProcessed_ << systemWorkQuantityForce_ 
+			<< CoinMessageEol;
+		}
+		else {
+		    messageHandler()->message(ALPS_T_NODE_LIMIT, messages())
+			<< systemNodeProcessed_ << systemWorkQuantity_ 
+			<< CoinMessageEol;
+		}
             }
             else if (getSolStatus() == ALPS_TIME_LIMIT) {
-                messageHandler()->message(ALPS_T_TIME_LIMIT, messages())
-                    << systemNodeProcessed_ << systemWorkQuantityForce_
-                    << CoinMessageEol; 
+#if 0
+		std::cout << "------ forceTerminate_=" << forceTerminate_ 
+			  << ", systemWorkQuantityForce_ = "
+			  << static_cast<int>(systemWorkQuantityForce_) 
+			  << std::endl;
+#endif
+		
+		if (forceTerminate_) {
+		    messageHandler()->message(ALPS_T_TIME_LIMIT, messages())
+			<< systemNodeProcessed_ 
+			<< static_cast<int>(systemWorkQuantityForce_)
+			<< CoinMessageEol; 
+		}
+		else  {
+		    messageHandler()->message(ALPS_T_TIME_LIMIT, messages())
+			<< systemNodeProcessed_ << systemWorkQuantity_
+			<< CoinMessageEol;
+		}
             }
             else if (getSolStatus() == ALPS_FEASIBLE) {
                 messageHandler()->message(ALPS_T_FEASIBLE, messages())
@@ -4617,11 +4648,18 @@ AlpsKnowledgeBrokerMPI::searchLog()
                       << std::endl;
 	    std::cout << "Std Dev of RampDown = " << stdRampDown << std::endl;
             
-            messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
-                << globalRank_ << systemNodeProcessed_ << systemWorkQuantity_ 
-                << systemSendCount_ << systemRecvCount_ << incumbentValue_ 
-                << CoinMessageEol;
-            
+	    if (forceTerminate_) {
+		messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
+		    << globalRank_ << systemNodeProcessed_ << systemWorkQuantityForce_ 
+		    << systemSendCount_ << systemRecvCount_ << incumbentValue_ 
+		    << CoinMessageEol;
+	    }
+	    else {
+		messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
+		    << globalRank_ << systemNodeProcessed_ << systemWorkQuantity_ 
+		    << systemSendCount_ << systemRecvCount_ << incumbentValue_ 
+		    << CoinMessageEol;
+	    }
 	    
 	    // Overall. 
 	    std::cout << "Search CPU time = "<<timer_.getCpuTime() <<" seconds"
