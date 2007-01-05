@@ -669,6 +669,22 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	    // True idle, tell others to terminate.
 	    if (terminate) {
                 if (msgLevel_ > 0) {
+                    if (forceTerminate_) {
+                        messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
+                            << globalRank_ 
+                            << systemNodeProcessed_ << systemWorkQuantityForce_ 
+                            << systemSendCount_ << systemRecvCount_ 
+                            << incumbentValue_ 
+                            << CoinMessageEol;
+                    }
+                    else {
+                        messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
+                            << globalRank_ << systemNodeProcessed_ 
+                            << systemWorkQuantity_ 
+                            << systemSendCount_ << systemRecvCount_ 
+                            << incumbentValue_ 
+                            << CoinMessageEol;
+                    }
                     messageHandler()->message(ALPS_TERM_MASTER_INFORM, messages())
                         << globalRank_ << "exit" << CoinMessageEol;
                 }
@@ -4675,19 +4691,6 @@ AlpsKnowledgeBrokerMPI::searchLog()
                     << systemNodeProcessed_ << systemWorkQuantity_ 
                     << CoinMessageEol;
             }
-
-	    if (forceTerminate_) {
-		messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
-		    << globalRank_ << systemNodeProcessed_ << systemWorkQuantityForce_ 
-		    << systemSendCount_ << systemRecvCount_ << incumbentValue_ 
-		    << CoinMessageEol;
-	    }
-	    else {
-		messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
-		    << globalRank_ << systemNodeProcessed_ << systemWorkQuantity_ 
-		    << systemSendCount_ << systemRecvCount_ << incumbentValue_ 
-		    << CoinMessageEol;
-	    }    
 
             std::cout << "\n=================== SEARCH RESULTS  ================="
                       << std::endl;
