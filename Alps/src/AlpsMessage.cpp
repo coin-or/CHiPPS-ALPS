@@ -40,11 +40,12 @@ static Alps_message us_english[] =
     {ALPS_LOADBAL_HUB_FAIL, 6, 3, "Hub[%d] failed to find a process to donate work to process %d"},
     {ALPS_LOADBAL_MASTER, 7, 3, "Master[%d] balanced workloads of the hubs %d times"},
     {ALPS_LOADBAL_MASTER_NO, 8, 3, "Master[%d] balanced workload but do nothing since work load is %g"},
-    {ALPS_LOADREPORT_MASTER, 9, 1, "Master[%d] nodes(processed %d, left %g), msg counts(sent %d, received %d), incumbent %g"},
-    {ALPS_LOADBAL_WORKER_ASK, 10, 3, "Worker[%d] asks its hub (%d) for work"},
+    {ALPS_LOADBAL_WORKER_ASK, 9, 3, "Worker[%d] asks its hub (%d) for work"},
+    {ALPS_LOADREPORT_MASTER, 11, 1, "Master[%d] nodes(processed %d, left %g), msg counts(sent %d, received %d), incumbent %g"},
+    {ALPS_LOADREPORT_MASTER_F, 12, 1, "Master[%d] nodes(processed %d, left %g / %g), msg counts(sent %d, received %d), incumbent %g"},
     {ALPS_MSG_HOW, 13, 3, "Process[%d] %s count %d in %s"},
     {ALPS_NODE_COUNT, 15, 3, "Worker[%d] processed %d nodes, %d nodes are left"},
-    {ALPS_P_VERSION, 100, 1, "ALPS version 0.9 (Parallel, MPI)"},
+    {ALPS_P_VERSION, 100, 1, "ALPS version 0.9.5 (Parallel, MPI)"},
     {ALPS_PARAMFILE, 18, 1, "Parameter file: %s"},
     {ALPS_RAMPUP_HUB, 19, 1, "Hub[%d]'s rampup took %g seconds, processed %d nodes, node pool has %d nodes"},
     {ALPS_RAMPUP_HUB_FAIL, 20, 1, "Hub[%d] failed to generate enought subtrees (nodes) and finish search by itself"},
@@ -80,7 +81,7 @@ static Alps_message us_english[] =
     {ALPS_S_FINAL_DEPTH, 96, 1, "Tree depth: %d"},
     {ALPS_S_FINAL_CPU, 97, 1, "Search CPU time: %.2f seconds"},
     {ALPS_S_FINAL_WALLCLOCK, 98, 1, "Search wall-clock time: %.2f seconds"},
-    {ALPS_S_VERSION, 1, 1, "ALPS version 0.9 (Serial)"},
+    {ALPS_S_VERSION, 1, 1, "ALPS version 0.9.5 (Serial)"},
     {ALPS_DUMMY_END, 999999, 0, ""}
 };
 
