@@ -4658,7 +4658,8 @@ AlpsKnowledgeBrokerMPI::searchLog()
         if (msgLevel_ > 0) {
             if (getSolStatus() == ALPS_OPTIMAL) {
                 messageHandler()->message(ALPS_T_OPTIMAL, messages())
-                    << systemNodeProcessed_ << systemWorkQuantity_ 
+                    << systemNodeProcessed_
+		    << static_cast<int>(systemWorkQuantity_) 
                     << CoinMessageEol;
             }
             else if (getSolStatus() == ALPS_NODE_LIMIT) {
@@ -4698,12 +4699,14 @@ AlpsKnowledgeBrokerMPI::searchLog()
             }
             else if (getSolStatus() == ALPS_FEASIBLE) {
                 messageHandler()->message(ALPS_T_FEASIBLE, messages())
-                    << systemNodeProcessed_ << systemWorkQuantity_ 
+                    << systemNodeProcessed_ 
+		    << static_cast<int>(systemWorkQuantity_)
                     << CoinMessageEol;
             }
             else {
                 messageHandler()->message(ALPS_T_INFEASIBLE, messages())
-                    << systemNodeProcessed_ << systemWorkQuantity_ 
+                    << systemNodeProcessed_ 
+		    << static_cast<int>(systemWorkQuantity_)
                     << CoinMessageEol;
             }
 
