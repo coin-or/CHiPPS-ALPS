@@ -476,7 +476,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 
 	// NOTE: Use wall clock time for parallel.
         if (!forceTerminate_) {
-            if (allHubReported_ && timer_.reachWallLimit()) {
+            if (allWorkerReported && allHubReported_ && timer_.reachWallLimit()) {
                 forceTerminate_ = true;
                 setSolStatus(ALPS_TIME_LIMIT);
                 masterForceHubTerm();
@@ -494,7 +494,8 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 		}
                 systemWorkQuantityForce_ = systemWorkQuantity_;
             }
-            else if (allHubReported_ && (systemNodeProcessed_ >= nodeLimit)) {
+            else if (allWorkerReported && allHubReported_ && 
+                     (systemNodeProcessed_ >= nodeLimit)) {
                 forceTerminate_ = true;
                 setSolStatus(ALPS_NODE_LIMIT);
                 masterForceHubTerm();
