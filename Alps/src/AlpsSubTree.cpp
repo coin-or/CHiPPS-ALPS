@@ -954,8 +954,7 @@ AlpsSubTree::exploreUnitWork(int unitWork,
             exploreStatus = ALPS_NODE_LIMIT;
 	    break;
 	}
-	else if ( (broker_->tempTimer().getCpuTime() > unitTime) ||
-                  ((broker_->timer()).reachCpuLimit()) ){
+	else if (broker_->tempTimer().getCpuTime() > unitTime){
             exploreStatus = ALPS_TIME_LIMIT;
 	    break;
 	}
