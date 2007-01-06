@@ -3345,8 +3345,6 @@ AlpsKnowledgeBrokerMPI::sendIncumbent()
     int size = 
 	model_->AlpsPar()->entry(AlpsParams::smallSize);
     
-    char* buf = new char [size];
-
     int mySeq = rankToSequence(incumbentID_, globalRank_);
     int leftSeq = leftSequence(mySeq, processNum_);
     int rightSeq = rightSequence(mySeq, processNum_);
@@ -3357,9 +3355,11 @@ AlpsKnowledgeBrokerMPI::sendIncumbent()
 	abort();
     }
 
-    MPI_Pack(&incumbentValue_, 1, MPI_DOUBLE, buf, size, &position, MPI_COMM_WORLD);
-    MPI_Pack(&incumbentID_, 1, MPI_INT, buf, size, &position, MPI_COMM_WORLD);
-
+    MPI_Pack(&incumbentValue_, 1, MPI_DOUBLE, smallBuffer_, size, &position,
+             MPI_COMM_WORLD);
+    MPI_Pack(&incumbentID_, 1, MPI_INT, smallBuffer_, size, &position, 
+             MPI_COMM_WORLD);
+    
     if (leftSeq != -1) {
 	int leftRank = sequenceToRank(incumbentID_, leftSeq);
 #if defined(NF_DEBUG_MORE)  
@@ -3367,7 +3367,7 @@ AlpsKnowledgeBrokerMPI::sendIncumbent()
 		  <<" : init send a solution - L,  value = " 
 		  << incumbentValue_ << " to "<< leftRank << std::endl; 
 #endif
-	MPI_Send(buf, position, MPI_PACKED, leftRank, AlpsMsgIncumbentTwo, 
+	MPI_Send(smallBuffer_, position, MPI_PACKED, leftRank, AlpsMsgIncumbentTwo, 
 		 MPI_COMM_WORLD);
 	incSendCount("sendIncumbent()");
     }
@@ -3379,13 +3379,9 @@ AlpsKnowledgeBrokerMPI::sendIncumbent()
 		  <<" : init send a solution - R,  value = " 
 		  << incumbentValue_ << " to "<< rightRank << std::endl; 
 #endif
-	MPI_Send(buf, position, MPI_PACKED, rightRank, AlpsMsgIncumbentTwo, 
+	MPI_Send(smallBuffer_, position, MPI_PACKED, rightRank, AlpsMsgIncumbentTwo, 
 		 MPI_COMM_WORLD);
 	incSendCount("sendIncumbent()");
-    }
-    
-    if(buf != 0) {
-	delete [] buf;     buf = 0;
     }
 }
 
@@ -3560,6 +3556,7 @@ AlpsKnowledgeBrokerMPI::unpackEncoded(char*& buf, int size)
 #endif
 
     // Return a enc of required knowledge type
+    // Take over the memory ownship of type and rep
     return new AlpsEncoded(type, repSize, rep );
 }
 

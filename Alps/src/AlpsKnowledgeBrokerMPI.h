@@ -532,7 +532,12 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** The master queries the quality of the best solution it knowns. */
     virtual double getBestQuality() const {
 	if (globalRank_ == masterRank_) {
-	    return getBestKnowledge(ALPS_SOLUTION).second;   
+            if (getNumKnowledges(ALPS_SOLUTION) > 0) {
+                return getBestKnowledge(ALPS_SOLUTION).second;   
+            }
+            else {
+                return ALPS_OBJ_MAX;
+            }
 	}
         else {
             return ALPS_OBJ_MAX;
