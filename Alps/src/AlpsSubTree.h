@@ -228,9 +228,11 @@ class AlpsSubTree : public AlpsKnowledge {
                                    int & depth,             /* Output */
                                    bool & betterSolution);  /* Output */
     
-    /** Generate certain number (specified by a parameter) of nodes. 
+    /** Generate required number (specified by a parameter) of nodes. 
 	This function is used by master and hubs. */
-    virtual int rampUp(int& depth, AlpsTreeNode* root = NULL);
+    virtual int rampUp(int requiredNumNodes,
+                       int& depth,
+                       AlpsTreeNode* root = NULL);
     
     /** This method should encode the content of the subtree and return a
 	pointer to the encoded form. Only parallel code need this function. */

@@ -27,7 +27,6 @@ AlpsKnowledgeBroker::decodeMap_ = new std::map<const char*,
 /* Default constructor. */
 AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     : 
-    //phase_(ALPS_PHASE_RAMPUP),
     model_(NULL),
     phase_(ALPS_PHASE_SEARCH),
     subTreePool_ (new AlpsSubTreePool),
@@ -47,7 +46,8 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     hubMsgLevel_(0),
     workerMsgLevel_(0),
     logFileLevel_(0),
-    nodeMemSize_(0)
+    nodeMemSize_(0),
+    largeSize_(100000)
 {
     registerClass("ALPS_SUBTREE", new AlpsSubTree(this));
     handler_ = new CoinMessageHandler();
@@ -59,33 +59,33 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
 
 AlpsKnowledgeBroker:: ~AlpsKnowledgeBroker() 
 {
-    if (subTreePool_ != 0) {
+    if (subTreePool_) {
 	//std::cout << "* delete subtree pool" << std::endl;
 	delete subTreePool_;
 	subTreePool_ = 0;
     }
-    if (solPool_ != 0) {
+    if (solPool_) {
 	delete solPool_; 
 	solPool_ = 0;
     }
-    if (pools_ != 0) {
+    if (pools_) {
 	delete pools_; 
 	pools_ = 0;
     }
-    if (workingSubTree_ != 0) {
+    if (workingSubTree_) {
 	//std::cout << "* delete working subtree" << std::endl;
 	delete workingSubTree_; 
 	workingSubTree_ = 0;
     }
-    if (nodeSelection_ != 0){
+    if (nodeSelection_){
 	delete nodeSelection_;
 	nodeSelection_ = 0;
     }
-    if (treeSelection_ != 0){
+    if (treeSelection_){
 	delete treeSelection_;
 	treeSelection_ = 0;
     }
-    if (handler_ != 0) {
+    if (handler_) {
 	delete  handler_;
 	handler_ = 0;
     }

@@ -231,6 +231,12 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** Indicate whether a worker need to as for work from its hub */
     bool blockAskForWork_;
 
+    /** Large message buffer. */
+    char *largeBuffer_;
+
+    /** Small message buffer. */
+    char *smallBuffer_;
+
  protected:
 
     /** Initialize member data. */

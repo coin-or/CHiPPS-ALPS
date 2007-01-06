@@ -344,12 +344,11 @@ AlpsSubTree::exploreSubTree(AlpsTreeNode* root,
 // master may find solutions, and later it will let hubs know the solutions.
 
 int
-AlpsSubTree::rampUp(int& depth, AlpsTreeNode* root) 
+AlpsSubTree::rampUp(int requiredNumNodes, int& depth, AlpsTreeNode* root) 
 {
     int numNodesProcessed = 0;
     AlpsTreeNode* node = NULL;
 
-    int requiredNumNodes;
     const bool deleteNode = 
 	broker_->getModel()->AlpsPar()->entry(AlpsParams::deleteDeadNode);
 
@@ -357,13 +356,9 @@ AlpsSubTree::rampUp(int& depth, AlpsTreeNode* root)
 	/* Master: set the root node and put it into the queue*/
 	root_ = root;
 	nodePool_->addKnowledge(root_, ALPS_OBJ_MAX);
-	requiredNumNodes = broker_->getModel()->AlpsPar()->
-	    entry(AlpsParams::masterInitNodeNum);
     }
     else {
-	/* Hub. */
-	requiredNumNodes = broker_->getModel()->AlpsPar()->
-	    entry(AlpsParams::hubInitNodeNum);
+	/* Hub. Do nothing. */
     }
     
     while( nodePool_->hasKnowledge() &&
