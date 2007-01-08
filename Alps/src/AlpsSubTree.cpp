@@ -1028,6 +1028,12 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 	}
     }
 
+    if (numNodesProcessed) {
+        double nodeProcessingTime = (broker_->tempTimer().getCpuTime()) / 
+            numNodesProcessed ;
+        broker_->setNodeProcessingTime(nodeProcessingTime);
+    }
+
     //------------------------------------------------------
     // Possible reasons for breaking while:
     // 1 no nodes:        do nothing

@@ -47,6 +47,7 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     workerMsgLevel_(0),
     logFileLevel_(0),
     nodeMemSize_(0),
+    nodeProcessingTime_(0.1), // Positive
     largeSize_(100000)
 {
     registerClass("ALPS_SUBTREE", new AlpsSubTree(this));

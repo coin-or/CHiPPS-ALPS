@@ -158,6 +158,9 @@ class AlpsKnowledgeBroker {
     /** The approximate memory size (bytes) of a node with full description. */
     int nodeMemSize_;
 
+    /** The approximately CPU time to process a node. */
+    double nodeProcessingTime_;
+
     /** The size of largest message buffer can be sent or received. */
     int largeSize_;
 
@@ -396,6 +399,14 @@ class AlpsKnowledgeBroker {
     //@{
     int getNodeMemSize() { return nodeMemSize_; }
     void setNodeMemSize(int ms) { nodeMemSize_ = ms; }
+    //@}
+
+    /** @name Query and set the approximate node processing time
+     *
+     */
+    //@{
+    double getNodeProcessingTime() { return nodeProcessingTime_; }
+    void setNodeProcessingTime(double npTime) { nodeProcessingTime_ = npTime; }
     //@}
 
     int getLargeSize() { return largeSize_; }

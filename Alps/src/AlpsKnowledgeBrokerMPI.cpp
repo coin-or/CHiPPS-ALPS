@@ -69,6 +69,17 @@ static int rightSequence(const int sequence, const int numProcesses)
 
 //#############################################################################
 
+static double newUnitTime(double oldUnitTime, 
+                          int unitWork, 
+                          double nodeProcessingTime)
+{
+    double unitTime = CoinMax(oldUnitTime/10.0, nodeProcessingTime*unitWork);
+    std::cout << "$$$ unitTime = " << unitTime << std::endl;
+    return unitTime;
+}
+
+//#############################################################################
+
 void 
 AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 {
@@ -565,7 +576,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	//**------------------------------------------------
 	// If terminate check can be activated.
 	//**------------------------------------------------
-
+        
 	if ( allWorkerReported && 
 	     allHubReported_ && 
 	     (systemWorkQuantity_ < zeroLoad ) && 
@@ -593,8 +604,8 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 
 	if ( ! blockTermCheck_ ) {
 	  if (msgLevel_ > 0) {
-	    messageHandler()->message(ALPS_TERM_MASTER_START, messages())
-	      << globalRank_ << CoinMessageEol;
+              messageHandler()->message(ALPS_TERM_MASTER_START, messages())
+                  << globalRank_ << CoinMessageEol;
 	  }
 	    // Ask other hubs to do termination check.
 	    for (i = 0; i < hubNum_; ++i) {
@@ -776,7 +787,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 		}
 	    }
 	}
-
+        
 	if ( !terminate && !forceTerminate_ && 
 	     allWorkerReported && hubDoBalance_ == 0 ) {
 	    if (clusterSize_ > 2 && intraCB) {
@@ -850,7 +861,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	model_->AlpsPar()->entry(AlpsParams::zeroLoad);
     const int unitWork     =
 	model_->AlpsPar()->entry(AlpsParams::unitWorkNodes);
-    const double unitTime  =
+    double unitTime  =
 	model_->AlpsPar()->entry(AlpsParams::unitWorkTime);
     const double changeWorkThreshold = model_->AlpsPar()->
 	entry(AlpsParams::changeWorkThreshold);
@@ -1134,6 +1145,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	    bool betterSolution = true;
             int thisNumNodes = 0;
             
+            unitTime = newUnitTime(unitTime, unitWork, nodeProcessingTime_);
 	    rCode = doOneUnitWork(unitWork, 
                                   unitTime, 
                                   solStatus,
@@ -1428,7 +1440,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
 
     const int unitWork     =
 	model_->AlpsPar()->entry(AlpsParams::unitWorkNodes);
-    const double unitTime  =
+    double unitTime  =
 	model_->AlpsPar()->entry(AlpsParams::unitWorkTime);
     const double rho       = 
 	model_->AlpsPar()->entry(AlpsParams::rho);
@@ -1571,6 +1583,8 @@ AlpsKnowledgeBrokerMPI::workerMain()
 
 		// Need check better solution.
 		betterSolution = true;
+                unitTime = newUnitTime(unitTime, unitWork, nodeProcessingTime_);
+
 		rCode = doOneUnitWork(unitWork, 
                                       unitTime,
                                       solStatus,
@@ -4854,12 +4868,12 @@ AlpsKnowledgeBrokerMPI::searchLog()
 
 //#############################################################################
 
-// Explore a subtree from subtree pool for certain units of work/time. 
+// Explore a subtree from subtree pool for certain units of work and time. 
 // Return how many nodes have been processed. The same subtree will be
 // explored next time if it still have unexplored nodes. 
 AlpsReturnCode
 AlpsKnowledgeBrokerMPI::doOneUnitWork(int unitWork,
-                                      double unitTime, 
+                                      double unitTime,
                                       AlpsSolStatus & solStatus,
                                       int & numNodesProcessed,
                                       int & depth,
@@ -4869,7 +4883,7 @@ AlpsKnowledgeBrokerMPI::doOneUnitWork(int unitWork,
     AlpsReturnCode rCode = ALPS_OK;
 
     numNodesProcessed = 0; 
-   
+    
     if( (workingSubTree_ == NULL) && !(subTreePool_->hasKnowledge()) ) {
         return rCode;
     }
