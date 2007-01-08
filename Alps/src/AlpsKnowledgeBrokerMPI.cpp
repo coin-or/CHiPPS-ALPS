@@ -592,7 +592,10 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	//**------------------------------------------------
 
 	if ( ! blockTermCheck_ ) {
-
+	  if (msgLevel_ > 0) {
+	    messageHandler()->message(ALPS_TERM_MASTER_START, messages())
+	      << globalRank_ << CoinMessageEol;
+	  }
 	    // Ask other hubs to do termination check.
 	    for (i = 0; i < hubNum_; ++i) {
 		if (hubRanks_[i] != globalRank_) {
@@ -688,8 +691,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
                             << systemNodeProcessed_ << systemWorkQuantity_ 
 			    << systemWorkQuantityForce_ 
                             << systemSendCount_ << systemRecvCount_ 
-                            << incumbentValue_ 
-                            << CoinMessageEol;
+                            << incumbentValue_                             << CoinMessageEol;
                     }
                     else {
                         messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
@@ -1086,7 +1088,8 @@ AlpsKnowledgeBrokerMPI::hubMain()
         // if forceTerminate_ == true;
 	//**------------------------------------------------
         
-        if (forceTerminate_ && !deletedSTs) {
+        //if (forceTerminate_ && !deletedSTs) {
+	if (forceTerminate_) {
             //if (hubMsgLevel_ > 0) {
             //std::cout << "HUB["<< globalRank_ << "] is asked to terminate by Master"
 	    //        << std::endl;
@@ -1530,7 +1533,9 @@ AlpsKnowledgeBrokerMPI::workerMain()
         // if forceTerminate_ == true;
 	//**------------------------------------------------
 
-        if (forceTerminate_ && !deletedSTs) {
+        //if (forceTerminate_ && !deletedSTs) {
+	// Don't know why error on limits
+        if (forceTerminate_) {
             // Do we want to clean up (msg, etc.)?
             //if (workerMsgLevel_ > 0) {
             //std::cout << "Worker[" << globalRank_ 

@@ -63,7 +63,7 @@ static Alps_message us_english[] =
     {ALPS_TERM_FORCE_NODE, 42, 1, "Master asked other processes to exit due to reaching node limt %d"},
     {ALPS_TERM_FORCE_TIME, 43, 1, "Master asked other processes to exit due to reaching time limt %.2f seconds"},
     {ALPS_TERM_HUB_INFORM, 45, 3, "Hub[%d] got instruction to %s"},
-    {ALPS_TERM_MASTER_START, 46, 1, "Master[%d] checks termination"},
+    {ALPS_TERM_MASTER_START, 46, 1, "Master[%d] is doing termination check"},
     {ALPS_TERM_MASTER_INFORM, 47, 1, "Master[%d] asked other processes to %s"},
     {ALPS_TERM_WORKER_INFORM, 48, 3, "Worker[%d] got instruction to %s"},
     {ALPS_T_FEASIBLE,50, 1, "Incompleted search found feasible solutions, %d nodes processed, %d nodes left"},
