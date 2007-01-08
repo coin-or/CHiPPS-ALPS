@@ -1654,6 +1654,9 @@ AlpsKnowledgeBrokerMPI::workerMain()
 		if ( intraCB && !forceTerminate_ &&
 		     (workQuantity_ < needWorkThreshold) && 
 		     (blockAskForWork_ == false) ) {
+
+                    ++(psStats_.workerAsk_);
+                    
 		    MPI_Send(tempBuffer, 0, MPI_PACKED, myHubRank_, 
 			     AlpsMsgWorkerNeedWork, MPI_COMM_WORLD);
 		    incSendCount("workerAskForWork");
@@ -2047,6 +2050,8 @@ AlpsKnowledgeBrokerMPI::donateWork(char*& anyBuffer,
 	hasSentSubTree = sendSubTree(receiverID, aSubTree, tag);
         
         if (hasSentSubTree) {
+            ++(psStats_.subtreeWhole_);
+            
             subTreePool_->popKnowledge();
             // Since sent to other process, delete it.
             delete aSubTree;
@@ -2060,6 +2065,8 @@ AlpsKnowledgeBrokerMPI::donateWork(char*& anyBuffer,
             // Split subtree.
             aSubTree = aSubTree->splitSubTree(treeSize);
             if (treeSize > ALPS_GEN_TOL) {
+                ++(psStats_.subtreeSplit_);
+                
                 hasSentSubTree = sendSubTree(receiverID, aSubTree, tag);
                 assert(hasSentSubTree == true);
                 
@@ -2078,6 +2085,8 @@ AlpsKnowledgeBrokerMPI::donateWork(char*& anyBuffer,
     else if (workingSubTree_ != 0) {     // Case 2
 	aSubTree = workingSubTree_->splitSubTree(treeSize);
 	if (treeSize > ALPS_GEN_TOL) {
+            ++(psStats_.subtreeSplit_);
+
 	    hasSentSubTree = sendSubTree(receiverID, aSubTree, tag);
             assert(hasSentSubTree == true);
 
@@ -2098,12 +2107,18 @@ AlpsKnowledgeBrokerMPI::donateWork(char*& anyBuffer,
 	std::cout << "donateWork(): " << globalRank_ << "has nothing send to " 
 		  << receiverID << std::endl;
 #endif
+
+        ++(psStats_.donateFail_);
+
 	MPI_Send(dummyBuf, 0, MPI_PACKED, receiverID, tag, MPI_COMM_WORLD);
 
         if (msgLevel_ > 100) {
             messageHandler()->message(ALPS_DONATE_FAIL, messages()) 
                 << globalRank_ << receiverID << status->MPI_TAG << CoinMessageEol;
         }
+    }
+    else {
+        ++(psStats_.donateSuccess_);
     }
 
 #ifdef NF_DEBUG_MORE
@@ -2207,6 +2222,8 @@ AlpsKnowledgeBrokerMPI::hubBalanceWorkers()
     	model_->AlpsPar()->entry(AlpsParams::needWorkThreshold);
     assert(needWorkThreshold > 0.0);
 
+    ++(psStats_.intraBalance_);
+    
     // Indentify donors and receivers and decide to do quantity or quality.
     // Do quantity balance if any hubs do not have work
     bool quantityBalance = false;
@@ -2219,7 +2236,7 @@ AlpsKnowledgeBrokerMPI::hubBalanceWorkers()
 		  << ", needWorkThreshold = " << needWorkThreshold << std::endl;
 #endif
 	if ( i == clusterRank_ ) continue;
-
+        
 	if (workerWorkQuantities_[i] <= needWorkThreshold) {
 	    receivers.insert(std::pair<double, int>(workerWorkQualities_[i], 
 						    globalRank_ - masterRank_ + i));
@@ -2228,6 +2245,8 @@ AlpsKnowledgeBrokerMPI::hubBalanceWorkers()
     }
     
     if (quantityBalance) {  // Quantity balance
+        ++(psStats_.quantityBalance_);
+        
 	for (i = 0; i < clusterSize_; ++i) {
 	    if ( i == clusterRank_ ) continue;
 
@@ -2238,6 +2257,8 @@ AlpsKnowledgeBrokerMPI::hubBalanceWorkers()
 	}
     }
     else {   // Quality balance
+        ++(psStats_.qualityBalance_);
+        
 	double averQuality = 0.0;
 	for (i = 0; i < clusterSize_; ++i) {
 	    if ( i == clusterRank_ ) continue;
@@ -2255,7 +2276,8 @@ AlpsKnowledgeBrokerMPI::hubBalanceWorkers()
 	    }
 	    else if (diff > 0 && diffRatio > receiverSh){// Receiver candidates
 		receivers.insert(std::pair<double, int>(
-		    workerWorkQualities_[i], globalRank_ - masterRank_ + i));
+                                     workerWorkQualities_[i],
+                                     globalRank_ - masterRank_ + i));
 	    }
 	}
     }
@@ -2272,7 +2294,7 @@ AlpsKnowledgeBrokerMPI::hubBalanceWorkers()
 
     int donorID;
     int receiverID;
- 
+    
     std::multimap<double, int, std::greater<double> >::iterator posD = 
 	donors.begin();
     std::multimap<double, int>::iterator posR = receivers.begin();
@@ -2280,7 +2302,7 @@ AlpsKnowledgeBrokerMPI::hubBalanceWorkers()
     for(i = 0; i < numPair; ++i) {
 	donorID = posD->second;
 	receiverID = posR->second;
-
+        
 #ifdef NF_DEBUG
 	std::cout << "Hub["<<globalRank_ <<"] : HUB BALANCE: receiver worker ID = " 
 		  << receiverID << std::endl;
@@ -2304,7 +2326,6 @@ AlpsKnowledgeBrokerMPI::hubBalanceWorkers()
     	++posD;
 	++posR;
     }
-
 }
 
 //#############################################################################
@@ -2370,6 +2391,8 @@ AlpsKnowledgeBrokerMPI::hubSatisfyWorkerRequest(char*& bufLarge, MPI_Status* sta
     }
     else {
 	// Failed to find a donor, send a empty buffer to requestor.
+        ++(psStats_.donateFail_);
+    
 	MPI_Send(smallBuffer_, 0, MPI_PACKED, 
 		 requestor,
 		 AlpsMsgSubTreeByWorker, 
@@ -2653,6 +2676,8 @@ AlpsKnowledgeBrokerMPI::masterBalanceHubs()
     // Do quantity balance immediately if any hubs do not have work.
     //------------------------------------------------------
 
+    ++(psStats_.interBalance_);
+
     bool quantityBalance = false;
     for (i = 0; i < hubNum_; ++i) {
 	if (hubWorkQuantities_[i] < ALPS_QUALITY_TOL) {    // Have not work
@@ -2663,6 +2688,8 @@ AlpsKnowledgeBrokerMPI::masterBalanceHubs()
     }
     
     if (quantityBalance) {  // Quantity balance
+        ++(psStats_.quantityBalance_);
+
 	for (i = 0; i < hubNum_; ++i) {
 	    if (hubWorkQuantities_[i] > ALPS_QUALITY_TOL) {
 		donors.insert(std::pair<double, int>(hubWorkQualities_[i], 
@@ -2671,6 +2698,8 @@ AlpsKnowledgeBrokerMPI::masterBalanceHubs()
 	}
     }
     else {   // Quality balance
+        ++(psStats_.qualityBalance_);
+
 	double averQuality  = 0.0;
 	for (i = 0; i < hubNum_; ++i) {
 	    averQuality += hubWorkQualities_[i];
@@ -2690,7 +2719,7 @@ AlpsKnowledgeBrokerMPI::masterBalanceHubs()
 	    }
 	}
     }
-  
+    
     //------------------------------------------------------
     // Tell the donor hubs to send subtree to receiver hubs.
     //------------------------------------------------------
@@ -2710,7 +2739,7 @@ AlpsKnowledgeBrokerMPI::masterBalanceHubs()
     std::multimap<double, int, std::greater<double> >::iterator posD = 
 	donors.begin();
     std::multimap<double, int>::iterator posR = receivers.begin();
-
+    
     for(i = 0; i < numPair; ++i) {
 	donorID = posD->second;
 	receiverID = posR->second;
@@ -2759,7 +2788,7 @@ AlpsKnowledgeBrokerMPI::masterBalanceHubs()
 			 MPI_COMM_WORLD);
 		MPI_Pack(&recvLoad, 1, MPI_DOUBLE, smallBuffer_, size, &pos, 
 			 MPI_COMM_WORLD);
-
+                
 		incSendCount("masterBalanceHubs()");
 		MPI_Send(smallBuffer_, pos, MPI_PACKED, maxLoadRank,
 			 AlpsMsgAskDonateToHub, MPI_COMM_WORLD);
@@ -4347,6 +4376,16 @@ AlpsKnowledgeBrokerMPI::searchLog()
     double* rampDowns = 0;
     double *cpuTimes =  NULL;
     double *wallClocks = NULL;
+
+    int *qualityBalance = 0;
+    int *quantityBalance = 0;
+    int *interBalance = 0;
+    int *intraBalance = 0;
+    int *workerAsk = 0;
+    int *donateSuccess = 0;
+    int *donateFail = 0;
+    int *subtreeSplit = 0;
+    int *subtreeWhole = 0;
     
     if (globalRank_ == masterRank_) {
 	tSizes = new int [processNum_];
@@ -4357,6 +4396,15 @@ AlpsKnowledgeBrokerMPI::searchLog()
 	rampDowns = new double [processNum_];
 	cpuTimes = new double [processNum_];
 	wallClocks = new double [processNum_];
+        qualityBalance = new int [processNum_];
+        quantityBalance = new int [processNum_];
+        interBalance = new int [processNum_];
+        intraBalance = new int [processNum_];
+        workerAsk = new int [processNum_];
+        donateSuccess = new int [processNum_];
+        donateFail = new int [processNum_];
+        subtreeSplit = new int [processNum_];
+        subtreeWhole = new int [processNum_];
     }  
 
     MPI_Gather(&nodeProcessedNum_, 1, MPI_INT, tSizes, 1, MPI_INT, 
@@ -4375,10 +4423,26 @@ AlpsKnowledgeBrokerMPI::searchLog()
 	       masterRank_, MPI_COMM_WORLD);
     MPI_Gather(&(timer_.wall_), 1, MPI_DOUBLE, wallClocks, 1, MPI_DOUBLE, 
 	       masterRank_, MPI_COMM_WORLD);
+    MPI_Gather(&(psStats_.qualityBalance_), 1, MPI_INT, qualityBalance, 1,
+               MPI_INT, masterRank_, MPI_COMM_WORLD);
+    MPI_Gather(&(psStats_.quantityBalance_), 1, MPI_INT, quantityBalance, 1,
+                MPI_INT, masterRank_, MPI_COMM_WORLD);
+    MPI_Gather(&(psStats_.interBalance_), 1, MPI_INT, interBalance, 1,
+               MPI_INT, masterRank_, MPI_COMM_WORLD);
+    MPI_Gather(&(psStats_.intraBalance_), 1, MPI_INT, intraBalance, 1,
+               MPI_INT, masterRank_, MPI_COMM_WORLD);
+    MPI_Gather(&(psStats_.workerAsk_), 1, MPI_INT, workerAsk, 1,
+               MPI_INT, masterRank_, MPI_COMM_WORLD);
+    MPI_Gather(&(psStats_.donateSuccess_), 1, MPI_INT, donateSuccess, 1,
+               MPI_INT, masterRank_, MPI_COMM_WORLD);
+    MPI_Gather(&(psStats_.donateFail_), 1, MPI_INT, donateFail, 1,
+               MPI_INT, masterRank_, MPI_COMM_WORLD);
+    MPI_Gather(&(psStats_.subtreeSplit_), 1, MPI_INT, subtreeSplit, 1,
+               MPI_INT, masterRank_, MPI_COMM_WORLD);
+    MPI_Gather(&(psStats_.subtreeWhole_), 1, MPI_INT, subtreeWhole, 1,
+               MPI_INT, masterRank_, MPI_COMM_WORLD);
 
     if (processType_ == AlpsProcessTypeMaster) {
-
-
 	int numWorkers = 0;   // Number of process are processing nodes.
 	
 	int sumSize = 0, aveSize, maxSize = 0, minSize = ALPS_INT_MAX;
@@ -4407,7 +4471,17 @@ AlpsKnowledgeBrokerMPI::searchLog()
 	
 	int totalTreeSize = 0;
 	int totalNodeLeft = 0;
-	
+
+        int sumQualityBalance = 0;
+        int sumQuantityBalance = 0;
+        int sumInterBalance = 0;
+        int sumIntraBalance = 0;
+        int sumWorkerAsk = 0;
+        int sumDonateSuccess = 0;
+        int sumDonateFail = 0;
+        int sumSubtreeSplit = 0;
+        int sumSubtreeWhole = 0;
+    
 	if(logFileLevel_ > 0 || msgLevel_ > 0) {
 	    for(i = 0; i < processNum_; ++i) {
 		totalTreeSize += tSizes[i];
@@ -4416,6 +4490,16 @@ AlpsKnowledgeBrokerMPI::searchLog()
 		sumRampUp += rampUps[i];
 		sumCpuTime += cpuTimes[i];
 		sumWallClock += wallClocks[i];
+
+                sumQualityBalance += qualityBalance[i];
+                sumQuantityBalance += quantityBalance[i];
+                sumInterBalance += interBalance[i];
+                sumIntraBalance += intraBalance[i];
+                sumWorkerAsk += workerAsk[i];
+                sumDonateSuccess += donateSuccess[i];
+                sumDonateFail += donateFail[i];
+                sumSubtreeSplit += subtreeSplit[i];
+                sumSubtreeWhole += subtreeWhole[i];
                 
 		// Only valid for workers.
 		if (processTypeList_[i] == AlpsProcessTypeWorker) {
@@ -4663,8 +4747,8 @@ AlpsKnowledgeBrokerMPI::searchLog()
             std::cout << "\n=================== SEARCH RESULTS  ================="
                       << std::endl;
 
-	    //----------------------------------------------
-	    // Tree size and depth.
+            //----------------------------------------------
+	    // Tree size, depth, overheads.
 	    //----------------------------------------------
 
 	    std::cout << "Number of nodes processed = " 
@@ -4712,8 +4796,36 @@ AlpsKnowledgeBrokerMPI::searchLog()
                       << std::endl;
 	    std::cout << "Std Dev of RampDown = " << stdRampDown << std::endl;
             std::cout << "----------------------------------" << std::endl;
+
+            //----------------------------------------------
+	    // Load balancing
+	    //----------------------------------------------
+
+            std::cout << "Quality balance = " << sumQualityBalance 
+                      << std::endl;
+            std::cout << "Quantity balance = " << sumQuantityBalance 
+                      << std::endl;
+            std::cout << "Inter-balance = " << sumInterBalance 
+                      << std::endl;
+            std::cout << "Intra-balance = " << sumIntraBalance 
+                      << std::endl;
+            std::cout << "Worker asked workload = " << sumWorkerAsk 
+                      << std::endl;
+            std::cout << "Worker donate success = " << sumDonateSuccess 
+                      << std::endl;
+            std::cout << "Worker donate fail = " << sumDonateFail 
+                      << std::endl;
+            std::cout << "Subtree split = " << sumSubtreeSplit
+                      << std::endl;
+            std::cout << "Subtree whole = " << sumSubtreeWhole 
+                      << std::endl;
             
+            std::cout << "----------------------------------" << std::endl;
+
+            //----------------------------------------------
 	    // Overall. 
+	    //----------------------------------------------           
+
 	    std::cout << "Search CPU time = "<<timer_.getCpuTime() <<" seconds"
 		      << ", max = " << maxCpuTime
 		      << ", min = "<< minCpuTime 
@@ -4874,6 +4986,17 @@ AlpsKnowledgeBrokerMPI::init()
     rampUpTime_ = 0.0;
     rampDownTime_ = 0.0;
     idleTime_ = 0.0;
+
+    psStats_.qualityBalance_ = 0;
+    psStats_.quantityBalance_ = 0;
+    psStats_.interBalance_ = 0;
+    psStats_.intraBalance_ = 0;
+    psStats_.workerAsk_ = 0;
+    psStats_.donateSuccess_ = 0;
+    psStats_.donateFail_ = 0;
+    psStats_.subtreeSplit_ = 0;
+    psStats_.subtreeWhole_ = 0;
+
     forceTerminate_ = false;
     blockTermCheck_ = true;
     blockHubReport_ = false;
@@ -4881,6 +5004,7 @@ AlpsKnowledgeBrokerMPI::init()
     blockAskForWork_   = false;    
     largeBuffer_ = 0;
     smallBuffer_ = 0;
+
 }
 
 //#############################################################################

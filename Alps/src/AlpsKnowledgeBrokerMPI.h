@@ -214,6 +214,9 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** The time spent waiting for work. */
     double idleTime_;
+
+    /** More statistics */
+    AlpsPsStats psStats_;
     //@}
 
     /** Terminate due to reaching limits (time and node) or other reason. */

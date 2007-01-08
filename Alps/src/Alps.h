@@ -126,6 +126,19 @@ enum AlpsPhase {
 
 //#############################################################################
 
+typedef struct ALPS_PS_STATS 
+{
+    int qualityBalance_;
+    int quantityBalance_;
+    int interBalance_;
+    int intraBalance_;
+    int workerAsk_;
+    int donateSuccess_;
+    int donateFail_;
+    int subtreeSplit_;
+    int subtreeWhole_;
+} AlpsPsStats;
+    
 //#############################################################################
 
 
