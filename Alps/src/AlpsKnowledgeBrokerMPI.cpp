@@ -74,7 +74,8 @@ static double newUnitTime(double oldUnitTime,
                           double nodeProcessingTime)
 {
     double unitTime = CoinMax(oldUnitTime/10.0, nodeProcessingTime*unitWork);
-    std::cout << "$$$ unitTime = " << unitTime << std::endl;
+    unitTime = CoinMax(0.02, unitTime);
+    //std::cout << "$$$ unitTime = " << unitTime << std::endl;
     return unitTime;
 }
 
