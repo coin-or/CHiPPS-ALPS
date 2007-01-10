@@ -1029,8 +1029,9 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     }
 
     if (numNodesProcessed) {
+	broker_->tempTimer().stop();
         double nodeProcessingTime = (broker_->tempTimer().getCpuTime()) / 
-            numNodesProcessed ;
+            numNodesProcessed;
         broker_->setNodeProcessingTime(nodeProcessingTime);
     }
 

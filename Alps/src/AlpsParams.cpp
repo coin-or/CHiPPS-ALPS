@@ -198,37 +198,37 @@ void AlpsParams::setDefaultEntries() {
 
   // IntPar
   setEntry(bufSpare, 256);
-  setEntry(eliteSize, 2);
+  setEntry(eliteSize, 1);
   setEntry(hubInitNodeNum, 2);
   setEntry(hubMsgLevel, 0);
   setEntry(hubNum, 1);
-  setEntry(largeSize, 1048576);  // 2^21
+  setEntry(largeSize, 10485760);  // 2^21
   setEntry(logFileLevel, 0);
   setEntry(masterInitNodeNum, 2);
   setEntry(masterReportInterval, 10);
-  setEntry(maxHubWorkSize, 0);   // Hub never works now
+  setEntry(maxHubWorkSize, 0);   // Hub never works by default
   setEntry(mediumSize, 4096);    // 2^12
   setEntry(msgLevel, 2);
   setEntry(nodeLimit, ALPS_INT_MAX);
   setEntry(nodeLogInterval, 100);
   setEntry(processNum, 2);
   setEntry(searchStrategy, 4);  
-  setEntry(smallSize, 256);      // 2^8
+  setEntry(smallSize, 1024);      // 2^10
   setEntry(solLimit, ALPS_INT_MAX);
-  setEntry(unitWorkNodes, 50);
+  setEntry(unitWorkNodes, 20);
   setEntry(workerMsgLevel, 0);
 
   // DoublePar
-  setEntry(changeWorkThreshold, 0.05);
-  setEntry(donorThreshold, 0.10);
-  setEntry(hubReportPeriod, 0.5);
-  setEntry(masterBalancePeriod, 0.05);
+  setEntry(changeWorkThreshold, 0.02);
+  setEntry(donorThreshold, 0.02);
+  setEntry(hubReportPeriod, 0.01);
+  setEntry(masterBalancePeriod, 0.03);
   setEntry(needWorkThreshold, 2);
-  setEntry(receiverThreshold, 0.10);
+  setEntry(receiverThreshold, 0.02);
   setEntry(rho, 0.0);
   setEntry(timeLimit, ALPS_DBL_MAX);
   setEntry(tolerance, 1.0e-6);
-  setEntry(unitWorkTime, 0.5);
+  setEntry(unitWorkTime, 0.03);
   setEntry(workerAskPeriod, 0.5);
   setEntry(zeroLoad, 1.0e-6);
 

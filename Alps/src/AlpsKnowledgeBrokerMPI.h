@@ -62,13 +62,13 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** The actual size of the cluster to which the process belongs. */
     int clusterSize_;
 
-    /** The designed size of a cluster. */
+    /** The reqested size of a cluster. */
     int cluSize_;
 
-    /** The rank of the process in clusterComm_. */
+    /** The local rank of the process in clusterComm_. */
     int clusterRank_;
 
-    /** The global ranks of hubs in hubComm_. */
+    /** The global ranks of the hubs. */
     int* hubRanks_;
 
     /** The global rank of its hub for a worker. */

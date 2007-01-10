@@ -137,6 +137,7 @@ typedef struct ALPS_PS_STATS
     int donateFail_;
     int subtreeSplit_;
     int subtreeWhole_;
+    int subtreeChange_;
 } AlpsPsStats;
     
 //#############################################################################
