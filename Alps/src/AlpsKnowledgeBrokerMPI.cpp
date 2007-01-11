@@ -1783,8 +1783,10 @@ AlpsKnowledgeBrokerMPI::workerMain()
 	    } 
 	    else {  
                 // Worker is idle.
-		idleStart = CoinCpuTime();
-		firstIdle = 1;
+		if (firstIdle == 0) {
+		    idleStart = CoinCpuTime();
+		    firstIdle = 1;
+		}
 	    }
             
 	    // If has better solution, check whether need to send it
