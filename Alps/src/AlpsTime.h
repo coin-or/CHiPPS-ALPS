@@ -120,6 +120,7 @@ class AlpsTimer
     /** Check if cpu time reach limit. */
     bool reachCpuLimit() {
 	finishCpu_ = AlpsCpuTime();
+	finishWall_ = AlpsWallClock();
 	if (finishCpu_ - startCpu_ > limit_) {
 	    return true;
 	}
@@ -130,6 +131,7 @@ class AlpsTimer
     
     /** Check if wallclock time reach limit. */
     bool reachWallLimit() {
+	finishCpu_ = AlpsCpuTime();
 	finishWall_ = AlpsWallClock();
 	if (finishWall_ - startWall_ > limit_) {
 	    return true;

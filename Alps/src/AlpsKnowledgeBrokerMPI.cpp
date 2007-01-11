@@ -69,16 +69,59 @@ static int rightSequence(const int sequence, const int numProcesses)
 
 //#############################################################################
 
-static double newUnitTime(double oldUnitTime, 
-                          int unitWork, 
-                          double nodeProcessingTime)
+static double computeUnitTime(double oldUnitTime, 
+			      int unitWork, 
+			      double nodeProcessingTime)
 {
-    double unitTime = 0.5*(oldUnitTime + nodeProcessingTime*unitWork);
-    unitTime = CoinMax(0.02, unitTime);
-    unitTime = CoinMin(60.0, unitTime);
+    double unitTime = 0.1;
     
+    if (nodeProcessingTime > 30.0) {
+	unitTime = 1.5 * nodeProcessingTime;
+    }
+    else if (nodeProcessingTime > 5.0) {
+	unitTime = nodeProcessingTime * 2.0;
+    }
+    else if (nodeProcessingTime > 1.0) {
+	unitTime = nodeProcessingTime * 3.0;
+    }	     
+    else if (nodeProcessingTime > 0.1) {
+	unitTime = nodeProcessingTime * 4.0;
+    }
+    else {
+	unitTime = 0.5 * (oldUnitTime + nodeProcessingTime*unitWork);
+	unitTime = CoinMax(0.02, unitTime);
+	unitTime = CoinMin(1.0, unitTime);
+    }
+
     //std::cout << "$$$ unitTime = " << unitTime << std::endl;
     return unitTime;
+}
+
+//#############################################################################
+
+static double computeBalancePeriod(double oldBalancePeriod,
+				   int unitWork, 
+				   double nodeProcessingTime)
+{
+    double newPeriod = 0.1;
+    
+    if (nodeProcessingTime > 30.0) {
+	newPeriod = 1.5 * nodeProcessingTime;
+    }
+    else if (nodeProcessingTime > 5.0) {
+	newPeriod = nodeProcessingTime * 2.0;
+    }
+    else if (nodeProcessingTime > 1.0) {
+	newPeriod = nodeProcessingTime * 3.0;
+    }	     
+    else if (nodeProcessingTime > 0.1) {
+	newPeriod = nodeProcessingTime * 4.0;
+    }
+    else {
+	newPeriod = CoinMax(0.01, newPeriod);
+	newPeriod = CoinMax(unitWork * nodeProcessingTime/2, newPeriod);
+	newPeriod = CoinMin(1.0, newPeriod);
+    }
 }
 
 //#############################################################################
@@ -192,6 +235,11 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	}
     }
     
+    if (msgLevel_ > 0) {
+	messageHandler()->message(ALPS_NODE_MEM_SIZE, messages())
+	    << nodeMemSize_ << CoinMessageEol;
+    }
+
     //------------------------------------------------------
     // Send estimated node size to master's workers.
     //------------------------------------------------------
@@ -435,15 +483,15 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     //    balances the workload of hubs.
     //======================================================
 
-    masterBalancePeriod = CoinMax(0.01, masterBalancePeriod);
-    masterBalancePeriod = CoinMax(unitWork * nodeProcessingTime_ / 2.0, 
-                                  masterBalancePeriod);
-    masterBalancePeriod = CoinMin(60.0, masterBalancePeriod);
+    masterBalancePeriod = computeBalancePeriod(masterBalancePeriod,
+					       unitWork,
+					       nodeProcessingTime_);
 
-    std::cout << "%%%%%% masterBalancePeriod = " << masterBalancePeriod 
-              << ", nodeProcessingTime_ = " << nodeProcessingTime_
-              <<std::endl;   
-
+    if (msgLevel_ > 0) {
+	messageHandler()->message(ALPS_LOADBAL_MASTER_PERIOD, messages())
+	    << globalRank_ <<  masterBalancePeriod << CoinMessageEol;
+    }
+    
     MPI_Request request;
     MPI_Status status;
     int flag;
@@ -515,13 +563,26 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
                 masterForceHubTerm();
                 hubForceWorkerTerm();
 		if (msgLevel_ > 0) {
-                  messageHandler()->message(ALPS_LOADREPORT_MASTER_F, messages())
-		    << globalRank_ 
-		    << systemNodeProcessed_ << systemWorkQuantity_
-		    << systemWorkQuantityForce_ 
-		    << systemSendCount_ << systemRecvCount_ 
-		    << incumbentValue_ 
-		    << CoinMessageEol; 
+		    if (incumbentValue_ < ALPS_INFINITY) {
+			messageHandler()->message(ALPS_LOADREPORT_MASTER_F, messages())
+			    << systemNodeProcessed_ 
+			    << systemWorkQuantity_
+			    << systemWorkQuantityForce_ 
+			    << systemSendCount_ << systemRecvCount_ 
+			    << incumbentValue_ 
+			    << timer_.getCpuTime()
+			    << CoinMessageEol; 
+		    }
+		    else {
+			messageHandler()->message(ALPS_LOADREPORT_MASTER_F_N, messages())
+			    << systemNodeProcessed_ 
+			    << systemWorkQuantity_
+			    << systemWorkQuantityForce_ 
+			    << systemSendCount_ << systemRecvCount_ 
+			    << timer_.getCpuTime()
+			    << CoinMessageEol; 
+		    }
+		    
 		  messageHandler()->message(ALPS_TERM_FORCE_TIME, messages())
 		    << timer_.limit_ << CoinMessageEol;
 		}
@@ -534,13 +595,25 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
                 masterForceHubTerm();
                 hubForceWorkerTerm();
 		if (msgLevel_ > 0) {
-                   messageHandler()->message(ALPS_LOADREPORT_MASTER_F, messages())
-		    << globalRank_ 
-		    << systemNodeProcessed_ << systemWorkQuantity_ 
-		    << systemWorkQuantityForce_
-		    << systemSendCount_ << systemRecvCount_ 
-		    << incumbentValue_ 
-		    << CoinMessageEol; 
+		    if (incumbentValue_ < ALPS_INFINITY) {
+			messageHandler()->message(ALPS_LOADREPORT_MASTER_F, messages())
+			    << systemNodeProcessed_ 
+			    << systemWorkQuantity_ 
+			    << systemWorkQuantityForce_
+			    << systemSendCount_ << systemRecvCount_ 
+			    << incumbentValue_ 
+			    << timer_.getCpuTime()
+			    << CoinMessageEol; 
+		    }
+		    else {
+			messageHandler()->message(ALPS_LOADREPORT_MASTER_F_N, messages())
+			    << systemNodeProcessed_ 
+			    << systemWorkQuantity_ 
+			    << systemWorkQuantityForce_
+			    << systemSendCount_ << systemRecvCount_ 
+			    << timer_.getCpuTime()
+			    << CoinMessageEol; 
+		    }
 		   messageHandler()->message(ALPS_TERM_FORCE_NODE, messages())
 		     << nodeLimit << CoinMessageEol;
 		}
@@ -561,23 +634,45 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
             if (msgLevel_ > 0) {
                 if (forceTerminate_) {
 		    //d::cout << "******systemWorkQuantityForce_ = " << systemWorkQuantityForce_<< std::endl;
-
-                    messageHandler()->message(ALPS_LOADREPORT_MASTER_F, messages())
-                        << globalRank_ 
-                        << systemNodeProcessed_ << systemWorkQuantity_ 
-			<< systemWorkQuantityForce_
-                        << systemSendCount_ << systemRecvCount_ 
-                        << incumbentValue_ 
-                        << CoinMessageEol;   
+		    if (incumbentValue_ < ALPS_INFINITY) {
+			messageHandler()->message(ALPS_LOADREPORT_MASTER_F, messages())
+			    << systemNodeProcessed_ 
+			    << systemWorkQuantity_ 
+			    << systemWorkQuantityForce_
+			    << systemSendCount_ << systemRecvCount_ 
+			    << incumbentValue_ 
+			    << timer_.getCpuTime()
+			    << CoinMessageEol;   
+		    }
+		    else {
+			messageHandler()->message(ALPS_LOADREPORT_MASTER_F_N, messages())
+			    << systemNodeProcessed_ 
+			    << systemWorkQuantity_ 
+			    << systemWorkQuantityForce_
+			    << systemSendCount_ << systemRecvCount_ 
+			    << timer_.getCpuTime()
+			    << CoinMessageEol;  
+		    }
                 }
                 else {
-                    messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
-                        << globalRank_ 
-                        << systemNodeProcessed_ << systemWorkQuantity_ 
-                        << systemSendCount_ << systemRecvCount_ 
-                        << incumbentValue_ 
-                        << CoinMessageEol;
-                }
+		    if (incumbentValue_ < ALPS_INFINITY) {
+			messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
+			    << systemNodeProcessed_ 
+			    << systemWorkQuantity_ 
+			    << systemSendCount_ << systemRecvCount_ 
+			    << incumbentValue_ 
+			    << timer_.getCpuTime()
+			    << CoinMessageEol;
+		    }
+		    else {
+			messageHandler()->message(ALPS_LOADREPORT_MASTER_N, messages())
+			    << systemNodeProcessed_ 
+			    << systemWorkQuantity_ 
+			    << systemSendCount_ << systemRecvCount_ 
+			    << timer_.getCpuTime()
+			    << CoinMessageEol;
+		    }
+		}
             }
             
 #ifdef NF_DEBUG
@@ -719,20 +814,44 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	    if (terminate) {
                 if (msgLevel_ > 0) {
                     if (forceTerminate_) {
-                        messageHandler()->message(ALPS_LOADREPORT_MASTER_F, messages())
-                            << globalRank_ 
-                            << systemNodeProcessed_ << systemWorkQuantity_ 
-			    << systemWorkQuantityForce_ 
-                            << systemSendCount_ << systemRecvCount_ 
-                            << incumbentValue_                             << CoinMessageEol;
+			if (incumbentValue_ < ALPS_INFINITY) {
+			    messageHandler()->message(ALPS_LOADREPORT_MASTER_F, messages())
+				<< systemNodeProcessed_ 
+				<< systemWorkQuantity_ 
+				<< systemWorkQuantityForce_ 
+				<< systemSendCount_ << systemRecvCount_ 
+				<< incumbentValue_
+				<< timer_.getCpuTime()
+				<< CoinMessageEol;
+			}
+			else {
+			      messageHandler()->message(ALPS_LOADREPORT_MASTER_F_N, messages())
+				<< systemNodeProcessed_ 
+				<< systemWorkQuantity_ 
+				<< systemWorkQuantityForce_ 
+				<< systemSendCount_ << systemRecvCount_ 
+				<< timer_.getCpuTime()
+				<< CoinMessageEol;
+			}
                     }
                     else {
-                        messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
-                            << globalRank_ << systemNodeProcessed_ 
-                            << systemWorkQuantity_ 
-                            << systemSendCount_ << systemRecvCount_ 
-                            << incumbentValue_ 
-                            << CoinMessageEol;
+			if (incumbentValue_ < ALPS_INFINITY) {
+			    messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
+				<< systemNodeProcessed_ 
+				<< systemWorkQuantity_ 
+				<< systemSendCount_ << systemRecvCount_ 
+				<< incumbentValue_ 
+				<< timer_.getCpuTime()
+				<< CoinMessageEol;
+			}
+			else {
+			    messageHandler()->message(ALPS_LOADREPORT_MASTER_N, messages())
+				<< systemNodeProcessed_ 
+				<< systemWorkQuantity_ 
+				<< systemSendCount_ << systemRecvCount_ 
+				<< timer_.getCpuTime()
+				<< CoinMessageEol;
+			}
                     }
                     messageHandler()->message(ALPS_TERM_MASTER_INFORM, messages())
                         << globalRank_ << "exit" << CoinMessageEol;
@@ -1100,14 +1219,15 @@ AlpsKnowledgeBrokerMPI::hubMain()
     // (5) Do termination check if requred.
     //======================================================
 
-    hubReportPeriod = CoinMax(0.01, hubReportPeriod);
-    hubReportPeriod = CoinMax(unitWork*nodeProcessingTime_/2, hubReportPeriod);
-    hubReportPeriod = CoinMin(60.0, hubReportPeriod);
+    hubReportPeriod = computeBalancePeriod(hubReportPeriod, 
+					   unitWork,
+					   nodeProcessingTime_);
     
-    std::cout << "%%%%%% hubReportPeriod = " << hubReportPeriod 
-              << ", nodeProcessingTime_ = " << nodeProcessingTime_
-              <<std::endl;   
-
+    if (msgLevel_ > 0) {
+	messageHandler()->message(ALPS_LOADBAL_HUB_PERIOD, messages())
+	    << globalRank_ << hubReportPeriod << CoinMessageEol;
+    }
+    
     MPI_Request request;
     int flag = 1;
 
@@ -1181,7 +1301,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	    bool betterSolution = true;
             int thisNumNodes = 0;
             
-            unitTime = newUnitTime(unitTime, unitWork, nodeProcessingTime_);
+            unitTime = computeUnitTime(unitTime, unitWork, nodeProcessingTime_);
 	    rCode = doOneUnitWork(unitWork, 
                                   unitTime, 
                                   solStatus,
@@ -1617,7 +1737,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
 
 		// Need check better solution.
 		betterSolution = true;
-                unitTime = newUnitTime(unitTime, unitWork, nodeProcessingTime_);
+                unitTime = computeUnitTime(unitTime, unitWork, nodeProcessingTime_);
 
 		rCode = doOneUnitWork(unitWork, 
                                       unitTime,
