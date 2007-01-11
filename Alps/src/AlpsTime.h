@@ -112,10 +112,18 @@ class AlpsTimer
     //@}
 
     /** Get cpu timee. */
-    double getCpuTime() const { return cpu_; }
+    double getCpuTime() { 
+	finishCpu_ = AlpsCpuTime();
+        cpu_ = finishCpu_ - startCpu_;
+        return cpu_; 
+    }
 
     /** Get cpu timee. */
-    double getWallClock() const { return wall_; }
+    double getWallClock() { 
+        finishWall_ = AlpsWallClock();
+        wall_ = finishWall_ - startWall_;
+        return wall_; 
+    }
     
     /** Check if cpu time reach limit. */
     bool reachCpuLimit() {

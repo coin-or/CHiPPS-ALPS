@@ -388,7 +388,7 @@ AlpsSubTree::rampUp(int requiredNumNodes, int& depth, AlpsTreeNode* root)
 	case AlpsNodeStatusCandidate :
 	case AlpsNodeStatusEvaluated :
 	    ++numNodesProcessed; 
-            activeNode_ = node;
+            //activeNode_ = node; // Don't set, getNumNodes wrong.
 	    node->setActive(true);
 	    if (node == root_) {
                 node->process(true, true);

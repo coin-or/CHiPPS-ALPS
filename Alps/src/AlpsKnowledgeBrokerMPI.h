@@ -239,7 +239,15 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** Small message buffer. */
     char *smallBuffer_;
-
+    
+    /** The period that master do load balancing. It changes 
+        as search progresses. */
+    double masterBalancePeriod_;
+    
+    /** The period that a hub load balancing and report cluster status. 
+        It changes as search progresses. */
+    double hubReportPeriod_;
+    
  protected:
 
     /** Initialize member data. */
