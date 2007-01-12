@@ -1856,13 +1856,13 @@ AlpsKnowledgeBrokerMPI::workerMain()
 
 	    // Report its status to hub periodically if msg counts are not 
 	    // zero or not blocked. If no load, worker will block report 
+
+            updateWorkloadInfo();
+
 	    if (sendCount_ || recvCount_ || !blockWorkerReport_) {
-
-		updateWorkloadInfo();
-
 		incSendCount("workerMain() - workerReportStatus");
 		workerReportStatus(AlpsMsgWorkerStatus, MPI_COMM_WORLD);
-
+                
 		if (workQuantity_ < zeroLoad) {
 		    blockWorkerReport_ = true;
 		}
