@@ -1296,6 +1296,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
             if (hubWork_) {   
                 deleteSubTrees();
                 updateWorkloadInfo();
+                assert(!(subTreePool_->hasKnowledge()));
             }
             if (!deletedSTs) {
                 hubForceWorkerTerm();
@@ -1753,6 +1754,8 @@ AlpsKnowledgeBrokerMPI::workerMain()
 
             // Remove nodes from node pools
             deleteSubTrees();
+            assert(!(subTreePool_->hasKnowledge()));
+            updateWorkloadInfo();
         }
         
 	idleStart = CoinCpuTime();
