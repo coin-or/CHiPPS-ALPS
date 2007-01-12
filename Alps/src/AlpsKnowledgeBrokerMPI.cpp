@@ -1206,7 +1206,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
             << globalRank_ << rampUpTime_ << nodeProcessedNum_ << numNode
             << CoinMessageEol;
     }
-
+    
     if (nodeProcessedNum_) {
         nodeProcessingTime_ = rampUpTime_/nodeProcessedNum_;
     }
@@ -1291,13 +1291,17 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	    //        << std::endl;
             //}
 
-            deletedSTs = true;
             
             // Delete all subtrees if hub work.
             if (hubWork_) {   
                 deleteSubTrees();
+                updateWorkloadInfo();
             }
-            hubForceWorkerTerm();
+            if (!deletedSTs) {
+                hubForceWorkerTerm();
+            }
+
+            deletedSTs = true;
         }
         
 	//**------------------------------------------------
@@ -2078,7 +2082,7 @@ AlpsKnowledgeBrokerMPI::processMessages(char *&bufLarge,
     case AlpsMsgForceTerm:
         // Do not count messages during terminate checking 
         forceTerminate_ = true;
-        decRecvCount("Processing msg: AlpsMsgForceTerm"); 
+        //decRecvCount("Processing msg: AlpsMsgForceTerm"); 
         break;
     default:
 	std::cout << "PROC " << globalRank_ 
@@ -4595,6 +4599,7 @@ AlpsKnowledgeBrokerMPI::masterForceHubTerm()
 	if (i != masterRank_) {
 	    MPI_Send(buf, 0, MPI_PACKED, hubRanks_[i], 
 		     AlpsMsgForceTerm, MPI_COMM_WORLD);
+            incSendCount("masterForceHubTerm");
 	}
     }
 }
@@ -4611,6 +4616,7 @@ AlpsKnowledgeBrokerMPI::hubForceWorkerTerm()
 	if (i != clusterRank_) {
 	    MPI_Send(buf, 0, MPI_PACKED, globalRank_+i, 
 		     AlpsMsgForceTerm, MPI_COMM_WORLD);
+            incSendCount("hubForceWorkerTerm");
 	}
     }
 }
