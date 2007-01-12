@@ -2390,7 +2390,7 @@ AlpsKnowledgeBrokerMPI::hubAllocateDonation(char*& bufLarge, MPI_Status* status)
 	    incSendCount("hubAllocateDonation");
 	}
 	else { // Hub self
-	    std::cout << "Allocate to myself" << std::endl;
+	    //std::cout << "Allocate to myself" << std::endl;
 	    receiveSubTree(bufLarge, status->MPI_SOURCE, status);
 	}
     }
