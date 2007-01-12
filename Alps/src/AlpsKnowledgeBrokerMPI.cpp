@@ -119,7 +119,7 @@ static double computeBalancePeriod(double oldBalancePeriod,
     }
     else {
         unitWork = CoinMax(10, unitWork);
-	newPeriod = 0.1*unitWork*nodeProcessingTime + 0.5*oldBalancePeriod;
+	newPeriod = 0.2*unitWork*nodeProcessingTime + 0.5*oldBalancePeriod;
 	newPeriod = CoinMax(0.01, newPeriod);
 	newPeriod = CoinMin(1.0, newPeriod);
     }
@@ -1325,7 +1325,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	if ( hubWork_ && (workingSubTree_ != 0 || hasKnowledge(ALPS_SUBTREE)) ) {
 
 	    //reportCount = hubReportFreqency;
-
+            
 	    // NOTE: will stop when there is a better solution.
 	    bool betterSolution = true;
             int thisNumNodes = 0;
@@ -1338,7 +1338,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
                                   treeDepth_, 
                                   betterSolution);
             nodeProcessedNum_ += thisNumNodes;
-
+            
 	    // Update work load quantity and quality info.
 	    updateWorkloadInfo();
 	    
@@ -1359,6 +1359,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
 			    subTreePool_->getKnowledge().first);
 			subTreePool_->popKnowledge();
 			addKnowledge(ALPS_SUBTREE, tempST, curQuality);
+                        ++(psStats_.subtreeChange_);
 		    }
 		}
 	    }
@@ -1383,14 +1384,21 @@ AlpsKnowledgeBrokerMPI::hubMain()
                     }
 		} 
 	    }
-	}
+	}// EOF if hub work
 
 	//**------------------------------------------------
 	// Add in the status of hub itself. Need to check if report.
 	//**------------------------------------------------
-
+        
 	refreshClusterStatus();
-	
+        
+        if (clusterWorkQuantity_ < 0.0001) {
+            blockHubReport_ = true;
+        }
+        else {
+            blockHubReport_ = false;
+	}
+        
 #ifdef NF_DEBUG_MORE
 	std::cout << "HUB "<< globalRank_ 
 		  << ": clusterWorkQuality_  = " << clusterWorkQuality_
@@ -1411,7 +1419,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
 
 	if ((clusterSendCount_ || clusterRecvCount_ || !blockHubReport_)) {
 	    //&& reportCount == hubReportFreqency) {
-
+            
 	    //reportCount = 0;
 	    incSendCount("hubMain()-hubReportStatus");
 
@@ -1840,7 +1848,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
 	    }
 
 	    // Report its status to hub periodically if msg counts are not 
-	    // zero or not blocked. If no load, I will block report 
+	    // zero or not blocked. If no load, worker will block report 
 	    if (sendCount_ || recvCount_ || !blockWorkerReport_) {
 
 		updateWorkloadInfo();
