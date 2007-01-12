@@ -30,6 +30,48 @@
 
 //#############################################################################
 
+static int computeRampUpNumNodes(int minNumNodes, 
+                                 double nodeProcessingTime) 
+{
+    int newNumNodes;
+    
+    if (nodeProcessingTime > 0.00001) {
+        if (nodeProcessingTime > 10.0) {
+            newNumNodes = minNumNodes;
+        }
+        else if (nodeProcessingTime > 1.0) {
+            newNumNodes = minNumNodes;
+        }
+        else if (nodeProcessingTime > 0.5) {
+            newNumNodes = minNumNodes * 2;
+        }
+        else if (nodeProcessingTime > 0.1) {
+            newNumNodes = minNumNodes * 2;
+        }
+        else if (nodeProcessingTime > 0.05) {
+            newNumNodes = minNumNodes * 3;
+        }
+        else if (nodeProcessingTime > 0.01) {
+            newNumNodes = minNumNodes * 3;
+        }
+        else if (nodeProcessingTime > 0.005) {
+            newNumNodes = minNumNodes * 4;
+        }
+        else if (nodeProcessingTime > 0.001) {
+            newNumNodes = minNumNodes * 4;
+        }
+        else {
+            newNumNodes = minNumNodes * 4;
+        }
+    }
+    
+    newNumNodes = CoinMax(newNumNodes, minNumNodes);
+    
+    return newNumNodes;
+}
+
+//#############################################################################
+
 /** Default constructor. */
 AlpsSubTree::AlpsSubTree() 
     : 
@@ -344,11 +386,16 @@ AlpsSubTree::exploreSubTree(AlpsTreeNode* root,
 // master may find solutions, and later it will let hubs know the solutions.
 
 int
-AlpsSubTree::rampUp(int requiredNumNodes, int& depth, AlpsTreeNode* root) 
+AlpsSubTree::rampUp(int minNumNodes,
+                    int requiredNumNodes, 
+                    int& depth, 
+                    AlpsTreeNode* root) 
 {
     int numNodesProcessed = 0;
     AlpsTreeNode* node = NULL;
-
+    double npTime = 0.0, startTime = 0.0;
+    bool firstCall = true;
+    
     const bool deleteNode = 
 	broker_->getModel()->AlpsPar()->entry(AlpsParams::deleteDeadNode);
 
@@ -360,10 +407,11 @@ AlpsSubTree::rampUp(int requiredNumNodes, int& depth, AlpsTreeNode* root)
     else {
 	/* Hub. Do nothing. */
     }
-    
+
     while( nodePool_->hasKnowledge() &&
-	   (nodePool_->getNumKnowledges() < requiredNumNodes) ) { 
-        
+	   ((nodePool_->getNumKnowledges() < requiredNumNodes) || firstCall) ) { 
+               
+        firstCall = false;
 	node = dynamic_cast<AlpsTreeNode*>
 	    (const_cast<AlpsKnowledge*>(nodePool_->getKnowledge().first) ); 
         
@@ -389,6 +437,7 @@ AlpsSubTree::rampUp(int requiredNumNodes, int& depth, AlpsTreeNode* root)
 	case AlpsNodeStatusEvaluated :
 	    ++numNodesProcessed; 
             //activeNode_ = node; // Don't set, getNumNodes wrong.
+            startTime = CoinCpuTime();
 	    node->setActive(true);
 	    if (node == root_) {
                 node->process(true, true);
@@ -398,7 +447,9 @@ AlpsSubTree::rampUp(int requiredNumNodes, int& depth, AlpsTreeNode* root)
             }
             
 	    node->setActive(false);
-
+            npTime = CoinCpuTime() - startTime;
+            requiredNumNodes = computeRampUpNumNodes(minNumNodes,
+                                                     npTime);
 	    switch (node->getStatus()) {
 	    case AlpsNodeStatusCandidate :
 	    case AlpsNodeStatusEvaluated :

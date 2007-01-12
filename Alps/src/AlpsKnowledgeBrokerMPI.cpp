@@ -118,6 +118,7 @@ static double computeBalancePeriod(double oldBalancePeriod,
 	newPeriod = nodeProcessingTime * 4.0;
     }
     else {
+        unitWork = CoinMax(10, unitWork);
 	newPeriod = 0.1*unitWork*nodeProcessingTime + 0.5*oldBalancePeriod;
 	newPeriod = CoinMax(0.01, newPeriod);
 	newPeriod = CoinMin(1.0, newPeriod);
@@ -164,6 +165,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 
     int requiredNumNodes = 
         model_->AlpsPar()->entry(AlpsParams::masterInitNodeNum);
+
     // Make sure the number of nodes created is larger than the number of hubs.
     requiredNumNodes = ALPS_MAX(requiredNumNodes, hubNum_);
 
@@ -278,7 +280,10 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     subTree->setNodeSelection(rampupNodeSel);
     subTree->setNextIndex(1); // One more than root's index
     
-    nodeProcessedNum_ += subTree->rampUp(requiredNumNodes, treeDepth_, root);
+    nodeProcessedNum_ += subTree->rampUp(hubNum_,
+                                         requiredNumNodes, 
+                                         treeDepth_, 
+                                         root);
     
     int numGenNodes = subTree->nodePool()->getNumKnowledges();
 
@@ -394,7 +399,9 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
             << globalRank_ << requiredNumNodes << CoinMessageEol;
     }
     
-    int treeSizeByHub = subTree->rampUp(requiredNumNodes, treeDepth_);
+    int treeSizeByHub = subTree->rampUp(clusterSize_ - 1, // master never work
+                                        requiredNumNodes, 
+                                        treeDepth_);
 
     nodeProcessedNum_ += treeSizeByHub;
     const int numNode2 = subTree->nodePool()->getNumKnowledges();
@@ -987,7 +994,7 @@ void
 AlpsKnowledgeBrokerMPI::hubMain()
 {
     int i;
-    int hubCheckCount = 0;
+    int hubCheckCount = 0, minNumNodes = 0;
 
     char reply;
 
@@ -1024,7 +1031,14 @@ AlpsKnowledgeBrokerMPI::hubMain()
         model_->AlpsPar()->entry(AlpsParams::hubInitNodeNum);
 
     // Make sure the number of nodes created is larger than cluster size.
-    requiredNumNodes = ALPS_MAX(requiredNumNodes, clusterSize_);
+    if (hubWork_) {
+        minNumNodes = clusterSize_;
+        requiredNumNodes = ALPS_MAX(requiredNumNodes, clusterSize_);
+    }
+    else {
+        minNumNodes = clusterSize_ - 1;
+        requiredNumNodes = ALPS_MAX(requiredNumNodes, clusterSize_ - 1);
+    }
 
     hubReportPeriod_ = model_->AlpsPar()->entry(AlpsParams::hubReportPeriod);
     largeSize_ = model_->AlpsPar()->entry(AlpsParams::largeSize);
@@ -1118,7 +1132,9 @@ AlpsKnowledgeBrokerMPI::hubMain()
             << globalRank_ << requiredNumNodes << CoinMessageEol;
     }
 
-    nodeProcessedNum_ += subTree->rampUp(requiredNumNodes, treeDepth_);
+    nodeProcessedNum_ += subTree->rampUp(minNumNodes,
+                                         requiredNumNodes, 
+                                         treeDepth_);
     
     const int numNode = subTree->nodePool()->getNumKnowledges();
     

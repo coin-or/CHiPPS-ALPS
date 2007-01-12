@@ -90,6 +90,7 @@ enum AlpsPhase {
 };
 
 #define ALPS_NODE_PROCESS_TIME  0.0123
+#define ALPS_NONE 0
 
 //#############################################################################
 // Big number

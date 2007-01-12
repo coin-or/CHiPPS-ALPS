@@ -199,12 +199,12 @@ void AlpsParams::setDefaultEntries() {
   // IntPar
   setEntry(bufSpare, 256);
   setEntry(eliteSize, 1);
-  setEntry(hubInitNodeNum, 2);
+  setEntry(hubInitNodeNum, ALPS_NONE);
   setEntry(hubMsgLevel, 0);
   setEntry(hubNum, 1);
   setEntry(largeSize, 10485760);  // 2^21
   setEntry(logFileLevel, 0);
-  setEntry(masterInitNodeNum, 2);
+  setEntry(masterInitNodeNum, ALPS_NONE);
   setEntry(masterReportInterval, 10);
   setEntry(maxHubWorkSize, 0);   // Hub never works by default
   setEntry(mediumSize, 4096);    // 2^12

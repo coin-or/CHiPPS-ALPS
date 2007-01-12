@@ -230,7 +230,8 @@ class AlpsSubTree : public AlpsKnowledge {
     
     /** Generate required number (specified by a parameter) of nodes. 
 	This function is used by master and hubs. */
-    virtual int rampUp(int requiredNumNodes,
+    virtual int rampUp(int minNumNodes,
+                       int requiredNumNodes,
                        int& depth,
                        AlpsTreeNode* root = NULL);
     
