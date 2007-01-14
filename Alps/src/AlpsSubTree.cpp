@@ -393,7 +393,7 @@ AlpsSubTree::rampUp(int minNumNodes,
 {
     int numNodesProcessed = 0;
     AlpsTreeNode* node = NULL;
-    double npTime = 0.0, startTime = 0.0;
+    double npTime = 0.0;
     bool firstCall = true;
     
     const bool deleteNode = 
@@ -437,7 +437,7 @@ AlpsSubTree::rampUp(int minNumNodes,
 	case AlpsNodeStatusEvaluated :
 	    ++numNodesProcessed; 
             //activeNode_ = node; // Don't set, getNumNodes wrong.
-            startTime = CoinCpuTime();
+	    broker_->tempTimer().start();
 	    node->setActive(true);
 	    if (node == root_) {
                 node->process(true, true);
@@ -447,7 +447,7 @@ AlpsSubTree::rampUp(int minNumNodes,
             }
             
 	    node->setActive(false);
-            npTime = CoinCpuTime() - startTime;
+            npTime = broker_->tempTimer().getTime();
             requiredNumNodes = computeRampUpNumNodes(minNumNodes,
                                                      npTime);
 	    switch (node->getStatus()) {
@@ -1001,11 +1001,11 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 	
 	broker_->tempTimer().stop();
 	
-	if (numNodesProcessed >= unitWork) {
+	if (numNodesProcessed > unitWork) {
             exploreStatus = ALPS_NODE_LIMIT;
 	    break;
 	}
-	else if (broker_->tempTimer().getCpuTime() > unitTime){
+	else if (broker_->tempTimer().getTime() > unitTime){
             exploreStatus = ALPS_TIME_LIMIT;
 	    break;
 	}
@@ -1080,8 +1080,7 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     }
 
     if (numNodesProcessed) {
-	broker_->tempTimer().stop();
-        double nodeProcessingTime = (broker_->tempTimer().getCpuTime()) / 
+        double nodeProcessingTime = (broker_->tempTimer().getTime()) / 
             numNodesProcessed;
         broker_->setNodeProcessingTime(nodeProcessingTime);
     }
@@ -1180,11 +1179,11 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 	broker_->tempTimer().stop();
 	broker_->timer().stop();
 	
-	if (numNodesProcessed >= unitWork) {
+	if (numNodesProcessed > unitWork) {
             exploreStatus = ALPS_NODE_LIMIT;
 	    break;
 	}
-	else if (broker_->tempTimer().getCpuTime() > unitTime) {
+	else if (broker_->tempTimer().getTime() > unitTime) {
             exploreStatus = ALPS_TIME_LIMIT;
 	    // getKnowledgeBroker()->setSolStatus(ALPS_TIME_LIMIT);
 	    break;

@@ -152,7 +152,18 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
     // Register knowledge (useless for serial).
     //--------------------------------------------------
 
-    model.registerKnowledge();    
+    model.registerKnowledge(); 
+
+    //------------------------------------------------------
+    // Set clock type
+    //------------------------------------------------------
+
+    const bool clockType = 
+      model_->AlpsPar()->entry(AlpsParams::clockType);
+    
+    timer_.setClockType(clockType);
+    tempTimer_.setClockType(clockType);
+
 }
 
 //#############################################################################

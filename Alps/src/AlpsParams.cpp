@@ -51,6 +51,10 @@ void AlpsParams::createKeywordList() {
    keys_.push_back(make_pair(std::string("Alps_bufSpare"),
 			     AlpsParameter(AlpsIntPar, 
 					   bufSpare)));
+
+   keys_.push_back(make_pair(std::string("Alps_clockType"),
+			     AlpsParameter(AlpsIntPar, 
+					   clockType)));
    //
    keys_.push_back(make_pair(std::string("Alps_eliteSize"),
 			     AlpsParameter(AlpsIntPar, 
@@ -80,9 +84,9 @@ void AlpsParams::createKeywordList() {
 			     AlpsParameter(AlpsIntPar, 
 					   masterInitNodeNum)));
    //
-   keys_.push_back(make_pair(std::string("Alps_maxHubWorkSize"),
+   keys_.push_back(make_pair(std::string("Alps_hubWorkClusterSizeLimit"),
 			     AlpsParameter(AlpsIntPar,
-					   maxHubWorkSize)));
+					   hubWorkClusterSizeLimit)));
    //
    keys_.push_back(make_pair(std::string("Alps_masterReportInterval"),
 			     AlpsParameter(AlpsIntPar, 
@@ -198,6 +202,7 @@ void AlpsParams::setDefaultEntries() {
 
   // IntPar
   setEntry(bufSpare, 256);
+  setEntry(clockType, ALPS_WALL_CLOCK);
   setEntry(eliteSize, 1);
   setEntry(hubInitNodeNum, ALPS_NONE);
   setEntry(hubMsgLevel, 0);
@@ -206,7 +211,7 @@ void AlpsParams::setDefaultEntries() {
   setEntry(logFileLevel, 0);
   setEntry(masterInitNodeNum, ALPS_NONE);
   setEntry(masterReportInterval, 10);
-  setEntry(maxHubWorkSize, 0);   // Hub never works by default
+  setEntry(hubWorkClusterSizeLimit, 8);// Hub works if cluster size less than 9
   setEntry(mediumSize, 4096);    // 2^12
   setEntry(msgLevel, 2);
   setEntry(nodeLimit, ALPS_INT_MAX);

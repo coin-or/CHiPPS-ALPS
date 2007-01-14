@@ -55,6 +55,10 @@ class AlpsParams : public AlpsParameterSet {
       /** The size of extra memory allocated to a message buffer. 
           Default: 256 byte */
       bufSpare,
+      /** Type of clock when timing rampup, rampdown, etc. 
+	  CPU or Wallclock. 
+	  default: wallclock */
+      clockType,
       /** Number of the "elite" nodes that are used in determining workload. 
           Default: 1 */
       eliteSize,
@@ -85,7 +89,7 @@ class AlpsParams : public AlpsParameterSet {
       /** If the number of processes in a cluster is less than it, the hub
           also work as a worker. 
           Default: 0 (Hub does NOT work) */
-      maxHubWorkSize,
+      hubWorkClusterSizeLimit,
       /** The size of memory allocated for medium size message.
           Default: 4096 */
       mediumSize,
