@@ -22,8 +22,26 @@
 
 //#############################################################################
 
+/** Clock type */
 #define ALPS_CPU_TIME    1
 #define ALPS_WALL_CLOCK  2
+
+//#############################################################################
+
+/** Search strategy
+    -- best-first (0)
+    -- best-first-estimate (1)
+    -- breadth-first (2)
+    -- depth-first (3)
+    -- hybrid (4)
+    Default: hybrid
+*/
+
+#define ALPS_SEARCH_BEST       0
+#define ALPS_SEARCH_BREATH     1
+#define ALPS_SEARCH_BEST_EST   2
+#define ALPS_SEARCH_DEPTH      3
+#define ALPS_SEARCH_HYBRID     4
 
 //#############################################################################
 /** The possible stati for the search nodes. */

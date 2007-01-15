@@ -82,6 +82,10 @@ AlpsKnowledgeBroker:: ~AlpsKnowledgeBroker()
 	delete nodeSelection_;
 	nodeSelection_ = 0;
     }
+    if (rampUpNodeSelection_){
+	delete rampUpNodeSelection_;
+	rampUpNodeSelection_ = 0;
+    }
     if (treeSelection_){
 	delete treeSelection_;
 	treeSelection_ = 0;
@@ -222,11 +226,34 @@ AlpsKnowledgeBroker::setupKnowledgePools()
         nodeSelection_ = new AlpsNodeSelectionHybrid;
     }
     else {
-        std::cout << "search strategy" << strategy << std::endl;
-        throw CoinError("Unknown subtree compare rule", 
-			"getGoodness", "AlpsSubTree"); 
+        assert(0);
+        throw CoinError("Unknown search strategy", 
+			"setupKnowledgePools()", "AlpsKnowledgeBroker"); 
     }
+
+    strategy = model_->AlpsPar()->entry(AlpsParams::rampUpSearchStrategy);
     
+    if (strategy == AlpsBestFirst) {
+        rampUpNodeSelection_ = new AlpsNodeSelectionBest;
+    }
+    else if (strategy == AlpsBreadthFirst) {
+        rampUpNodeSelection_ = new AlpsNodeSelectionBreadth;
+    }
+    else if (strategy == AlpsDepthFirst) {
+        rampUpNodeSelection_ = new AlpsNodeSelectionDepth;
+    }
+    else if (strategy == AlpsEstimate) {
+        rampUpNodeSelection_ = new AlpsNodeSelectionEstimate;
+    }
+    else if (strategy == AlpsHybrid) {
+        rampUpNodeSelection_ = new AlpsNodeSelectionHybrid;
+    }
+    else {
+        assert(0);
+        throw CoinError("Unknown ramp up search strategy", 
+			"setupKnowledgePools()", "AlpsKnowledgeBroker"); 
+    }
+
     //--------------------------------------------------
     // Create solution and subtree pools.
     //--------------------------------------------------

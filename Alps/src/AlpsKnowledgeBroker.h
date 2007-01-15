@@ -114,15 +114,18 @@ class AlpsKnowledgeBroker {
     AlpsSolStatus solStatus_;
     //@}
     
-    /** @name compare base
+    /** @name Search strategy
      *
      */
     //@{
     /** Tree selection criterion. */
     AlpsSearchStrategy<AlpsSubTree*>* treeSelection_;
 
-    /** Node comparison criterion. */
+    /** Node selection criterion. */
     AlpsSearchStrategy<AlpsTreeNode*>* nodeSelection_;
+
+    /** Node selection criterion. */
+    AlpsSearchStrategy<AlpsTreeNode*>* rampUpNodeSelection_;
     //@}
     
     /** @name message handling
@@ -478,6 +481,13 @@ class AlpsKnowledgeBroker {
     void setNodeSelection(AlpsSearchStrategy<AlpsTreeNode*>* nc) {
         if (nodeSelection_) delete nodeSelection_;
 	nodeSelection_ = nc;
+    }
+    AlpsSearchStrategy<AlpsTreeNode*>* getRampUpNodeSelection() const {
+	return rampUpNodeSelection_;
+    }
+    void setRampUpNodeSelection(AlpsSearchStrategy<AlpsTreeNode*>* nc) {
+        if (rampUpNodeSelection_) delete rampUpNodeSelection_;
+	rampUpNodeSelection_ = nc;
     }
     //@}
    

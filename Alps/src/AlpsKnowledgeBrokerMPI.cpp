@@ -304,15 +304,14 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     AlpsNodePool* tempNodePool = new AlpsNodePool;
 
     // Best-first node selection duraing rampup
-    AlpsNodeSelectionBest *rampupNodeSel = new AlpsNodeSelectionBest;    
 
     AlpsSubTree* subTree = dynamic_cast<AlpsSubTree*>
 	(const_cast<AlpsKnowledge *>(decoderObject("ALPS_SUBTREE")))
 	->newSubTree();
 
-    tempNodePool->setNodeSelection(*rampupNodeSel);	
+    tempNodePool->setNodeSelection(*rampUpNodeSelection_);	
     subTree->setKnowledgeBroker(this);
-    subTree->setNodeSelection(rampupNodeSel);
+    subTree->setNodeSelection(rampUpNodeSelection_);
     subTree->setNextIndex(1); // One more than root's index
     
     nodeProcessedNum_ += subTree->rampUp(hubNum_,
@@ -1024,9 +1023,6 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     if(flag) {  // Cancel succeeded
 	++cancelNum;
     }
-    
-    // Delete rampup node selection.
-    delete rampupNodeSel;
 }
 
 //#############################################################################
@@ -1110,13 +1106,11 @@ AlpsKnowledgeBrokerMPI::hubMain()
     workerWorkQualities_[0] = workQuality_;
     workerWorkQuantities_[0] = workQuantity_ = 0.0;
 
-    // Best-first node selection duraing rampup
-    AlpsNodeSelectionBest *rampupNodeSel = new AlpsNodeSelectionBest;    
     
     AlpsSubTree* subTree = dynamic_cast<AlpsSubTree*>
         (const_cast<AlpsKnowledge *>(decoderObject("ALPS_SUBTREE")))->newSubTree();
     subTree->setKnowledgeBroker(this);
-    subTree->setNodeSelection(rampupNodeSel);
+    subTree->setNodeSelection(rampUpNodeSelection_);
     
     //======================================================
     // Hub's Ramp-up.
@@ -1627,9 +1621,6 @@ AlpsKnowledgeBrokerMPI::hubMain()
     if(flag) {  // Cancel succeeded
 	++cancelNum;
     }
-
-    // Delete rampup node selection.
-    delete rampupNodeSel;
 }
 
 //#############################################################################

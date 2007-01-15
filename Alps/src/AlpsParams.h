@@ -110,9 +110,18 @@ class AlpsParams : public AlpsParameterSet {
       processNum,
       /** Search strategy
           -- best-first (0)
-          -- breadth-first (1)
-          -- depth-first (2)
-          -- best-estimate (3)
+          -- best-first-estimate (1)
+          -- breadth-first (2)
+          -- depth-first (3)
+          -- hybrid (4)
+          Default: hybrid
+      */
+      rampUpSearchStrategy,
+      /** Search strategy
+          -- best-first (0)
+          -- best-first-estimate (1)
+          -- breadth-first (2)
+          -- depth-first (3)
           -- hybrid (4)
           Default: hybrid
       */
