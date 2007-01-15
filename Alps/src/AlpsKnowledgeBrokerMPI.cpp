@@ -427,7 +427,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     requiredNumNodes = model_->AlpsPar()->entry(AlpsParams::hubInitNodeNum);
     
     // Make sure the number of nodes created is larger than cluster size.
-    requiredNumNodes = ALPS_MAX(requiredNumNodes, clusterSize_);
+    requiredNumNodes = ALPS_MAX(requiredNumNodes, clusterSize_-1);
     
     if (msgLevel_ > 0) {
         messageHandler()->message(ALPS_RAMPUP_HUB_START, messages())
@@ -1681,7 +1681,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
     workerTimer.setClockType(clockType);
     workerTimer.start();
 
-    //setPhase(ALPS_PHASE_RAMPUP);
+    setPhase(ALPS_PHASE_RAMPUP);
 
     //------------------------------------------------------
     // Recv tree node size from hub.
@@ -1736,7 +1736,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
             <<globalRank_ << CoinMessageEol;
     }
     
-    //setPhase(ALPS_PHASE_SEARCH);
+    setPhase(ALPS_PHASE_SEARCH);
 
     //======================================================
     // WORKER SCHEDULER:
