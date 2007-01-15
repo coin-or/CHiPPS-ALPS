@@ -281,7 +281,9 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
                                  bool & betterSolution);
     
     /** Processing messages. */
-    void processMessages(char *&buffer, MPI_Status &status, MPI_Request &request);
+    void processMessages(char *&buffer,
+                         MPI_Status &status, 
+                         MPI_Request &request);
     
     //------------------------------------------------------
 
@@ -301,10 +303,14 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
      */
     //@{
     /** Master asks a hub to donate its workload to another hub. */
-    void masterAskHubDonate(int donorID, int receiverID, double receiverWorkload);
+    void masterAskHubDonate(int donorID, 
+                            int receiverID, 
+                            double receiverWorkload);
     
     /** Hub asks a worker to donate its workload to another worker. */
-    void hubAskWorkerDonate(int donorID, int receiverID, double receiverWorkload);
+    void hubAskWorkerDonate(int donorID, 
+                            int receiverID, 
+                            double receiverWorkload);
     
     /** Calculate the work quality and quantity on this process. */
     void updateWorkloadInfo();

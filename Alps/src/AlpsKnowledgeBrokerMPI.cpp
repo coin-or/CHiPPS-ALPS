@@ -383,6 +383,12 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     for (i = 0; i < hubNum_; ++i) {
 	if (hubRanks_[i] != globalRank_) sendFinishInit(i, hubComm_);
     }
+
+    for (i = 0; i < hubNum_; ++i) {
+	if (hubRanks_[i] != globalRank_) {
+            model_->sendGeneratedKnowledge();
+        }
+    }
     
     // Master's rampup stops.
     rampUpTimeMaster = masterTimer.getTime();
@@ -1161,6 +1167,9 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	    break;
 	}
     }
+
+    // Receive generated knowledge form the master
+    model_->receiveGeneratedKnowledge();
     
     //------------------------------------------------------
     // Generate and send required number of nodes(subtree) for 

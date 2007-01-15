@@ -116,5 +116,11 @@ class AlpsModel : public AlpsKnowledge {
     
     /** Register knowledge class. */
     virtual void registerKnowledge() { /* Default does nothing */ }
+
+    /** Send generated knowledge */
+    virtual void sendGeneratedKnowledge() { /* Default does nothing */ }
+
+    /** Receive generated knowledge */
+    virtual void receiveGeneratedKnowledge() { /* Default does nothing */ }
 };
 #endif
