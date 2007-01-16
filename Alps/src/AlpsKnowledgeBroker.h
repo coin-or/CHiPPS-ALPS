@@ -19,6 +19,7 @@
 #include <cmath>
 #include <iosfwd>
 #include <map>
+#include <string>
 
 #include "CoinMessageHandler.hpp"
 
@@ -45,8 +46,8 @@ class AlpsKnowledgeBroker {
     AlpsKnowledgeBroker& operator=(const AlpsKnowledgeBroker&);
 
     /** Stores a master copy of any encodable object for decoding purposes. */
-    static std::map<const char*,const AlpsKnowledge*, AlpsStrLess>* decodeMap_;
-  
+    std::map<std::string, AlpsKnowledge*> decodeMap_;
+    
  protected:
 
     /** The instance name. */
@@ -186,7 +187,20 @@ class AlpsKnowledgeBroker {
 	registration for class <code>foo</code> is a single line:<br>
 	<code>foo().registerClass(name, userKnowledge);</code> */
     void registerClass(const char * name, AlpsKnowledge* userKnowledge) {
-	(*decodeMap_)[name] = userKnowledge;
+        std::string newName = name;
+        
+        // Check if alread have one.
+        std::map<std::string, AlpsKnowledge*>::iterator pos, pos1;
+        pos = decodeMap_.find(newName);
+        pos1 = decodeMap_.end();
+        
+        if (pos != pos1) {
+            AlpsKnowledge* kl = pos->second;
+            decodeMap_.erase(pos);
+            delete kl;
+        }
+        
+        decodeMap_[newName] = userKnowledge;
     }
 
     /** This method returns the pointer to an empty object of the registered
@@ -195,8 +209,8 @@ class AlpsKnowledgeBroker {
 	buffer. This method will be invoked as follows to decode an object
 	whose type is <code>name</code>:<br>
 	<code>obj = AlpsKnowledge::decoderObject(name)->decode(buf) </code> */
-    static const AlpsKnowledge* decoderObject(const char* name) {
-	return (*decodeMap_)[name];
+    const AlpsKnowledge* decoderObject(const char* name) {
+	return decodeMap_[name];
     }
     //@}
 

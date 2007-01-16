@@ -33,6 +33,7 @@
 static int computeRampUpNumNodes(int minNumNodes, 
                                  double nodeProcessingTime) 
 {
+    // TODO: Should related to unit work.
     int newNumNodes;
     
     if (nodeProcessingTime > 0.00001) {

@@ -30,7 +30,8 @@
     between two C style strings. */
 //#############################################################################
 
-struct AlpsStrLess {
+struct AlpsStrLess 
+{
     inline bool operator()(const char* s1, const char* s2) const {
         return strcmp(s1, s2) < 0;
     }
@@ -45,45 +46,19 @@ struct AlpsStrLess {
 class AlpsKnowledge {
 
  private:
+    
   AlpsKnowledge(const AlpsKnowledge&);
   AlpsKnowledge& operator=(const AlpsKnowledge&);
 
- private:
-
-  /** Stores a master copy of any encodable object for decoding purposes. */
-  //static std::map<const char*, const AlpsKnowledge*, AlpsStrLess>* decodeMap_;
-
-
-  //  static std::map<const char*, AlpsKnowledge*, AlpsStrLess>* decodeMap_;
   /** The encoded object in an encoded form (could be compressed!) */
   //FIXME: For now, we just use a regular pointer here to get it to compile.
   //CoinPtr<AlpsEncoded> encoded_;
   AlpsEncoded* encoded_;
    
  public:
+  
   AlpsKnowledge() : encoded_(0) {}
   virtual ~AlpsKnowledge() {}
-
-#if 0
-  /** Every subclass that is derived from this base class must register. 
-      The register methods register the decode method of the class so that 
-      later on we can decode objects from buffers. Invoking this registration 
-      for class <code>foo</code> is a single line:<br>
-      <code>foo().registerClass();</code> 
-  */
-  void registerClass() {
-    AlpsEncoded* enc = encode();
-    (*decodeMap_)[typeid(*this).name()] = decode(*enc);
-  }
-
-  /** Overloaded version of <code> registerClass() </code>. Invoking this 
-      registration for class <code>foo</code> is a single line:<br>
-      <code>foo().registerClass(name);</code> */
-  void registerClass(const char * name) {
-    AlpsEncoded* enc = encode();
-    (*decodeMap_)[name] = decode(*enc);
-  }
-#endif
 
   /** This method should encode the content of the object and return a
       pointer to the encoded form. 
@@ -103,27 +78,10 @@ class AlpsKnowledge {
       for example, some data members are pointers, STL set, map, etc.
   */
   virtual AlpsKnowledge* decode(AlpsEncoded& encoded) const;
-  
-#if 0
-  /** This method returns the pointer to an empty object of the registered
-      class <code>name</code>. Then the <code>decode()</code> method of that
-      object can be used to decode a new object of the same type from the
-      buffer. This method will be invoked as follows to decode an object
-      whose type is <code>name</code>:<br>
-      <code>obj = AlpsKnowledge::decoderObject(name)->decode(buf) </code> */
-  static const AlpsKnowledge* decoderObject(const char* name) {
-    return (*decodeMap_)[name];
-  }
-#endif
 
-  /** */
-  // CoinPtr<AlpsEncoded>&
+  /** Get/set encoded. */
   inline AlpsEncoded* getEncoded() const { return encoded_; }
-   
-  /** */
-  // CoinPtr<AlpsEncoded>&
   inline void setEncoded(AlpsEncoded* e) { encoded_ = e; }
-   
 };
 
 //#############################################################################

@@ -315,7 +315,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** Calculate the work quality and quantity on this process. */
     void updateWorkloadInfo();
 
-    /** A worker donate it workload with the specified worker. */
+    /** A worker donate its workload to the specified worker. */
     void donateWork(char*& buf, 
 		    int tag,
 		    MPI_Status* status,  
@@ -476,15 +476,14 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** Set generated knowlege (related to model) to receiver. */
     // NOTE: comm is hubComm_ or MPI_COMM_WORLD.
-    void sendModelKnowledge(int receiver,
-			    MPI_Comm comm,
-			    bool blocking=false);
+    void sendModelKnowledge(char*& genBuf,
+                            int sender, 
+                            MPI_Comm comm, 
+                            int receiver=-1);
 
     /** Receive generated knowlege (related to model) from sender. */
     // NOTE: comm is hubComm_ or MPI_COMM_WORLD.
-    void receiveModelKnowlege(int sender,
-			      MPI_Comm comm,
-			      bool blocking=false);
+    void receiveModelKnowlege(MPI_Comm comm, bool blocking=false);
 
  public:
 

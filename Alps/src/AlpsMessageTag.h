@@ -23,11 +23,6 @@
 
 enum AlpsMessageTag{
 
-  /** Alps should finish. The worker process receiving this message will
-      send back statistics to the hub and then terminate. hub will wait
-      for all other processes to terminate. */
-  // AlpsMsgFinishedAlps,
-
   /** The message tag indicating that the send ask the recv to
       continue or terminate. */
   // 0
@@ -181,7 +176,12 @@ enum AlpsMessageTag{
   AlpsMsgSubTreeByWorker,
 
   // 40
-  AlpsMsgIncumbentTwo
+  AlpsMsgIncumbentTwo,
+  
+  /** The message tag indicating that knowledge generated during search about
+      model is being sent or received. */
+  // 41
+  AlpsMsgModelGenerated
 };
 
 #endif
