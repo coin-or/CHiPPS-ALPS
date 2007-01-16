@@ -45,7 +45,7 @@ class AlpsKnowledgeBroker {
     AlpsKnowledgeBroker(const AlpsKnowledgeBroker&);
     AlpsKnowledgeBroker& operator=(const AlpsKnowledgeBroker&);
 
-    /** Stores a master copy of any encodable object for decoding purposes. */
+    /** Stores registered knowledge. */
     std::map<std::string, AlpsKnowledge*> decodeMap_;
     
  protected:
@@ -185,7 +185,10 @@ class AlpsKnowledgeBroker {
 	The register methods register the decode method of the class so that 
 	later on we can decode objects from buffers. Invoking this 
 	registration for class <code>foo</code> is a single line:<br>
-	<code>foo().registerClass(name, userKnowledge);</code> */
+	<code>foo().registerClass(name, userKnowledge)</code>.
+        NOTE: take over user knowledge's memory ownership, user doesn't
+        need free memory. 
+    */
     void registerClass(const char * name, AlpsKnowledge* userKnowledge) {
         std::string newName = name;
         
@@ -208,7 +211,8 @@ class AlpsKnowledgeBroker {
 	object can be used to decode a new object of the same type from the
 	buffer. This method will be invoked as follows to decode an object
 	whose type is <code>name</code>:<br>
-	<code>obj = AlpsKnowledge::decoderObject(name)->decode(buf) </code> */
+	<code>obj = AlpsKnowledge::decoderObject(name)->decode(buf) </code> 
+    */
     const AlpsKnowledge* decoderObject(const char* name) {
 	return decodeMap_[name];
     }

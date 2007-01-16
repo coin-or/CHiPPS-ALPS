@@ -13,8 +13,8 @@
  * Copyright (C) 2001-2006, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
-#include "AlpsKnowledgeBroker.h"
 #include "Alps.h"
+#include "AlpsKnowledgeBroker.h"
 
 //#############################################################################
 
@@ -54,6 +54,15 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
 
 AlpsKnowledgeBroker:: ~AlpsKnowledgeBroker() 
 {
+    std::map<std::string, AlpsKnowledge*>::iterator pos, pos1;
+    pos = decodeMap_.begin();
+    pos1 = decodeMap_.end();
+    AlpsKnowledge* kl = 0;
+    for ( ; pos != pos1; ++pos) {
+        kl = pos->second;
+        delete kl;
+    }
+
     if (subTreePool_) {
 	//std::cout << "* delete subtree pool" << std::endl;
 	delete subTreePool_;

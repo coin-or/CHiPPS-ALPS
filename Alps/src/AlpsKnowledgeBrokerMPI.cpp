@@ -1689,8 +1689,6 @@ AlpsKnowledgeBrokerMPI::workerMain()
     char reply = 'C';
     char* tempBuffer = 0;
 
-    double rampDownStart = 0.0;
-
     bool terminate = false;
     bool allMsgReceived = false;
     bool deletedSTs = false;
