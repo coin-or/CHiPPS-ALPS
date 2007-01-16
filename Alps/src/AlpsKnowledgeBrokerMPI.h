@@ -474,6 +474,18 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** Delete subTrees in pools and the active subtree. */
     void deleteSubTrees();
 
+    /** Set generated knowlege (related to model) to receiver. */
+    // NOTE: comm is hubComm_ or MPI_COMM_WORLD.
+    void sendModelKnowledge(int receiver,
+			    MPI_Comm comm,
+			    bool blocking=false);
+
+    /** Receive generated knowlege (related to model) from sender. */
+    // NOTE: comm is hubComm_ or MPI_COMM_WORLD.
+    void receiveModelKnowlege(int sender,
+			      MPI_Comm comm,
+			      bool blocking=false);
+
  public:
 
     /** Default construtor. 
