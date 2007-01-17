@@ -214,7 +214,8 @@ class AlpsKnowledgeBroker {
 	<code>obj = AlpsKnowledge::decoderObject(name)->decode(buf) </code> 
     */
     const AlpsKnowledge* decoderObject(const char* name) {
-	return decodeMap_[name];
+        std::string newName = name;
+	return decodeMap_[newName];
     }
     //@}
 
@@ -430,7 +431,7 @@ class AlpsKnowledgeBroker {
     void setNodeProcessingTime(double npTime) { nodeProcessingTime_ = npTime; }
     //@}
 
-    int getLargeSize() { return largeSize_; }
+    int getLargeSize() const { return largeSize_; }
 
     /** @name Report the best result
      *  

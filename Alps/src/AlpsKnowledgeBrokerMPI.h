@@ -476,8 +476,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** Set generated knowlege (related to model) to receiver. */
     // NOTE: comm is hubComm_ or MPI_COMM_WORLD.
-    void sendModelKnowledge(char*& genBuf,
-                            int sender, 
+    void sendModelKnowledge(int sender, 
                             MPI_Comm comm, 
                             int receiver=-1);
 

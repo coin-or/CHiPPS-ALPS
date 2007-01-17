@@ -180,8 +180,6 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 
     AlpsTimer masterTimer;
 
-    char *genBuf = 0;
-
     //------------------------------------------------------
     // Get parameters.
     //------------------------------------------------------
@@ -391,17 +389,16 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     // Sent generated model knowledge to hubs.
     //------------------------------------------------------
 
-    genBuf = 0;
     for (i = 0; i < hubNum_; ++i) {
 	if (hubRanks_[i] != globalRank_) {
-            sendModelKnowledge(genBuf, globalRank_, hubComm_, i);
+            sendModelKnowledge(globalRank_, hubComm_, i);
         }
     }
-    if (!genBuf) {
-        delete [] genBuf; 
-        genBuf = 0;
+    if (msgLevel_ > 0) {
+        messageHandler()->message(ALPS_KNOWLEDGE_GEN, messages())
+            << globalRank_ << CoinMessageEol;
     }
-        
+
     // Master's rampup stops.
     rampUpTimeMaster = masterTimer.getTime();
 
@@ -499,15 +496,10 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     // Sent generated model knowledge to its workers.
     //------------------------------------------------------
 
-    genBuf = 0;
     for (i = 0; i < clusterSize_; ++i) {
 	if (i != clusterRank_) {
-	    sendModelKnowledge(genBuf, clusterRank_, clusterComm_, i);
+	    sendModelKnowledge(clusterRank_, clusterComm_, i);
 	}
-    }
-    if (!genBuf) {
-        delete [] genBuf; 
-        genBuf = 0;
     }
     
     //------------------------------------------------------
@@ -1080,8 +1072,6 @@ AlpsKnowledgeBrokerMPI::hubMain()
     MPI_Status status;    
     AlpsTimer hubTimer;
 
-    char *genBuf = 0;
-
     //------------------------------------------------------
     // Get parameters.
     //------------------------------------------------------
@@ -1284,15 +1274,10 @@ AlpsKnowledgeBrokerMPI::hubMain()
     // Sent generated model knowledge to its workers.
     //------------------------------------------------------
 
-    genBuf = 0;
     for (i = 0; i < clusterSize_; ++i) {
 	if (i != clusterRank_) {
-	    sendModelKnowledge(genBuf, clusterRank_, clusterComm_, i);
+	    sendModelKnowledge(clusterRank_, clusterComm_, i);
 	}
-    }
-    if (!genBuf) {
-        delete [] genBuf; 
-        genBuf = 0;
     }
 
     //------------------------------------------------------
@@ -5552,27 +5537,52 @@ AlpsKnowledgeBrokerMPI::receiveKnowlege(AlpsKnowledgeType type, int sender)
 /** Set generated knowlege (related to model) to receiver. */
 // NOTE: comm is hubComm_ or MPI_COMM_WORLD.
 void 
-AlpsKnowledgeBrokerMPI::sendModelKnowledge(char*& genBuf,
-                                           int sender, 
+AlpsKnowledgeBrokerMPI::sendModelKnowledge(int sender, 
                                            MPI_Comm comm, 
                                            int receiver)
 {
-    if (!genBuf) {
-        // Encode generated model knowledge
-        
-        // Pack into buffer
-    }
+    char *locBuf = 0;
+    int size = -1;
+    int position = -1;
     
-    if (receiver > 0) {
-        // During rampup, know receive in advance
-        assert(comm == clusterComm_ || comm == hubComm_);
-        
-        // send and increment sending count
-        
+    bool hasKnowledge = true;
+
+    // Encode generated model knowledge
+    AlpsEncoded* encoded = model_->encodeKnowlegeShared();
+    if (!encoded) {
+        hasKnowledge = false;
     }
     else {
-        // During search, binary sending
+        // Pack into local buffer
+        packEncoded(encoded, locBuf, size, position);
+    }
+    
+    if (phase_ == ALPS_PHASE_RAMPUP) {
+        assert(comm == clusterComm_ || comm == hubComm_);
+        assert(receiver > -1);
+        
+        if (hasKnowledge) {
+            // Send and increment sending count
+            MPI_Send(locBuf, size, MPI_PACKED, receiver, 
+                     AlpsMsgModelGenerated, comm);
+            incSendCount("sendModelKnowledge during rampup");
+        }
+        else {
+            // Send an empty message
+            MPI_Send(smallBuffer_, 0, MPI_PACKED, receiver, 
+                     AlpsMsgModelGenerated, comm);
+            
+            //std::cout << "PROCESS[" << globalRank_ << "sent gen model to "
+            //<< receiver << std::endl;
+            incSendCount("sendModelKnowledge during rampup");
+        }
+    }
+    else if (phase_ == ALPS_PHASE_SEARCH) {
         assert(comm == MPI_COMM_WORLD);
+
+        assert(0); // TODO: REMOVE ME
+        
+        // During search, binary forewarding
         
         int mySeq = rankToSequence(incumbentID_, globalRank_);
         int leftSeq = leftSequence(mySeq, processNum_);
@@ -5580,15 +5590,25 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(char*& genBuf,
         
         if (leftSeq != -1) {
             int leftRank = sequenceToRank(incumbentID_, leftSeq);
+
             // send and increment sending count
+            // TODO
+            incSendCount("sendModelKnowledge during rampup");        
         }
         
         if (rightSeq != -1) {
             int rightRank = sequenceToRank(incumbentID_, rightSeq);
+
             // send and increment sending count
+            // TODO 
+            incSendCount("sendModelKnowledge during rampup");
         }
     }
-    
+    else {
+        assert(0);
+    }
+
+    delete [] locBuf;
 }
 
 //#############################################################################
@@ -5598,6 +5618,54 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(char*& genBuf,
 void 
 AlpsKnowledgeBrokerMPI::receiveModelKnowlege(MPI_Comm comm, bool blocking)
 {
+    int count = -1;
+    MPI_Status status;
+    bool hasKnowledge = true;
+
+    char *localBuffer = 0;
+        
+    
+    if (phase_ == ALPS_PHASE_RAMPUP) {
+        localBuffer = new char [largeSize_];
+        
+        // std::cout << "PROCESS[" << globalRank_ << "] : B: recive gen model"
+        //        << std::endl;
+        
+        // Receive
+        MPI_Recv(localBuffer, largeSize_, MPI_PACKED, MPI_ANY_SOURCE,
+                 AlpsMsgModelGenerated, comm, &status);
+
+        MPI_Get_count(&status, MPI_PACKED, &count);
+
+        std::cout << "PROCESS[" << globalRank_ << "] : A: recive gen model"
+                  << ", count = " << count <<std::endl;
+        
+        if (count < 1) {
+            hasKnowledge = false;
+        }
+
+        incRecvCount("receiveModelKnowlege during rampup");        
+    }
+    else if (phase_ == ALPS_PHASE_RAMPUP) {
+        localBuffer = largeBuffer_;
+    }
+    else {
+        assert(0);
+    }
+    
+    if (hasKnowledge) {
+        // Upack from buffer.
+        AlpsEncoded* encodedModelGen = unpackEncoded(localBuffer, 
+                                                     largeSize_ + 100);
+        
+        // decode knowledge from larger buffer.
+        model_->decodeKnowledgeShared(*encodedModelGen);
+    }
+
+    if (localBuffer) {
+        delete [] localBuffer;
+        localBuffer = 0;
+    }
     
 }
 
