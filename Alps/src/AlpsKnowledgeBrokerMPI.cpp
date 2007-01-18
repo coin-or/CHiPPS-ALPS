@@ -1867,7 +1867,9 @@ AlpsKnowledgeBrokerMPI::workerMain()
 
 		// Need check better solution.
 		betterSolution = true;
-                unitTime = computeUnitTime(unitTime, unitWork, nodeProcessingTime_);
+                unitTime = computeUnitTime(unitTime, 
+					   unitWork, 
+					   nodeProcessingTime_);
 
 		rCode = doOneUnitWork(unitWork, 
                                       unitTime,
@@ -1911,7 +1913,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
 		}
 		
 		// Share generated knowledge
-#if 1
+#if 0
                 char *genBuf = 0;
 		sendModelKnowledge(genBuf, AlpsMsgModelGenSearch, MPI_COMM_WORLD);
                 delete [] genBuf; 
