@@ -348,7 +348,8 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 		    sendSizeNode(i, subTree, hubComm_);	
 		    // NOTE: master's rank is always 0 in hubComm_.
                     if (msgLevel_ > 100) {
-                        std::cout << "master send a node to hub " << hubRanks_[i]
+                        std::cout << "master send a node to hub " 
+				  << hubRanks_[i]
                                   << std::endl;
                     }
 		}
@@ -391,7 +392,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 
     for (i = 0; i < hubNum_; ++i) {
 	if (hubRanks_[i] != globalRank_) {
-            sendModelKnowledge(globalRank_, hubComm_, i);
+	  sendModelKnowledge(hubComm_, i);
         }
     }
     if (msgLevel_ > 0) {
@@ -498,7 +499,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 
     for (i = 0; i < clusterSize_; ++i) {
 	if (i != clusterRank_) {
-	    sendModelKnowledge(clusterRank_, clusterComm_, i);
+	    sendModelKnowledge(clusterComm_, i);
 	}
     }
     
@@ -1191,7 +1192,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
     // Receive generated knowledge form the master.
     //------------------------------------------------------
 
-    receiveModelKnowlege(hubComm_, true);
+    receiveModelKnowlege(hubComm_);
     
     //------------------------------------------------------
     // Generate and send required number of nodes(subtree) for hub's workers.
@@ -1276,7 +1277,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
 
     for (i = 0; i < clusterSize_; ++i) {
 	if (i != clusterRank_) {
-	    sendModelKnowledge(clusterRank_, clusterComm_, i);
+	    sendModelKnowledge(clusterComm_, i);
 	}
     }
 
@@ -1767,7 +1768,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
     // Receive generated knowledge form its hub.
     //------------------------------------------------------
     
-    receiveModelKnowlege(clusterComm_, true);
+    receiveModelKnowlege(clusterComm_);
 
     //------------------------------------------------------
     // End of worker's Ramp-up and start to search.
@@ -1900,8 +1901,8 @@ AlpsKnowledgeBrokerMPI::workerMain()
                     }
 		}
 		
-		// Count rampdown
-		//tempTimer_.start();
+		// Share generated knowledge
+		sendModelKnowledge(MPI_COMM_WORLD);		
 	    } 
 	    else {  
                 // Worker is idle.
@@ -2126,6 +2127,10 @@ AlpsKnowledgeBrokerMPI::processMessages(char *&bufLarge,
 	// Following are common msgs.
 	//--------------------------------------------------
 
+    case AlpsMsgModelGenerated:
+      receiveModelKnowlege(MPI_COMM_WORLD);
+      sendModelKnowledge(MPI_COMM_WORLD);
+      break;
     case AlpsMsgIncumbentTwo:
 	success = unpackSetIncumbent(bufLarge, &status);
 	if (success) {
@@ -5537,8 +5542,7 @@ AlpsKnowledgeBrokerMPI::receiveKnowlege(AlpsKnowledgeType type, int sender)
 /** Set generated knowlege (related to model) to receiver. */
 // NOTE: comm is hubComm_ or MPI_COMM_WORLD.
 void 
-AlpsKnowledgeBrokerMPI::sendModelKnowledge(int sender, 
-                                           MPI_Comm comm, 
+AlpsKnowledgeBrokerMPI::sendModelKnowledge(MPI_Comm comm, 
                                            int receiver)
 {
     char *locBuf = 0;
@@ -5577,38 +5581,31 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(int sender,
             incSendCount("sendModelKnowledge during rampup");
         }
     }
-    else if (phase_ == ALPS_PHASE_SEARCH) {
+    else if ((phase_ == ALPS_PHASE_SEARCH) && hasKnowledge) {
+
         assert(comm == MPI_COMM_WORLD);
 
-        assert(0); // TODO: REMOVE ME
-        
         // During search, binary forewarding
-        
         int mySeq = rankToSequence(incumbentID_, globalRank_);
         int leftSeq = leftSequence(mySeq, processNum_);
         int rightSeq = rightSequence(mySeq, processNum_);
         
         if (leftSeq != -1) {
             int leftRank = sequenceToRank(incumbentID_, leftSeq);
-
-            // send and increment sending count
-            // TODO
+	    MPI_Send(largeBuffer_, largeSize_, MPI_PACKED, leftRank, 
+		     AlpsMsgModelGenerated, MPI_COMM_WORLD);
             incSendCount("sendModelKnowledge during rampup");        
         }
         
         if (rightSeq != -1) {
             int rightRank = sequenceToRank(incumbentID_, rightSeq);
-
-            // send and increment sending count
-            // TODO 
+ 	    MPI_Send(largeBuffer_, largeSize_, MPI_PACKED, rightRank, 
+		     AlpsMsgModelGenerated, MPI_COMM_WORLD);
             incSendCount("sendModelKnowledge during rampup");
         }
     }
-    else {
-        assert(0);
-    }
 
-    delete [] locBuf;
+    delete [] locBuf; locBuf = 0;
 }
 
 //#############################################################################
@@ -5616,7 +5613,7 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(int sender,
 /** Receive generated knowlege (related to model) from sender. */
 // NOTE: comm is hubComm_ or MPI_COMM_WORLD.
 void 
-AlpsKnowledgeBrokerMPI::receiveModelKnowlege(MPI_Comm comm, bool blocking)
+AlpsKnowledgeBrokerMPI::receiveModelKnowlege(MPI_Comm comm)
 {
     int count = -1;
     MPI_Status status;
@@ -5638,7 +5635,7 @@ AlpsKnowledgeBrokerMPI::receiveModelKnowlege(MPI_Comm comm, bool blocking)
         MPI_Get_count(&status, MPI_PACKED, &count);
 
         std::cout << "PROCESS[" << globalRank_ << "] : A: recive gen model"
-                  << ", count = " << count <<std::endl;
+		  << ", count = " << count <<std::endl;
         
         if (count < 1) {
             hasKnowledge = false;
