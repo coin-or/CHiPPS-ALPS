@@ -247,6 +247,9 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** The period that a hub load balancing and report cluster status. 
         It changes as search progresses. */
     double hubReportPeriod_;
+
+    /** The global rank of the process that share generated model knowledge. */
+    int modelGenID_;
     
  protected:
 
@@ -413,11 +416,13 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     void tellHubRecv();
 
     /** Pack an AlpsEncoded instance into buf. Return filled buf and size of 
-	packed message. */
+	packed message.
+        position: where to start if buf is allocated.
+    */
     void packEncoded(AlpsEncoded* enc, char*& buf, int& size, int& position);
  
     /** Unpack the given buffer into an AlpsEncoded instance. */
-    AlpsEncoded* unpackEncoded(char*& buf, int size = -1);
+    AlpsEncoded* unpackEncoded(char*& buf, int& position, int size = -1);
 
     /** Receive the size of buffer, allocate memory for buffer, then 
 	receive the message and put it in buffer. */
@@ -476,7 +481,10 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** Set generated knowlege (related to model) to receiver. */
     // NOTE: comm is hubComm_ or MPI_COMM_WORLD.
-    void sendModelKnowledge(MPI_Comm comm, int receiver=-1);
+    void sendModelKnowledge(char*& genBuf, 
+                            int tag,
+                            MPI_Comm comm, 
+                            int receiver=-1);
 
     /** Receive generated knowlege (related to model) from sender. */
     // NOTE: comm is hubComm_ or MPI_COMM_WORLD.

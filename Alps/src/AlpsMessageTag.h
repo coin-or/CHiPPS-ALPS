@@ -178,10 +178,14 @@ enum AlpsMessageTag{
   // 40
   AlpsMsgIncumbentTwo,
   
+  /** The message tag indicating that knowledge generated during rampup about
+      model is being sent or received. */
+  // 41
+  AlpsMsgModelGenRampUp,
   /** The message tag indicating that knowledge generated during search about
       model is being sent or received. */
   // 41
-  AlpsMsgModelGenerated
+  AlpsMsgModelGenSearch
 };
 
 #endif
