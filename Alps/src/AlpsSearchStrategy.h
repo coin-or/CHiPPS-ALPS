@@ -67,7 +67,7 @@ class AlpsTreeSelectionBest : public AlpsTreeSelection
 {
 public:
     /** Default Constructor. */
-    AlpsTreeSelectionBest() {}
+    AlpsTreeSelectionBest() { type_ = ALPS_SEARCH_BEST; }
 
     /** Default Destructor. */
     virtual ~AlpsTreeSelectionBest() {}
@@ -83,7 +83,7 @@ class AlpsTreeSelectionBreadth : public AlpsTreeSelection
 {
 public:
     /** Default Constructor */
-    AlpsTreeSelectionBreadth() {}
+    AlpsTreeSelectionBreadth() { type_ = ALPS_SEARCH_BREATH; }
     
     /** Default Destructor. */
     virtual ~AlpsTreeSelectionBreadth() {}
@@ -99,7 +99,7 @@ class AlpsTreeSelectionDepth : public AlpsTreeSelection
 {
 public:
     /** Default Constructor */
-    AlpsTreeSelectionDepth() {}
+    AlpsTreeSelectionDepth() { type_ = ALPS_SEARCH_DEPTH; }
     
     /** Default Destructor. */
     virtual ~AlpsTreeSelectionDepth() {}
@@ -115,7 +115,7 @@ class AlpsTreeSelectionEstimate : public AlpsTreeSelection
 {
 public:
     /** Default Constructor. */
-    AlpsTreeSelectionEstimate() {}
+    AlpsTreeSelectionEstimate() { type_ = ALPS_SEARCH_BEST_EST; }
 
     /** Default Destructor. */
     virtual ~AlpsTreeSelectionEstimate() {}
@@ -133,7 +133,7 @@ class AlpsNodeSelectionBest : public AlpsNodeSelection
 {
 public:
     /** Default Constructor. */
-    AlpsNodeSelectionBest() {}
+    AlpsNodeSelectionBest() { type_ = ALPS_SEARCH_BEST; }
 
     /** Default Destructor. */
     virtual ~AlpsNodeSelectionBest() {}
@@ -151,7 +151,7 @@ class AlpsNodeSelectionBreadth : public AlpsNodeSelection
 {
 public:
     /** Default Constructor. */
-    AlpsNodeSelectionBreadth() {}
+    AlpsNodeSelectionBreadth() { type_ = ALPS_SEARCH_BREATH; }
 
     /** Default Destructor. */
     virtual ~AlpsNodeSelectionBreadth() {};
@@ -169,7 +169,7 @@ class AlpsNodeSelectionDepth : public AlpsNodeSelection
 {
  public:
     /** Default Constructor. */
-    AlpsNodeSelectionDepth() {}
+    AlpsNodeSelectionDepth() { type_ = ALPS_SEARCH_DEPTH; }
 
     /** Default Destructor. */
     virtual ~AlpsNodeSelectionDepth() {};
@@ -187,7 +187,7 @@ class AlpsNodeSelectionEstimate : public AlpsNodeSelection
 {
  public:
     /** Default Constructor. */
-    AlpsNodeSelectionEstimate() {}
+    AlpsNodeSelectionEstimate() { type_ = ALPS_SEARCH_BEST_EST; }
 
     /** Default Destructor. */
     virtual ~AlpsNodeSelectionEstimate() {}
@@ -205,7 +205,7 @@ class AlpsNodeSelectionHybrid : public AlpsNodeSelection
 {
 public:
     /** Default Constructor. */
-    AlpsNodeSelectionHybrid() {}
+    AlpsNodeSelectionHybrid() { type_ = ALPS_SEARCH_HYBRID; }
 
     /** Default Destructor. */
     virtual ~AlpsNodeSelectionHybrid() {}

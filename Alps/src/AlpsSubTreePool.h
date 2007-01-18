@@ -77,6 +77,27 @@ class AlpsSubTreePool : public AlpsKnowledgePool {
         subTreeList_.clear();
         assert(subTreeList_.size() == 0);
     }
+
+    /** Get the quality of the best subtree. */
+    double getBestQuality() {
+        double quality = ALPS_OBJ_MAX;
+        
+        std::vector<AlpsSubTree* > subTreeVec = subTreeList_.getContainer();
+
+        std::vector<AlpsSubTree* >::iterator pos1, pos2;
+
+        pos1 = subTreeVec.begin();
+        pos2 = subTreeVec.end();
+
+        for (; pos1 != pos2; ++pos1) {
+            (*pos1)->calculateQuality();
+            if ((*pos1)->getQuality() < quality) {
+                quality = (*pos1)->getQuality();
+            }
+        }
+
+        return quality;
+    }
 };
 
 #endif

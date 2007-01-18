@@ -174,8 +174,7 @@ class AlpsSubTree : public AlpsKnowledge {
     
     /** Calcuate  and return the quality of this subtree, which is measured
 	by the quality of the specified number of nodes.*/
-    // NOTE: Param inc (incumber value) and rho are not used.
-    double calculateQuality(double inc, double rho);
+    double calculateQuality();
  
     /* Get the index of the next generated node and increment next index
        by one.*/ 

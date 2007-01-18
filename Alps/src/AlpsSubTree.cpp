@@ -273,9 +273,9 @@ AlpsSubTree::setNextIndex(int next)
 //#############################################################################
 
 double
-AlpsSubTree::calculateQuality(double inc, double rho)
+AlpsSubTree::calculateQuality()
 {
-    quality_ = 0.0;
+    quality_ = ALPS_OBJ_MAX;
     
     const int nodeNum = nodePool_->getNumKnowledges();
     if (nodeNum <= 0) {
@@ -298,29 +298,39 @@ AlpsSubTree::calculateQuality(double inc, double rho)
     for (int i = 0; i < numNodes; ++i) {
 	AlpsTreeNode* node = (*pos);
 	double quality = (*pos)->getQuality();
+
 	++pos;
-	if (static_cast<int>(eliteList.size()) < eliteSize) {
-	    eliteList.insert(std::pair<double, AlpsTreeNode*>(quality, node));
-	}
-	else {  // ==   
-	    posEnd = eliteList.end();
-	    --posEnd;
-	    if (quality < posEnd->first) {
-		eliteList.insert(std::pair<double, AlpsTreeNode*>
+        
+        if (eliteSize == 1) {
+            if (quality_ > quality) {
+                quality_ = quality;
+            }
+        }
+        else {
+            if (static_cast<int>(eliteList.size()) < eliteSize) {
+                eliteList.insert(std::pair<double, AlpsTreeNode*>(quality, node));
+            }
+            else {  // ==   
+                posEnd = eliteList.end();
+                --posEnd;
+                if (quality < posEnd->first) {
+                    eliteList.insert(std::pair<double, AlpsTreeNode*>
 				 (quality, node));
-		posEnd = eliteList.end();
-		--posEnd;
-		eliteList.erase(posEnd);
-	    }
-	}
+                    posEnd = eliteList.end();
+                    --posEnd;
+                    eliteList.erase(posEnd);
+                }
+            }
+        }
     }
     
-    for (posEnd = eliteList.begin(); posEnd != eliteList.end(); ++posEnd){
-	quality_ += posEnd->first;
+    if (eliteSize > 1) {
+        quality_ = 0.0;
+        for (posEnd = eliteList.begin(); posEnd != eliteList.end(); ++posEnd){
+            quality_ += posEnd->first;
+        }
+        quality_ /= eliteList.size();
     }
-    quality_ /= eliteList.size();
-    //quality_ = getKnowledgeBroker()->getIncumbentValue() - quality_;
-    //assert(quality_ >= 0.0);
     
     return quality_;
 }

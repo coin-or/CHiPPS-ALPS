@@ -1097,7 +1097,6 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	model_->AlpsPar()->entry(AlpsParams::unitWorkTime);
     const double changeWorkThreshold = model_->AlpsPar()->
 	entry(AlpsParams::changeWorkThreshold);
-    const double rho = model_->AlpsPar()->entry(AlpsParams::rho);
 
     int requiredNumNodes = 
         model_->AlpsPar()->entry(AlpsParams::hubInitNodeNum);
@@ -1250,7 +1249,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
                                                          node->getQuality());
                         assert(myTree->getNumNodes() == 1);
                         myTree->setRoot(node); // Don't forget!
-                        myTree->calculateQuality(incumbentValue_, rho);
+                        myTree->calculateQuality();
                         addKnowledge(ALPS_SUBTREE, myTree, myTree->getQuality());
                         ++numSent;
                     }
@@ -1438,8 +1437,12 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	    
 	    // Adjust workingSubTree_ if it 'much' worse than the best one.
 	    if (subTreePool_->hasKnowledge() && workingSubTree_ != 0) {
+                workingSubTree_->calculateQuality();
 		double curQuality = workingSubTree_->getQuality();
-		double topQuality = subTreePool_->getKnowledge().second;
+		//double topQuality = subTreePool_->getKnowledge().second;
+
+                double topQuality = subTreePool_->getBestQuality();
+                
 		if (curQuality > topQuality) {
 		    double perDiff = ALPS_FABS(curQuality - topQuality)/
 			(ALPS_FABS(curQuality) + 1.0e-10);
@@ -1717,8 +1720,6 @@ AlpsKnowledgeBrokerMPI::workerMain()
 	model_->AlpsPar()->entry(AlpsParams::unitWorkNodes);
     double unitTime  =
 	model_->AlpsPar()->entry(AlpsParams::unitWorkTime);
-    const double rho = 
-	model_->AlpsPar()->entry(AlpsParams::rho);
 
     largeSize_ = model_->AlpsPar()->entry(AlpsParams::largeSize);
 
@@ -1769,7 +1770,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
 
 	assert(subTree->getNumNodes() > 0);
 
-	subTree->calculateQuality(incumbentValue_, rho);
+	subTree->calculateQuality();
 	addKnowledge(ALPS_SUBTREE, subTree, subTree->getQuality()); 
     }
 
@@ -1881,9 +1882,10 @@ AlpsKnowledgeBrokerMPI::workerMain()
                 
 		// Adjust workingSubTree_ if it 'much' worse than the best one
 		if ( workingSubTree_ && subTreePool_->hasKnowledge() ) {
-
+                    workingSubTree_->calculateQuality();
 		    double curQuality = workingSubTree_->getQuality();
-		    double topQuality = subTreePool_->getKnowledge().second;
+                    double topQuality = subTreePool_->getBestQuality();
+		    //double topQuality = subTreePool_->getKnowledge().second;
 		    
 		    if (curQuality > topQuality) {
 			double perDiff = ALPS_FABS(curQuality - topQuality)/
@@ -2252,7 +2254,6 @@ AlpsKnowledgeBrokerMPI::updateWorkloadInfo()
 {
     int count;
     
-    const double rho = model_->AlpsPar()->entry(AlpsParams::rho);
     workQuality_ = ALPS_OBJ_MAX;  // Worst ever possible
     workQuantity_ = 0.0;          // No work
     
@@ -2267,9 +2268,11 @@ AlpsKnowledgeBrokerMPI::updateWorkloadInfo()
     pos1 = subTreeVec.begin();
     pos2 = subTreeVec.end();
 
-    if (pos1 != pos2) {
-        workQuality_ = (*pos1)->getQuality();//Best in pool
-    }
+    workQuality_ = subTreePool_->getBestQuality();
+
+    //    if (pos1 != pos2) {
+    //        workQuality_ = (*pos1)->getQuality();//Best in pool
+    //    }
 
     for (; pos1 != pos2; ++pos1) {
 	if ((*pos1)->getNumNodes() > 5) {
@@ -2283,7 +2286,7 @@ AlpsKnowledgeBrokerMPI::updateWorkloadInfo()
     }
 
     if (workingSubTree_ != 0) {
-	workingSubTree_->calculateQuality(incumbentValue_, rho);
+	workingSubTree_->calculateQuality();
 	if (workQuality_ > workingSubTree_->getQuality()) {
 	    workQuality_ = workingSubTree_->getQuality();
 	}
@@ -3000,7 +3003,9 @@ AlpsKnowledgeBrokerMPI::masterBalanceHubs()
     int size = model_->AlpsPar()->entry(AlpsParams::smallSize);
     
     std::vector<std::pair<double, int> > loadIDVector;
+
     loadIDVector.reserve(hubNum_);
+
     std::multimap<double, int, std::greater<double> > receivers;         
     std::multimap<double, int> donors; 
 
@@ -4117,12 +4122,10 @@ AlpsKnowledgeBrokerMPI::receiveSubTree(char*& bufLarge,
         
 	AlpsSubTree* subTree = 
 	    dynamic_cast<AlpsSubTree* >(tempST->decode(*encodedST) );
-	const double rho = 
-	    model_->AlpsPar()->entry(AlpsParams::rho);
-	//subTree->approximateQuality(incumbentValue_, rho);
+
 	assert(subTree->getNumNodes() > 0);
-	subTree->calculateQuality(incumbentValue_, rho);
-	
+
+	subTree->calculateQuality();
 	addKnowledge(ALPS_SUBTREE, subTree, subTree->getQuality());
 
 
