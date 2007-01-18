@@ -5643,11 +5643,11 @@ AlpsKnowledgeBrokerMPI::receiveModelKnowlege(MPI_Comm comm)
 
         incRecvCount("receiveModelKnowlege during rampup");        
     }
-    else if (phase_ == ALPS_PHASE_RAMPUP) {
+    else if (phase_ == ALPS_PHASE_SEARCH) {
         localBuffer = largeBuffer_;
     }
     else {
-        assert(0);
+      assert(0);
     }
     
     if (hasKnowledge) {
