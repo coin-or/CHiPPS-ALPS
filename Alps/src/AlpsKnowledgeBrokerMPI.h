@@ -250,6 +250,9 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** The global rank of the process that share generated model knowledge. */
     int modelGenID_;
+
+    /** A subtree used in during up. */
+    AlpsSubTree* rampUpSubTree_;
     
  protected:
 
@@ -288,17 +291,6 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
                          MPI_Status &status, 
                          MPI_Request &request);
     
-    //------------------------------------------------------
-
-    /** @name Knowledge sharing functions
-     */
-    //@{
-    /** Set knowlege to receiver. */
-    void sendKnowledge(AlpsKnowledgeType type, int receiver);
-
-    /** Receive knowlege from sender. */
-    void receiveKnowlege(AlpsKnowledgeType type, int sender);
-    //@}
     
     //------------------------------------------------------
 
@@ -437,7 +429,6 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 	a subtree with this received node. */
     // NOTE: comm is hubComm_ or clusterComm_
     void receiveSizeNode(int sender,
-			 AlpsSubTree*& st,
 			 MPI_Comm comm, 
 			 MPI_Status* status);
 
@@ -466,7 +457,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** Send the size and the content of the best node of a given subtree 
 	to the target process. */
     // NOTE: comm is hubComm_ or clusterComm_.
-    void sendSizeNode(const int target, AlpsSubTree*& st, MPI_Comm comm);
+    void sendSizeNode(const int target, MPI_Comm comm);
 
     /** Send a given subtree to the target process. */
     bool sendSubTree(const int target, AlpsSubTree*& st, int tag);
@@ -488,7 +479,29 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** Receive generated knowlege (related to model) from sender. */
     // NOTE: comm is hubComm_ or MPI_COMM_WORLD.
-    void receiveModelKnowlege(MPI_Comm comm);
+    void receiveModelKnowledge(MPI_Comm comm);
+
+    /** @name Change message counts functions
+     */
+    //@{
+    /** Increment the number of sent message. */
+    void incSendCount(const char* how, int s = 1);
+    /** Decrement the number of sent message. */
+    void decSendCount(const char* how, int s = 1);
+    /** Increment the number of received message. */
+    void incRecvCount(const char* how, int s = 1);
+    /** Decrement the number of sent message. */
+    void decRecvCount(const char* how, int s = 1);
+    //@}
+
+    /** Master tell hubs to terminate due to reaching limits or other reason.*/
+    void masterForceHubTerm();
+
+    /** Hub tell workers to terminate due to reaching limits or other reason.*/
+    void hubForceWorkerTerm();
+
+    /** Change subtree to be explored if it is too worse. */
+    void changeWorkingSubTree(double changeWorkThreshold);
 
  public:
 
@@ -550,12 +563,6 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
      */
     void rootSearch(AlpsTreeNode* root);
 
-    /** Master tell hubs to terminate due to reaching limits or other reason.*/
-    void masterForceHubTerm();
-
-    /** Hub tell workers to terminate due to reaching limits or other reason.*/
-    void hubForceWorkerTerm();
-
     /** @name Report search results. */
     //@{
     /** The process queries the quality of the incumbent it stores. */
@@ -584,17 +591,41 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     virtual void searchLog();
     //@}
 
-    /** @name Change message counts functions
+    //------------------------------------------------------
+
+    /** @name Knowledge sharing functions
      */
     //@{
-    /** Increment the number of sent message. */
-    void incSendCount(const char* how, int s = 1);
-    /** Decrement the number of sent message. */
-    void decSendCount(const char* how, int s = 1);
-    /** Increment the number of received message. */
-    void incRecvCount(const char* how, int s = 1);
-    /** Decrement the number of sent message. */
-    void decRecvCount(const char* how, int s = 1);
+    /** Set knowlege. */
+    void sendKnowledge(AlpsKnowledgeType type, 
+                       int sender,
+                       int receiver,
+                       char *& msgBuffer,
+                       int msgSize,
+                       int msgTag,
+                       MPI_Comm comm,
+                       bool blocking);
+
+    /** Receive knowlege. */
+    void receiveKnowledge(AlpsKnowledgeType type, 
+                          int sender,
+                          int receiver,
+                          char *& msgBuffer,
+                          int msgSize,
+                          int msgTag,
+                          MPI_Comm comm,
+                          MPI_Status* status,
+                          bool blocking);
+    
+    /** Request knowlege. */
+    void requestKnowledge(AlpsKnowledgeType type, 
+                          int sender,
+                          int receiver,
+                          char *& msgBuffer,
+                          int msgSize,
+                          int msgTag,
+                          MPI_Comm comm,
+                          bool blocking);
     //@}
 
 };

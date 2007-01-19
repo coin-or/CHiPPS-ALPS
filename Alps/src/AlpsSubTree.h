@@ -260,6 +260,13 @@ class AlpsSubTree : public AlpsKnowledge {
             diveNodePool_->clear();
         }
     }
+
+    /** Set root and active node to null */
+    void nullRootActiveNode() 
+    {
+        root_ = NULL;
+        activeNode_ = NULL;
+    }
 };
 #endif
 

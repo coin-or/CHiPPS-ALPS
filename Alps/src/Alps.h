@@ -73,7 +73,8 @@ enum AlpsSearchType {
 
 enum AlpsKnowledgeType { 
   ALPS_MODEL, 
-  ALPS_NODE, 
+  ALPS_MODEL_GEN,
+  ALPS_NODE,
   ALPS_SOLUTION,
   ALPS_SUBTREE
 };
