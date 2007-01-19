@@ -276,6 +276,20 @@ double
 AlpsSubTree::calculateQuality()
 {
     quality_ = ALPS_OBJ_MAX;
+
+    const int eliteSize = 
+	broker_->getModel()->AlpsPar()->entry(AlpsParams::eliteSize);
+    assert(eliteSize > 0);
+
+    int nodeSelectionType = broker_->getNodeSelection()->getType();
+    
+    if ( ((nodeSelectionType == ALPS_SEARCH_BEST) ||
+	  (nodeSelectionType == ALPS_SEARCH_HYBRID)) &&
+	 (eliteSize == 1) ) {
+	quality_ = nodePool_->getKnowledge().second;
+	std::cout << "quality_ = " << quality_ << std::endl;
+	return quality_;
+    }
     
     const int nodeNum = nodePool_->getNumKnowledges();
     if (nodeNum <= 0) {
@@ -283,9 +297,6 @@ AlpsSubTree::calculateQuality()
 		  << "] has a subtree with no node" << std::endl;
 	assert(nodeNum > 0);
     }
-    const int eliteSize = 
-	broker_->getModel()->AlpsPar()->entry(AlpsParams::eliteSize);
-    assert(eliteSize > 0);
    
     std::vector<AlpsTreeNode* > allNodes = 
 	nodePool_->getCandidateList().getContainer();
@@ -293,8 +304,8 @@ AlpsSubTree::calculateQuality()
     std::vector<AlpsTreeNode* >::iterator pos = allNodes.begin();
      
     std::multimap<double, AlpsTreeNode*> eliteList;
-    std::multimap<double, AlpsTreeNode*>::iterator posEnd;
-    
+    std::multimap<double, AlpsTreeNode*>::iterator posEnd;    
+
     for (int i = 0; i < numNodes; ++i) {
 	AlpsTreeNode* node = (*pos);
 	double quality = (*pos)->getQuality();
@@ -308,7 +319,8 @@ AlpsSubTree::calculateQuality()
         }
         else {
             if (static_cast<int>(eliteList.size()) < eliteSize) {
-                eliteList.insert(std::pair<double, AlpsTreeNode*>(quality, node));
+                eliteList.insert(std::pair<double,AlpsTreeNode*>(quality,node));
+		
             }
             else {  // ==   
                 posEnd = eliteList.end();
