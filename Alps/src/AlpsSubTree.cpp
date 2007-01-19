@@ -287,7 +287,7 @@ AlpsSubTree::calculateQuality()
 	  (nodeSelectionType == ALPS_SEARCH_HYBRID)) &&
 	 (eliteSize == 1) ) {
 	quality_ = nodePool_->getKnowledge().second;
-	std::cout << "quality_ = " << quality_ << std::endl;
+	//std::cout << "quality_ = " << quality_ << std::endl;
 	return quality_;
     }
     
