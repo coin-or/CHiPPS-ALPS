@@ -2526,7 +2526,8 @@ AlpsKnowledgeBrokerMPI::donateWork(char*& anyBuffer,
 // The hub allocate the donated subtree to the worker who has the worst 
 // workload. Note the donated subtree is from another cluster.
 void 
-AlpsKnowledgeBrokerMPI::hubAllocateDonation(char*& bufLarge, MPI_Status* status)
+AlpsKnowledgeBrokerMPI::hubAllocateDonation(char*& bufLarge, 
+					    MPI_Status* status)
 {
     int i;
     int count = 0;
@@ -5769,7 +5770,7 @@ AlpsKnowledgeBrokerMPI::requestKnowledge(AlpsKnowledgeType type,
 void 
 AlpsKnowledgeBrokerMPI::sendModelKnowledge(char*& genBuf, 
                                            int tag,
-                                           MPI_Comm comm, 
+                                           MPI_Comm comm,
                                            int receiver)
 {
     int size = largeSize_;
@@ -5785,7 +5786,7 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(char*& genBuf,
         position = 0;
         MPI_Pack(&globalRank_, 1, MPI_INT, genBuf, largeSize_,&position,comm);
 
-        std::cout << "----- 1. position = " << position << std::endl;
+        //std::cout << "----- 1. position = " << position << std::endl;
         
         // Encode generated model knowledge
         AlpsEncoded* encoded = model_->encodeKnowlegeShared();
@@ -5798,8 +5799,8 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(char*& genBuf,
             packEncoded(encoded, genBuf, size, position);
         }
 
-        std::cout << "----- 2. position = " << position
-                  << ", size = " << size << std::endl;
+        //std::cout << "----- 2. position = " << position
+	//        << ", size = " << size << std::endl;
     }
     
     if (phase_ == ALPS_PHASE_RAMPUP) {
@@ -5835,6 +5836,7 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(char*& genBuf,
         int rightSeq = rightSequence(mySeq, processNum_);
         
         if (leftSeq != -1) {
+	  // FIXME: largeSize_ is too large, need exact size
             int leftRank = sequenceToRank(incumbentID_, leftSeq);
 	    MPI_Send(largeBuffer_, largeSize_, MPI_PACKED, leftRank, 
 		     AlpsMsgModelGenSearch, comm);
@@ -5842,6 +5844,7 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(char*& genBuf,
         }
         
         if (rightSeq != -1) {
+	  // FIXME: largeSize_ is too large
             int rightRank = sequenceToRank(incumbentID_, rightSeq);
  	    MPI_Send(largeBuffer_, largeSize_, MPI_PACKED, rightRank, 
 		     AlpsMsgModelGenSearch, comm);
@@ -5882,8 +5885,8 @@ AlpsKnowledgeBrokerMPI::receiveModelKnowledge(MPI_Comm comm)
 
         incRecvCount("receiveModelKnowledge during rampup");
 
-        std::cout << "PROCESS[" << globalRank_ << "] : A: recive gen model"
-		  << ", count = " << count << std::endl;    
+        //std::cout << "PROCESS[" << globalRank_ << "] : A: recive gen model"
+	//  << ", count = " << count << std::endl;    
     }
     else if (phase_ == ALPS_PHASE_SEARCH) {
         localBuffer = largeBuffer_;
@@ -5898,9 +5901,9 @@ AlpsKnowledgeBrokerMPI::receiveModelKnowledge(MPI_Comm comm)
         MPI_Unpack(localBuffer, largeSize_, &position, &modelGenID_, 1,
                    MPI_INT, comm);
 
-        std::cout << "PROCESS[" << globalRank_ << "] : recive gen model"
-		  << ", count = " << count << ", from " << modelGenID_
-                  << std::endl;
+        //std::cout << "PROCESS[" << globalRank_ << "] : recive gen model"
+	//  << ", count = " << count << ", from " << modelGenID_
+	//        << std::endl;
         
         // Upack knowledge from buffer.
         AlpsEncoded* encodedModelGen = unpackEncoded(localBuffer,
