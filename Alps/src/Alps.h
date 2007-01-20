@@ -38,8 +38,8 @@
 */
 
 #define ALPS_SEARCH_BEST       0
-#define ALPS_SEARCH_BREATH     1
-#define ALPS_SEARCH_BEST_EST   2
+#define ALPS_SEARCH_BEST_EST   1
+#define ALPS_SEARCH_BREATH     2
 #define ALPS_SEARCH_DEPTH      3
 #define ALPS_SEARCH_HYBRID     4
 

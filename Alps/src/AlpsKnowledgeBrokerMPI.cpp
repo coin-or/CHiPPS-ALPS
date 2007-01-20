@@ -1982,10 +1982,12 @@ AlpsKnowledgeBrokerMPI::workerMain()
                 changeWorkingSubTree(changeWorkThreshold);
 		
 		// Print tree size 
-		if (msgLevel_ == 1 && nodeProcessedNum_ % nodeLogInterval == 0) {
+		if ( (msgLevel_ == 1) && 
+		     (nodeProcessedNum_ % nodeLogInterval == 0) ) {
                     if (workerMsgLevel > 0) {
                         messageHandler()->message(ALPS_NODE_COUNT, messages())
-                            << globalRank_<<nodeProcessedNum_<<updateNumNodesLeft()
+                            << globalRank_<<nodeProcessedNum_
+			    <<updateNumNodesLeft()
                             << CoinMessageEol;
                     }
 		}
@@ -1994,7 +1996,8 @@ AlpsKnowledgeBrokerMPI::workerMain()
                 // TODO: not working, too many messages.
 #if 0
                 char *genBuf = 0;
-		sendModelKnowledge(genBuf, AlpsMsgModelGenSearch, MPI_COMM_WORLD);
+		sendModelKnowledge(genBuf, AlpsMsgModelGenSearch, 
+				   MPI_COMM_WORLD);
                 delete [] genBuf; 
                 genBuf = 0;
 #endif

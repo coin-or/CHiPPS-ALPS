@@ -229,7 +229,7 @@ void AlpsParams::setDefaultEntries() {
   setEntry(workerMsgLevel, 0);
 
   // DoublePar
-  setEntry(changeWorkThreshold, 0.02);
+  setEntry(changeWorkThreshold, 0.05);
   setEntry(donorThreshold, 0.02);
   setEntry(hubReportPeriod, 0.01);
   setEntry(masterBalancePeriod, 0.03);
