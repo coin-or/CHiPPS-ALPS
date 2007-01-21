@@ -234,7 +234,7 @@ AlpsKnowledgeBroker::setupKnowledgePools()
 			"setupKnowledgePools()", "AlpsKnowledgeBroker"); 
     }
 
-    strategy = model_->AlpsPar()->entry(AlpsParams::rampUpSearchStrategy);
+    strategy = model_->AlpsPar()->entry(AlpsParams::searchStrategyRampUp);
     
     if (strategy == AlpsBestFirst) {
         rampUpNodeSelection_ = new AlpsNodeSelectionBest;

@@ -116,16 +116,8 @@ class AlpsParams : public AlpsParameterSet {
           -- hybrid (4)
           Default: hybrid
       */
-      rampUpSearchStrategy,
-      /** Search strategy
-          -- best-first (0)
-          -- best-first-estimate (1)
-          -- breadth-first (2)
-          -- depth-first (3)
-          -- hybrid (4)
-          Default: hybrid
-      */
       searchStrategy,
+      searchStrategyRampUp,
       /** The size of memory allocated for small size message. 
           Default: 1024 */
       smallSize, 
