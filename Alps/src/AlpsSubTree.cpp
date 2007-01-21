@@ -887,6 +887,8 @@ AlpsSubTree::decode(AlpsEncoded& encoded) const
 	    // FIXME: need set to -1?
 	    node->setParentIndex(-1);
 	}
+
+        delete encodedNode;  // Free memory. Found by Totalview.
     }
 
     //------------------------------------------------------    

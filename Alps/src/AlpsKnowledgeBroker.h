@@ -217,6 +217,10 @@ class AlpsKnowledgeBroker {
         std::string newName = name;
 	return decodeMap_[newName];
     }
+
+    const AlpsKnowledge* decoderObject(std::string name) {
+	return decodeMap_[name];
+    }
     //@}
 
     //------------------------------------------------------
