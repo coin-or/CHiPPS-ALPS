@@ -13,6 +13,8 @@
  * Copyright (C) 2001-2006, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
+#include "AlpsConfig.h"
+
 #include <iostream>
 
 #include "CoinError.hpp"
