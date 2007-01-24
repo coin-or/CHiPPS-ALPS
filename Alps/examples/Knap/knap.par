@@ -1,4 +1,4 @@
-Alps_instance ./data/input75_1.txt
+Alps_instance ./data/input100_5.txt
 
 Alps_timeLimit 7200
 #Alps_nodeLimit 4000
@@ -7,7 +7,7 @@ Alps_msgLevel 2
 Alps_hubMsgLevel 1
 Alps_workerMsgLevel 1
 
-Alps_hubNum 1
+Alps_hubNum 2
 
 Alps_interClusterBalance 1      # 1: balancing load, 0: don't.
 Alps_intraClusterBalance 1      # 1: balancing load, 0: don't.

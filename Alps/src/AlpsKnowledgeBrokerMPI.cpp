@@ -481,9 +481,9 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
             << globalRank_ << requiredNumNodes << CoinMessageEol;
     }
     
-    int treeSizeByHub = rampUpSubTree_->rampUp(clusterSize_ - 1, // master never work
-                                        requiredNumNodes, 
-                                        treeDepth_);
+    int treeSizeByHub = rampUpSubTree_->rampUp(clusterSize_ - 1, 
+                                               requiredNumNodes, 
+                                               treeDepth_);
 
     nodeProcessedNum_ += treeSizeByHub;
     const int numNode2 = rampUpSubTree_->nodePool()->getNumKnowledges();
@@ -694,7 +694,9 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 
 	// NOTE: Use wall clock time for parallel.
         if (!forceTerminate_) {
-            if (allWorkerReported && allHubReported_ && timer_.reachWallLimit()) {
+            if (allWorkerReported && allHubReported_ && 
+                timer_.reachWallLimit()) {
+
                 forceTerminate_ = true;
                 setSolStatus(ALPS_TIME_LIMIT);
                 masterForceHubTerm();
@@ -865,10 +867,10 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	//**------------------------------------------------
 
 	if ( ! blockTermCheck_ ) {
-	  if (msgLevel_ > 0) {
-              messageHandler()->message(ALPS_TERM_MASTER_START, messages())
+            if (msgLevel_ > 0) {
+                messageHandler()->message(ALPS_TERM_MASTER_START, messages())
                   << globalRank_ << CoinMessageEol;
-	  }
+            }
 	    // Ask other hubs to do termination check.
 	    for (i = 0; i < hubNum_; ++i) {
 		if (hubRanks_[i] != globalRank_) {
@@ -958,51 +960,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	    // True idle, tell others to terminate.
 	    if (terminate) {
                 if (msgLevel_ > 0) {
-                    if (forceTerminate_) {
-			if (incumbentValue_ < ALPS_INFINITY) {
-			    messageHandler()->message(ALPS_LOADREPORT_MASTER_F, messages())
-				<< systemNodeProcessed_ 
-				<< systemWorkQuantity_ 
-				<< systemWorkQuantityForce_ 
-				<< systemSendCount_ << systemRecvCount_
-                                << masterCheckCount 
-				<< incumbentValue_
-				<< timer_.getWallClock()
-				<< CoinMessageEol;
-			}
-			else {
-			      messageHandler()->message(ALPS_LOADREPORT_MASTER_F_N, messages())
-				<< systemNodeProcessed_ 
-				<< systemWorkQuantity_ 
-				<< systemWorkQuantityForce_ 
-				<< systemSendCount_ << systemRecvCount_ 
-                                << masterCheckCount
-				<< timer_.getWallClock()
-				<< CoinMessageEol;
-			}
-                    }
-                    else {
-			if (incumbentValue_ < ALPS_INFINITY) {
-			    messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
-				<< systemNodeProcessed_ 
-				<< systemWorkQuantity_ 
-				<< systemSendCount_ << systemRecvCount_ 
-                                << masterCheckCount
-				<< incumbentValue_ 
-				<< timer_.getWallClock()
-				<< CoinMessageEol;
-			}
-			else {
-			    messageHandler()->message(ALPS_LOADREPORT_MASTER_N, messages())
-				<< systemNodeProcessed_ 
-				<< systemWorkQuantity_ 
-				<< systemSendCount_ << systemRecvCount_ 
-                                << masterCheckCount
-				<< timer_.getWallClock()
-				<< CoinMessageEol;
-			}
-                    }
-                    messageHandler()->message(ALPS_TERM_MASTER_INFORM, messages())
+                    messageHandler()->message(ALPS_TERM_MASTER_INFORM,messages())
                         << globalRank_ << "exit" << CoinMessageEol;
                 }
 		
@@ -1031,7 +989,6 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 				 clusterComm_);
 		    }
 		}
-		break;  // Break *,  Master terminates
 	    } 
 	    else {  // Not true idle yet
                 if (msgLevel_ > 0) {
@@ -1056,7 +1013,59 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 			     clusterComm_);
 		}
 	    }
-	}
+
+	    if (msgLevel_ > 0) {
+                if (forceTerminate_) {
+                    if (incumbentValue_ < ALPS_INFINITY) {
+                        messageHandler()->message(ALPS_LOADREPORT_MASTER_F, messages())
+                            << systemNodeProcessed_ 
+                            << systemWorkQuantity_ 
+                            << systemWorkQuantityForce_ 
+                            << systemSendCount_ << systemRecvCount_
+                            << masterCheckCount 
+                            << incumbentValue_
+                            << timer_.getWallClock()
+                            << CoinMessageEol;
+                    }
+                    else {
+                        messageHandler()->message(ALPS_LOADREPORT_MASTER_F_N, messages())
+                            << systemNodeProcessed_ 
+                            << systemWorkQuantity_ 
+                            << systemWorkQuantityForce_ 
+                            << systemSendCount_ << systemRecvCount_ 
+                            << masterCheckCount
+                            << timer_.getWallClock()
+                            << CoinMessageEol;
+                    }
+                }
+                else {
+                    if (incumbentValue_ < ALPS_INFINITY) {
+                        messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
+                            << systemNodeProcessed_ 
+                            << systemWorkQuantity_ 
+                            << systemSendCount_ << systemRecvCount_ 
+                            << masterCheckCount
+                            << incumbentValue_ 
+                            << timer_.getWallClock()
+                            << CoinMessageEol;
+                    }
+                    else {
+                        messageHandler()->message(ALPS_LOADREPORT_MASTER_N, messages())
+                            << systemNodeProcessed_ 
+                            << systemWorkQuantity_ 
+                            << systemSendCount_ << systemRecvCount_ 
+                            << masterCheckCount
+                            << timer_.getWallClock()
+                            << CoinMessageEol;
+                    }
+                }
+	    }
+
+            if (terminate){
+                // Break after printing msg
+                break;  // Break *,  Master terminates
+            }
+	}   
       
 	//**------------------------------------------------
 	// Master balances work load of hubs if
@@ -1069,7 +1078,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	//std::cout << "masterDoBalance_ = " << masterDoBalance_ << std::endl;
 	
 	if ( !terminate && !forceTerminate_ && 
-	     allHubReported_ && masterDoBalance_ == 0 ) {
+	     allHubReported_ && (masterDoBalance_ == 0) ) {
 	    if (hubNum_ > 1 && interCB) {
 		masterBalanceHubs();
 		++masterCheckCount;
@@ -1284,8 +1293,8 @@ AlpsKnowledgeBrokerMPI::hubMain()
     }
 
     nodeProcessedNum_ += rampUpSubTree_->rampUp(minNumNodes,
-                                         requiredNumNodes, 
-                                         treeDepth_);
+                                                requiredNumNodes, 
+                                                treeDepth_);
     
     const int numNode = rampUpSubTree_->nodePool()->getNumKnowledges();
     
@@ -1836,6 +1845,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
 #endif
 
     while(true) {
+
 	rampUpSubTree_ = dynamic_cast<AlpsSubTree*>
 	    (const_cast<AlpsKnowledge *>(decoderObject("ALPS_SUBTREE")))->
 	    newSubTree();
@@ -1866,7 +1876,9 @@ AlpsKnowledgeBrokerMPI::workerMain()
 
 	rampUpSubTree_->calculateQuality();
 
-	addKnowledge(ALPS_SUBTREE, rampUpSubTree_, rampUpSubTree_->getQuality()); 
+	addKnowledge(ALPS_SUBTREE,
+                     rampUpSubTree_,
+                     rampUpSubTree_->getQuality()); 
         
         rampUpSubTree_ = NULL;
 
@@ -2116,6 +2128,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
                     messageHandler()->message(ALPS_TERM_WORKER_INFORM, messages())
                         << globalRank_ << "continue" << CoinMessageEol;
                 }
+                blockWorkerReport_ = false;
 		blockTermCheck_ = true;
 		terminate = false;
 	    }

@@ -56,20 +56,25 @@ static int computeRampUpNumNodes(int minNumNodes,
             newNumNodes = minNumNodes * 3;
         }
         else if (nodeProcessingTime > 0.005) {
-            newNumNodes = minNumNodes * 4;
+            newNumNodes = minNumNodes * 5;
         }
         else if (nodeProcessingTime > 0.001) {
-            newNumNodes = minNumNodes * 4;
+            newNumNodes = minNumNodes * 7;
+        }
+        else if (nodeProcessingTime > 0.0001){
+            newNumNodes = minNumNodes * 10;
         }
         else {
-            newNumNodes = minNumNodes * 4;
+            newNumNodes = minNumNodes * 20;
         }
     }
     else {
-      newNumNodes = minNumNodes * 20;
+        newNumNodes = minNumNodes * 30;
     }
     
     newNumNodes = CoinMax(newNumNodes, minNumNodes);
+    
+    //std::cout << "+++++ newNumNodes = " << newNumNodes << std::endl;
     
     return newNumNodes;
 }
@@ -437,7 +442,6 @@ AlpsSubTree::rampUp(int minNumNodes,
     while( nodePool_->hasKnowledge() &&
 	   ((nodePool_->getNumKnowledges() < requiredNumNodes) || firstCall) ) { 
                
-        firstCall = false;
 	node = dynamic_cast<AlpsTreeNode*>
 	    (const_cast<AlpsKnowledge*>(nodePool_->getKnowledge().first) ); 
         
@@ -451,12 +455,6 @@ AlpsSubTree::rampUp(int minNumNodes,
 	    if (depth < node->getDepth() + 1) {    // Record the depth of tree
 		depth = node->getDepth() + 1;
 	    }
-#if 1
-	    if (nodePool_->getNumKnowledges() >= requiredNumNodes) {
-		// Has enought nodes after branching and creating children.
-		break;
-	    }
-#endif	    
 	    break;
 	}
 	case AlpsNodeStatusCandidate :
@@ -471,9 +469,11 @@ AlpsSubTree::rampUp(int minNumNodes,
 	    else {
                 node->process(false, true);
             }
+
+            firstCall = false; // set to false after processing first node.
             
 	    node->setActive(false);
-            npTime = broker_->tempTimer().getTime();
+            npTime = broker_->tempTimer().getCpuTime();
             requiredNumNodes = computeRampUpNumNodes(minNumNodes,
                                                      npTime);
 	    switch (node->getStatus()) {
@@ -1108,7 +1108,7 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     }
 
     if (numNodesProcessed) {
-        double nodeProcessingTime = (broker_->tempTimer().getTime()) / 
+        double nodeProcessingTime = (broker_->tempTimer().getCpuTime()) / 
             numNodesProcessed;
         broker_->setNodeProcessingTime(nodeProcessingTime);
     }
