@@ -75,6 +75,10 @@ static double computeUnitTime(double oldUnitTime,
 {
     double unitTime = 0.1;
     
+    if (nodeProcessingTime < 0.0) {
+      nodeProcessingTime = 1.0e-5;
+      assert(0);
+    }
     if (nodeProcessingTime > 30.0) {
 	unitTime = 1.5 * nodeProcessingTime;
     }
@@ -98,8 +102,8 @@ static double computeUnitTime(double oldUnitTime,
 	unitTime = CoinMin(1.0, unitTime);
     }
     else {
-	unitTime = 0.5 * (oldUnitTime + 6*nodeProcessingTime*unitWork);
-	unitTime = CoinMax(0.06, unitTime);
+	unitTime = 0.5 * (oldUnitTime + 4*nodeProcessingTime*unitWork);
+	unitTime = CoinMax(0.05, unitTime);
 	unitTime = CoinMin(1.0, unitTime);
     }
 
@@ -4358,7 +4362,7 @@ AlpsKnowledgeBrokerMPI::sendSubTree(const int receiver,
 
     packEncoded(enc, buf, size, position);
 
-    if (size + 10 < largeSize_) {
+    if (size <= largeSize_) {
         sendBuf(buf, size, position, receiver, tag, MPI_COMM_WORLD);
         success = true;
 #ifdef NF_DEBUG

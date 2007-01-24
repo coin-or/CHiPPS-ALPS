@@ -1,27 +1,27 @@
-Alps_instance ./data/input3.txt
+Alps_instance ./data/input75_1.txt
 
 Alps_timeLimit 7200
-#Alps_nodeLimit 4000000
+#Alps_nodeLimit 4000
 
 Alps_msgLevel 2
 Alps_hubMsgLevel 1
 Alps_workerMsgLevel 1
 
-Alps_hubNum 2
+Alps_hubNum 1
 
 Alps_interClusterBalance 1      # 1: balancing load, 0: don't.
 Alps_intraClusterBalance 1      # 1: balancing load, 0: don't.
 
-#Alps_searchStrategy     4   # 0: Best, 1: Best-est, 2: Breath, 3: Depth, 4 hybrid
+Alps_searchStrategy     0  # 0: Best, 1: Best-est, 2: Breath, 3: Depth, 4 hybrid
 #Alps_searchStrategyRampUp  0
 
-#Alps_nodeLogInterval 100
+#Alps_nodeLogInterval 1000
 #Alps_hubWorkClusterSizeLimit 2
 
 #Alps_masterInitNodeNum 8
 #Alps_hubInitNodeNum 16
 
-#Alps_unitWorkNodes 100         # or unit time
+Alps_unitWorkNodes 100         # or unit time
 #Alps_unitWorkTime 0.03 
 
 #Alps_needWorkThreshold 0.5

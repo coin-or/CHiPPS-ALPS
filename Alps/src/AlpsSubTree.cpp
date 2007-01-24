@@ -65,6 +65,9 @@ static int computeRampUpNumNodes(int minNumNodes,
             newNumNodes = minNumNodes * 4;
         }
     }
+    else {
+      newNumNodes = minNumNodes * 20;
+    }
     
     newNumNodes = CoinMax(newNumNodes, minNumNodes);
     
