@@ -49,7 +49,6 @@ Alps/examples/Knap/KnapSolution.h -text
 Alps/examples/Knap/KnapTreeNode.cpp -text
 Alps/examples/Knap/KnapTreeNode.h -text
 Alps/examples/Knap/LICENSE -text
-Alps/examples/Knap/Makefile.Knap -text
 Alps/examples/Knap/Makefile.in -text
 Alps/examples/Knap/README -text
 Alps/examples/Knap/TODO -text
