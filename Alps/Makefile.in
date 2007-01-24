@@ -94,6 +94,7 @@ DIST_COMMON = README $(am__configure_deps) \
 	$(top_srcdir)/examples/Abc/AbcTreeNode.h \
 	$(top_srcdir)/examples/Abc/Makefile.in \
 	$(top_srcdir)/examples/Abc/abc.par.in \
+	$(top_srcdir)/examples/Knap/Makefile.in \
 	$(top_srcdir)/inc/config_alps.h.in AUTHORS TODO
 @HAVE_EXTERNALS_TRUE@am__append_2 = Externals
 @HAVE_EXTERNALS_TRUE@am__append_3 = .Externals-stamp
@@ -108,7 +109,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/inc/config_alps.h
 CONFIG_CLEAN_FILES = examples/Abc/Makefile examples/Abc/abc.par \
-	alps_addlibs.txt
+	examples/Knap/Makefile alps_addlibs.txt
 SOURCES =
 DIST_SOURCES =
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
@@ -383,6 +384,8 @@ examples/Abc/Makefile: $(top_builddir)/config.status $(top_srcdir)/examples/Abc/
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 examples/Abc/abc.par: $(top_builddir)/config.status $(top_srcdir)/examples/Abc/abc.par.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
+examples/Knap/Makefile: $(top_builddir)/config.status $(top_srcdir)/examples/Knap/Makefile.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 alps_addlibs.txt: $(top_builddir)/config.status $(srcdir)/alps_addlibs.txt.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 
@@ -531,7 +534,7 @@ distclean-tags:
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkdir_p) $(distdir)/. $(distdir)/.. $(distdir)/../BuildTools $(distdir)/examples/Abc $(distdir)/examples/Abc/data $(distdir)/inc
+	$(mkdir_p) $(distdir)/. $(distdir)/.. $(distdir)/../BuildTools $(distdir)/examples/Abc $(distdir)/examples/Abc/data $(distdir)/examples/Knap $(distdir)/inc
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

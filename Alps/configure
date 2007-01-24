@@ -20525,7 +20525,7 @@ fi
 
 # Here list all the files that configure should create (except for the
 # configuration header file)
-                                                            ac_config_files="$ac_config_files Makefile examples/Abc/Makefile examples/Abc/abc.par src/Makefile test/Makefile alps_addlibs.txt"
+                                                                      ac_config_files="$ac_config_files Makefile examples/Abc/Makefile examples/Abc/abc.par examples/Knap/Makefile src/Makefile test/Makefile alps_addlibs.txt"
 
 
 # Here put the location and name of the configuration header file
@@ -21176,6 +21176,7 @@ do
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "examples/Abc/Makefile" ) CONFIG_FILES="$CONFIG_FILES examples/Abc/Makefile" ;;
   "examples/Abc/abc.par" ) CONFIG_FILES="$CONFIG_FILES examples/Abc/abc.par" ;;
+  "examples/Knap/Makefile" ) CONFIG_FILES="$CONFIG_FILES examples/Knap/Makefile" ;;
   "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
   "test/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
   "alps_addlibs.txt" ) CONFIG_FILES="$CONFIG_FILES alps_addlibs.txt" ;;
