@@ -77,6 +77,10 @@ AlpsModel::nodeLog(AlpsTreeNode *node, bool force)
 
     AlpsTreeNode *bestNode = NULL;
     
+    if (broker_->getProcType() != AlpsProcessTypeMaster) {
+        return;
+    }
+
     if ( (broker_->getMsgLevel() > 1) && 
          ( force ||
            (numNodesProcessed % nodeInterval == 0) ) ) {
