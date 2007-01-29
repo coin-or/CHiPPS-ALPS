@@ -16,12 +16,12 @@ Alps_searchStrategy     0  # 0: Best, 1: Best-est, 2: Breath, 3: Depth, 4 hybrid
 #Alps_searchStrategyRampUp  0
 
 #Alps_nodeLogInterval 1000
-#Alps_hubWorkClusterSizeLimit 2
+Alps_hubWorkClusterSizeLimit 2
 
-#Alps_masterInitNodeNum 8
-#Alps_hubInitNodeNum 16
+Alps_masterInitNodeNum 3000
+Alps_hubInitNodeNum 5000
 
-Alps_unitWorkNodes 100         # or unit time
+Alps_unitWorkNodes 300         # or unit time
 #Alps_unitWorkTime 0.03 
 
 #Alps_needWorkThreshold 0.5
