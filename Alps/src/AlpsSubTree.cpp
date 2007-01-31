@@ -30,7 +30,8 @@
 
 //#############################################################################
 
-static int computeRampUpNumNodes(int minNumNodes, 
+static int computeRampUpNumNodes(int minNumNodes,
+                                 int requiredNumNodes,
                                  double nodeProcessingTime) 
 {
     // TODO: Should related to unit work.
@@ -72,7 +73,7 @@ static int computeRampUpNumNodes(int minNumNodes,
         newNumNodes = minNumNodes * 30;
     }
     
-    newNumNodes = CoinMax(newNumNodes, minNumNodes);
+    newNumNodes = CoinMax(newNumNodes, requiredNumNodes);
     
     //std::cout << "+++++ newNumNodes = " << newNumNodes << std::endl;
     
@@ -475,6 +476,7 @@ AlpsSubTree::rampUp(int minNumNodes,
 	    node->setActive(false);
             npTime = broker_->tempTimer().getCpuTime();
             requiredNumNodes = computeRampUpNumNodes(minNumNodes,
+                                                     requiredNumNodes,
                                                      npTime);
 	    switch (node->getStatus()) {
 	    case AlpsNodeStatusCandidate :

@@ -145,13 +145,13 @@ static double computeBalancePeriod(double oldBalancePeriod,
         unitWork = CoinMax(10, unitWork);
 	newPeriod = unitWork*nodeProcessingTime + 0.5*oldBalancePeriod;
 	newPeriod = CoinMax(0.08, newPeriod);
-	newPeriod = CoinMin(0.4, newPeriod);
+	newPeriod = CoinMin(0.3, newPeriod);
     }
     else {
         unitWork = CoinMax(10, unitWork);
-	newPeriod = 3*unitWork*nodeProcessingTime + 0.5*oldBalancePeriod;
+	newPeriod = 2.0*unitWork*nodeProcessingTime + 0.5*oldBalancePeriod;
 	newPeriod = CoinMax(0.07, newPeriod);
-	newPeriod = CoinMin(0.3, newPeriod);
+	newPeriod = CoinMin(0.1, newPeriod);
     }
 
 #if 0

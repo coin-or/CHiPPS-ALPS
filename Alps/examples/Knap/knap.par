@@ -9,7 +9,7 @@ Alps_workerMsgLevel 1
 
 Alps_hubNum 2
 
-Alps_interClusterBalance 1      # 1: balancing load, 0: don't.
+Alps_interClusterBalance 0      # 1: balancing load, 0: don't.
 Alps_intraClusterBalance 1      # 1: balancing load, 0: don't.
 
 Alps_searchStrategy     0  # 0: Best, 1: Best-est, 2: Breath, 3: Depth, 4 hybrid
