@@ -36,46 +36,50 @@ static int computeRampUpNumNodes(int minNumNodes,
 {
     // TODO: Should related to unit work.
     int newNumNodes;
+    nodeProcessingTime *= (minNumNodes*10);
     
     if (nodeProcessingTime > 0.00001) {
-        if (nodeProcessingTime > 10.0) {
+        if (nodeProcessingTime > 5.0) {
             newNumNodes = minNumNodes;
         }
         else if (nodeProcessingTime > 1.0) {
             newNumNodes = minNumNodes;
         }
         else if (nodeProcessingTime > 0.5) {
-            newNumNodes = minNumNodes * 2;
+            newNumNodes = minNumNodes * 3;
         }
         else if (nodeProcessingTime > 0.1) {
-            newNumNodes = minNumNodes * 2;
-        }
-        else if (nodeProcessingTime > 0.05) {
-            newNumNodes = minNumNodes * 3;
-        }
-        else if (nodeProcessingTime > 0.01) {
-            newNumNodes = minNumNodes * 3;
-        }
-        else if (nodeProcessingTime > 0.005) {
             newNumNodes = minNumNodes * 5;
         }
-        else if (nodeProcessingTime > 0.001) {
-            newNumNodes = minNumNodes * 7;
-        }
-        else if (nodeProcessingTime > 0.0001){
+        else if (nodeProcessingTime > 0.05) {
             newNumNodes = minNumNodes * 10;
         }
+        else if (nodeProcessingTime > 0.01) {
+            newNumNodes = minNumNodes * 15;
+        }
+        else if (nodeProcessingTime > 0.005) {
+            newNumNodes = minNumNodes * 30;
+        }
+        else if (nodeProcessingTime > 0.001) {
+            newNumNodes = minNumNodes * 40;
+        }
+        else if (nodeProcessingTime > 0.0001){
+            newNumNodes = minNumNodes * 50;
+        }
         else {
-            newNumNodes = minNumNodes * 20;
+            newNumNodes = minNumNodes * 100;
         }
     }
     else {
-        newNumNodes = minNumNodes * 30;
+        //newNumNodes = minNumNodes * 50;
     }
     
     newNumNodes = CoinMax(newNumNodes, requiredNumNodes);
     
-    //std::cout << "+++++ newNumNodes = " << newNumNodes << std::endl;
+    std::cout << "+++++ newNumNodes = " << newNumNodes 
+              << ", nodeProcessingTime = " << nodeProcessingTime
+
+              << std::endl;
     
     return newNumNodes;
 }
@@ -427,6 +431,7 @@ AlpsSubTree::rampUp(int minNumNodes,
     AlpsTreeNode* node = NULL;
     double npTime = 0.0;
     bool firstCall = true;
+    int npCount = 0;
     
     const bool deleteNode = 
 	broker_->getModel()->AlpsPar()->entry(AlpsParams::deleteDeadNode);
@@ -474,10 +479,13 @@ AlpsSubTree::rampUp(int minNumNodes,
             firstCall = false; // set to false after processing first node.
             
 	    node->setActive(false);
-            npTime = broker_->tempTimer().getCpuTime();
-            requiredNumNodes = computeRampUpNumNodes(minNumNodes,
-                                                     requiredNumNodes,
-                                                     npTime);
+            npTime = broker_->tempTimer().getWallClock();
+            if (npCount < 10) {
+                requiredNumNodes = computeRampUpNumNodes(minNumNodes,
+                                                         requiredNumNodes,
+                                                         npTime);
+                ++npCount;
+            }
 	    switch (node->getStatus()) {
 	    case AlpsNodeStatusCandidate :
 	    case AlpsNodeStatusEvaluated :
