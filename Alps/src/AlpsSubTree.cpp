@@ -76,10 +76,10 @@ static int computeRampUpNumNodes(int minNumNodes,
     
     newNumNodes = CoinMax(newNumNodes, requiredNumNodes);
     
-    std::cout << "+++++ newNumNodes = " << newNumNodes 
-              << ", nodeProcessingTime = " << nodeProcessingTime
+    //std::cout << "+++++ newNumNodes = " << newNumNodes 
+    //        << ", nodeProcessingTime = " << nodeProcessingTime
 
-              << std::endl;
+    //      << std::endl;
     
     return newNumNodes;
 }

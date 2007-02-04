@@ -80,30 +80,30 @@ static double computeUnitTime(double oldUnitTime,
       assert(0);
     }
     if (nodeProcessingTime > 30.0) {
-	unitTime = 1.5 * nodeProcessingTime;
+	unitTime = nodeProcessingTime;
     }
     else if (nodeProcessingTime > 5.0) {
-	unitTime = nodeProcessingTime * 2.0;
+	unitTime = nodeProcessingTime;
     }
     else if (nodeProcessingTime > 1.0) {
-	unitTime = nodeProcessingTime * 3.0;
+	unitTime = nodeProcessingTime * 2.0;
     }	     
     else if (nodeProcessingTime > 0.1) {
-	unitTime = nodeProcessingTime * 4.0;
+	unitTime = nodeProcessingTime * 2.0;
     }
     else if (nodeProcessingTime > 0.01) {
-	unitTime = 0.5 * (oldUnitTime + nodeProcessingTime*unitWork);
-	unitTime = CoinMax(0.1, unitTime);
+	unitTime = 0.5 * (oldUnitTime + 0.4*nodeProcessingTime*unitWork);
+	unitTime = CoinMax(0.05, unitTime);
 	unitTime = CoinMin(1.0, unitTime);
     }
     else if (nodeProcessingTime > 0.001) {
-	unitTime = 0.5 * (oldUnitTime + 2*nodeProcessingTime*unitWork);
-	unitTime = CoinMax(0.08, unitTime);
-	unitTime = CoinMin(1.0, unitTime);
+	unitTime = 0.5 * (oldUnitTime + 0.5*nodeProcessingTime*unitWork);
+	unitTime = CoinMax(0.03, unitTime);
+	unitTime = CoinMin(0.8, unitTime);
     }
     else {
-	unitTime = 0.5 * (oldUnitTime + 4*nodeProcessingTime*unitWork);
-	unitTime = CoinMax(0.05, unitTime);
+	unitTime = 0.5 * (oldUnitTime + 1.5*nodeProcessingTime*unitWork);
+	unitTime = CoinMax(0.02, unitTime);
 	unitTime = CoinMin(1.0, unitTime);
     }
 
@@ -124,34 +124,40 @@ static double computeBalancePeriod(double oldBalancePeriod,
     double newPeriod = 0.1;
     
     if (nodeProcessingTime > 30.0) {
-	newPeriod = 1.5 * nodeProcessingTime;
+	newPeriod = nodeProcessingTime;
     }
     else if (nodeProcessingTime > 5.0) {
-	newPeriod = nodeProcessingTime * 2.0;
+	newPeriod = nodeProcessingTime;
     }
     else if (nodeProcessingTime > 1.0) {
-	newPeriod = nodeProcessingTime * 3.0;
+	newPeriod = nodeProcessingTime;
     }	     
     else if (nodeProcessingTime > 0.1) {
-	newPeriod = nodeProcessingTime * 4.0;
+	newPeriod = nodeProcessingTime*2.0;
     }
     else if (nodeProcessingTime > 0.01) {
-        unitWork = CoinMax(10, unitWork);
-	newPeriod = 0.5*unitWork*nodeProcessingTime + 0.5*oldBalancePeriod;
-	newPeriod = CoinMax(0.1, newPeriod);
+        unitWork = CoinMax(3, unitWork);
+	newPeriod = 0.2*unitWork*nodeProcessingTime + 0.5*oldBalancePeriod;
+	newPeriod = CoinMax(0.03, newPeriod);
 	newPeriod = CoinMin(0.5, newPeriod);
     }
     else if (nodeProcessingTime > 0.001) {
         unitWork = CoinMax(10, unitWork);
-	newPeriod = unitWork*nodeProcessingTime + 0.5*oldBalancePeriod;
-	newPeriod = CoinMax(0.08, newPeriod);
+	newPeriod = 0.25*unitWork*nodeProcessingTime + 0.5*oldBalancePeriod;
+	newPeriod = CoinMax(0.03, newPeriod);
+	newPeriod = CoinMin(0.3, newPeriod);
+    }
+    else if (nodeProcessingTime > 0.0001) {
+        unitWork = CoinMax(10, unitWork);
+	newPeriod = 0.3*unitWork*nodeProcessingTime + 0.5*oldBalancePeriod;
+	newPeriod = CoinMax(0.03, newPeriod);
 	newPeriod = CoinMin(0.3, newPeriod);
     }
     else {
         unitWork = CoinMax(10, unitWork);
-	newPeriod = 2.0*unitWork*nodeProcessingTime + 0.5*oldBalancePeriod;
+	newPeriod = unitWork*nodeProcessingTime + 0.5*oldBalancePeriod;
 	newPeriod = CoinMax(0.07, newPeriod);
-	newPeriod = CoinMin(0.1, newPeriod);
+	newPeriod = CoinMin(0.3, newPeriod);
     }
 
 #if 0
