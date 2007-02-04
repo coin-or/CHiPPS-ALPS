@@ -71,7 +71,7 @@ static int computeRampUpNumNodes(int minNumNodes,
         }
     }
     else {
-        //newNumNodes = minNumNodes * 50;
+        newNumNodes = minNumNodes;
     }
     
     newNumNodes = CoinMax(newNumNodes, requiredNumNodes);
@@ -467,7 +467,7 @@ AlpsSubTree::rampUp(int minNumNodes,
 	case AlpsNodeStatusEvaluated :
 	    ++numNodesProcessed; 
             //activeNode_ = node; // Don't set, getNumNodes wrong.
-	    broker_->tempTimer().start();
+	    broker_->subTreeTimer().start();
 	    node->setActive(true);
 	    if (node == root_) {
                 node->process(true, true);
@@ -479,7 +479,7 @@ AlpsSubTree::rampUp(int minNumNodes,
             firstCall = false; // set to false after processing first node.
             
 	    node->setActive(false);
-            npTime = broker_->tempTimer().getWallClock();
+            npTime = broker_->subTreeTimer().getWallClock();
             if (npCount < 10) {
                 requiredNumNodes = computeRampUpNumNodes(minNumNodes,
                                                          requiredNumNodes,
@@ -990,7 +990,7 @@ AlpsSubTree::exploreUnitWork(int unitWork,
                              bool & betterSolution)         /* Output */
 {
     // Start to count time.
-    broker_->tempTimer().start();
+    broker_->subTreeTimer().start();
 
     AlpsReturnCode status = ALPS_OK;
     
@@ -1037,13 +1037,17 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 	     diveNodePool_->hasKnowledge()) && 
 	    !betterSolution ) {
 	
-	broker_->tempTimer().stop();
-	
+	broker_->subTreeTimer().stop();
+
+        std::cout << "unitTime = " << unitTime
+                  << ", solTime = " << broker_->subTreeTimer().getTime()
+                  << std::endl;
+        
 	if (numNodesProcessed > unitWork) {
             exploreStatus = ALPS_NODE_LIMIT;
 	    break;
 	}
-	else if (broker_->tempTimer().getTime() > unitTime){
+	else if (broker_->subTreeTimer().getTime() > unitTime){
             exploreStatus = ALPS_TIME_LIMIT;
 	    break;
 	}
@@ -1118,7 +1122,7 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     }
 
     if (numNodesProcessed) {
-        double nodeProcessingTime = (broker_->tempTimer().getCpuTime()) / 
+        double nodeProcessingTime = (broker_->subTreeTimer().getCpuTime()) / 
             numNodesProcessed;
         broker_->setNodeProcessingTime(nodeProcessingTime);
     }
@@ -1169,7 +1173,7 @@ AlpsSubTree::exploreUnitWork(int unitWork,
                              bool & betterSolution)         /* Output */
 {
     // Start to count time.
-    broker_->tempTimer().start();
+    broker_->subTreeTimer().start();
 
     AlpsReturnCode status = ALPS_OK;
     
@@ -1214,14 +1218,14 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     while ( (nodePool_->hasKnowledge() || activeNode_) && 
 	    !betterSolution ) {
 	
-	broker_->tempTimer().stop();
+	broker_->subTreeTimer().stop();
 	broker_->timer().stop();
 	
 	if (numNodesProcessed > unitWork) {
             exploreStatus = ALPS_NODE_LIMIT;
 	    break;
 	}
-	else if (broker_->tempTimer().getTime() > unitTime) {
+	else if (broker_->subTreeTimer().getTime() > unitTime) {
             exploreStatus = ALPS_TIME_LIMIT;
 	    // getKnowledgeBroker()->setSolStatus(ALPS_TIME_LIMIT);
 	    break;

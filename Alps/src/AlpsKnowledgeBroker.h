@@ -96,8 +96,11 @@ class AlpsKnowledgeBroker {
      */
     //@{
     /***/
-    /** Main timer. */
+    /** Main timer. Do not touch. */
     AlpsTimer timer_;
+
+    /** Subtree timer.  Do not touch.*/
+    AlpsTimer subTreeTimer_;
 
     /** Secondary timer. */
     AlpsTimer tempTimer_;
@@ -408,6 +411,11 @@ class AlpsKnowledgeBroker {
     /** Query timer. */
     AlpsTimer & timer() {
 	return timer_;
+    }
+
+    /** Query subtree timer. */
+    AlpsTimer & subTreeTimer() {
+	return subTreeTimer_;
     }
 
     /** Query secondary timer. */
