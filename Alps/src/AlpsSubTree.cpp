@@ -1039,10 +1039,12 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 	
 	broker_->subTreeTimer().stop();
 
+#if 0
         std::cout << "unitTime = " << unitTime
                   << ", solTime = " << broker_->subTreeTimer().getTime()
                   << std::endl;
-        
+#endif
+   
 	if (numNodesProcessed > unitWork) {
             exploreStatus = ALPS_NODE_LIMIT;
 	    break;
