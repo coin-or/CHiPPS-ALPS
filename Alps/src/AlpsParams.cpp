@@ -206,7 +206,7 @@ void AlpsParams::setDefaultEntries() {
 
   // IntPar
   setEntry(bufSpare, 256);
-  setEntry(clockType, ALPS_WALL_CLOCK);
+  setEntry(clockType, ALPS_CPU_TIME);
   setEntry(eliteSize, 1);
   setEntry(hubInitNodeNum, ALPS_NONE);
   setEntry(hubMsgLevel, 0);
