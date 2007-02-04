@@ -218,7 +218,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     // Initialization and setup.
     //------------------------------------------------------
 
-    masterTimer.setClockType(clockType);
+    masterTimer.setClockType(ALPS_WALL_CLOCK);
 
     largeBuffer_ = new char [largeSize_];
     smallBuffer_ = new char [smallSize];
@@ -1184,7 +1184,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
     // Initialization and setup.
     //------------------------------------------------------
 
-    hubTimer.setClockType(clockType);
+    hubTimer.setClockType(ALPS_WALL_CLOCK);
     largeBuffer_ = new char [largeSize_];
     smallBuffer_ = new char [smallSize];
 
@@ -1821,7 +1821,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
     // Worker's Ramp-up.
     //======================================================
 
-    workerTimer.setClockType(clockType);
+    workerTimer.setClockType(ALPS_WALL_CLOCK);
     workerTimer.start();
 
     setPhase(ALPS_PHASE_RAMPUP);
@@ -4762,6 +4762,7 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
       model_->AlpsPar()->entry(AlpsParams::clockType);
     
     timer_.setClockType(clockType);
+    subTreeTimer_.setClockType(clockType);
     tempTimer_.setClockType(clockType);
 
     //------------------------------------------------------

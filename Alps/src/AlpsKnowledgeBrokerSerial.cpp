@@ -162,8 +162,8 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
       model_->AlpsPar()->entry(AlpsParams::clockType);
     
     timer_.setClockType(clockType);
+    subTreeTimer_.setClockType(clockType);
     tempTimer_.setClockType(clockType);
-
 }
 
 //#############################################################################
