@@ -461,7 +461,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     //------------------------------------------------------
     // Print out statistics about root ramp up.
     //------------------------------------------------------
-
+    
     if (msgLevel_ > 0) {
         messageHandler()->message(ALPS_RAMPUP_MASTER, messages())
             << globalRank_ << rampUpTimeMaster 
@@ -472,11 +472,11 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     if (nodeProcessedNum_) {
         nodeProcessingTime_ = rampUpTimeMaster/nodeProcessedNum_;
     }
-
+    
     //------------------------------------------------------
     // Generate and send required number of nodes for master's workers.
     //------------------------------------------------------
-
+    
     requiredNumNodes = model_->AlpsPar()->entry(AlpsParams::hubInitNodeNum);
     
     // Make sure the number of nodes created is larger than cluster size.
@@ -1734,6 +1734,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
 		}
 		terminate = false;
 		blockTermCheck_ = true;
+		blockHubReport_ = false;
 	    }
 	}
 
