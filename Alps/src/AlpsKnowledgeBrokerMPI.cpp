@@ -811,7 +811,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 			    << systemNodeProcessed_ 
 			    << systemWorkQuantity_ 
 			    << systemSendCount_ << systemRecvCount_ 
-                            << masterCheckCount
+                            << masterCheckCount << masterBalancePeriod_ 
 			    << incumbentValue_ 
 			    << timer_.getWallClock()
 			    << CoinMessageEol;
@@ -821,7 +821,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 			    << systemNodeProcessed_ 
 			    << systemWorkQuantity_ 
 			    << systemSendCount_ << systemRecvCount_
-                            << masterCheckCount 
+                            << masterCheckCount << masterBalancePeriod_ 
 			    << timer_.getWallClock()
 			    << CoinMessageEol;
 		    }
@@ -1050,7 +1050,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
                             << systemNodeProcessed_ 
                             << systemWorkQuantity_ 
                             << systemSendCount_ << systemRecvCount_ 
-                            << masterCheckCount
+                            << masterCheckCount << masterBalancePeriod_ 
                             << incumbentValue_ 
                             << timer_.getWallClock()
                             << CoinMessageEol;
@@ -1060,7 +1060,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
                             << systemNodeProcessed_ 
                             << systemWorkQuantity_ 
                             << systemSendCount_ << systemRecvCount_ 
-                            << masterCheckCount
+                            << masterCheckCount << masterBalancePeriod_ 
                             << timer_.getWallClock()
                             << CoinMessageEol;
                     }

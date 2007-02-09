@@ -27,7 +27,8 @@
 #include "AlpsKnowledgeBroker.h"
 #include "AlpsSubTree.h"
 #include "AlpsNodePool.h"
-
+#include "AlpsMessage.h"
+#include "AlpsMessageTag.h"
 //#############################################################################
 
 static int computeRampUpNumNodes(int minNumNodes,
@@ -75,12 +76,11 @@ static int computeRampUpNumNodes(int minNumNodes,
     }
     
     newNumNodes = CoinMax(newNumNodes, requiredNumNodes);
-    
-    //std::cout << "+++++ newNumNodes = " << newNumNodes 
-    //        << ", nodeProcessingTime = " << nodeProcessingTime
 
-    //      << std::endl;
-    
+#if 0    
+    std::cout << "+++++ newNumNodes = " << newNumNodes 
+              << ", nodeProcessingTime = " << nodeProcessingTime << std::endl;
+#endif
     return newNumNodes;
 }
 
@@ -485,6 +485,27 @@ AlpsSubTree::rampUp(int minNumNodes,
                                                          requiredNumNodes,
                                                          npTime);
                 ++npCount;
+                if (npCount > 9) {
+                    // Print msg
+                    if ( (broker_->getMsgLevel() > 1) &&
+                         (broker_->getProcType() == AlpsProcessTypeMaster) ) {
+                        broker_->messageHandler()->message(ALPS_RAMPUP_MASTER_NODES, broker_->messages())
+                            << broker_->getProcRank()
+                            << requiredNumNodes
+                            << npTime
+                            << CoinMessageEol;
+                        
+                    }
+                    else if ( (broker_->getHubMsgLevel() > 1) &&
+                              (broker_->getProcType() == AlpsProcessTypeHub) ) {
+                        broker_->messageHandler()->message(ALPS_RAMPUP_HUB_NODES, broker_->messages())
+                            << broker_->getProcRank()
+                            << requiredNumNodes
+                            << npTime
+                            << CoinMessageEol;
+                        
+                    }
+                }
             }
 	    switch (node->getStatus()) {
 	    case AlpsNodeStatusCandidate :

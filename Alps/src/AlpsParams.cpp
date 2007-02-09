@@ -225,7 +225,7 @@ void AlpsParams::setDefaultEntries() {
   setEntry(searchStrategyRampUp, ALPS_SEARCH_BEST);  
   setEntry(smallSize, 1024);      // 2^10
   setEntry(solLimit, ALPS_INT_MAX);
-  setEntry(unitWorkNodes, 20);
+  setEntry(unitWorkNodes, 7);
   setEntry(workerMsgLevel, 0);
 
   // DoublePar
