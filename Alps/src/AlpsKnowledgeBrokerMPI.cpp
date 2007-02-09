@@ -117,6 +117,8 @@ static double computeUnitTime(double oldUnitTime,
 
 //#############################################################################
 
+// Depend on unitwork???
+
 static double computeBalancePeriod(double oldBalancePeriod,
 				   int unitWork, 
 				   double nodeProcessingTime)
@@ -133,30 +135,28 @@ static double computeBalancePeriod(double oldBalancePeriod,
 	newPeriod = nodeProcessingTime;
     }	     
     else if (nodeProcessingTime > 0.1) {
-	newPeriod = nodeProcessingTime*2.0;
+	newPeriod = 0.5 * (nodeProcessingTime + oldBalancePeriod);
+    }
+    else if (nodeProcessingTime > 0.05) {
+	newPeriod = 0.5 * (2*nodeProcessingTime + oldBalancePeriod);
     }
     else if (nodeProcessingTime > 0.01) {
-        unitWork = CoinMax(3, unitWork);
-	newPeriod = 0.2*unitWork*nodeProcessingTime + 0.5*oldBalancePeriod;
-	newPeriod = CoinMax(0.03, newPeriod);
-	newPeriod = CoinMin(0.5, newPeriod);
+	newPeriod = 0.5 * (2*nodeProcessingTime + oldBalancePeriod);
     }
     else if (nodeProcessingTime > 0.001) {
-        unitWork = CoinMax(10, unitWork);
-	newPeriod = 0.25*unitWork*nodeProcessingTime + 0.5*oldBalancePeriod;
+	newPeriod = 0.5 * (3*nodeProcessingTime + oldBalancePeriod);
 	newPeriod = CoinMax(0.03, newPeriod);
 	newPeriod = CoinMin(0.3, newPeriod);
     }
     else if (nodeProcessingTime > 0.0001) {
-        unitWork = CoinMax(10, unitWork);
-	newPeriod = 0.3*unitWork*nodeProcessingTime + 0.5*oldBalancePeriod;
+	newPeriod = 0.5 * (10*nodeProcessingTime + oldBalancePeriod);
 	newPeriod = CoinMax(0.03, newPeriod);
 	newPeriod = CoinMin(0.3, newPeriod);
     }
     else {
         unitWork = CoinMax(10, unitWork);
 	newPeriod = unitWork*nodeProcessingTime + 0.5*oldBalancePeriod;
-	newPeriod = CoinMax(0.07, newPeriod);
+	newPeriod = CoinMax(0.03, newPeriod);
 	newPeriod = CoinMin(0.3, newPeriod);
     }
 
