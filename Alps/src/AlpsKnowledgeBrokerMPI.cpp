@@ -5878,12 +5878,13 @@ void
 AlpsKnowledgeBrokerMPI::sendModelKnowledge(char*& genBuf, 
                                            int tag,
                                            MPI_Comm comm,
+					   int sender,
                                            int receiver)
 {
     int size = largeSize_;
     int position = 0;
     
-    bool hasKnowledge = true;
+    bool hasKnowledge = false;
 
     if (!genBuf) {
         // Original sender.
@@ -5896,12 +5897,10 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(char*& genBuf,
         //std::cout << "----- 1. position = " << position << std::endl;
         
         // Encode generated model knowledge
-        AlpsEncoded* encoded = model_->encodeKnowlegeShared();
-
-        if (!encoded) {
-            hasKnowledge = false;
-        }
-        else {
+        AlpsEncoded *encoded = model_->encodeKnowlegeShared();
+	
+        if (encoded) {
+            hasKnowledge = true;
             // Pack into local buffer
             packEncoded(encoded, genBuf, size, position);
         }
@@ -5931,8 +5930,8 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(char*& genBuf,
             incSendCount("sendModelKnowledge during rampup");
         }
     }
-    else if (phase_ == ALPS_PHASE_SEARCH) {
-
+    else if ( hasKnowledge && (phase_ == ALPS_PHASE_SEARCH) ) {
+	
         // FIXME: need know who is the original sender to be able to 
         //        forwarding.
         assert(genBuf);
