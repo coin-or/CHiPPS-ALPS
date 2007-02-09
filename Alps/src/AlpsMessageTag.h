@@ -184,8 +184,12 @@ enum AlpsMessageTag{
   AlpsMsgModelGenRampUp,
   /** The message tag indicating that knowledge generated during search about
       model is being sent or received. */
-  // 41
-  AlpsMsgModelGenSearch
+  // 42
+  AlpsMsgModelGenSearch,
+
+  /** When requested by master during inter balance, hub failed to identify 
+      a donor worker. */
+  AlpsMsgHubFailFindDonor
 };
 
 #endif

@@ -1081,8 +1081,12 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	// (4) previous balance has been completed.
 	//**------------------------------------------------
 
-	//std::cout << "masterDoBalance_ = " << masterDoBalance_ << std::endl;
-	
+        if (msgLevel_ > 10) {
+            std::cout << "masterDoBalance_ = " << masterDoBalance_ 
+                      << ", allHubReported_ = " << allHubReported_
+                      << std::endl;
+        }
+        
 	if ( !terminate && !forceTerminate_ && 
 	     allHubReported_ && (masterDoBalance_ == 0) ) {
 	    if (hubNum_ > 1 && interCB) {
@@ -1096,6 +1100,12 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 		}
 	    }
 	}
+        
+        if (msgLevel_ > 10) {
+            std::cout << "++++ hubDoBalance_ = " << hubDoBalance_
+                      << ", allWorkerReported = " << allWorkerReported
+                      << std::endl;
+        }
         
 	if ( !terminate && !forceTerminate_ && 
 	     allWorkerReported && hubDoBalance_ == 0 ) {
@@ -1586,13 +1596,6 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	//**------------------------------------------------
         
 	refreshClusterStatus();
-        
-        if (clusterWorkQuantity_ < zeroLoad) {
-            blockHubReport_ = true;
-        }
-        else {
-            blockHubReport_ = false;
-	}
         
 #ifdef NF_DEBUG_MORE
 	std::cout << "HUB "<< globalRank_ 
@@ -2179,16 +2182,19 @@ AlpsKnowledgeBrokerMPI::processMessages(char *&bufLarge,
 	// Following are master's msgs.
 	//--------------------------------------------------
 
+    case AlpsMsgHubAskIndices:
+	masterSendIndices(status.MPI_SOURCE);
+	break;
+    case AlpsMsgHubFailFindDonor:
+        --masterDoBalance_;
+        break;
     case AlpsMsgHubPeriodReport:
 	masterUpdateSysStatus(bufLarge, &status, MPI_COMM_WORLD);
 	break;
     case AlpsMsgTellMasterRecv:
 	--masterDoBalance_;
 	break;
-    case AlpsMsgHubAskIndices:
-	masterSendIndices(status.MPI_SOURCE);
-	break;
-	
+       
 	//-------------------------------------------------
 	// Following are hub's msgs.
 	//-------------------------------------------------
@@ -2323,7 +2329,7 @@ AlpsKnowledgeBrokerMPI::masterAskHubDonate(int donorID,
     MPI_Pack(&receiverWorkload, 1, MPI_DOUBLE, smallBuffer_, smallSize, &pos,
              MPI_COMM_WORLD);
 
-#ifdef NF_DEBUG_MORE
+#if 0
     std::cout << "masterAskHubDonate(): donor is " << donorID << std::endl;
 #endif
 
@@ -3058,10 +3064,9 @@ AlpsKnowledgeBrokerMPI::hubsShareWork(char*& bufLarge,
     //------------------------------------------------------
 
     if (maxLoadRank != -1) {
-	
-#ifdef NF_DEBUG
-	std::cout << "HUB[" << globalRank_ << "] : found process " << maxLoadRank
-		  << " to share with " << receiverID << std::endl;
+#if 0
+	std::cout << "HUB[" << globalRank_ << "] : will ask process " << maxLoadRank
+		  << " to donate workload to process " << receiverID << std::endl;
 #endif
 	
 	if(maxLoadRank != globalRank_) { // Not hub 
@@ -3087,10 +3092,20 @@ AlpsKnowledgeBrokerMPI::hubsShareWork(char*& bufLarge,
 	}
     }
     else {
+#if 0
+	std::cout << "HUB[" << globalRank_ 
+                  << "] : can not find a process to donate workload to process "
+                  << receiverID << std::endl;
+#endif
         if (msgLevel_ > 100) {
             messageHandler()->message(ALPS_LOADBAL_HUB_FAIL, messages())
                 << globalRank_ << receiverID << CoinMessageEol;
         }
+        
+        // See a empty msg to master to reduce masterDoBalance_ by 1
+        MPI_Send(smallBuffer_, 0, MPI_PACKED, masterRank_,
+                 AlpsMsgHubFailFindDonor, MPI_COMM_WORLD);
+        incSendCount("hubsShareWork");
     }
 }
 
@@ -3136,6 +3151,11 @@ AlpsKnowledgeBrokerMPI::masterBalanceHubs()
     bool quantityBalance = false;
     for (i = 0; i < hubNum_; ++i) {
 	if (hubWorkQuantities_[i] < ALPS_QUALITY_TOL) {    // Have not work
+#if 0
+            std::cout << "++++ master balance: find donor hub " << hubRanks_[i]
+                      << "; quantity = " << hubWorkQuantities_[i] 
+                      << std::endl;
+#endif
 	    receivers.insert(std::pair<double, int>(hubWorkQualities_[i], 
 						    hubRanks_[i]));
 	    quantityBalance = true;
@@ -3147,6 +3167,11 @@ AlpsKnowledgeBrokerMPI::masterBalanceHubs()
 
 	for (i = 0; i < hubNum_; ++i) {
 	    if (hubWorkQuantities_[i] > ALPS_QUALITY_TOL) {
+#if 0
+                std::cout << "++++ master balance: find donor hub " << hubRanks_[i]
+                          << "; quantity = " << hubWorkQuantities_[i] 
+                          << std::endl;
+#endif
 		donors.insert(std::pair<double, int>(hubWorkQualities_[i], 
 						     hubRanks_[i]));
 	    }
@@ -3165,10 +3190,20 @@ AlpsKnowledgeBrokerMPI::masterBalanceHubs()
 	    double diff = hubWorkQualities_[i] - averQuality;
 	    double diffRatio = fabs(diff / (averQuality + 1.0));
 	    if (diff < 0 && diffRatio > donorSh) {  // Donor candidates
+#if 0
+                std::cout << "++++ master balance: find donor hub " << hubRanks_[i]
+                          << "; quality = " << hubWorkQualities_[i] 
+                          << std::endl;
+#endif           
 		donors.insert(std::pair<double, int>(hubWorkQualities_[i], 
 						     hubRanks_[i]));
 	    }
 	    else if (diff > 0 && diffRatio > receiverSh){// Receiver candidates
+#if 0
+                std::cout << "++++ master balance: quality: find receiver hub " << hubRanks_[i] 
+                          << "; quality = " << hubWorkQualities_[i] 
+                          << std::endl;
+#endif
 		receivers.insert(std::pair<double, int>(hubWorkQualities_[i], 
 							hubRanks_[i]));
 	    }
@@ -3183,9 +3218,10 @@ AlpsKnowledgeBrokerMPI::masterBalanceHubs()
     const int numReceiver = receivers.size();
     const int numPair     = CoinMin(numDonor, numReceiver);
 
-#ifdef NF_DEBUG_MORE
-    std::cout << "Master: donors size = " << numDonor << ", receiver size = "
-	      << numReceiver << std::endl;
+#if 0
+    std::cout << "Master: donors size = " << numDonor 
+              << ", receiver size = " << numReceiver 
+              << ", numPair = " << numPair << std::endl;
 #endif
 
     int donorID;
@@ -3199,7 +3235,7 @@ AlpsKnowledgeBrokerMPI::masterBalanceHubs()
 	donorID = posD->second;
 	receiverID = posR->second;
    
-#ifdef NF_DEBUG
+#if 0
 	std::cout << "MASTER : receiver hub ID = " << receiverID 
 		  << "; quality = " << posR->first << std::endl;
 	std::cout << "MASTER : donor hub ID = " << donorID 
@@ -3227,11 +3263,11 @@ AlpsKnowledgeBrokerMPI::masterBalanceHubs()
 	    double recvLoad = posR->first;
 
 	    // Find the donor worker in hub's cluster
-	    for (i = 0; i < clusterSize_; ++i) {
-		if (i != clusterRank_) {
-		    if (workerWorkQualities_[i] < maxLoad) {
-			maxLoad = workerWorkQualities_[i];
-			maxLoadRank = globalRank_ - masterRank_ + i;
+	    for (int k = 0; k < clusterSize_; ++k) {
+		if (k != clusterRank_) {
+		    if (workerWorkQualities_[k] < maxLoad) {
+			maxLoad = workerWorkQualities_[k];
+			maxLoadRank = globalRank_ - masterRank_ + k;
 		    }
 		}
 	    }
@@ -4621,7 +4657,7 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
 			    "AlpsKnowledgeBrokerMPI");
 	}
 
-        // more than 1 proc at last P
+        // more than 1 proc in the last cluser
 	if (processNum_- cluSize_ * (hubNum_ - 1) > 1) {
 	    break;
 	}
@@ -4637,6 +4673,12 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
     MPI_Comm_split(MPI_COMM_WORLD, color, key, &clusterComm_);
     MPI_Comm_rank(clusterComm_, &clusterRank_);
     MPI_Comm_size(clusterComm_, &clusterSize_);
+
+#if 0
+    std::cout << "+++ masterRank_ = " << masterRank_
+              << ", clusterSize_ = " << clusterSize_
+              << ", cluSize_ = " << cluSize_ << std::endl;
+#endif    
 
     //------------------------------------------------------
     // Create hubGroup_ and hubComm_.
