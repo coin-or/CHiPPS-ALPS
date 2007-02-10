@@ -85,7 +85,8 @@ This is absurd.\n", MAX_PARAM_LINE_LENGTH);
 	//--- Check if the keyword is a param file ---------
 	//--------------------------------------------------
 
-	if (strcmp(keyword, "param") == 0) {
+	if ( (strcmp(keyword, "param") == 0) ||
+             (strcmp(keyword, "par") == 0) ) {
 	    readFromFile(value);
 	}
 

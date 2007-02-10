@@ -16,6 +16,8 @@
 #ifndef AlpsSearchStrategyBase_h_
 #define AlpsSearchStrategyBase_h_
 
+#include "Alps.h"
+
 class AlpsModel;
 class AlpsSubTree;
 class AlpsTreeNode;
@@ -39,9 +41,12 @@ protected:
     /** Used to change search behavior. */
     double weight_;
     
+    /** Which type of strategy: best-first, etc. */
+    int type_;
+    
 public:
     /** Default Constructor. */
-    AlpsSearchStrategy() : weight_(-1.0) {}
+    AlpsSearchStrategy() : weight_(-1.0), type_(ALPS_SEARCH_BEST){}
         
     /** Default destructor. */
     virtual ~AlpsSearchStrategy() {}
@@ -77,6 +82,12 @@ public:
     virtual void createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node)
     { }
     //@}
+
+    /** Get type of strategy */
+    int getType(){ return type_; }
+    
+    /** Set type of strategy */
+    void setType(int t) { type_ = t; }
 };
 
 //#############################################################################

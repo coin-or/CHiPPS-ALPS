@@ -18,6 +18,7 @@
 
 //#############################################################################
 
+#include "Alps.h"
 #include "AlpsConfig.h"
 
 #include "CoinTime.hpp"
@@ -53,6 +54,7 @@ static inline double AlpsWallClock()
 #endif
     return cpu_temp + sys_temp;
 #else
+    // COIN_HAS_MPI
     return MPI_Wtime();
 #endif
 }
@@ -63,6 +65,9 @@ static inline double AlpsWallClock()
 class AlpsTimer 
 {
  public:  /* Public for parallecl gather. */
+
+    int clockType_;
+
     /** Time limit. */
     double limit_;
     
@@ -78,7 +83,7 @@ class AlpsTimer
     double wall_;
     
  public:
-    AlpsTimer(): limit_(ALPS_DBL_MAX) { reset(); }
+    AlpsTimer() : clockType_(ALPS_WALL_CLOCK), limit_(ALPS_DBL_MAX) { reset(); }
     AlpsTimer(double lt) : limit_(lt) { reset(); }
     ~AlpsTimer()  {}
 
@@ -112,14 +117,43 @@ class AlpsTimer
     //@}
 
     /** Get cpu timee. */
-    double getCpuTime() const { return cpu_; }
+    double getCpuTime() { 
+	finishCpu_ = AlpsCpuTime();
+        cpu_ = finishCpu_ - startCpu_;
+        return cpu_; 
+    }
 
     /** Get cpu timee. */
-    double getWallClock() const { return wall_; }
+    double getWallClock() { 
+        finishWall_ = AlpsWallClock();
+        wall_ = finishWall_ - startWall_;
+        return wall_; 
+    }
     
+    /** Get time depends on clock type. */
+    double getTime() {
+      assert( (clockType_ == ALPS_CPU_TIME) ||
+	      (clockType_ == ALPS_WALL_CLOCK) );
+      if (clockType_ == ALPS_CPU_TIME) {
+	finishCpu_ = AlpsCpuTime();
+	cpu_ = finishCpu_ - startCpu_;
+	return cpu_;
+      }
+      else {
+        finishWall_ = AlpsWallClock();
+        wall_ = finishWall_ - startWall_;
+        return wall_; 
+      }
+    }
+
+    /** Get/Set clock type */
+    int getClockType(){ return clockType_; }
+    void setClockType(int ct){ clockType_ = ct; }
+
     /** Check if cpu time reach limit. */
     bool reachCpuLimit() {
 	finishCpu_ = AlpsCpuTime();
+	finishWall_ = AlpsWallClock();
 	if (finishCpu_ - startCpu_ > limit_) {
 	    return true;
 	}
@@ -130,6 +164,7 @@ class AlpsTimer
     
     /** Check if wallclock time reach limit. */
     bool reachWallLimit() {
+	finishCpu_ = AlpsCpuTime();
 	finishWall_ = AlpsWallClock();
 	if (finishWall_ - startWall_ > limit_) {
 	    return true;

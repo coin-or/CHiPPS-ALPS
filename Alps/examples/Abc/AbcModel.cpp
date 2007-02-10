@@ -877,7 +877,7 @@ AbcModel::setupSelf()
     if (!currentSolution_)
 	currentSolution_ = new double[numberColumns];
 
-    continuousSolver_ = solver_->clone();
+    //continuousSolver_ = solver_->clone();
     numberRowsAtContinuous_ = getNumRows();
 
     maximumNumberCuts_ = 0;

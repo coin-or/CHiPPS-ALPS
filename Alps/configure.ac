@@ -130,6 +130,7 @@ AC_CONFIG_LINKS(test/AbcBranchActual.cpp:examples/Abc/AbcBranchActual.cpp
 AC_CONFIG_FILES([Makefile
 		 examples/Abc/Makefile
 		 examples/Abc/abc.par
+		 examples/Knap/Makefile
                  src/Makefile
                  test/Makefile
 		 alps_addlibs.txt])

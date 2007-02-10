@@ -222,7 +222,7 @@ class AbcModel : public AlpsModel {
 	    init();
 	    solver_ = rhs.clone();
 	    ourSolver_ = true ;
-	    continuousSolver_ = NULL;
+	    continuousSolver_ = 0;
 	    int numberColumns = solver_->getNumCols();
 	    int iColumn;
 	    if (numberColumns) {
@@ -356,6 +356,8 @@ class AbcModel : public AlpsModel {
 	    pseudoList_ = NULL;
 	    pseudoIndices_ = NULL;
 	    
+	    continuousSolver_ = 0;
+
 	    // Set values for parameters
 	    intParam_[AbcMaxNumNode] = 9999999;
 	    intParam_[AbcMaxNumSol] = 9999999;

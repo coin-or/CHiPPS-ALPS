@@ -1,30 +1,33 @@
-Alps_instance ./data/input3.txt
-Alps_processNum 6
-Alps_hubNum 2
-Alps_masterBalancePeriod 0.1
-Alps_hubReportPeriod 0.1
-Alps_masterInitNodeNum 32
-Alps_hubInitNodeNum 128
-Alps_unitWorkNodes 4000
-Alps_unitWorkTime 0.15
-Alps_needWorkThreshold 2
-Alps_changeWorkThreshold 0.04
-Alps_donorThreshold 0.10
-Alps_receiverThreshold 0.10
-Alps_logFileLevel 2
-Alps_AlpsLogLevel 1
-Alps_interClusterBalance 0   # 1 means balancing load, 0 means don't.
-Alps_intraClusterBalance 0   # 1 means balancing load, 0 means don't.
-Alps_maxNumSolustion 5
-Alps_smallSize 1024
-Alps_mediumSize 4096
-Alps_largeSize 8388608
-Alps_display 1
-Alps_nodeInterval 200000
-Alps_eliteSize 5
-Alps_subTreeCompareRule 0   # 0: quality; 1: quantity; 2: level
-Alps_searchStrategy 0       # 0: best first; 1: depth first; 2: breath first
-Alps_masterReportInterval 5
-Alps_nodeLimit 2100000000
-Alps_timeLimit 1.0e75
-Alps_maxHubWorkSize 20      # If the the cluster size is lesser, hub works
+Alps_instance ./data/input100_5.txt
+
+Alps_timeLimit 7200
+#Alps_nodeLimit 500000
+
+Alps_msgLevel 2
+Alps_hubMsgLevel 1
+Alps_workerMsgLevel 1
+
+Alps_hubNum 1
+
+Alps_interClusterBalance 1      # 1: balancing load, 0: don't.
+Alps_intraClusterBalance 1      # 1: balancing load, 0: don't.
+
+Alps_searchStrategy     0  # 0: Best, 1: Best-est, 2: Breath, 3: Depth, 4 hybrid
+#Alps_searchStrategyRampUp  0
+
+#Alps_nodeLogInterval 1000
+Alps_hubWorkClusterSizeLimit 1
+
+Alps_masterInitNodeNum 2000
+Alps_hubInitNodeNum 3000
+#Alps_unitWorkTime 0.03 
+
+#Alps_needWorkThreshold 0.5
+#Alps_changeWorkThreshold 0.10
+
+#Alps_donorThreshold 0.10
+#Alps_receiverThreshold 0.10
+
+#Alps_masterBalancePeriod 0.3
+#Alps_hubReportPeriod 0.5
+

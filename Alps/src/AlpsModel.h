@@ -110,5 +110,23 @@ class AlpsModel : public AlpsKnowledge {
     
     /** Register knowledge class. */
     virtual void registerKnowledge() { /* Default does nothing */ }
+
+    /** Send generated knowledge */
+    virtual void sendGeneratedKnowledge() { /* Default does nothing */ }
+
+    /** Receive generated knowledge */
+    virtual void receiveGeneratedKnowledge() { /* Default does nothing */ }
+
+    /** Encode knowledge to be shared with others into an encoded object. 
+        Return NULL means that no knowledge can be shared. */
+    virtual AlpsEncoded* encodeKnowlegeShared() const {
+        /* Default does nothing */ 
+        AlpsEncoded* encoded = 0;
+        return encoded;
+    }
+    
+    /** Decode and store shared knowledge from an encoded object. */
+    virtual void decodeKnowledgeShared(AlpsEncoded&) 
+    { /* Default does nothing */ }
 };
 #endif

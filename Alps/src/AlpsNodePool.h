@@ -124,15 +124,16 @@ class AlpsNodePool : public AlpsKnowledgePool {
     void deleteGuts() {
 	std::vector<AlpsTreeNode* > nodeVec = candidateList_.getContainer();
 	for_each(nodeVec.begin(), nodeVec.end(), DeletePtrObject());
+        candidateList_.clear();
+        assert(candidateList_.size() == 0);
+        
 	//std::cout << "-- delete nodes in pool" << std::endl;
-	
     }
 
     /** Remove all the nodes in the pool (does not free memory). */
     void clear() {
 	candidateList_.clear();
     }
-
 };
 
 #endif

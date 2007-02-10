@@ -13,6 +13,8 @@
  * Copyright (C) 2001-2006, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
+#include "AlpsConfig.h"
+
 #include <iostream>
 
 #include "CoinError.hpp"
@@ -56,7 +58,7 @@ int main(int argc, char* argv[])
 	broker.rootSearch(root);
     
 	// 5: Report the best solution found and its ojective value
-	broker.printBestSolution();
+	//broker.printBestSolution();
         
 #ifdef NF_DEBUG
 	const int numSol = broker.getNumKnowledges(ALPS_SOLUTION);

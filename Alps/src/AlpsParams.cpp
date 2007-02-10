@@ -51,6 +51,10 @@ void AlpsParams::createKeywordList() {
    keys_.push_back(make_pair(std::string("Alps_bufSpare"),
 			     AlpsParameter(AlpsIntPar, 
 					   bufSpare)));
+
+   keys_.push_back(make_pair(std::string("Alps_clockType"),
+			     AlpsParameter(AlpsIntPar, 
+					   clockType)));
    //
    keys_.push_back(make_pair(std::string("Alps_eliteSize"),
 			     AlpsParameter(AlpsIntPar, 
@@ -59,6 +63,10 @@ void AlpsParams::createKeywordList() {
    keys_.push_back(make_pair(std::string("Alps_hubInitNodeNum"),
 			     AlpsParameter(AlpsIntPar, 
 					   hubInitNodeNum)));
+   //
+   keys_.push_back(make_pair(std::string("Alps_hubMsgLevel"),
+			     AlpsParameter(AlpsIntPar, 
+					   hubMsgLevel)));
    //
    keys_.push_back(make_pair(std::string("Alps_hubNum"),
 			     AlpsParameter(AlpsIntPar, 
@@ -76,9 +84,9 @@ void AlpsParams::createKeywordList() {
 			     AlpsParameter(AlpsIntPar, 
 					   masterInitNodeNum)));
    //
-   keys_.push_back(make_pair(std::string("Alps_maxHubWorkSize"),
+   keys_.push_back(make_pair(std::string("Alps_hubWorkClusterSizeLimit"),
 			     AlpsParameter(AlpsIntPar,
-					   maxHubWorkSize)));
+					   hubWorkClusterSizeLimit)));
    //
    keys_.push_back(make_pair(std::string("Alps_masterReportInterval"),
 			     AlpsParameter(AlpsIntPar, 
@@ -108,6 +116,10 @@ void AlpsParams::createKeywordList() {
 			     AlpsParameter(AlpsIntPar, 
 					   searchStrategy)));
    //
+   keys_.push_back(make_pair(std::string("Alps_searchStrategyRampUp"),
+			     AlpsParameter(AlpsIntPar, 
+					   searchStrategyRampUp)));
+   //
    keys_.push_back(make_pair(std::string("Alps_smallSize"),
 			     AlpsParameter(AlpsIntPar, 
 					   smallSize)));
@@ -119,6 +131,10 @@ void AlpsParams::createKeywordList() {
    keys_.push_back(make_pair(std::string("Alps_unitWorkNodes"),
 			     AlpsParameter(AlpsIntPar, 
 					   unitWorkNodes)));
+   //
+   keys_.push_back(make_pair(std::string("Alps_workerMsgLevel"),
+			     AlpsParameter(AlpsIntPar, 
+					   workerMsgLevel)));
 
    //-------------------------------------------------------
    // DoublePar
@@ -190,35 +206,39 @@ void AlpsParams::setDefaultEntries() {
 
   // IntPar
   setEntry(bufSpare, 256);
-  setEntry(eliteSize, 2);
-  setEntry(hubInitNodeNum, 2);
+  setEntry(clockType, ALPS_CPU_TIME);
+  setEntry(eliteSize, 1);
+  setEntry(hubInitNodeNum, ALPS_NONE);
+  setEntry(hubMsgLevel, 0);
   setEntry(hubNum, 1);
-  setEntry(largeSize, 1048576);  // 2^21
+  setEntry(largeSize, 10485760);  // 2^21
   setEntry(logFileLevel, 0);
-  setEntry(masterInitNodeNum, 2);
+  setEntry(masterInitNodeNum, ALPS_NONE);
   setEntry(masterReportInterval, 10);
-  setEntry(maxHubWorkSize, 0);   // Hub never works now
+  setEntry(hubWorkClusterSizeLimit, 8);// Hub works if cluster size less than 9
   setEntry(mediumSize, 4096);    // 2^12
   setEntry(msgLevel, 2);
   setEntry(nodeLimit, ALPS_INT_MAX);
   setEntry(nodeLogInterval, 100);
   setEntry(processNum, 2);
-  setEntry(searchStrategy, 4);  
-  setEntry(smallSize, 256);      // 2^8
+  setEntry(searchStrategy, ALPS_SEARCH_HYBRID);  
+  setEntry(searchStrategyRampUp, ALPS_SEARCH_BEST);  
+  setEntry(smallSize, 1024);      // 2^10
   setEntry(solLimit, ALPS_INT_MAX);
-  setEntry(unitWorkNodes, 50);
+  setEntry(unitWorkNodes, 7);
+  setEntry(workerMsgLevel, 0);
 
   // DoublePar
   setEntry(changeWorkThreshold, 0.05);
-  setEntry(donorThreshold, 0.10);
-  setEntry(hubReportPeriod, 0.5);
-  setEntry(masterBalancePeriod, 0.05);
+  setEntry(donorThreshold, 0.02);
+  setEntry(hubReportPeriod, 0.01);
+  setEntry(masterBalancePeriod, 0.03);
   setEntry(needWorkThreshold, 2);
-  setEntry(receiverThreshold, 0.10);
+  setEntry(receiverThreshold, 0.02);
   setEntry(rho, 0.0);
   setEntry(timeLimit, ALPS_DBL_MAX);
   setEntry(tolerance, 1.0e-6);
-  setEntry(unitWorkTime, 0.5);
+  setEntry(unitWorkTime, 0.03);
   setEntry(workerAskPeriod, 0.5);
   setEntry(zeroLoad, 1.0e-6);
 

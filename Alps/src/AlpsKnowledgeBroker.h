@@ -19,6 +19,7 @@
 #include <cmath>
 #include <iosfwd>
 #include <map>
+#include <string>
 
 #include "CoinMessageHandler.hpp"
 
@@ -44,9 +45,9 @@ class AlpsKnowledgeBroker {
     AlpsKnowledgeBroker(const AlpsKnowledgeBroker&);
     AlpsKnowledgeBroker& operator=(const AlpsKnowledgeBroker&);
 
-    /** Stores a master copy of any encodable object for decoding purposes. */
-    static std::map<const char*,const AlpsKnowledge*, AlpsStrLess>* decodeMap_;
-  
+    /** Stores registered knowledge. */
+    std::map<std::string, AlpsKnowledge*> decodeMap_;
+    
  protected:
 
     /** The instance name. */
@@ -88,9 +89,6 @@ class AlpsKnowledgeBroker {
 
     /** The maximum index can been assigned on this process. */
     AlpsNodeIndex_t maxIndex_;
-
-    /** The approximate memory size (bytes) of a node with full description. */
-    int nodeMemSize_;
     //@}                       
 
     /** @name Statistics
@@ -98,8 +96,11 @@ class AlpsKnowledgeBroker {
      */
     //@{
     /***/
-    /** Main timer. */
+    /** Main timer. Do not touch. */
     AlpsTimer timer_;
+
+    /** Subtree timer.  Do not touch.*/
+    AlpsTimer subTreeTimer_;
 
     /** Secondary timer. */
     AlpsTimer tempTimer_;
@@ -113,19 +114,22 @@ class AlpsKnowledgeBroker {
     /** The depth of the tree. */
     int treeDepth_;
 
-    /** The status of termination. */
-    AlpsSolStatus termStatus_;
+    /** The status of search when terminated. */
+    AlpsSolStatus solStatus_;
     //@}
     
-    /** @name compare base
+    /** @name Search strategy
      *
      */
     //@{
     /** Tree selection criterion. */
     AlpsSearchStrategy<AlpsSubTree*>* treeSelection_;
 
-    /** Node comparison criterion. */
+    /** Node selection criterion. */
     AlpsSearchStrategy<AlpsTreeNode*>* nodeSelection_;
+
+    /** Node selection criterion. */
+    AlpsSearchStrategy<AlpsTreeNode*>* rampUpNodeSelection_;
     //@}
     
     /** @name message handling
@@ -138,9 +142,17 @@ class AlpsKnowledgeBroker {
     /** Alps messages. */
     CoinMessages messages_;
 
-    /** The leve of printing message to screen. 
+    /** The leve of printing message to screen of the master and general message. 
         (0: no; 1: basic; 2: moderate, 3: verbose) */
     int msgLevel_;
+
+    /** The leve of printing message to screen of hubs. 
+        (0: no; 1: basic; 2: moderate, 3: verbose) */
+    int hubMsgLevel_;
+
+    /** The leve of printing message to screen of workers. 
+        (0: no; 1: basic; 2: moderate, 3: verbose) */
+    int workerMsgLevel_;
     
     /** The degree of log file.
         (0: no; 1: basic; 2: moderate, 3: verbose) */
@@ -149,6 +161,15 @@ class AlpsKnowledgeBroker {
     /** The log file. */
     std::string logfile_;
     //@}
+
+    /** The approximate memory size (bytes) of a node with full description. */
+    int nodeMemSize_;
+
+    /** The approximately CPU time to process a node. */
+    double nodeProcessingTime_;
+
+    /** The size of largest message buffer can be sent or received. */
+    int largeSize_;
 
  public:
 
@@ -167,9 +188,25 @@ class AlpsKnowledgeBroker {
 	The register methods register the decode method of the class so that 
 	later on we can decode objects from buffers. Invoking this 
 	registration for class <code>foo</code> is a single line:<br>
-	<code>foo().registerClass(name, userKnowledge);</code> */
+	<code>foo().registerClass(name, userKnowledge)</code>.
+        NOTE: take over user knowledge's memory ownership, user doesn't
+        need free memory. 
+    */
     void registerClass(const char * name, AlpsKnowledge* userKnowledge) {
-	(*decodeMap_)[name] = userKnowledge;
+        std::string newName = name;
+        
+        // Check if alread have one.
+        std::map<std::string, AlpsKnowledge*>::iterator pos, pos1;
+        pos = decodeMap_.find(newName);
+        pos1 = decodeMap_.end();
+        
+        if (pos != pos1) {
+            AlpsKnowledge* kl = pos->second;
+            decodeMap_.erase(pos);
+            delete kl;
+        }
+        
+        decodeMap_[newName] = userKnowledge;
     }
 
     /** This method returns the pointer to an empty object of the registered
@@ -177,9 +214,15 @@ class AlpsKnowledgeBroker {
 	object can be used to decode a new object of the same type from the
 	buffer. This method will be invoked as follows to decode an object
 	whose type is <code>name</code>:<br>
-	<code>obj = AlpsKnowledge::decoderObject(name)->decode(buf) </code> */
-    static const AlpsKnowledge* decoderObject(const char* name) {
-	return (*decodeMap_)[name];
+	<code>obj = AlpsKnowledge::decoderObject(name)->decode(buf) </code> 
+    */
+    const AlpsKnowledge* decoderObject(const char* name) {
+        std::string newName = name;
+	return decodeMap_[newName];
+    }
+
+    const AlpsKnowledge* decoderObject(std::string name) {
+	return decodeMap_[name];
     }
     //@}
 
@@ -356,18 +399,23 @@ class AlpsKnowledgeBroker {
     virtual AlpsTreeNode* getBestNode() const;
 
     /** Query search termination status. */
-    AlpsSolStatus getTermStatus() const {
-	return termStatus_;
+    AlpsSolStatus getSolStatus() const {
+	return solStatus_;
     }
 
     /** Set terminate status. */
-    void setTermStatus(AlpsSolStatus status) {
-	termStatus_ = status;
+    void setSolStatus(AlpsSolStatus status) {
+	solStatus_ = status;
     }
 
     /** Query timer. */
     AlpsTimer & timer() {
 	return timer_;
+    }
+
+    /** Query subtree timer. */
+    AlpsTimer & subTreeTimer() {
+	return subTreeTimer_;
     }
 
     /** Query secondary timer. */
@@ -386,7 +434,17 @@ class AlpsKnowledgeBroker {
     int getNodeMemSize() { return nodeMemSize_; }
     void setNodeMemSize(int ms) { nodeMemSize_ = ms; }
     //@}
-	 
+
+    /** @name Query and set the approximate node processing time
+     *
+     */
+    //@{
+    double getNodeProcessingTime() { return nodeProcessingTime_; }
+    void setNodeProcessingTime(double npTime) { nodeProcessingTime_ = npTime; }
+    //@}
+
+    int getLargeSize() const { return largeSize_; }
+
     /** @name Report the best result
      *  
      */
@@ -405,11 +463,14 @@ class AlpsKnowledgeBroker {
     //@}
 
     /** Qeury the global rank of process. Note: not useful for serial code.*/
-    virtual int getProcRank() const { return -10; }
+    virtual int getProcRank() const { return 0; }
+    
+    /** Query the global rank of the Master. */
+    virtual int getMasterRank() const { return 0; }
 
     /** Query the type (master, hub, or worker) of the process */
-    virtual AlpsProcessType getProcType() 
-	{ return AlpsProcessTypeWorker; } /* Serial is worker!*/
+    virtual AlpsProcessType getProcType() const
+    { return AlpsProcessTypeMaster; } /* Serial is master */
     
     
     /** @name Query and set node index
@@ -452,6 +513,13 @@ class AlpsKnowledgeBroker {
         if (nodeSelection_) delete nodeSelection_;
 	nodeSelection_ = nc;
     }
+    AlpsSearchStrategy<AlpsTreeNode*>* getRampUpNodeSelection() const {
+	return rampUpNodeSelection_;
+    }
+    void setRampUpNodeSelection(AlpsSearchStrategy<AlpsTreeNode*>* nc) {
+        if (rampUpNodeSelection_) delete rampUpNodeSelection_;
+	rampUpNodeSelection_ = nc;
+    }
     //@}
    
     /**@name Message and log file handling */
@@ -475,6 +543,12 @@ class AlpsKnowledgeBroker {
 
     /** Return msg level. */
     int getMsgLevel() { return msgLevel_; }
+
+    /** Return msg level. */
+    int getHubMsgLevel() { return hubMsgLevel_; }
+
+    /** Return msg level. */
+    int getMasterMsgLevel() { return workerMsgLevel_; }
 
     /** Return log file level. */
     int getlogFileLevel() { return logFileLevel_; }

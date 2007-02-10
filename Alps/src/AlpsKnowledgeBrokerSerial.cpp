@@ -25,8 +25,10 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
 					    char* argv[], 
 					    AlpsModel& model) {
 
-    messageHandler()->message(ALPS_S_VERSION, messages())
-	<< "0.9" << CoinMessageEol;
+    if (msgLevel_ > 0) {
+        messageHandler()->message(ALPS_S_VERSION, messages())
+            << CoinMessageEol;
+    }
     
     // Store a pointer to model
     model.setKnowledgeBroker(this);
@@ -120,10 +122,12 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
     }
     
     //--------------------------------------------------
-    // Do some require work to make the model usable.
+    // Preprecesss the model, and
+    // do some require work to make the model usable.
     // May adjust parameters like msg level in user's code.
     //--------------------------------------------------
-    
+
+    model.preprocess();
     model.setupSelf();
 
     //--------------------------------------------------
@@ -148,7 +152,18 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
     // Register knowledge (useless for serial).
     //--------------------------------------------------
 
-    model.registerKnowledge();    
+    model.registerKnowledge(); 
+
+    //------------------------------------------------------
+    // Set clock type
+    //------------------------------------------------------
+
+    const bool clockType = 
+      model_->AlpsPar()->entry(AlpsParams::clockType);
+    
+    timer_.setClockType(clockType);
+    subTreeTimer_.setClockType(clockType);
+    tempTimer_.setClockType(clockType);
 }
 
 //#############################################################################
@@ -202,6 +217,8 @@ AlpsKnowledgeBrokerSerial::rootSearch(AlpsTreeNode* root)
 					     treeDepth_);
     
     updateNumNodesLeft();
+
+    model_->postprocess();
     
     timer_.stop();
     
@@ -220,19 +237,19 @@ AlpsKnowledgeBrokerSerial::searchLog()
     
     if (msgLevel_ > 0) {
 	std::cout << std::endl;
-	if (getTermStatus() == ALPS_OPTIMAL) {
+	if (getSolStatus() == ALPS_OPTIMAL) {
 	    messageHandler()->message(ALPS_T_OPTIMAL, messages())
 		<< nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
 	}
-	else if (getTermStatus() == ALPS_NODE_LIMIT) {
+	else if (getSolStatus() == ALPS_NODE_LIMIT) {
 	    messageHandler()->message(ALPS_T_NODE_LIMIT, messages())
 		<< nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
 	}
-	else if (getTermStatus() == ALPS_TIME_LIMIT) {
+	else if (getSolStatus() == ALPS_TIME_LIMIT) {
 	    messageHandler()->message(ALPS_T_TIME_LIMIT, messages())
 		<< nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol; 
 	}
-	else if (getTermStatus() == ALPS_FEASIBLE) {
+	else if (getSolStatus() == ALPS_FEASIBLE) {
 	    messageHandler()->message(ALPS_T_FEASIBLE, messages())
 		<< nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
 	}

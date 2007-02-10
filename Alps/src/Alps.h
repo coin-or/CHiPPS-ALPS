@@ -21,6 +21,29 @@
 #include <cstdio>
 
 //#############################################################################
+
+/** Clock type */
+#define ALPS_CPU_TIME    1
+#define ALPS_WALL_CLOCK  2
+
+//#############################################################################
+
+/** Search strategy
+    -- best-first (0)
+    -- best-first-estimate (1)
+    -- breadth-first (2)
+    -- depth-first (3)
+    -- hybrid (4)
+    Default: hybrid
+*/
+
+#define ALPS_SEARCH_BEST       0
+#define ALPS_SEARCH_BEST_EST   1
+#define ALPS_SEARCH_BREATH     2
+#define ALPS_SEARCH_DEPTH      3
+#define ALPS_SEARCH_HYBRID     4
+
+//#############################################################################
 /** The possible stati for the search nodes. */
 //#############################################################################
 
@@ -50,7 +73,8 @@ enum AlpsSearchType {
 
 enum AlpsKnowledgeType { 
   ALPS_MODEL, 
-  ALPS_NODE, 
+  ALPS_MODEL_GEN,
+  ALPS_NODE,
   ALPS_SOLUTION,
   ALPS_SUBTREE
 };
@@ -60,7 +84,8 @@ enum AlpsKnowledgeType {
 //#############################################################################
 
 enum AlpsSolStatus {
-    ALPS_OPTIMAL = 0,
+    ALPS_UNKNOWN = -1,
+    ALPS_OPTIMAL,
     ALPS_TIME_LIMIT, 
     ALPS_NODE_LIMIT,
     ALPS_FEASIBLE,
@@ -87,6 +112,9 @@ enum AlpsPhase {
     ALPS_PHASE_SEARCH,
     ALPS_PHASE_RAMPDOWN
 };
+
+#define ALPS_NODE_PROCESS_TIME  0.0123
+#define ALPS_NONE 0
 
 //#############################################################################
 // Big number
@@ -125,6 +153,20 @@ enum AlpsPhase {
 
 //#############################################################################
 
+typedef struct ALPS_PS_STATS 
+{
+    int qualityBalance_;
+    int quantityBalance_;
+    int interBalance_;
+    int intraBalance_;
+    int workerAsk_;
+    int donateSuccess_;
+    int donateFail_;
+    int subtreeSplit_;
+    int subtreeWhole_;
+    int subtreeChange_;
+} AlpsPsStats;
+    
 //#############################################################################
 
 

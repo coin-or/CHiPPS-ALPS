@@ -13,21 +13,14 @@
  * Copyright (C) 2001-2006, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
-#include "AlpsKnowledgeBroker.h"
 #include "Alps.h"
-
-//#############################################################################
-// Initialize static member. 
-std::map<const char*, const AlpsKnowledge*, AlpsStrLess>*
-AlpsKnowledgeBroker::decodeMap_ = new std::map<const char*, 
-  const AlpsKnowledge*, AlpsStrLess>;
+#include "AlpsKnowledgeBroker.h"
 
 //#############################################################################
 
 /* Default constructor. */
 AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     : 
-    //phase_(ALPS_PHASE_RAMPUP),
     model_(NULL),
     phase_(ALPS_PHASE_SEARCH),
     subTreePool_ (new AlpsSubTreePool),
@@ -37,15 +30,19 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     needWorkingSubTree_(true),// Initially workingSubTree_ points to NULL
     nextIndex_(0),
     maxIndex_(INT_MAX),
-    nodeMemSize_(0),
     nodeProcessedNum_(0),
     nodeLeftNum_(0),
     treeDepth_(0),
-    termStatus_(ALPS_OPTIMAL),
+    solStatus_(ALPS_UNKNOWN),
     treeSelection_(0),
     nodeSelection_(0),
     msgLevel_(2),
-    logFileLevel_(0)
+    hubMsgLevel_(0),
+    workerMsgLevel_(0),
+    logFileLevel_(0),
+    nodeMemSize_(0),
+    nodeProcessingTime_(ALPS_NODE_PROCESS_TIME), // Positive
+    largeSize_(100000)
 {
     registerClass("ALPS_SUBTREE", new AlpsSubTree(this));
     handler_ = new CoinMessageHandler();
@@ -57,33 +54,46 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
 
 AlpsKnowledgeBroker:: ~AlpsKnowledgeBroker() 
 {
-    if (subTreePool_ != 0) {
+    std::map<std::string, AlpsKnowledge*>::iterator pos, pos1;
+    pos = decodeMap_.begin();
+    pos1 = decodeMap_.end();
+    AlpsKnowledge* kl = 0;
+    for ( ; pos != pos1; ++pos) {
+        kl = pos->second;
+        delete kl;
+    }
+
+    if (subTreePool_) {
 	//std::cout << "* delete subtree pool" << std::endl;
 	delete subTreePool_;
 	subTreePool_ = 0;
     }
-    if (solPool_ != 0) {
+    if (solPool_) {
 	delete solPool_; 
 	solPool_ = 0;
     }
-    if (pools_ != 0) {
+    if (pools_) {
 	delete pools_; 
 	pools_ = 0;
     }
-    if (workingSubTree_ != 0) {
+    if (workingSubTree_) {
 	//std::cout << "* delete working subtree" << std::endl;
 	delete workingSubTree_; 
 	workingSubTree_ = 0;
     }
-    if (nodeSelection_ != 0){
-	delete  nodeSelection_;
+    if (nodeSelection_){
+	delete nodeSelection_;
 	nodeSelection_ = 0;
     }
-    if (treeSelection_ != 0){
-	delete  treeSelection_;
+    if (rampUpNodeSelection_){
+	delete rampUpNodeSelection_;
+	rampUpNodeSelection_ = 0;
+    }
+    if (treeSelection_){
+	delete treeSelection_;
 	treeSelection_ = 0;
     }
-    if (handler_ != 0) {
+    if (handler_) {
 	delete  handler_;
 	handler_ = 0;
     }
@@ -219,11 +229,34 @@ AlpsKnowledgeBroker::setupKnowledgePools()
         nodeSelection_ = new AlpsNodeSelectionHybrid;
     }
     else {
-        std::cout << "search strategy" << strategy << std::endl;
-        throw CoinError("Unknown subtree compare rule", 
-			"getGoodness", "AlpsSubTree"); 
+        assert(0);
+        throw CoinError("Unknown search strategy", 
+			"setupKnowledgePools()", "AlpsKnowledgeBroker"); 
     }
+
+    strategy = model_->AlpsPar()->entry(AlpsParams::searchStrategyRampUp);
     
+    if (strategy == AlpsBestFirst) {
+        rampUpNodeSelection_ = new AlpsNodeSelectionBest;
+    }
+    else if (strategy == AlpsBreadthFirst) {
+        rampUpNodeSelection_ = new AlpsNodeSelectionBreadth;
+    }
+    else if (strategy == AlpsDepthFirst) {
+        rampUpNodeSelection_ = new AlpsNodeSelectionDepth;
+    }
+    else if (strategy == AlpsEstimate) {
+        rampUpNodeSelection_ = new AlpsNodeSelectionEstimate;
+    }
+    else if (strategy == AlpsHybrid) {
+        rampUpNodeSelection_ = new AlpsNodeSelectionHybrid;
+    }
+    else {
+        assert(0);
+        throw CoinError("Unknown ramp up search strategy", 
+			"setupKnowledgePools()", "AlpsKnowledgeBroker"); 
+    }
+
     //--------------------------------------------------
     // Create solution and subtree pools.
     //--------------------------------------------------

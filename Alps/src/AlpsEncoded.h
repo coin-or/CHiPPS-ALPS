@@ -2,6 +2,7 @@
 #define AlpsEncoded_h
 
 #include <cstring>
+#include <string>
 #include <memory>
 #include <vector>
 
@@ -33,16 +34,19 @@ class AlpsEncoded {
     
     /** The next read/write position in the representation. */
     size_t pos_;
+
     /** The amount of memory allocated for the representation. */
     size_t maxSize_;
+
     /** A C-style string representing the type of the object. We might use RTTI
 	to point this into the static data of the executable :-)
-	Can only be initialized during constructing. User take care of memory.*/
-    const char* type_;   
-    
-    //char* type_;
+	Can only be initialized during constructing. 
+        User take care of memory.*/
+    std::string type_;   
+
     /** The size of the packed representation. */
     int size_;
+
     /** The encoded/compressed representation of the object. */
     // const char* representation_;   //why const ??? XY
     char* representation_;
@@ -78,19 +82,19 @@ class AlpsEncoded {
     // can't use "const char*& r" as parameter
     AlpsEncoded(const char* t, const int s, char*& r) 
 	: 
-	pos_(0),   
+	pos_(0), 
 	maxSize_(s + 4),
 	type_(t),  
 	size_(s),
 	representation_(r) 
 	{
+            //t = 0;
 	    r = 0;  // Must take over the ownership! 
 	}                    
     
     /** Destructor. */
     ~AlpsEncoded() {
-	//if (type_ != 0) { delete type_; type_ = 0; }
-	if (representation_ != 0) { 
+	if (representation_) { 
 	    delete [] representation_; 
 	    representation_ = 0; 
 	}
@@ -99,7 +103,7 @@ class AlpsEncoded {
     
     /**@name Query methods */
     ///@{
-    const char* type() const { return type_; }
+    std::string type() const { return type_; }
     int size() const { return size_; }
     const char* representation() const { return representation_; }
     ///@}
@@ -115,65 +119,11 @@ class AlpsEncoded {
     }
   
     inline void setRepresentation(char*& buf) {
-	maxSize_ = strlen(buf) + 1;   //> 0x4000/*16K*/ ? (strlen(buf)+1) : 0x4000;
-    
-#if 0    // Seg faulted. strlen(buf) = 1, Don't know why.
-	std::cout << "setRep: strlen = " << strlen(buf) << std::endl;
-	if (representation_ != 0) {
-	    delete [] representation_; representation_ = 0;
-	}
-	representation_ = new char [maxSize_]; //= buf;   //new char [maxSize_];
-	memcpy(representation_, buf, maxSize_ - 1);
-#endif 
-
+        //> 0x4000/*16K*/ ? (strlen(buf)+1) : 0x4000;
+	maxSize_ = strlen(buf) + 1;
 	representation_ = buf;
 	buf = 0; 
     }
-
-#if 0
-    // type_ is const, can not allocate memory. Following two methods not used
-    inline void setType(const char* type) {
-	const int typeLen = strlen(type);
-	if (typeLen) {
-	    type_ = new char[typeLen];
-	    memcpy(type_, type, typeLen);
-	}
-	else {
-	    //      const char msg [100] = "The length of type name <= 0.";
-	    //throw AlpsException(__FILE__, __LINE__, msg);
-	    throw CoinError("The length of type name <= 0.", "setType",
-			    "AlpsEncoded");
-	}
-    }
-
-    /** Set the Encoded to be a copy of the given data. Use this with care! */
-    // Can pass enpty rep[], size == 0;
-    inline void setEncoded(const char* type, const char* rep, const size_t size) {
-    if (maxSize_ < size) {
-	delete[] representation_;
-	representation_ = new char[size];
-	maxSize_ = size;
-    }
-    pos_ = 0;
-    size_ = size;
-    if (size_) memcpy(representation_, rep, size * sizeof(char));
-    
-    // Copy type
-    int typeLen = strlen(type);
-    if (typeLen) {
-	type_ = new char[typeLen];
-	memcpy(type_, type, typeLen);
-    }
-    else 
-	type_ = 0;
-    if(!size_ < 0 ) {
-	//      const char msg [100] = "The size of rep < 0.";
-	//      throw AlpsException(__FILE__, __LINE__, msg);
-	throw CoinError("The size of rep < 0.", "setEncoded",
-			"AlpsEncoded");
-    }
-    }
-#endif
 
   /** Reallocate the size of encoded if necessary so that at least
       <code>addsize_</code> number of additional bytes will fit into the
@@ -194,16 +144,15 @@ class AlpsEncoded {
 
     /** Completely clear the encoded. Delete and zero out <code>type_, size_,
 	pos_</code>. */
-    inline void clean(){
+    inline void clear(){
 	size_ = 0;
 	pos_ = 0;
-	if (type_ != 0) { delete type_; type_ = 0; }
+        type_.clear();
 	if (representation_ != 0) { 
 	    delete  representation_; 
 	    representation_ = 0; 
 	}
     }
-
     
     //------------------------------------------------------
     // Following functiosn are used in parallel code only.
@@ -265,12 +214,12 @@ class AlpsEncoded {
     */
     template <class T> AlpsEncoded& readRep(T*& values, 
 					    int& length,
-					    bool allocate = true)
-	//     throw(AlpsException) {
+					    bool needAllocateMemory = true)
 	throw(CoinError) {
-	if (allocate) {
-	    // Need allocate memeory for arrary values.
-
+        
+	if (needAllocateMemory) {
+	    // Need allocate memeory for arrary "values".
+            
 #ifdef PARANOID
 	    if (pos_ + sizeof(int) > size_) {
 		throw CoinError("Reading over the end of buffer.", 
@@ -294,7 +243,7 @@ class AlpsEncoded {
 	    }
 	    
 	} 
-	else { /* ! allocate */
+	else { /* values has been allocated memory. */
 
 	    int l;
 #ifdef PARANOID
