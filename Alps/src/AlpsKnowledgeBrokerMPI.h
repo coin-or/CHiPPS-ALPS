@@ -251,6 +251,9 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** The global rank of the process that share generated model knowledge. */
     int modelGenID_;
 
+    /** Size of the shared knowledge. */
+    int modelGenPos_;
+    
     /** A subtree used in during up. */
     AlpsSubTree* rampUpSubTree_;
     
@@ -470,10 +473,12 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** Delete subTrees in pools and the active subtree. */
     void deleteSubTrees();
 
+    
+    void forwardModelKnowledge();
+    
     /** Set generated knowlege (related to model) to receiver. */
     // NOTE: comm is hubComm_ or MPI_COMM_WORLD.
     void sendModelKnowledge(char*& genBuf, 
-                            int tag,
                             MPI_Comm comm, 
                             int receiver=-1);
 
