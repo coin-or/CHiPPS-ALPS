@@ -227,6 +227,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     masterTimer.setClockType(ALPS_WALL_CLOCK);
 
     largeBuffer_ = new char [largeSize_];
+    largeBuffer2_ = new char [largeSize_];
     smallBuffer_ = new char [smallSize];
 
     hubNodeProcesseds_ = new int [hubNum_];
@@ -411,18 +412,15 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 
     for (i = 0; i < hubNum_; ++i) {
 	if (hubRanks_[i] != globalRank_) {
-            char *genBuf = 0;
             sendKnowledge(ALPS_MODEL_GEN,
                           masterRank_,
-                          i,         // receiver
-                          genBuf,    // buffer
+                          i,            // receiver
+                          largeBuffer2_,
                           0,
                           AlpsMsgModelGenRampUp,
-                          hubComm_,  // comm
+                          hubComm_,     // comm
                           true);
             //sendModelKnowledge(genBuf, AlpsMsgModelGenRampUp, hubComm_, i);
-            delete [] genBuf; 
-            genBuf = 0;
         }
     }
     if (msgLevel_ > 0) {
@@ -547,18 +545,15 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 
     for (i = 0; i < clusterSize_; ++i) {
 	if (i != clusterRank_) {
-            char *genBuf = 0;
             sendKnowledge(ALPS_MODEL_GEN,
                           clusterRank_,
-                          i,            // receiver
-                          genBuf,       // buffer
+                          i,             // receiver
+                          largeBuffer2_,
                           0,
                           AlpsMsgModelGenRampUp,
-                          clusterComm_, // comm
+                          clusterComm_,  // comm
                           true);
 	    //sendModelKnowledge(genBuf, AlpsMsgModelGenRampUp, clusterComm_, i);
-            delete [] genBuf; 
-            genBuf = 0;
 	}
     }
     
@@ -1202,6 +1197,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
 
     hubTimer.setClockType(ALPS_WALL_CLOCK);
     largeBuffer_ = new char [largeSize_];
+    largeBuffer2_ = new char [largeSize_];
     smallBuffer_ = new char [smallSize];
 
     workerNodeProcesseds_ = new int [clusterSize_];
@@ -1391,18 +1387,15 @@ AlpsKnowledgeBrokerMPI::hubMain()
 
     for (i = 0; i < clusterSize_; ++i) {
 	if (i != clusterRank_) {
-            char *genBuf = 0;
             sendKnowledge(ALPS_MODEL_GEN,
                           globalRank_,
-                          i,            // receiver
-                          genBuf,       // buffer
+                          i,             // receiver
+                          largeBuffer2_,
                           0,
                           AlpsMsgModelGenRampUp,
-                          clusterComm_, // comm
+                          clusterComm_,  // comm
                           true);
             // sendModelKnowledge(genBuf, AlpsMsgModelGenRampUp, clusterComm_, i);
-            delete [] genBuf; 
-            genBuf = 0;
 	}
     }
 
@@ -1936,6 +1929,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
     int flag;
     
     largeBuffer_ = new char [largeSize_];
+    largeBuffer2_ = new char [largeSize_];
     smallBuffer_ = new char [smallSize];
 
     MPI_Irecv(largeBuffer_, largeSize_, MPI_PACKED, MPI_ANY_SOURCE, 
@@ -2027,13 +2021,9 @@ AlpsKnowledgeBrokerMPI::workerMain()
 		
 		// Share generated knowledge.
                 // TODO: not working, too many messages.
-#if 0
-                char *genBuf = 0;
-		sendModelKnowledge(genBuf,         // Buffer 
-				   MPI_COMM_WORLD, // Comm
+#if 1
+		sendModelKnowledge(MPI_COMM_WORLD, // Comm
                                    globalRank_);   // Receiver(no use)
-                delete [] genBuf; 
-                genBuf = 0;
 #endif
 	    } 
 	    else {  
@@ -5618,6 +5608,7 @@ AlpsKnowledgeBrokerMPI::init()
     blockWorkerReport_ = false;
     blockAskForWork_   = false;    
     largeBuffer_ = 0;
+    largeBuffer2_ = 0;
     smallBuffer_ = 0;
     masterBalancePeriod_ = 0.01;
     hubReportPeriod_ = 0.01;
@@ -5676,11 +5667,17 @@ AlpsKnowledgeBrokerMPI::~AlpsKnowledgeBrokerMPI()
 	hubNodeProcesseds_ = 0;
     }
     if (largeBuffer_) {
-        delete largeBuffer_;
+        delete [] largeBuffer_;
         largeBuffer_ = 0;
     }
+
+    if (largeBuffer2_) {
+        delete [] largeBuffer2_;
+        largeBuffer2_ = 0;
+    }
+
     if (smallBuffer_) {
-        delete smallBuffer_;
+        delete [] smallBuffer_;
         smallBuffer_ = 0;
     }
 
@@ -5793,7 +5790,7 @@ AlpsKnowledgeBrokerMPI::sendKnowledge(AlpsKnowledgeType type,
     case ALPS_MODEL:
         break;
     case ALPS_MODEL_GEN:
-        sendModelKnowledge(msgBuffer, comm, receiver);
+        sendModelKnowledge(comm, receiver);
         break;
     case ALPS_NODE:
         sendSizeNode(receiver, comm);
@@ -5909,38 +5906,33 @@ AlpsKnowledgeBrokerMPI::forwardModelKnowledge()
 /** Set generated knowlege (related to model) to receiver. */
 // NOTE: comm is hubComm_ or MPI_COMM_WORLD.
 void 
-AlpsKnowledgeBrokerMPI::sendModelKnowledge(char*& genBuf, 
-                                           MPI_Comm comm,
-                                           int receiver)
+AlpsKnowledgeBrokerMPI::sendModelKnowledge(MPI_Comm comm, int receiver)
 {
     int size = largeSize_;
     int position = 0;
     
     bool hasKnowledge = false;
 
-    if (!genBuf) {// FIXME: use largeBuffer2
-        // Original sender.
-        genBuf = new char [largeSize_];
+    assert(largeBuffer2_);
 
-        // Pack original sender's global rank
-        position = 0;
-        MPI_Pack(&globalRank_, 1, MPI_INT, genBuf, largeSize_,&position,comm);
-
-        //std::cout << "----- 1. position = " << position << std::endl;
-        
-        // Encode generated model knowledge
-        AlpsEncoded *encoded = model_->encodeKnowlegeShared();
-	
-        if (encoded) {
-            hasKnowledge = true;
-            // Pack into local buffer
-            packEncoded(encoded, genBuf, size, position, comm);
-        }
-
-        //std::cout << "----- 2. position = " << position
-	//        << ", size = " << size << std::endl;
-        delete encoded;
+    // Pack original sender's global rank
+    position = 0;
+    MPI_Pack(&globalRank_, 1, MPI_INT, largeBuffer2_, largeSize_,&position,comm);
+    
+    //std::cout << "----- 1. position = " << position << std::endl;
+    
+    // Encode generated model knowledge
+    AlpsEncoded *encoded = model_->encodeKnowlegeShared();
+    
+    if (encoded) {
+        hasKnowledge = true;
+        // Pack into local buffer
+        packEncoded(encoded, largeBuffer2_, size, position, comm);
     }
+    
+    //std::cout << "----- 2. position = " << position
+    //        << ", size = " << size << std::endl;
+    delete encoded;
     
     if (phase_ == ALPS_PHASE_RAMPUP) {
         assert(comm == clusterComm_ || comm == hubComm_);
@@ -5948,13 +5940,13 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(char*& genBuf,
         
         if (hasKnowledge) {
             // Send packed knowledge of size "position"
-            MPI_Send(genBuf, position, MPI_PACKED, receiver,
+            MPI_Send(largeBuffer2_, position, MPI_PACKED, receiver,
                      AlpsMsgModelGenRampUp, comm);
             incSendCount("sendModelKnowledge during rampup");
         }
         else {
             // Send an empty message
-            MPI_Send(genBuf, 0, MPI_PACKED, receiver, 
+            MPI_Send(largeBuffer2_, 0, MPI_PACKED, receiver, 
                      AlpsMsgModelGenRampUp, comm);
             
             // std::cout << "PROCESS[" << globalRank_ << "sent gen model to "
@@ -5964,7 +5956,6 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(char*& genBuf,
     }
     else if ( hasKnowledge && (phase_ == ALPS_PHASE_SEARCH) ) {
 
-        assert(genBuf);
         assert(comm == MPI_COMM_WORLD);
         
         // During search, binary sending
@@ -5974,18 +5965,17 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(char*& genBuf,
         
         if (leftSeq != -1) {
             int leftRank = sequenceToRank(globalRank_, leftSeq);
-	    MPI_Send(genBuf, position, MPI_PACKED, leftRank, 
+	    MPI_Send(largeBuffer2_, position, MPI_PACKED, leftRank, 
 		     AlpsMsgModelGenSearch, comm);
             incSendCount("sendModelKnowledge during rampup");        
         }
         
         if (rightSeq != -1) {
             int rightRank = sequenceToRank(globalRank_, rightSeq);
- 	    MPI_Send(genBuf, position, MPI_PACKED, rightRank, 
+ 	    MPI_Send(largeBuffer2_, position, MPI_PACKED, rightRank, 
 		     AlpsMsgModelGenSearch, comm);
             incSendCount("sendModelKnowledge during rampup");
         }
-
     }
 }
 
@@ -6057,11 +6047,10 @@ AlpsKnowledgeBrokerMPI::receiveModelKnowledge(MPI_Comm comm)
         encodedModelGen = 0;
     }
 
-    if (localBuffer) {
+    if ( (phase_ == ALPS_PHASE_RAMPUP) && localBuffer ) {
         delete [] localBuffer;
-        localBuffer = 0;
     }
-    
+    localBuffer = 0;
 }
 
 //#############################################################################
