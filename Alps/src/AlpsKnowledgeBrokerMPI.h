@@ -414,10 +414,17 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 	packed message.
         position: where to start if buf is allocated.
     */
-    void packEncoded(AlpsEncoded* enc, char*& buf, int& size, int& position);
+    void packEncoded(AlpsEncoded* enc, 
+                     char*& buf, 
+                     int& size,
+                     int& position,
+                     MPI_Comm comm);
  
     /** Unpack the given buffer into an AlpsEncoded instance. */
-    AlpsEncoded* unpackEncoded(char*& buf, int& position, int size = -1);
+    AlpsEncoded* unpackEncoded(char*& buf, 
+                               int& position, 
+                               MPI_Comm comm,
+                               int size = -1);
 
     /** Receive the size of buffer, allocate memory for buffer, then 
 	receive the message and put it in buffer. */
