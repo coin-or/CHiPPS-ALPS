@@ -2021,10 +2021,8 @@ AlpsKnowledgeBrokerMPI::workerMain()
 		
 		// Share generated knowledge.
                 // TODO: not working, too many messages.
-#if 1
 		sendModelKnowledge(MPI_COMM_WORLD, // Comm
                                    globalRank_);   // Receiver(no use)
-#endif
 	    } 
 	    else {  
                 // Worker is idle.
