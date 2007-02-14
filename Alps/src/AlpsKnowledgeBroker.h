@@ -262,6 +262,9 @@ class AlpsKnowledgeBroker {
     void setModel(AlpsModel *m) { model_ = m; }
     //@}
 
+    /** Get tree depth */
+    int getTreeDepth() { return treeDepth_; }
+    
     /** @name Interface with the knowledge pools 
      *  
      */

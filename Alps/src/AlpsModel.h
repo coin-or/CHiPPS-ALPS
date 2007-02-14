@@ -125,7 +125,7 @@ class AlpsModel : public AlpsKnowledge {
 
     /** Encode knowledge to be shared with others into an encoded object. 
         Return NULL means that no knowledge can be shared. */
-    virtual AlpsEncoded* encodeKnowlegeShared() const {
+    virtual AlpsEncoded* encodeKnowlegeShared() {
         /* Default does nothing */ 
         AlpsEncoded* encoded = 0;
         return encoded;

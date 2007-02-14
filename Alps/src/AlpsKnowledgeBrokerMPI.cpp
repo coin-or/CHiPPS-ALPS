@@ -5883,16 +5883,30 @@ AlpsKnowledgeBrokerMPI::forwardModelKnowledge()
     int leftSeq = leftSequence(mySeq, processNum_);
     int rightSeq = rightSequence(mySeq, processNum_);
     
+#if 0
+    std::cout << "++++ forwardModelKnowledge: mySeq = " << mySeq
+              << ", leftSeq = " << leftSeq
+              << ", rightSeq = " << rightSeq 
+              << ", modelGenID_ = " << modelGenID_
+              << ", globalRank_ = " << globalRank_
+              << std::endl;
+#endif
+
     if (leftSeq != -1) {
         // Note: modelGenPos_ is set by recieveModelKnowledge
-        int leftRank = sequenceToRank(incumbentID_, leftSeq);
+        int leftRank = sequenceToRank(modelGenID_, leftSeq);
         MPI_Send(largeBuffer_, modelGenPos_, MPI_PACKED, leftRank, 
                  AlpsMsgModelGenSearch, MPI_COMM_WORLD);
+        std::cout << "++++ forwardModelKnowledge: leftRank = " 
+                  << leftRank << std::endl;
+        
         incSendCount("forwardModelKnowledge during search");        
     }
     
     if (rightSeq != -1) {
-        int rightRank = sequenceToRank(incumbentID_, rightSeq);
+        int rightRank = sequenceToRank(modelGenID_, rightSeq);
+        std::cout << "++++ forwardModelKnowledge: rightRank = " 
+                  << rightRank << std::endl;
         MPI_Send(largeBuffer_, modelGenPos_, MPI_PACKED, rightRank, 
                  AlpsMsgModelGenSearch, MPI_COMM_WORLD);
         incSendCount("forwardModelKnowledge during search");
@@ -5927,6 +5941,12 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(MPI_Comm comm, int receiver)
         // Pack into local buffer
         packEncoded(encoded, largeBuffer2_, size, position, comm);
     }
+#if 0
+    else {
+        std::cout << "---- Process[" << globalRank_ 
+                  << "]: have no mode knowledge to share." << std::endl;
+    }
+#endif
     
     //std::cout << "----- 2. position = " << position
     //        << ", size = " << size << std::endl;
@@ -5955,7 +5975,11 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(MPI_Comm comm, int receiver)
     else if ( hasKnowledge && (phase_ == ALPS_PHASE_SEARCH) ) {
 
         assert(comm == MPI_COMM_WORLD);
-        
+#if 0    
+        std::cout << "---- Process[" << globalRank_ 
+                  << "]: Share mode knowledge " << std::endl;
+#endif
+   
         // During search, binary sending
         int mySeq = rankToSequence(globalRank_, globalRank_);
         int leftSeq = leftSequence(mySeq, processNum_);
@@ -5965,14 +5989,14 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(MPI_Comm comm, int receiver)
             int leftRank = sequenceToRank(globalRank_, leftSeq);
 	    MPI_Send(largeBuffer2_, position, MPI_PACKED, leftRank, 
 		     AlpsMsgModelGenSearch, comm);
-            incSendCount("sendModelKnowledge during rampup");        
+            incSendCount("sendModelKnowledge during search");        
         }
         
         if (rightSeq != -1) {
             int rightRank = sequenceToRank(globalRank_, rightSeq);
  	    MPI_Send(largeBuffer2_, position, MPI_PACKED, rightRank, 
 		     AlpsMsgModelGenSearch, comm);
-            incSendCount("sendModelKnowledge during rampup");
+            incSendCount("sendModelKnowledge during search");
         }
     }
 }
