@@ -114,6 +114,9 @@ class AlpsKnowledgeBroker {
     /** The depth of the tree. */
     int treeDepth_;
 
+    /** Peak memory usage. */
+    double peakMemory_;
+
     /** The status of search when terminated. */
     AlpsSolStatus solStatus_;
     //@}
@@ -264,6 +267,12 @@ class AlpsKnowledgeBroker {
 
     /** Get tree depth */
     int getTreeDepth() { return treeDepth_; }
+
+    /** Set peak memory usage. */
+    void setPeakMemory(double size) { peakMemory_ = size; }
+
+    /** Get peak memory usage. */
+    double getPeakMemory() { return peakMemory_; }
     
     /** @name Interface with the knowledge pools 
      *  

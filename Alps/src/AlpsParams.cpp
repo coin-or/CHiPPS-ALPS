@@ -28,6 +28,9 @@ void AlpsParams::createKeywordList() {
    // CharPar
    //-------------------------------------------------------
 
+    keys_.push_back(make_pair(std::string("Alps_checkMemory"),
+                              AlpsParameter(AlpsCharPar, checkMemory)));
+
    keys_.push_back(make_pair(std::string("Alps_deleteDeadNode"),
 			     AlpsParameter(AlpsCharPar, 
 					   deleteDeadNode)));
@@ -199,6 +202,7 @@ void AlpsParams::createKeywordList() {
 void AlpsParams::setDefaultEntries() {
 
   // CharPar
+  setEntry(checkMemory, false);
   setEntry(deleteDeadNode, true);
   setEntry(interClusterBalance, true);
   setEntry(intraClusterBalance, true);

@@ -32,6 +32,9 @@ class AlpsParams : public AlpsParameterSet {
       (ture = 1, false = 0). */
   enum chrParams
   {
+      /** Check memory.
+	  Default: false */
+      checkMemory,
       /** Remove dead nodes or not. 
           Default: true. */
       deleteDeadNode,

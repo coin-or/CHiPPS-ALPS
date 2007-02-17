@@ -30,4 +30,4 @@ Alps_hubInitNodeNum 3000
 
 #Alps_masterBalancePeriod 0.3
 #Alps_hubReportPeriod 0.5
-
+Alps_checkMemory 1

@@ -29,6 +29,11 @@
 #include "AlpsNodePool.h"
 #include "AlpsMessage.h"
 #include "AlpsMessageTag.h"
+
+#ifdef ALPS_MEMORY_USAGE
+#include <malloc.h>
+#endif
+
 //#############################################################################
 
 static int computeRampUpNumNodes(int minNumNodes,
@@ -1117,6 +1122,23 @@ AlpsSubTree::exploreUnitWork(int unitWork,
             // Print node log.
             broker_->getModel()->nodeLog(activeNode_, forceLog);
 	    forceLog = false;
+
+            // Check memory usage
+#ifdef ALPS_MEMORY_USAGE
+            bool checkMemory = broker_->getModel()->AlpsPar()->
+                entry(AlpsParams::checkMemory);
+            //std::cout << "checkMemory = " << checkMemory << std::endl;
+            
+            if (checkMemory) {
+                struct mallinfo memInfo = mallinfo();
+                double memUsage = static_cast<double>(memInfo.uordblks + memInfo.hblkhd) / 1024.0;
+                memUsage /= 1024.0;
+                if (memUsage > broker_->getPeakMemory()) {
+                    broker_->setPeakMemory(memUsage);
+                    std::cout << "memusge = " << broker_->getPeakMemory() << std::endl;
+                }
+            }
+#endif
 
 	    switch (activeNode_->getStatus()) {
 	    case AlpsNodeStatusCandidate :
