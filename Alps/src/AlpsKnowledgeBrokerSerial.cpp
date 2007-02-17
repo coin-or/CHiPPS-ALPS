@@ -277,6 +277,11 @@ AlpsKnowledgeBrokerSerial::searchLog()
 	messageHandler()->message(ALPS_S_FINAL_WALLCLOCK, messages())
 	    << timer_.getWallClock() << CoinMessageEol;
 	
+        if (peakMemory_ > 0.0001) {
+            messageHandler()->message(ALPS_PEAK_MEMORY, messages())
+                << peakMemory_ << CoinMessageEol;
+        }
+        
         if (printSolution && hasKnowledge(ALPS_SOLUTION)) {
             AlpsSolution *solution = dynamic_cast<AlpsSolution *>
                 (getBestKnowledge(ALPS_SOLUTION).first);
