@@ -39,6 +39,7 @@ static Alps_message us_english[] =
     {ALPS_LAUNCH, 50, 1, "Launched %d processes"},
     {ALPS_LOADBAL_HUB, 60, 3, "Hub[%d] balanced the workload of its workers %d times"},
     {ALPS_LOADBAL_HUB_FAIL, 63, 1, "Hub[%d] failed to find a process to donate work to process %d"},
+    {ALPS_LOADBAL_HUB_NO, 65, 1, "Hub[%d] balanced workload but do nothing since work load is %g"},
     {ALPS_LOADBAL_HUB_PERIOD, 67, 1, "Hub[%d] initially balances or report its workers every %.4f seconds"},
     {ALPS_LOADBAL_MASTER, 70, 3, "Master[%d] balanced the workloads of the hubs %d times"},
     {ALPS_LOADBAL_MASTER_NO, 72, 1, "Master[%d] balanced workload but do nothing since work load is %g"},

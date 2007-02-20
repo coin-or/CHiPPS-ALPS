@@ -823,7 +823,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 		}
             }
             
-#ifdef NF_DEBUG
+#if 0
 	    std::cout << "Master: ";
 	    for (i = 0; i < hubNum_; ++i) {
 		std::cout << "hub[" << i << "]=" <<
@@ -931,14 +931,11 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 #ifdef NF_DEBUG
 	    std::cout << "Master: TERM: finished updating hubs." <<std::endl;
 #endif
-	    // clusterWorkQuantity_ is always 0 in current design
-	    // systemWorkQuality_ += clusterWorkQuality_;
-	    
 	    systemWorkQuantity_ += clusterWorkQuantity_;
 	    systemSendCount_ += clusterSendCount_;
 	    systemRecvCount_ += clusterRecvCount_;
 	    clusterSendCount_ = clusterRecvCount_ = 0;
-	    
+
 #ifdef NF_DEBUG
 	    std::cout << "Master: TERM: Quantity_ = " << systemWorkQuantity_
 		      << ", systemSendCount_ = " << systemSendCount_
@@ -953,6 +950,8 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	    }
 	    else {
 		terminate = false;
+                // Do forget to deduct! refeshSysStatus will add clusterWorkQuantitY_
+                systemWorkQuantity_ -= clusterWorkQuantity_;
 	    }
 	    
 #ifdef NF_DEBUG
@@ -2619,7 +2618,7 @@ AlpsKnowledgeBrokerMPI::hubBalanceWorkers()
 	model_->AlpsPar()->entry(AlpsParams::zeroLoad);
     if (clusterWorkQuantity_ < zeroQuantity) {
         if (msgLevel_ > 100) {
-            messageHandler()->message(ALPS_LOADBAL_MASTER_NO, messages())
+            messageHandler()->message(ALPS_LOADBAL_HUB_NO, messages())
                 << globalRank_ << systemWorkQuantity_ << CoinMessageEol;
         }
 	return;
@@ -2983,10 +2982,10 @@ AlpsKnowledgeBrokerMPI::hubUpdateCluStatus(char*& bufLarge,
 
     }
     
-#ifdef NF_DEBUG
+#if 0
     std::cout << "HUB["<< globalRank_ <<"]: after hubUpdateCluStatus(): " 
 	      << "curQuality = " << curQuality 
-	      << ", preQuality = " << preQuality << ", sender = " << sender
+              << ", sender = " << sender
 	      << ", curQuantity = " << curQuantity 
 	      << ", preQuantity = " << preQuantity 
 	      << ", clusterWorkQuantity_  = " << clusterWorkQuantity_
@@ -3445,7 +3444,9 @@ AlpsKnowledgeBrokerMPI::refreshSysStatus()
 	systemWorkQuality_ = std::min(systemWorkQuality_,hubWorkQualities_[0]);
     }
    
-#ifdef NF_DEBUG_MORE
+#if 0
+    int i;
+    
     std::cout << "WORKLOAD: ";
     for (i = 0; i < clusterSize_; ++i) {
 	std::cout << "worker[" <<i<< "] = " 
