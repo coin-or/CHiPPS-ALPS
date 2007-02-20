@@ -219,7 +219,7 @@ void AlpsParams::setDefaultEntries() {
   setEntry(logFileLevel, 0);
   setEntry(masterInitNodeNum, ALPS_NONE);
   setEntry(masterReportInterval, 10);
-  setEntry(hubWorkClusterSizeLimit, 8);// Hub works if cluster size less than 9
+  setEntry(hubWorkClusterSizeLimit, 1);// Hub never work
   setEntry(mediumSize, 4096);    // 2^12
   setEntry(msgLevel, 2);
   setEntry(nodeLimit, ALPS_INT_MAX);
