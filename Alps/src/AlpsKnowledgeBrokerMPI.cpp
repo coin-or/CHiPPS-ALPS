@@ -236,9 +236,6 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     int requiredNumNodes = 
         model_->AlpsPar()->entry(AlpsParams::masterInitNodeNum);
 
-    // Make sure the number of nodes created is larger than the number of hubs.
-    //requiredNumNodes = ALPS_MAX(requiredNumNodes, hubNum_);
-    
     masterBalancePeriod_ =
         model_->AlpsPar()->entry(AlpsParams::masterBalancePeriod);
     largeSize_ = model_->AlpsPar()->entry(AlpsParams::largeSize);
@@ -499,9 +496,6 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     //------------------------------------------------------
     
     requiredNumNodes = model_->AlpsPar()->entry(AlpsParams::hubInitNodeNum);
-    
-    // Make sure the number of nodes created is larger than cluster size.
-    //requiredNumNodes = ALPS_MAX(requiredNumNodes, clusterSize_-1);
     
     if (msgLevel_ > 0 && requiredNumNodes > 0) {
         messageHandler()->message(ALPS_RAMPUP_HUB_START, messages())
@@ -1212,11 +1206,9 @@ AlpsKnowledgeBrokerMPI::hubMain()
     // Make sure the number of nodes created is larger than cluster size.
     if (hubWork_) {
         minNumNodes = clusterSize_;
-        //requiredNumNodes = ALPS_MAX(requiredNumNodes, clusterSize_);
     }
     else {
         minNumNodes = clusterSize_ - 1;
-        //requiredNumNodes = ALPS_MAX(requiredNumNodes, clusterSize_ - 1);
     }
 
     hubReportPeriod_ = model_->AlpsPar()->entry(AlpsParams::hubReportPeriod);

@@ -82,8 +82,12 @@ static int computeRampUpNumNodes(int minNumNodes,
     else {
         newNumNodes = minNumNodes * 100;
     }
-    
-    newNumNodes = CoinMax(newNumNodes, requiredNumNodes);
+
+    if (requiredNumNodes > 0) {
+        newNumNodes = (int) (0.5 *(requiredNumNodes + newNumNodes));
+    }
+
+    newNumNodes = CoinMax(newNumNodes, minNumNodes);  
 
 #if 0    
     std::cout << "+++++ newNumNodes = " << newNumNodes 
