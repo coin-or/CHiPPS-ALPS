@@ -69,51 +69,64 @@ static int rightSequence(const int sequence, const int numProcesses)
 
 //#############################################################################
 
-static double computeUnitTime(double oldUnitTime, 
-			      int unitWork, 
-			      double nodeProcessingTime)
+static int computeUnitNodes(int oldUnitNodes,
+                            double nodeProcessingTime)
 {
-    double unitTime = 0.1;
+    int unitNodes = 1;
     
     if (nodeProcessingTime < 1.0e-14) {
-      nodeProcessingTime = 1.0e-5;
-      //assert(0);
-    }
-    if (nodeProcessingTime > 30.0) {
-	unitTime = nodeProcessingTime;
-    }
-    else if (nodeProcessingTime > 5.0) {
-	unitTime = nodeProcessingTime;
-    }
-    else if (nodeProcessingTime > 1.0) {
-	unitTime = nodeProcessingTime * 2.0;
-    }	     
-    else if (nodeProcessingTime > 0.1) {
-	unitTime = nodeProcessingTime * 2.0;
-    }
-    else if (nodeProcessingTime > 0.01) {
-	unitTime = 0.5 * (oldUnitTime + 0.4*nodeProcessingTime*unitWork);
-	unitTime = CoinMax(0.05, unitTime);
-	unitTime = CoinMin(1.0, unitTime);
-    }
-    else if (nodeProcessingTime > 0.001) {
-	unitTime = 0.5 * (oldUnitTime + 0.5*nodeProcessingTime*unitWork);
-	unitTime = CoinMax(0.03, unitTime);
-	unitTime = CoinMin(0.8, unitTime);
-    }
-    else {
-	unitTime = 0.5 * (oldUnitTime + 1.5*nodeProcessingTime*unitWork);
-	unitTime = CoinMax(0.03, unitTime);
-	unitTime = CoinMin(1.0, unitTime);
+        nodeProcessingTime = 1.0e-5;
     }
 
+    if (nodeProcessingTime > 30.0) {
+	unitNodes = 1;
+    }
+    else if (nodeProcessingTime > 5.0) {
+	unitNodes = 1;
+    }
+    else if (nodeProcessingTime > 1.0) {
+	unitNodes = 2;
+    }	     
+    else if (nodeProcessingTime > 0.1) {
+	unitNodes = 3;
+    }
+    else if (nodeProcessingTime > 0.05) {
+	unitNodes = 4;
+    }
+    else if (nodeProcessingTime > 0.01) {
+	unitNodes = 5;
+    }
+    else if (nodeProcessingTime > 0.005) {
+	unitNodes = 7;
+    }
+    else if (nodeProcessingTime > 0.001) {
+	unitNodes = 30;
+    }
+    else if (nodeProcessingTime > 0.0005) {
+	unitNodes = 50;
+    }
+    else if (nodeProcessingTime > 0.0001) {
+	unitNodes = 200;
+    }
+    else if (nodeProcessingTime > 0.00005) {
+	unitNodes = 400;
+    }
+    else {
+	unitNodes = 500;
+    }
+
+    if (oldUnitNodes > 0) {
+        unitNodes = (int)(0.5 * (unitNodes + oldUnitNodes));
+    }
+    
 #if 0
-    std::cout << "$$$ unitTime = " << unitTime 
-              << "$$$ unitWork = " << unitWork 
+    std::cout << "$$$ Old unitNodes = " << oldUnitNodes 
+              << "$$$ new unitWork = " << unitNodes
 	      << ", nodeProcessingTime = " << nodeProcessingTime
 	      << std::endl;
 #endif
-    return unitTime;
+
+    return unitNodes;
 }
 
 //#############################################################################
@@ -183,7 +196,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
  
     double elaspeTime  = 0.0;
     double rampUpTimeMaster = 0.0;
-
+    
     char reply = 'C';
     
     bool allWorkerReported = false;
@@ -808,6 +821,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 			    << systemWorkQuantity_ 
 			    << systemSendCount_ << systemRecvCount_ 
                             << masterCheckCount << masterBalancePeriod_ 
+                            << nodeProcessingTime_ << unitWorkNodes_
 			    << incumbentValue_ 
 			    << timer_.getWallClock()
 			    << CoinMessageEol;
@@ -818,6 +832,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 			    << systemWorkQuantity_ 
 			    << systemSendCount_ << systemRecvCount_
                             << masterCheckCount << masterBalancePeriod_ 
+                            << nodeProcessingTime_ << unitWorkNodes_
 			    << timer_.getWallClock()
 			    << CoinMessageEol;
 		    }
@@ -1046,6 +1061,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
                             << systemWorkQuantity_ 
                             << systemSendCount_ << systemRecvCount_ 
                             << masterCheckCount << masterBalancePeriod_ 
+                            << nodeProcessingTime_ << unitWorkNodes_
                             << incumbentValue_ 
                             << timer_.getWallClock()
                             << CoinMessageEol;
@@ -1055,7 +1071,8 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
                             << systemNodeProcessed_ 
                             << systemWorkQuantity_ 
                             << systemSendCount_ << systemRecvCount_ 
-                            << masterCheckCount << masterBalancePeriod_ 
+                            << masterCheckCount << masterBalancePeriod_
+                            << nodeProcessingTime_ << unitWorkNodes_ 
                             << timer_.getWallClock()
                             << CoinMessageEol;
                     }
@@ -1150,7 +1167,10 @@ AlpsKnowledgeBrokerMPI::hubMain()
     bool allWorkerReported = false;   // Workers report load at least once
     bool terminate = false;
     bool deletedSTs = false;
-
+    bool comUnitWork = false;
+    
+    int numComUnitWork = 0;
+    
     AlpsReturnCode rCode = ALPS_OK;
     AlpsSolStatus solStatus = ALPS_INFEASIBLE;
     MPI_Status status;    
@@ -1168,10 +1188,13 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	model_->AlpsPar()->entry(AlpsParams::intraClusterBalance);
     const double zeroLoad = 
 	model_->AlpsPar()->entry(AlpsParams::zeroLoad);
-    const int unitWork =
-	model_->AlpsPar()->entry(AlpsParams::unitWorkNodes);
     double unitTime =
 	model_->AlpsPar()->entry(AlpsParams::unitWorkTime);
+    if (unitTime <= 0.0) {
+        // Not set by user
+        unitTime  = ALPS_DBL_MAX;
+    }
+
     const double changeWorkThreshold = model_->AlpsPar()->
 	entry(AlpsParams::changeWorkThreshold);
 
@@ -1191,6 +1214,11 @@ AlpsKnowledgeBrokerMPI::hubMain()
     hubReportPeriod_ = model_->AlpsPar()->entry(AlpsParams::hubReportPeriod);
     largeSize_ = model_->AlpsPar()->entry(AlpsParams::largeSize);
 
+    unitWorkNodes_ = model_->AlpsPar()->entry(AlpsParams::unitWorkNodes);
+    if (unitWorkNodes_ <= 0) {
+        comUnitWork = true;
+    }
+    
     //------------------------------------------------------
     // Initialization and setup.
     //------------------------------------------------------
@@ -1455,7 +1483,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
     //======================================================
 
     hubReportPeriod_ = computeBalancePeriod(hubReportPeriod_, 
-					   unitWork,
+					   unitWorkNodes_,
 					   nodeProcessingTime_);
 
     if (hubMsgLevel_ > 5 && intraCB) {
@@ -1539,8 +1567,15 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	    bool betterSolution = true;
             int thisNumNodes = 0;
             
-            unitTime = computeUnitTime(unitTime, unitWork, nodeProcessingTime_);
-	    rCode = doOneUnitWork(unitWork, 
+            // Compute unit work based on node processing time
+            if (comUnitWork) {
+                unitWorkNodes_ = computeUnitNodes(unitWorkNodes_, nodeProcessingTime_);
+                if (++numComUnitWork > 20) {
+                    comUnitWork = false;
+                }
+            }
+            
+	    rCode = doOneUnitWork(unitWorkNodes_, 
                                   unitTime, 
                                   solStatus,
                                   thisNumNodes,
@@ -1787,11 +1822,15 @@ AlpsKnowledgeBrokerMPI::workerMain()
     bool terminate = false;
     bool allMsgReceived = false;
     bool deletedSTs = false;
+    bool comUnitWork = false;
+    
+    int numComUnitWork = 0;
     
     MPI_Status status;
     AlpsReturnCode rCode = ALPS_OK;
     AlpsSolStatus solStatus = ALPS_INFEASIBLE;
     AlpsTimer workerTimer;
+    AlpsTimer msgTimer;
 
     //------------------------------------------------------
     // Get parameters.
@@ -1813,10 +1852,16 @@ AlpsKnowledgeBrokerMPI::workerMain()
 	model_->AlpsPar()->entry(AlpsParams::needWorkThreshold);
     const bool intraCB = 
 	model_->AlpsPar()->entry(AlpsParams::intraClusterBalance);
-    const int unitWork =
-	model_->AlpsPar()->entry(AlpsParams::unitWorkNodes);
     double unitTime  =
 	model_->AlpsPar()->entry(AlpsParams::unitWorkTime);
+    if (unitTime <= 0.0) {
+        unitTime  = ALPS_DBL_MAX;
+    }
+
+    unitWorkNodes_ = model_->AlpsPar()->entry(AlpsParams::unitWorkNodes);
+    if (unitWorkNodes_ <= 0) {
+        comUnitWork = true;
+    }
 
     largeSize_ = model_->AlpsPar()->entry(AlpsParams::largeSize);
 
@@ -1825,6 +1870,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
     //======================================================
 
     workerTimer.setClockType(ALPS_WALL_CLOCK);
+    msgTimer.setClockType(ALPS_WALL_CLOCK);
     workerTimer.start();
 
     setPhase(ALPS_PHASE_RAMPUP);
@@ -1943,6 +1989,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
 	// Listen and process until no message.
 	//**------------------------------------------------
 	
+        msgTimer.start();
 	while (true) {
 	    MPI_Test(&request, &flag, &status);
 	    if (flag) { // Receive a msg
@@ -1954,6 +2001,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
 		break;
 	    }
 	}
+        msgTime_ += msgTimer.getTime();
 
 	//**------------------------------------------------
         // if forceTerminate_ == true;
@@ -1961,7 +2009,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
 
         //if (forceTerminate_ && !deletedSTs) {
 	// Don't know why error on limits
-        if (forceTerminate_) {
+            if (forceTerminate_) {
 
             deletedSTs = true;
 
@@ -1987,17 +2035,23 @@ AlpsKnowledgeBrokerMPI::workerMain()
 		}
 		
 		// Check whether need ask for node index before doing work
-		if (getMaxNodeIndex() - getNextNodeIndex() < (unitWork + 5)) {
+		if (getMaxNodeIndex() - getNextNodeIndex() < (unitWorkNodes_ + 5)) {
 		    workerAskRecvIndices();
 		}
 
 		// Need check better solution.
 		betterSolution = true;
-                unitTime = computeUnitTime(unitTime, 
-					   unitWork, 
-					   nodeProcessingTime_);
 
-		rCode = doOneUnitWork(unitWork, 
+                // Compute unit work based on node processing time
+                if (comUnitWork) {
+                    unitWorkNodes_ = computeUnitNodes(unitWorkNodes_, 
+                                                nodeProcessingTime_);
+                    if (++numComUnitWork > 20) {
+                        comUnitWork = false;
+                    }
+                }
+                
+		rCode = doOneUnitWork(unitWorkNodes_, 
                                       unitTime,
                                       solStatus,
                                       thisNumNodes,
@@ -2872,6 +2926,10 @@ AlpsKnowledgeBrokerMPI::hubReportStatus(int tag, MPI_Comm comm)
     MPI_Pack(&clusterWorkQuantity_, 1, MPI_DOUBLE, smallBuffer_,size,&pos,comm);
     MPI_Pack(&clusterSendCount_, 1, MPI_INT, smallBuffer_, size, &pos, comm);
     MPI_Pack(&clusterRecvCount_, 1, MPI_INT, smallBuffer_, size, &pos, comm);
+    MPI_Pack(&nodeProcessingTime_, 1, MPI_DOUBLE, smallBuffer_, size, &pos,
+             comm);
+    MPI_Pack(&unitWorkNodes_, 1, MPI_INT, smallBuffer_, size, &pos, comm);    
+
     MPI_Send(smallBuffer_, pos, MPI_PACKED, receiver, tag, comm);
 
     clusterSendCount_ = clusterRecvCount_ = 0;  // Only count new msg
@@ -2910,6 +2968,7 @@ AlpsKnowledgeBrokerMPI::hubUpdateCluStatus(char*& bufLarge,
     double preQuantity = workerWorkQuantities_[sender];
     double curQuantity;
     double npTime;
+    int unitNodes;
 
     MPI_Unpack(bufLarge, size, &position, &curNodeProcessed, 1, MPI_INT, comm);
     MPI_Unpack(bufLarge, size, &position, &curQuality, 1, MPI_DOUBLE, comm);
@@ -2917,7 +2976,10 @@ AlpsKnowledgeBrokerMPI::hubUpdateCluStatus(char*& bufLarge,
     MPI_Unpack(bufLarge, size, &position, &msgSendNum, 1, MPI_INT, comm);
     MPI_Unpack(bufLarge, size, &position, &msgRecvNum, 1, MPI_INT, comm);
     MPI_Unpack(bufLarge, size, &position, &npTime, 1, MPI_DOUBLE, comm);
+    MPI_Unpack(bufLarge, size, &position, &unitWorkNodes_, 1, MPI_INT, comm);
   
+    assert(unitNodes > 0);
+    
     workerNodeProcesseds_[sender] = curNodeProcessed;
     workerWorkQualities_[sender] = curQuality;
     workerWorkQuantities_[sender] = curQuantity;
@@ -2956,21 +3018,21 @@ AlpsKnowledgeBrokerMPI::hubUpdateCluStatus(char*& bufLarge,
     clusterSendCount_ += msgSendNum;
     clusterRecvCount_ += msgRecvNum;
 
-    if (npTime != ALPS_NODE_PROCESS_TIME && npTime > 0.0001) {
+    if (npTime != ALPS_NODE_PROCESS_TIME && npTime > 1.0e-8) {
         if (nodeProcessingTime_ == ALPS_NODE_PROCESS_TIME) {
             nodeProcessingTime_ = npTime;
         }
         else {
             nodeProcessingTime_ = 0.5 * (nodeProcessingTime_ + npTime);
         }
-        int unitWork = model_->AlpsPar()->entry(AlpsParams::unitWorkNodes);
+
         hubReportPeriod_ = computeBalancePeriod(hubReportPeriod_,
-                                                unitWork,
+                                                unitWorkNodes_,
                                                 nodeProcessingTime_);
 
 	if (hubMsgLevel_ > 5) {
-	  messageHandler()->message(ALPS_LOADBAL_HUB_PERIOD, messages())
-	    << globalRank_ << hubReportPeriod_ << CoinMessageEol;
+            messageHandler()->message(ALPS_LOADBAL_HUB_PERIOD, messages())
+                << globalRank_ << hubReportPeriod_ << CoinMessageEol;
 	}
 
 #if 0
@@ -3326,6 +3388,7 @@ AlpsKnowledgeBrokerMPI::masterUpdateSysStatus(char*& bufLarge,
     MPI_Unpack(bufLarge, size, &position, &msgSendNum, 1, MPI_INT, comm);
     MPI_Unpack(bufLarge, size, &position, &msgRecvNum, 1, MPI_INT, comm);
     MPI_Unpack(bufLarge, size, &position, &npTime, 1, MPI_DOUBLE, comm);
+    MPI_Unpack(bufLarge, size, &position, &unitWorkNodes_, 1, MPI_INT, comm);
 
     // Update the hub's status
     hubNodeProcesseds_[sender] = curNodeProcessed;
@@ -3367,9 +3430,9 @@ AlpsKnowledgeBrokerMPI::masterUpdateSysStatus(char*& bufLarge,
         else {
             nodeProcessingTime_ = 0.5 * (nodeProcessingTime_ + npTime);
         }
-        int unitWork = model_->AlpsPar()->entry(AlpsParams::unitWorkNodes);
+
         masterBalancePeriod_ = computeBalancePeriod(masterBalancePeriod_,
-                                                    unitWork,
+                                                    unitWorkNodes_,
                                                     nodeProcessingTime_);
 #if 0
         std::cout << "MASTER[" << globalRank_ << "]: After updateSystem(),"
@@ -3631,15 +3694,19 @@ AlpsKnowledgeBrokerMPI::workerReportStatus(int tag,
     MPI_Pack(&recvCount_, 1, MPI_INT, smallBuffer_, size, &pos, comm);
     MPI_Pack(&nodeProcessingTime_, 1, MPI_DOUBLE, smallBuffer_, size, &pos,
              comm);
+    MPI_Pack(&unitWorkNodes_, 1, MPI_INT, smallBuffer_, size, &pos, comm);
+
     MPI_Send(smallBuffer_, pos, MPI_PACKED, receiver, tag, comm);
    
-#ifdef NF_DEBUG_MORE
+#if 0
     std::cout << "WORKER " << globalRank_ 
 	      << " : report quality = " << workQuality_ 
 	      << " : report quantity = " << workQuantity_ 
 	      << " to hub " 
 	      << myHubRank_ << "; Tag = " << tag << "; sendCount_ = "
-	      << sendCount_ << "; recvCount_ = " << recvCount_ << std::endl;
+	      << sendCount_ << "; recvCount_ = " << recvCount_ 
+              << "unitWorkNodes_ = " << unitWorkNodes_
+              << std::endl;
 #endif
 
     sendCount_ = recvCount_ = 0;      // Only count new message
@@ -3714,8 +3781,7 @@ AlpsKnowledgeBrokerMPI::masterSendIndices(int recvHub)
 {
     int nextIndex = getNextNodeIndex();
     int maxIndex = -1; 
-    const int unitNodes = 
-	model_->AlpsPar()->entry(AlpsParams::unitWorkNodes) + 10;
+    const int unitNodes = unitWorkNodes_ + 10;
 
     if (ALPS_INT_MAX - nextIndex > unitNodes) {
 	if ((ALPS_INT_MAX - nextIndex) <= masterIndexBatch_) {
@@ -3743,8 +3809,7 @@ AlpsKnowledgeBrokerMPI::hubSendIndices(int recvWorker)
 {
     int nextIndex = getNextNodeIndex();
     int maxIndex = -1; 
-    const int unitNodes = 
-	model_->AlpsPar()->entry(AlpsParams::unitWorkNodes) + 10;
+    const int unitNodes = unitWorkNodes_ + 10;
 
     if (getMaxNodeIndex() - nextIndex > unitNodes) {
 	if ((getMaxNodeIndex() - nextIndex) <= hubIndexBatch_) {
@@ -4955,6 +5020,7 @@ AlpsKnowledgeBrokerMPI::searchLog()
     int* tLefts = 0;
     int* tDepths = 0;
     double* idles = 0;
+    double* msgTimes = 0;
     double* rampUps = 0;
     double* rampDowns = 0;
     double *cpuTimes =  NULL;
@@ -4976,6 +5042,7 @@ AlpsKnowledgeBrokerMPI::searchLog()
 	tLefts = new int [processNum_];
 	tDepths = new int [processNum_];
 	idles = new double [processNum_];
+	msgTimes = new double [processNum_];
 	rampUps = new double [processNum_];
 	rampDowns = new double [processNum_];
 	cpuTimes = new double [processNum_];
@@ -4999,6 +5066,8 @@ AlpsKnowledgeBrokerMPI::searchLog()
     MPI_Gather(&treeDepth_, 1, MPI_INT, tDepths, 1, MPI_INT, masterRank_, 
 	       MPI_COMM_WORLD);
     MPI_Gather(&idleTime_, 1, MPI_DOUBLE, idles, 1, MPI_DOUBLE, masterRank_,
+	       MPI_COMM_WORLD);
+    MPI_Gather(&msgTime_, 1, MPI_DOUBLE, msgTimes, 1, MPI_DOUBLE, masterRank_,
 	       MPI_COMM_WORLD);
     MPI_Gather(&rampUpTime_, 1, MPI_DOUBLE, rampUps, 1, MPI_DOUBLE, 
 	       masterRank_, MPI_COMM_WORLD);
@@ -5037,6 +5106,9 @@ AlpsKnowledgeBrokerMPI::searchLog()
 	
 	double sumIdle = 0.0, aveIdle = 0.0;
 	double maxIdle = 0.0, minIdle = ALPS_DBL_MAX;
+
+	double sumMsgTime = 0.0, aveMsgTime = 0.0;
+	double maxMsgTime = 0.0, minMsgTime = ALPS_DBL_MAX;
 	
 	double sumRampUp = 0.0, aveRampUp = 0.0;
 	double maxRampUp = 0.0, minRampUp = ALPS_DBL_MAX;
@@ -5053,6 +5125,7 @@ AlpsKnowledgeBrokerMPI::searchLog()
 	double varSize = 0.0, stdSize = 0.0;
 	double varDep = 0.0, stdDep = 0.0;
 	double varIdle = 0.0, stdIdle = 0.0;
+	double varMsgTime = 0.0, stdMsgTime = 0.0;
 	double varRampUp = 0.0, stdRampUp = 0.0;
 	double varRampDown = 0.0, stdRampDown = 0.0;
 	
@@ -5097,6 +5170,7 @@ AlpsKnowledgeBrokerMPI::searchLog()
 		    sumSize += tSizes[i];
 		    sumDep += tDepths[i];
 		    sumIdle += idles[i];
+		    sumMsgTime += msgTimes[i];
 		    sumRampDown += rampDowns[i];
 		    
 		    if (tSizes[i] > maxSize) maxSize = tSizes[i];
@@ -5107,6 +5181,9 @@ AlpsKnowledgeBrokerMPI::searchLog()
 
 		    if (idles[i] > maxIdle) maxIdle = idles[i];
 		    if (idles[i] < minIdle) minIdle = idles[i];
+
+		    if (msgTimes[i] > maxMsgTime) maxMsgTime = msgTimes[i];
+		    if (msgTimes[i] < minMsgTime) minMsgTime = msgTimes[i];
 
 		    if (rampDowns[i] > maxRampDown) maxRampDown = rampDowns[i];
 		    if (rampDowns[i] < minRampDown) minRampDown = rampDowns[i];
@@ -5121,24 +5198,28 @@ AlpsKnowledgeBrokerMPI::searchLog()
 		if (rampUps[i] > maxRampUp) maxRampUp = rampUps[i];
 		if (rampUps[i] < minRampUp) minRampUp = rampUps[i];
 	    }
-
+           
+#if 0
+            // Does not make sense, 2/24/07
 	    for(i = 0; i < processNum_; ++i) { // Adjust idle and rampDown 
 		if (tSizes[i] > 0) {           // due to periodically checking.
-		    idles[i] -= minIdle;
-		    rampDowns[i] -= minRampDown;
+		    //idles[i] -= minIdle;
+		    //rampDowns[i] -= minRampDown;
 		}
 	    }
-            
 	    sumIdle -= minIdle * numWorkers;
 	    sumRampDown -= minRampDown * numWorkers;
 	    maxIdle -= minIdle;
 	    minIdle = 0.0;
 	    maxRampDown -= minRampDown;
 	    minRampDown = 0.0;	    
+#endif            
+
 	    if( numWorkers != 0) {
 		aveSize = sumSize / numWorkers; 
 		aveDep = sumDep / numWorkers;
 		aveIdle = sumIdle / numWorkers;
+		aveMsgTime = sumMsgTime / numWorkers;
 		aveRampDown = sumRampDown / numWorkers;
 		aveRampUp = sumRampUp / numWorkers;
 	    }
@@ -5148,6 +5229,7 @@ AlpsKnowledgeBrokerMPI::searchLog()
 		    varSize += pow(tSizes[i] - aveSize, 2);
 		    varDep += pow(tDepths[i] - aveDep, 2);
 		    varIdle = pow(idles[i] - aveIdle, 2);
+		    varMsgTime = pow(msgTimes[i] - aveMsgTime, 2);
 		    varRampDown = pow(rampDowns[i] - aveRampDown, 2);
 		}
 		varRampUp = pow(rampUps[i] - aveRampUp, 2);
@@ -5159,6 +5241,8 @@ AlpsKnowledgeBrokerMPI::searchLog()
 		stdDep = sqrt(varDep);
 		varIdle /= numWorkers;
 		stdIdle = sqrt(varIdle);
+		varMsgTime /= numWorkers;
+		stdMsgTime = sqrt(varMsgTime);
 		varRampDown /= numWorkers;
 		stdRampDown = sqrt(varRampDown);
 		varRampUp /= numWorkers;
@@ -5246,6 +5330,14 @@ AlpsKnowledgeBrokerMPI::searchLog()
 	    logFout << "Min Idle = " 
 		    << (minIdle != ALPS_DBL_MAX ? minIdle : 0.0) << std::endl;
 	    logFout << "Std Dev of Idle = " << stdIdle << std::endl;
+
+	    // Msg time.
+	    logFout << "Average MsgTime = " << aveMsgTime << std::endl;
+	    logFout << "Max MsgTime = " << maxMsgTime << std::endl;
+	    logFout << "Min MsgTime = " 
+		    << (minMsgTime != ALPS_DBL_MAX ? minMsgTime : 0.0) 
+                    << std::endl;
+	    logFout << "Std Dev of MsgTime = " << stdMsgTime << std::endl;
 	    
 	    // Ramp down.
 	    logFout << "Average RampDown = " << aveRampDown << std::endl;
@@ -5375,6 +5467,15 @@ AlpsKnowledgeBrokerMPI::searchLog()
 	    std::cout << "Min Idle = " 
                       << (minIdle != ALPS_DBL_MAX ? minIdle : 0.0) << std::endl;
 	    std::cout << "Std Dev of Idle = " << stdIdle << std::endl;
+            std::cout << "----------------------------------" << std::endl;
+
+	    // MsgTime.
+	    std::cout << "Average MsgTime = " << aveMsgTime << std::endl;
+	    std::cout << "Max MsgTime = " << maxMsgTime << std::endl;
+	    std::cout << "Min MsgTime = " 
+                      << (minMsgTime != ALPS_DBL_MAX ? minMsgTime : 0.0) 
+                      << std::endl;
+	    std::cout << "Std Dev of MsgTime = " << stdMsgTime << std::endl;
             std::cout << "----------------------------------" << std::endl;
 	    
 	    // Ramp down.
@@ -5590,6 +5691,7 @@ AlpsKnowledgeBrokerMPI::init()
     rampUpTime_ = 0.0;
     rampDownTime_ = 0.0;
     idleTime_ = 0.0;
+    msgTime_ = 0.0;
 
     psStats_.qualityBalance_ = 0;
     psStats_.quantityBalance_ = 0;
@@ -5616,6 +5718,7 @@ AlpsKnowledgeBrokerMPI::init()
     modelGenPos_ = -1;
 
     rampUpSubTree_ = 0;
+    unitWorkNodes_ = 0;
 }
 
 //#############################################################################

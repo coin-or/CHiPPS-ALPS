@@ -215,6 +215,9 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** The time spent waiting for work. */
     double idleTime_;
 
+    /** The time spent processing messages (include idle). */
+    double msgTime_;
+
     /** More statistics */
     AlpsPsStats psStats_;
     //@}
@@ -259,6 +262,9 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     
     /** A subtree used in during up. */
     AlpsSubTree* rampUpSubTree_;
+
+    /** Number of nodes in one unit of work */
+    int unitWorkNodes_;
     
  protected:
 

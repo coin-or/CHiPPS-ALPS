@@ -160,13 +160,6 @@ void AlpsParams::createKeywordList() {
 			     AlpsParameter(AlpsDoublePar, 
 					   hubReportPeriod)));
    //
-   keys_.push_back(make_pair(std::string("Alps_workerAskPeriod"),
-			     AlpsParameter(AlpsDoublePar, 
-					   workerAskPeriod)));
-   //
-   keys_.push_back(make_pair(std::string("Alps_rho"),
-			     AlpsParameter(AlpsDoublePar, rho)));
-   //
    keys_.push_back(make_pair(std::string("Alps_zeroLoad"),
 			     AlpsParameter(AlpsDoublePar, zeroLoad)));
    //
@@ -229,7 +222,7 @@ void AlpsParams::setDefaultEntries() {
   setEntry(searchStrategyRampUp, ALPS_SEARCH_BEST);  
   setEntry(smallSize, 1024);      // 2^10
   setEntry(solLimit, ALPS_INT_MAX);
-  setEntry(unitWorkNodes, 7);
+  setEntry(unitWorkNodes, ALPS_NOT_SET);
   setEntry(workerMsgLevel, 0);
 
   // DoublePar
@@ -239,11 +232,9 @@ void AlpsParams::setDefaultEntries() {
   setEntry(masterBalancePeriod, 0.03);
   setEntry(needWorkThreshold, 2);
   setEntry(receiverThreshold, 0.02);
-  setEntry(rho, 0.0);
   setEntry(timeLimit, ALPS_DBL_MAX);
   setEntry(tolerance, 1.0e-6);
-  setEntry(unitWorkTime, 0.03);
-  setEntry(workerAskPeriod, 0.5);
+  setEntry(unitWorkTime, ALPS_NOT_SET);
   setEntry(zeroLoad, 1.0e-6);
 
   // StringPar

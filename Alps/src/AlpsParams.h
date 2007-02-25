@@ -164,9 +164,6 @@ class AlpsParams : public AlpsParameterSet {
           the average workload timing receiverThreshold, it is a receiver.
           Default: 0.1 */
       receiverThreshold,
-      /** The exponent of the formula to calculate workload. 
-          Default: 0.0 */
-      rho,
       /** The time limit (in seconds) of search. 
           Default: ALPS_DBL_MAX */
       timeLimit,
@@ -176,9 +173,6 @@ class AlpsParams : public AlpsParameterSet {
       /** The time length of a unit work. 
           Default: 0.5 */
       unitWorkTime, 
-      /** The time period for workers to ask for load if needed.
-          Default: 0.5 */
-      workerAskPeriod,
       /** If less than this number, it is considered zero workload. 
           Default: 1e-6 */
       zeroLoad,
