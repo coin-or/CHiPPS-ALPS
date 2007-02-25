@@ -153,16 +153,16 @@ static double computeBalancePeriod(double oldBalancePeriod,
 	newPeriod = nodeProcessingTime;
     }
     else if (nodeProcessingTime > 0.1) {
-	newPeriod = nodeProcessingTime * 2;
+	newPeriod = nodeProcessingTime;
     }
     else if (nodeProcessingTime > 0.05) {
-	newPeriod = nodeProcessingTime * 3;
+	newPeriod = nodeProcessingTime;
     }
     else if (nodeProcessingTime > 0.01) {
-	newPeriod = nodeProcessingTime * 5;
+	newPeriod = nodeProcessingTime * 2;
     }
     else if (nodeProcessingTime > 0.005) {
-        newPeriod = nodeProcessingTime * 20;
+        newPeriod = nodeProcessingTime * 10;
     }
     else if (nodeProcessingTime > 0.001) {
         newPeriod = nodeProcessingTime * 40;

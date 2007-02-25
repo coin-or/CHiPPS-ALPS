@@ -56,31 +56,31 @@ static int computeRampUpNumNodes(int minNumNodes,
         newNumNodes = minNumNodes;
     }
     else if (nodeProcessingTime > 0.1) {
-        newNumNodes = minNumNodes * 2;
+        newNumNodes = minNumNodes;
     }
     else if (nodeProcessingTime > 0.05) {
-        newNumNodes = minNumNodes * 2;
+        newNumNodes = minNumNodes;
     }
     else if (nodeProcessingTime > 0.01) {
-            newNumNodes = minNumNodes * 3;
+        newNumNodes = minNumNodes;
     }
     else if (nodeProcessingTime > 0.005) {
-        newNumNodes = minNumNodes * 10;
+        newNumNodes = minNumNodes * 2;
     }
     else if (nodeProcessingTime > 0.001) {
-        newNumNodes = minNumNodes * 20;
+        newNumNodes = minNumNodes *2;
     }
     else if (nodeProcessingTime > 0.0005){
-        newNumNodes = minNumNodes * 30;
+        newNumNodes = minNumNodes * 5;
     }
     else if (nodeProcessingTime > 0.0001){
-        newNumNodes = minNumNodes * 60;
+        newNumNodes = minNumNodes * 30;
     }
     else if (nodeProcessingTime > 0.00005){
-        newNumNodes = minNumNodes * 80;
+        newNumNodes = minNumNodes * 60;
     }
     else {
-        newNumNodes = minNumNodes * 100;
+        newNumNodes = minNumNodes * 80;
     }
 
     if (requiredNumNodes > 0) {
@@ -1182,8 +1182,12 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     }
 
     if (numNodesProcessed) {
+        double oldNP = broker_->getNodeProcessingTime();
         double nodeProcessingTime = (broker_->subTreeTimer().getCpuTime()) / 
             numNodesProcessed;
+        if (oldNP > 1.0e-14) {
+            nodeProcessingTime = 0.5 * (nodeProcessingTime + oldNP);
+        }
         broker_->setNodeProcessingTime(nodeProcessingTime);
     }
 
