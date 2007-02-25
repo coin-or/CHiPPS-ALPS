@@ -42,42 +42,45 @@ static int computeRampUpNumNodes(int minNumNodes,
 {
     // TODO: Should related to unit work.
     int newNumNodes;
-    nodeProcessingTime *= (minNumNodes*10);
+    if (nodeProcessingTime < 1.0e-14) {
+        nodeProcessingTime = 1.0e-5;
+    }
     
-    if (nodeProcessingTime > 0.00001) {
-        if (nodeProcessingTime > 5.0) {
-            newNumNodes = minNumNodes;
-        }
-        else if (nodeProcessingTime > 1.0) {
-            newNumNodes = minNumNodes;
-        }
-        else if (nodeProcessingTime > 0.5) {
+    if (nodeProcessingTime > 5.0) {
+        newNumNodes = minNumNodes;
+    }
+    else if (nodeProcessingTime > 1.0) {
+        newNumNodes = minNumNodes;
+    }
+    else if (nodeProcessingTime > 0.5) {
+        newNumNodes = minNumNodes;
+    }
+    else if (nodeProcessingTime > 0.1) {
+        newNumNodes = minNumNodes * 2;
+    }
+    else if (nodeProcessingTime > 0.05) {
+        newNumNodes = minNumNodes * 2;
+    }
+    else if (nodeProcessingTime > 0.01) {
             newNumNodes = minNumNodes * 3;
-        }
-        else if (nodeProcessingTime > 0.1) {
-            newNumNodes = minNumNodes * 5;
-        }
-        else if (nodeProcessingTime > 0.05) {
-            newNumNodes = minNumNodes * 10;
-        }
-        else if (nodeProcessingTime > 0.01) {
-            newNumNodes = minNumNodes * 15;
-        }
-        else if (nodeProcessingTime > 0.005) {
-            newNumNodes = minNumNodes * 30;
-        }
-        else if (nodeProcessingTime > 0.001) {
-            newNumNodes = minNumNodes * 40;
-        }
-        else if (nodeProcessingTime > 0.0001){
-            newNumNodes = minNumNodes * 50;
-        }
-        else {
-            newNumNodes = minNumNodes * 100;
-        }
+    }
+    else if (nodeProcessingTime > 0.005) {
+        newNumNodes = minNumNodes * 10;
+    }
+    else if (nodeProcessingTime > 0.001) {
+        newNumNodes = minNumNodes * 20;
+    }
+    else if (nodeProcessingTime > 0.0005){
+        newNumNodes = minNumNodes * 30;
+    }
+    else if (nodeProcessingTime > 0.0001){
+        newNumNodes = minNumNodes * 60;
+    }
+    else if (nodeProcessingTime > 0.00005){
+        newNumNodes = minNumNodes * 80;
     }
     else {
-        newNumNodes = minNumNodes;
+        newNumNodes = minNumNodes * 100;
     }
     
     newNumNodes = CoinMax(newNumNodes, requiredNumNodes);
@@ -433,14 +436,22 @@ AlpsSubTree::rampUp(int minNumNodes,
                     AlpsTreeNode* root) 
 {
     int numNodesProcessed = 0;
-    AlpsTreeNode* node = NULL;
-    double npTime = 0.0;
-    bool firstCall = true;
     int npCount = 0;
+    double npTime = 0.0;
+
+    bool firstCall = true;
+    bool comRampUpNodes = true;
     
     const bool deleteNode = 
 	broker_->getModel()->AlpsPar()->entry(AlpsParams::deleteDeadNode);
 
+    AlpsTreeNode* node = NULL;
+
+    if (requiredNumNodes > 0) {
+        // User set
+        comRampUpNodes = false;
+    }
+    
     if (root != NULL) {
 	/* Master: set the root node and put it into the queue*/
 	root_ = root;
@@ -481,36 +492,14 @@ AlpsSubTree::rampUp(int minNumNodes,
                 node->process(false, true);
             }
 
-            firstCall = false; // set to false after processing first node.
-            
 	    node->setActive(false);
             npTime = broker_->subTreeTimer().getWallClock();
-            if (npCount < 10) {
+            if (comRampUpNodes && (npCount < 10)) {
                 requiredNumNodes = computeRampUpNumNodes(minNumNodes,
                                                          requiredNumNodes,
                                                          npTime);
                 ++npCount;
-                if (npCount > 9) {
-                    // Print msg
-                    if ( (broker_->getMsgLevel() > 1) &&
-                         (broker_->getProcType() == AlpsProcessTypeMaster) ) {
-                        broker_->messageHandler()->message(ALPS_RAMPUP_MASTER_NODES, broker_->messages())
-                            << broker_->getProcRank()
-                            << requiredNumNodes
-                            << npTime
-                            << CoinMessageEol;
-                        
-                    }
-                    else if ( (broker_->getHubMsgLevel() > 1) &&
-                              (broker_->getProcType() == AlpsProcessTypeHub) ) {
-                        broker_->messageHandler()->message(ALPS_RAMPUP_HUB_NODES, broker_->messages())
-                            << broker_->getProcRank()
-                            << requiredNumNodes
-                            << npTime
-                            << CoinMessageEol;
-                        
-                    }
-                }
+                firstCall = false; // set to false 
             }
 	    switch (node->getStatus()) {
 	    case AlpsNodeStatusCandidate :
@@ -536,6 +525,28 @@ AlpsSubTree::rampUp(int minNumNodes,
 			    "rampUp",
 			    "AlpsSubTreeMaster");
 	}
+    }
+
+    // Print msg
+    if (comRampUpNodes) {
+        if ( (broker_->getMsgLevel() > 1) &&
+             (broker_->getProcType() == AlpsProcessTypeMaster) ) {
+            broker_->messageHandler()->message(ALPS_RAMPUP_MASTER_NODES_AUTO, broker_->messages())
+                << broker_->getProcRank()
+                << requiredNumNodes
+                << npTime
+                << CoinMessageEol;
+            
+        }
+        else if ( (broker_->getHubMsgLevel() > 1) &&
+                  (broker_->getProcType() == AlpsProcessTypeHub) ) {
+            broker_->messageHandler()->message(ALPS_RAMPUP_HUB_NODES_AUTO, broker_->messages())
+                << broker_->getProcRank()
+                << requiredNumNodes
+                << npTime
+                << CoinMessageEol;
+            
+        }
     }
 
     return numNodesProcessed;

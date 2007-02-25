@@ -131,13 +131,14 @@ static int computeUnitNodes(int oldUnitNodes,
 
 //#############################################################################
 
-// Depend on unitwork???
-
 static double computeBalancePeriod(double oldBalancePeriod,
-				   int unitWork, 
 				   double nodeProcessingTime)
 {
     double newPeriod = 0.1;
+    
+    if (nodeProcessingTime < 1.0e-14) {
+        nodeProcessingTime = 1.0e-5;    
+    }
     
     if (nodeProcessingTime > 30.0) {
 	newPeriod = nodeProcessingTime;
@@ -147,33 +148,43 @@ static double computeBalancePeriod(double oldBalancePeriod,
     }
     else if (nodeProcessingTime > 1.0) {
 	newPeriod = nodeProcessingTime;
-    }	     
+    }
+    else if (nodeProcessingTime > 0.5) {
+	newPeriod = nodeProcessingTime;
+    }
     else if (nodeProcessingTime > 0.1) {
-	newPeriod = 0.5 * (nodeProcessingTime + oldBalancePeriod);
+	newPeriod = nodeProcessingTime * 2;
     }
     else if (nodeProcessingTime > 0.05) {
-	newPeriod = 0.5 * (2*nodeProcessingTime + oldBalancePeriod);
+	newPeriod = nodeProcessingTime * 3;
     }
     else if (nodeProcessingTime > 0.01) {
-	newPeriod = 0.5 * (2*nodeProcessingTime + oldBalancePeriod);
+	newPeriod = nodeProcessingTime * 5;
+    }
+    else if (nodeProcessingTime > 0.005) {
+        newPeriod = nodeProcessingTime * 20;
     }
     else if (nodeProcessingTime > 0.001) {
-	newPeriod = 0.5 * (3*nodeProcessingTime + oldBalancePeriod);
-	newPeriod = CoinMax(0.03, newPeriod);
-	newPeriod = CoinMin(0.3, newPeriod);
+        newPeriod = nodeProcessingTime * 40;
+    }
+    else if (nodeProcessingTime > 0.0005) {
+	newPeriod = nodeProcessingTime * 100;
     }
     else if (nodeProcessingTime > 0.0001) {
-	newPeriod = 0.5 * (10*nodeProcessingTime + oldBalancePeriod);
-	newPeriod = CoinMax(0.03, newPeriod);
-	newPeriod = CoinMin(0.3, newPeriod);
+	newPeriod = nodeProcessingTime * 200;
+    }
+    else if (nodeProcessingTime > 0.00005) {
+	newPeriod = nodeProcessingTime * 600;
+    }
+    else if (nodeProcessingTime > 0.00001) {
+	newPeriod = nodeProcessingTime * 1000;
     }
     else {
-        unitWork = CoinMax(10, unitWork);
-	newPeriod = unitWork*nodeProcessingTime + 0.5*oldBalancePeriod;
-	newPeriod = CoinMax(0.07, newPeriod);
-	newPeriod = CoinMin(0.3, newPeriod);
+	newPeriod = 0.01;
     }
 
+    newPeriod = 0.5 * (newPeriod + nodeProcessingTime);
+    
 #if 0
     std::cout << "$$$ newPeriod = " << newPeriod
 	      << ", nodeProcessingTime = " << nodeProcessingTime
@@ -219,8 +230,6 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	model_->AlpsPar()->entry(AlpsParams::smallSize);
     const int nodeLimit = 
 	model_->AlpsPar()->entry(AlpsParams::nodeLimit);
-    const int unitWork =
-	model_->AlpsPar()->entry(AlpsParams::unitWorkNodes);
     const double zeroLoad = 
 	model_->AlpsPar()->entry(AlpsParams::zeroLoad);
 
@@ -228,8 +237,8 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
         model_->AlpsPar()->entry(AlpsParams::masterInitNodeNum);
 
     // Make sure the number of nodes created is larger than the number of hubs.
-    requiredNumNodes = ALPS_MAX(requiredNumNodes, hubNum_);
-
+    //requiredNumNodes = ALPS_MAX(requiredNumNodes, hubNum_);
+    
     masterBalancePeriod_ =
         model_->AlpsPar()->entry(AlpsParams::masterBalancePeriod);
     largeSize_ = model_->AlpsPar()->entry(AlpsParams::largeSize);
@@ -322,7 +331,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     // Create required number of subtrees(nodes) for hubs.
     //------------------------------------------------------
 
-    if (msgLevel_ > 0) {
+    if (msgLevel_ > 0 && requiredNumNodes > 0) {
 	messageHandler()->message(ALPS_RAMPUP_MASTER_START, messages())
 	    << globalRank_ << requiredNumNodes << CoinMessageEol;
     }
@@ -492,9 +501,9 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     requiredNumNodes = model_->AlpsPar()->entry(AlpsParams::hubInitNodeNum);
     
     // Make sure the number of nodes created is larger than cluster size.
-    requiredNumNodes = ALPS_MAX(requiredNumNodes, clusterSize_-1);
+    //requiredNumNodes = ALPS_MAX(requiredNumNodes, clusterSize_-1);
     
-    if (msgLevel_ > 0) {
+    if (msgLevel_ > 0 && requiredNumNodes > 0) {
         messageHandler()->message(ALPS_RAMPUP_HUB_START, messages())
             << globalRank_ << requiredNumNodes << CoinMessageEol;
     }
@@ -631,7 +640,6 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     //======================================================
 
     masterBalancePeriod_ = computeBalancePeriod(masterBalancePeriod_,
-                                                unitWork,
                                                 nodeProcessingTime_);
 
     if (msgLevel_ > 0 && interCB) {
@@ -977,7 +985,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	    if (terminate) {
                 if (msgLevel_ > 0) {
                     messageHandler()->message(ALPS_TERM_MASTER_INFORM,messages())
-                        << globalRank_ << "exit" << CoinMessageEol;
+                        << globalRank_ << "stop searching" << CoinMessageEol;
                 }
 		
 		// Send instruction to my hubs (as the master)
@@ -1009,7 +1017,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	    else {  // Not true idle yet
                 if (msgLevel_ > 0) {
                     messageHandler()->message(ALPS_TERM_MASTER_INFORM, messages())
-                        << globalRank_ << "continue" << CoinMessageEol;
+                        << globalRank_ << "continue searching" << CoinMessageEol;
                 }
                 
                 blockTermCheck_ = true;
@@ -1204,11 +1212,11 @@ AlpsKnowledgeBrokerMPI::hubMain()
     // Make sure the number of nodes created is larger than cluster size.
     if (hubWork_) {
         minNumNodes = clusterSize_;
-        requiredNumNodes = ALPS_MAX(requiredNumNodes, clusterSize_);
+        //requiredNumNodes = ALPS_MAX(requiredNumNodes, clusterSize_);
     }
     else {
         minNumNodes = clusterSize_ - 1;
-        requiredNumNodes = ALPS_MAX(requiredNumNodes, clusterSize_ - 1);
+        //requiredNumNodes = ALPS_MAX(requiredNumNodes, clusterSize_ - 1);
     }
 
     hubReportPeriod_ = model_->AlpsPar()->entry(AlpsParams::hubReportPeriod);
@@ -1327,7 +1335,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
     // Generate and send required number of nodes(subtree) for hub's workers.
     //------------------------------------------------------
 
-    if (hubMsgLevel_ > 0) {
+    if (hubMsgLevel_ > 0 && requiredNumNodes > 0) {
         messageHandler()->message(ALPS_RAMPUP_HUB_START, messages())
             << globalRank_ << requiredNumNodes << CoinMessageEol;
     }
@@ -1483,7 +1491,6 @@ AlpsKnowledgeBrokerMPI::hubMain()
     //======================================================
 
     hubReportPeriod_ = computeBalancePeriod(hubReportPeriod_, 
-					   unitWorkNodes_,
 					   nodeProcessingTime_);
 
     if (hubMsgLevel_ > 5 && intraCB) {
@@ -3027,7 +3034,6 @@ AlpsKnowledgeBrokerMPI::hubUpdateCluStatus(char*& bufLarge,
         }
 
         hubReportPeriod_ = computeBalancePeriod(hubReportPeriod_,
-                                                unitWorkNodes_,
                                                 nodeProcessingTime_);
 
 	if (hubMsgLevel_ > 5) {
@@ -3432,7 +3438,6 @@ AlpsKnowledgeBrokerMPI::masterUpdateSysStatus(char*& bufLarge,
         }
 
         masterBalancePeriod_ = computeBalancePeriod(masterBalancePeriod_,
-                                                    unitWorkNodes_,
                                                     nodeProcessingTime_);
 #if 0
         std::cout << "MASTER[" << globalRank_ << "]: After updateSystem(),"
@@ -5221,8 +5226,8 @@ AlpsKnowledgeBrokerMPI::searchLog()
 		aveIdle = sumIdle / numWorkers;
 		aveMsgTime = sumMsgTime / numWorkers;
 		aveRampDown = sumRampDown / numWorkers;
-		aveRampUp = sumRampUp / numWorkers;
 	    }
+            aveRampUp = sumRampUp / processNum_;
             
 	    for (i = 0; i < processNum_; ++i) {
 		if (processTypeList_[i] == AlpsProcessTypeWorker) {
