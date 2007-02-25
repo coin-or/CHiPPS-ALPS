@@ -75,9 +75,9 @@ static double computeUnitTime(double oldUnitTime,
 {
     double unitTime = 0.1;
     
-    if (nodeProcessingTime < 0.0) {
+    if (nodeProcessingTime < 1.0e-14) {
       nodeProcessingTime = 1.0e-5;
-      assert(0);
+      //assert(0);
     }
     if (nodeProcessingTime > 30.0) {
 	unitTime = nodeProcessingTime;
@@ -103,12 +103,13 @@ static double computeUnitTime(double oldUnitTime,
     }
     else {
 	unitTime = 0.5 * (oldUnitTime + 1.5*nodeProcessingTime*unitWork);
-	unitTime = CoinMax(0.02, unitTime);
+	unitTime = CoinMax(0.03, unitTime);
 	unitTime = CoinMin(1.0, unitTime);
     }
 
 #if 0
     std::cout << "$$$ unitTime = " << unitTime 
+              << "$$$ unitWork = " << unitWork 
 	      << ", nodeProcessingTime = " << nodeProcessingTime
 	      << std::endl;
 #endif
