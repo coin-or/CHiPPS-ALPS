@@ -498,7 +498,7 @@ AlpsSubTree::rampUp(int minNumNodes,
 
 	    node->setActive(false);
             npTime = broker_->subTreeTimer().getWallClock();
-            if (comRampUpNodes && (npCount < 10)) {
+            if (comRampUpNodes && (npCount < 50)) {
                 requiredNumNodes = computeRampUpNumNodes(minNumNodes,
                                                          requiredNumNodes,
                                                          npTime);

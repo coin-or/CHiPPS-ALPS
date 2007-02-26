@@ -156,10 +156,10 @@ static double computeBalancePeriod(double oldBalancePeriod,
 	newPeriod = nodeProcessingTime;
     }
     else if (nodeProcessingTime > 0.05) {
-	newPeriod = nodeProcessingTime;
+	newPeriod = nodeProcessingTime * 2;
     }
     else if (nodeProcessingTime > 0.01) {
-	newPeriod = nodeProcessingTime * 2;
+	newPeriod = nodeProcessingTime * 3;
     }
     else if (nodeProcessingTime > 0.005) {
         newPeriod = nodeProcessingTime * 10;
@@ -183,10 +183,11 @@ static double computeBalancePeriod(double oldBalancePeriod,
 	newPeriod = 0.01;
     }
 
-    newPeriod = 0.5 * (newPeriod + nodeProcessingTime);
+    newPeriod = 0.5 * (newPeriod + oldBalancePeriod);
     
 #if 0
     std::cout << "$$$ newPeriod = " << newPeriod
+              << ", oldBalancePeriod = " << oldBalancePeriod
 	      << ", nodeProcessingTime = " << nodeProcessingTime
 	      << std::endl;
 #endif
@@ -1569,7 +1570,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
             // Compute unit work based on node processing time
             if (comUnitWork) {
                 unitWorkNodes_ = computeUnitNodes(unitWorkNodes_, nodeProcessingTime_);
-                if (++numComUnitWork > 20) {
+                if (++numComUnitWork > 200) {
                     comUnitWork = false;
                 }
             }
@@ -3025,9 +3026,15 @@ AlpsKnowledgeBrokerMPI::hubUpdateCluStatus(char*& bufLarge,
             nodeProcessingTime_ = 0.5 * (nodeProcessingTime_ + npTime);
         }
 
-        hubReportPeriod_ = computeBalancePeriod(hubReportPeriod_,
-                                                nodeProcessingTime_);
-
+        if (globalRank_ == masterRank_) {
+            masterBalancePeriod_ = computeBalancePeriod(masterBalancePeriod_,
+                                                        nodeProcessingTime_);
+        }
+        else {
+            hubReportPeriod_ = computeBalancePeriod(hubReportPeriod_,
+                                                    nodeProcessingTime_);
+        }
+        
 	if (hubMsgLevel_ > 5) {
             messageHandler()->message(ALPS_LOADBAL_HUB_PERIOD, messages())
                 << globalRank_ << hubReportPeriod_ << CoinMessageEol;
@@ -3421,7 +3428,7 @@ AlpsKnowledgeBrokerMPI::masterUpdateSysStatus(char*& bufLarge,
 	systemRecvCount_ -= minCount;
     }
 
-    if (npTime != ALPS_NODE_PROCESS_TIME && npTime > 0.0001) {
+    if (npTime != ALPS_NODE_PROCESS_TIME && npTime > 1.0e-10) {
         if (nodeProcessingTime_ == ALPS_NODE_PROCESS_TIME) {
             nodeProcessingTime_ = npTime;
         }
