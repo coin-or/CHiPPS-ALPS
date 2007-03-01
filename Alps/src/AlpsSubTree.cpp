@@ -573,6 +573,23 @@ AlpsSubTree::splitSubTree(int& returnSize, int size)
 
     int i;
     int numChildren = 0;
+
+    //------------------------------------------------------
+    // Move nodes in diving pool to normal pool.
+    //------------------------------------------------------
+
+    AlpsTreeNode* tempNode = 0;
+
+    while (diveNodePool_->getNumKnowledges() > 0) {
+	tempNode = dynamic_cast<AlpsTreeNode *>
+	    (diveNodePool_->getKnowledge().first);
+	diveNodePool_->popKnowledge();
+	nodePool_->addKnowledge(tempNode, tempNode->getQuality());
+    }
+    if (activeNode_) {
+	nodePool_->addKnowledge(activeNode_, activeNode_->getQuality());
+	activeNode_ = 0;
+    }
     
     //------------------------------------------------------
     // Find the root of the subtree to be splitted off.
