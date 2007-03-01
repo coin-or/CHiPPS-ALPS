@@ -5593,7 +5593,8 @@ AlpsKnowledgeBrokerMPI::doOneUnitWork(int unitWork,
         // Already has a subtree working on.
         
         assert(workingSubTree_);
-        rCode = workingSubTree_->exploreUnitWork(unitWork,
+        rCode = workingSubTree_->exploreUnitWork(true, /* leaveAsIt*/
+						 unitWork,
                                                  unitTime,
                                                  solStatus,
                                                  numNodesProcessed,
@@ -5618,7 +5619,8 @@ AlpsKnowledgeBrokerMPI::doOneUnitWork(int unitWork,
         std::cout << "pop a subtree." << std::endl;
 #endif
         
-        rCode = workingSubTree_->exploreUnitWork(unitWork,
+        rCode = workingSubTree_->exploreUnitWork(true,
+						 unitWork,
                                                  unitTime,
                                                  solStatus,
                                                  numNodesProcessed,

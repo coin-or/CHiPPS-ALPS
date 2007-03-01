@@ -397,7 +397,8 @@ AlpsSubTree::exploreSubTree(AlpsTreeNode* root,
     // Explore the tree.
     //------------------------------------------------------
 
-    status = exploreUnitWork(nodeLimit,
+    status = exploreUnitWork(false, 
+			     nodeLimit,
                              timeLimit,
                              exploreStatus,
                              numNodesProcessed, /* Output */
@@ -1023,7 +1024,8 @@ AlpsSubTree::decode(AlpsEncoded& encoded) const
 //#############################################################################
 
 AlpsReturnCode
-AlpsSubTree::exploreUnitWork(int unitWork,
+AlpsSubTree::exploreUnitWork(bool leaveAsIt,
+			     int unitWork,
                              double unitTime,
                              AlpsSolStatus & exploreStatus, /* Output */
                              int & numNodesProcessed,       /* Output */
@@ -1073,9 +1075,11 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     // Process nodes until reach unit limits, or better solution if check.
     //------------------------------------------------------    
 
-    activeNode_ = NULL;
-    exploreStatus = ALPS_INFEASIBLE;    
-    numNodesProcessed = 0;
+    if (!leaveAsIt) {
+	activeNode_ = NULL;
+	exploreStatus = ALPS_INFEASIBLE;    
+	numNodesProcessed = 0;
+    }
     
     while ( (nodePool_->hasKnowledge() || activeNode_ || 
 	     diveNodePool_->hasKnowledge()) && 
@@ -1204,17 +1208,19 @@ AlpsSubTree::exploreUnitWork(int unitWork,
          (exploreStatus == ALPS_FEASIBLE) ) {
         // Case 2 and 3.
 
-        // Move nodes in diving pool to normal pool.
-        while (diveNodePool_->getNumKnowledges() > 0) {
-            tempNode = dynamic_cast<AlpsTreeNode *>
-                (diveNodePool_->getKnowledge().first);
-            diveNodePool_->popKnowledge();
-            nodePool_->addKnowledge(tempNode, tempNode->getQuality());
-        }
-        if (activeNode_) {
-            nodePool_->addKnowledge(activeNode_, activeNode_->getQuality());
-	    activeNode_ = 0;
-        }
+	if (!leaveAsIt) {
+	    // Move nodes in diving pool to normal pool.
+	    while (diveNodePool_->getNumKnowledges() > 0) {
+		tempNode = dynamic_cast<AlpsTreeNode *>
+		    (diveNodePool_->getKnowledge().first);
+		diveNodePool_->popKnowledge();
+		nodePool_->addKnowledge(tempNode, tempNode->getQuality());
+	    }
+	    if (activeNode_) {
+		nodePool_->addKnowledge(activeNode_, activeNode_->getQuality());
+		activeNode_ = 0;
+	    }
+	}
     }
     else {
         // case 1.

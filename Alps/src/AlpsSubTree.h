@@ -219,8 +219,13 @@ class AlpsSubTree : public AlpsKnowledge {
 					  int & numNodesProcesse, /* Output */
 					  int & depth);           /* Output */
     
-    /** Explore the subtree for certain amount of work/time. */
-    AlpsReturnCode exploreUnitWork(int unitWork,
+    /** Explore the subtree for certain amount of work/time. 
+	leaveAsIt means exit immediately after reseach limits:
+	do not put activeNode_ in pool, do not move nodes in 
+	divePool_ in regular pool.
+    */
+    AlpsReturnCode exploreUnitWork(bool leaveAsIt, 
+				   int unitWork,
                                    double unitTime,
                                    AlpsSolStatus & solStatus,/*not for parallel*/
                                    int & numNodesProcessed, /* Output */
