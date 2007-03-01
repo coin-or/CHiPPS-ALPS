@@ -1046,12 +1046,15 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     //------------------------------------------------------    
     // Get setting/parameters.
     //------------------------------------------------------
-
+    
     const bool deleteNode = 
 	broker_->getModel()->AlpsPar()->entry(AlpsParams::deleteDeadNode);
 
     AlpsSearchStrategy<AlpsTreeNode*> *nodeSel = broker_->getNodeSelection();
 
+    bool checkMemory = broker_->getModel()->AlpsPar()->
+	entry(AlpsParams::checkMemory);
+    
     //------------------------------------------------------
     // Check if required to exit when find a solution.
     //------------------------------------------------------
@@ -1063,9 +1066,9 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     }
     
     if( broker_->hasKnowledge(ALPS_SOLUTION) ) {
-        oldSolQuality=broker_->getBestKnowledge(ALPS_SOLUTION).second;
+        oldSolQuality = broker_->getBestKnowledge(ALPS_SOLUTION).second;
     }    
-
+    
     //------------------------------------------------------
     // Process nodes until reach unit limits, or better solution if check.
     //------------------------------------------------------    
@@ -1073,7 +1076,7 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     activeNode_ = NULL;
     exploreStatus = ALPS_INFEASIBLE;    
     numNodesProcessed = 0;
-
+    
     while ( (nodePool_->hasKnowledge() || activeNode_ || 
 	     diveNodePool_->hasKnowledge()) && 
 	    !betterSolution ) {
@@ -1140,8 +1143,6 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 
             // Check memory usage
 #ifdef ALPS_MEMORY_USAGE
-            bool checkMemory = broker_->getModel()->AlpsPar()->
-                entry(AlpsParams::checkMemory);
             //std::cout << "checkMemory = " << checkMemory << std::endl;
             
             if (checkMemory) {
@@ -1180,7 +1181,7 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 			    "exploreSubTree", "AlpsSubTree"); 
 	}
     }
-
+    
     if (numNodesProcessed) {
         double oldNP = broker_->getNodeProcessingTime();
         double nodeProcessingTime = (broker_->subTreeTimer().getCpuTime()) / 
