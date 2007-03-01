@@ -177,13 +177,15 @@ static double computeBalancePeriod(double oldBalancePeriod,
 	newPeriod = nodeProcessingTime * 600;
     }
     else if (nodeProcessingTime > 0.00001) {
-	newPeriod = nodeProcessingTime * 1000;
+	newPeriod = nodeProcessingTime * 1500;
     }
     else {
-	newPeriod = 0.01;
+	newPeriod = 0.03;
     }
 
-    newPeriod = 0.5 * (newPeriod + oldBalancePeriod);
+    if (oldBalancePeriod > 0.0) {
+        newPeriod = 0.5 * (newPeriod + oldBalancePeriod);
+    }
     
 #if 0
     std::cout << "$$$ newPeriod = " << newPeriod
@@ -5355,11 +5357,11 @@ AlpsKnowledgeBrokerMPI::searchLog()
 	    logFout << "Search CPU time = " << timer_.getCpuTime() <<" seconds"
 		    << ", max = " << maxCpuTime
 		    << ", min = "<< minCpuTime 
-		    << ", total CPU = " << sumCpuTime << std::endl;
+		    << ", total CPU time = " << sumCpuTime << std::endl;
 	    logFout <<"Search wallclock  = "<<timer_.getWallClock()<<" seconds"
 		    << ", max = " << maxWallClock
 		    << ", min = "<< minWallClock 
-		    <<", total Wall-clocks = " << sumWallClock << std::endl;
+		    <<", total wallclock = " << sumWallClock << std::endl;
 
 	    //----------------------------------------------
 	    // Solution.
@@ -5429,7 +5431,7 @@ AlpsKnowledgeBrokerMPI::searchLog()
                     << CoinMessageEol;
             }
 
-            std::cout << "\n=================== SEARCH RESULTS  ================="
+            std::cout << "\n******************* SEARCH RESULTS ******************"
                       << std::endl;
 
             //----------------------------------------------
@@ -5525,15 +5527,15 @@ AlpsKnowledgeBrokerMPI::searchLog()
 	    std::cout << "Search CPU time = "<<timer_.getCpuTime() <<" seconds"
 		      << ", max = " << maxCpuTime
 		      << ", min = "<< minCpuTime 
-		      << ", total CPU = " << sumCpuTime << std::endl;
+		      << ", total CPU time = " << sumCpuTime << std::endl;
 	    std::cout << "Search wallclock  = "<<timer_.getWallClock() <<" seconds"
 		      << ", max = " << maxWallClock
 		      << ", min = "<< minWallClock 
-		      <<", total Wall-clocks = " << sumWallClock << std::endl;
+		      <<", total wallclock = " << sumWallClock << std::endl;
             
             std::cout << "Best solution quality = " << getBestQuality()
                       << std::endl;
-            std::cout << "====================================================="
+            std::cout << "*****************************************************"
                       << std::endl;
         } // Print msg if msgLevel_ > 0
 
