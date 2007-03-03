@@ -208,7 +208,7 @@ void AlpsParams::setDefaultEntries() {
   setEntry(hubInitNodeNum, ALPS_NONE);
   setEntry(hubMsgLevel, 0);
   setEntry(hubNum, 1);
-  setEntry(largeSize, 10485760);  // 2^21
+  setEntry(largeSize, 2048576);  // 2M
   setEntry(logFileLevel, 0);
   setEntry(masterInitNodeNum, ALPS_NONE);
   setEntry(masterReportInterval, 10);
