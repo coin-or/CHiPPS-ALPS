@@ -602,8 +602,9 @@ AlpsSubTree::splitSubTree(int& returnSize, int size)
     AlpsTreeNode* subTreeRoot = 0;
     AlpsTreeNode* rootParent = 0;
 
-    int LS = broker_->getLargeSize();
+    int LS = broker_->getLargeSize()/2;
     int maxAllowNodes = LS / getKnowledgeBroker()->getNodeMemSize();
+    maxAllowNodes = (maxAllowNodes > 0) ? maxAllowNodes : 1;
     
 #if 0
     //------------------------------------------------------
