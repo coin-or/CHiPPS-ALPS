@@ -89,6 +89,13 @@ static int computeRampUpNumNodes(int minNumNodes,
 
     newNumNodes = CoinMax(newNumNodes, minNumNodes);  
 
+    if (newNumNodes > 20000) {
+        // at most 50 nodes.
+        newNumNodes = CoinMin(20000, minNumNodes * 50);
+        // at least 10 nodes.
+        newNumNodes = CoinMax(newNumNodes, minNumNodes * 10);
+    }
+
 #if 0    
     std::cout << "+++++ newNumNodes = " << newNumNodes 
               << ", nodeProcessingTime = " << nodeProcessingTime << std::endl;
