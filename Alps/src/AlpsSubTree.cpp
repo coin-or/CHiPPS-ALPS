@@ -506,6 +506,10 @@ AlpsSubTree::rampUp(int minNumNodes,
                 ++npCount;
                 firstCall = false; // set to false 
             }
+            else {
+                firstCall = true;
+            }
+            
 	    switch (node->getStatus()) {
 	    case AlpsNodeStatusCandidate :
 	    case AlpsNodeStatusEvaluated :
@@ -697,7 +701,7 @@ AlpsSubTree::splitSubTree(int& returnSize, int size)
 	    }
 	}
 	// 4.1 looks fine
-	if ((4.1 * numInPool > numNode) || numSendNode >= maxAllowNodes) {
+	if ((6 * numInPool > numNode) || numSendNode >= maxAllowNodes) {
 	    break;
 	}
 	
