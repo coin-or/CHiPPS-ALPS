@@ -514,7 +514,7 @@ AlpsSubTree::rampUp(int minNumNodes,
                 firstCall = false; // set to false 
             }
             else {
-                firstCall = true;
+                firstCall = false;
             }
             
 	    switch (node->getStatus()) {
