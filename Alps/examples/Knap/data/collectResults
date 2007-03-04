@@ -1,0 +1,63 @@
+#! /home/yanxu/bin/awk -f
+BEGIN {
+    printf("Instance  & P  &\tNode &\tRamp-up &\tIdle &\tRamp-down &\tWallclock &\t Efficiency\\\\ \\hline\n")
+        node = 0
+        count = 0
+        RampUp = 0.0
+        Idle = 0.0
+        RampDown = 0.0
+        wallclock = 0.0
+        numP = 0
+}
+
+$1 == "Problem" {
+        printf "%12s & ", $3
+}
+
+$2 == "Launched" {
+    printf("%d &\t", $3)
+}
+
+#$2 == "Quality" {
+#        printf(" %g &\t", $8)
+#}
+
+$4 == "processed" {
+        printf(" %d &\t", $6)
+        node += $6
+}
+
+#$5 == "left:" {
+#        printf(" %d &\t", $6)
+#}
+
+$3 == "depth:" {
+#       printf(" %d &\t", $4)
+}
+
+$1 == "Average" && $2 == "RampUp" {
+	printf(" %.2f &\t", $4)
+        RampUp += $4
+}
+
+
+$1 == "Average" && $2 == "Idle" {
+	printf(" %.2f &\t", $4)
+        Idle += $4
+}
+
+$1 == "Average" && $2 == "RampDown" {
+	printf(" %.2f &\t", $4)
+        RampDown += $4
+}
+
+$2 == "wallclock" {
+        printf(" %.2f &  \\\\ \n", $4)
+        wallclock += $4
+}
+
+
+END {
+    printf("    & %d &\t %.2f &\t %.2f &\t %.2f &\t %.2f & \\\\ \n", 
+             node , RampUp, Idle, RampDown, wallclock)
+}

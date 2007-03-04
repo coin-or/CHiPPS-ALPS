@@ -52,9 +52,6 @@ Alps/examples/Knap/LICENSE -text
 Alps/examples/Knap/Makefile.in -text
 Alps/examples/Knap/README -text
 Alps/examples/Knap/TODO -text
-Alps/examples/Knap/data/CVS/Entries -text
-Alps/examples/Knap/data/CVS/Repository -text
-Alps/examples/Knap/data/CVS/Root -text
 Alps/examples/Knap/data/Hard/hardKnapStat -text
 Alps/examples/Knap/data/Hard/input100_30.txt -text
 Alps/examples/Knap/data/Hard/input100_31.txt -text
@@ -71,6 +68,8 @@ Alps/examples/Knap/data/Hard/input100_41.txt -text
 Alps/examples/Knap/data/Hard/input100_42.txt -text
 Alps/examples/Knap/data/Hard/input100_43.txt -text
 Alps/examples/Knap/data/Hard/input100_44.txt -text
+Alps/examples/Knap/data/batchRun -text
+Alps/examples/Knap/data/collectResults -text
 Alps/examples/Knap/data/input1.txt -text
 Alps/examples/Knap/data/input100_1.txt -text
 Alps/examples/Knap/data/input100_2.txt -text
