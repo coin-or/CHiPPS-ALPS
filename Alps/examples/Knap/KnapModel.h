@@ -40,7 +40,7 @@ class KnapModel : public AlpsModel {
   KnapParams *KnapPar_;
 
  public: 
-  KnapModel() : sequence_(0), KnapPar_(new KnapParams) {}
+  KnapModel() : capacity_(0), sequence_(0), KnapPar_(new KnapParams) {}
   KnapModel(int cap, std::vector<std::pair<int, int> > items, int* seq)
       :
       capacity_(cap),
