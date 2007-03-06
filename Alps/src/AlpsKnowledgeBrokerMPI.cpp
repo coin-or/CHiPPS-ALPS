@@ -249,10 +249,6 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 
     masterTimer.setClockType(ALPS_WALL_CLOCK);
 
-    largeBuffer_ = new char [largeSize_];
-    largeBuffer2_ = new char [largeSize_];
-    smallBuffer_ = new char [smallSize];
-
     hubNodeProcesseds_ = new int [hubNum_];
     hubWorkQualities_ = new double [hubNum_];
     hubWorkQuantities_ = new double [hubNum_];
@@ -304,6 +300,11 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     
     // Adjust largeSize to avoid extreme cases.
     largeSize_ = CoinMax(largeSize_, nodeMemSize_ * 3);
+
+    // Allocate msg buffers
+    largeBuffer_ = new char [largeSize_];
+    largeBuffer2_ = new char [largeSize_];
+    smallBuffer_ = new char [smallSize];
 
     for (i = 0; i < hubNum_; ++i) {
 	if (hubRanks_[i] != globalRank_) {
@@ -1227,9 +1228,6 @@ AlpsKnowledgeBrokerMPI::hubMain()
     //------------------------------------------------------
 
     hubTimer.setClockType(ALPS_WALL_CLOCK);
-    largeBuffer_ = new char [largeSize_];
-    largeBuffer2_ = new char [largeSize_];
-    smallBuffer_ = new char [smallSize];
 
     workerNodeProcesseds_ = new int [clusterSize_];
     workerWorkQualities_ = new double [clusterSize_];
@@ -1275,6 +1273,10 @@ AlpsKnowledgeBrokerMPI::hubMain()
 
     // Adjust largeSize to avoid extreme cases.
     largeSize_ = CoinMax(largeSize_, nodeMemSize_ * 3);  
+
+    largeBuffer_ = new char [largeSize_];
+    largeBuffer2_ = new char [largeSize_];
+    smallBuffer_ = new char [smallSize];
 
     //------------------------------------------------------
     // Receive subtrees (nodes) sent by Master.
