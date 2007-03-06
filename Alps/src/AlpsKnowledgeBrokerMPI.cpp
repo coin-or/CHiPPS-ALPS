@@ -2970,7 +2970,6 @@ AlpsKnowledgeBrokerMPI::hubUpdateCluStatus(char*& bufLarge,
     double preQuantity = workerWorkQuantities_[sender];
     double curQuantity;
     double npTime;
-    int unitNodes;
 
     MPI_Unpack(bufLarge, size, &position, &curNodeProcessed, 1, MPI_INT, comm);
     MPI_Unpack(bufLarge, size, &position, &curQuality, 1, MPI_DOUBLE, comm);
@@ -2979,8 +2978,6 @@ AlpsKnowledgeBrokerMPI::hubUpdateCluStatus(char*& bufLarge,
     MPI_Unpack(bufLarge, size, &position, &msgRecvNum, 1, MPI_INT, comm);
     MPI_Unpack(bufLarge, size, &position, &npTime, 1, MPI_DOUBLE, comm);
     MPI_Unpack(bufLarge, size, &position, &unitWorkNodes_, 1, MPI_INT, comm);
-  
-    assert(unitNodes > 0);
     
     workerNodeProcesseds_[sender] = curNodeProcessed;
     workerWorkQualities_[sender] = curQuality;
