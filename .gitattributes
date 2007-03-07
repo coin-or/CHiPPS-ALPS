@@ -68,6 +68,8 @@ Alps/examples/Knap/data/Hard/input100_41.txt -text
 Alps/examples/Knap/data/Hard/input100_42.txt -text
 Alps/examples/Knap/data/Hard/input100_43.txt -text
 Alps/examples/Knap/data/Hard/input100_44.txt -text
+Alps/examples/Knap/data/Hard/input150_50.txt -text
+Alps/examples/Knap/data/Hard/input150_51.txt -text
 Alps/examples/Knap/data/batchRun -text
 Alps/examples/Knap/data/collectResults -text
 Alps/examples/Knap/data/input1.txt -text
@@ -88,6 +90,11 @@ Alps/examples/Knap/data/input75_5.txt -text
 Alps/examples/Knap/data/knap.mod -text
 Alps/examples/Knap/data/knapGen.cpp -text
 Alps/examples/Knap/data/toAmplDat.cpp -text
+Alps/examples/Knap/data/unsolve/input150_1.txt -text
+Alps/examples/Knap/data/unsolve/input150_2.txt -text
+Alps/examples/Knap/data/unsolve/input150_3.txt -text
+Alps/examples/Knap/data/unsolve/input500_1.txt -text
+Alps/examples/Knap/data/unsolve/input500_2.txt -text
 Alps/examples/Knap/knap.par -text
 Alps/examples/Knap/knap.pbs -text
 Alps/inc/config_alps.h.in -text
