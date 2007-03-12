@@ -1603,6 +1603,12 @@ AlpsKnowledgeBrokerMPI::hubMain()
             }
 
             if (errorCode) {
+                // Do we want to free some memory?
+                if (hubWork_) {
+                    deleteSubTrees();
+                    updateWorkloadInfo();
+                    assert(!(subTreePool_->hasKnowledge()));   
+                }
                 haltSearch_ = true;
                 sendErrorCodeToMaster(errorCode);
             }
@@ -2034,7 +2040,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
 
         //if (forceTerminate_ && !deletedSTs) {
 	// Don't know why error on limits
-            if (forceTerminate_) {
+        if (forceTerminate_) {
 
             deletedSTs = true;
 
@@ -2100,6 +2106,9 @@ AlpsKnowledgeBrokerMPI::workerMain()
                 }
                 if (errorCode) {
                     haltSearch_ = true;
+                    deleteSubTrees();
+                    assert(!(subTreePool_->hasKnowledge()));
+                    updateWorkloadInfo();
                     sendErrorCodeToMaster(errorCode);   
                 }                
 
@@ -5431,6 +5440,18 @@ AlpsKnowledgeBrokerMPI::searchLog()
             else if (getSolStatus() == ALPS_FEASIBLE) {
                 messageHandler()->message(ALPS_T_FEASIBLE, messages())
                     << systemNodeProcessed_ 
+		    << static_cast<int>(systemWorkQuantity_)
+                    << CoinMessageEol;
+            }
+            else if (getSolStatus() == ALPS_NO_MEMORY) {
+                messageHandler()->message(ALPS_T_NO_MEMORY, messages())
+                    << systemNodeProcessed_
+		    << static_cast<int>(systemWorkQuantity_)
+                    << CoinMessageEol;
+            }
+            else if (getSolStatus() == ALPS_FAILED) {
+                messageHandler()->message(ALPS_T_FAILED, messages())
+                    << systemNodeProcessed_
 		    << static_cast<int>(systemWorkQuantity_)
                     << CoinMessageEol;
             }
