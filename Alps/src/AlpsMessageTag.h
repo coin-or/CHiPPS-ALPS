@@ -62,6 +62,8 @@ enum AlpsMessageTag{
   // 8
   AlpsMsgAskTerminate,
 
+  AlpsMsgErrorCode,
+
   /** The message tag indicating that the process sent the message is idle. */
   // 9
   AlpsMsgIdle,
@@ -145,17 +147,11 @@ enum AlpsMessageTag{
   // 29
   AlpsMsgTellHubRecv,
 
-  // 30
-  AlpsMsgHubAskIndices,
-  
   // 31
   AlpsMsgIndicesFromMaster,
 
   // 32
   AlpsMsgWorkerAskIndices,
-
-  // 33
-  AlpsMsgIndicesFromHub,
 
   // 34
   AlpsMsgForceTerm,

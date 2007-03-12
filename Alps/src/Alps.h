@@ -96,6 +96,8 @@ enum AlpsSolStatus {
     ALPS_NODE_LIMIT,
     ALPS_FEASIBLE,
     ALPS_INFEASIBLE,
+    ALPS_NO_MEMORY,
+    ALPS_FAILED,
     ALPS_UNBOUNDED
 };
 

@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cstring>
+#include <exception>
 
 #include "CoinError.hpp"
 #include "CoinHelperFunctions.hpp"
@@ -27,6 +28,8 @@
 #include "AlpsModel.h"
 #include "AlpsNodePool.h"
 #include "AlpsTreeNode.h"
+
+using std::exception;
 
 //#############################################################################
 
@@ -1165,7 +1168,8 @@ AlpsKnowledgeBrokerMPI::hubMain()
     int i;
     int hubCheckCount = 0;
     int minNumNodes = 0;
-
+    int errorCode = 0;
+    
     char reply = 'C';
 
     double elaspeTime = 0.0;
@@ -1563,7 +1567,8 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	// If hub work, do one unit of work.
 	//**------------------------------------------------
 
-	if ( hubWork_ && (workingSubTree_ != 0 || hasKnowledge(ALPS_SUBTREE)) ) {
+	if ( !haltSearch_ && hubWork_ &&
+             (workingSubTree_ != 0 || hasKnowledge(ALPS_SUBTREE)) ) {
 
 	    //reportCount = hubReportFreqency;
             
@@ -1578,15 +1583,30 @@ AlpsKnowledgeBrokerMPI::hubMain()
                     comUnitWork = false;
                 }
             }
-            
-	    rCode = doOneUnitWork(unitWorkNodes_, 
-                                  unitTime, 
-                                  solStatus,
-                                  thisNumNodes,
-                                  treeDepth_, 
-                                  betterSolution);
-            nodeProcessedNum_ += thisNumNodes;
-            
+            try {
+                rCode = doOneUnitWork(unitWorkNodes_, 
+                                      unitTime, 
+                                      solStatus,
+                                      thisNumNodes,
+                                      treeDepth_, 
+                                      betterSolution);
+                nodeProcessedNum_ += thisNumNodes;
+            }
+            catch (std::bad_alloc&) {
+                errorCode = 1;
+            }
+            catch(CoinError& er) {
+                errorCode = 2;
+            }
+            catch(...) {
+                errorCode = 3;          
+            }
+
+            if (errorCode) {
+                haltSearch_ = true;
+                sendErrorCodeToMaster(errorCode);
+            }
+
 	    // Update work load quantity and quality info.
 	    updateWorkloadInfo();
 	    
@@ -1819,6 +1839,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
     bool isIdle = false;
     int numTrees = 0;
     int thisNumNodes = 0;
+    int errorCode = 0;
     
     char reply = 'C';
     char* tempBuffer = 0;
@@ -2031,18 +2052,22 @@ AlpsKnowledgeBrokerMPI::workerMain()
 	    
 	    bool betterSolution = false;
 
-	    if ( workingSubTree_ || hasKnowledge(ALPS_SUBTREE) ) {
+            // Check whether need ask for node index before doing work
+            if (!haltSearch_) {
+                if (getMaxNodeIndex() - getNextNodeIndex() < (unitWorkNodes_ + 5)) {
+                    workerAskIndices();
+                    haltSearch_ = true;
+                }
+            }
+            
+	    if ( !haltSearch_ && 
+                 (workingSubTree_ || hasKnowledge(ALPS_SUBTREE)) ) {
 		if(isIdle) {
 		  // Since has work now, set isIdle to false
 		  idleTime_ += workerTimer.getTime();
 		  isIdle = false;
 		}
 		
-		// Check whether need ask for node index before doing work
-		if (getMaxNodeIndex() - getNextNodeIndex() < (unitWorkNodes_ + 5)) {
-		    workerAskRecvIndices();
-		}
-
 		// Need check better solution.
 		betterSolution = true;
 
@@ -2055,14 +2080,29 @@ AlpsKnowledgeBrokerMPI::workerMain()
                     }
                 }
                 
-		rCode = doOneUnitWork(unitWorkNodes_, 
-                                      unitTime,
-                                      solStatus,
-                                      thisNumNodes,
-                                      treeDepth_, 
-                                      betterSolution);
-                nodeProcessedNum_ += thisNumNodes;
-                
+                try {
+                    rCode = doOneUnitWork(unitWorkNodes_, 
+                                          unitTime,
+                                          solStatus,
+                                          thisNumNodes,
+                                          treeDepth_, 
+                                          betterSolution);
+                    nodeProcessedNum_ += thisNumNodes;
+                }
+                catch (std::bad_alloc&) {
+                    errorCode = 1;   
+                }
+                catch(CoinError& er) {
+                    errorCode = 2;   
+                }
+                catch(...) {
+                    errorCode = 3;   
+                }
+                if (errorCode) {
+                    haltSearch_ = true;
+                    sendErrorCodeToMaster(errorCode);   
+                }                
+
 		// Adjust workingSubTree_ if it 'much' worse than the best one
                 changeWorkingSubTree(changeWorkThreshold);
 		
@@ -2228,10 +2268,11 @@ AlpsKnowledgeBrokerMPI::processMessages(char *&bufLarge,
 	//--------------------------------------------------
 	// Following are master's msgs.
 	//--------------------------------------------------
-
-    case AlpsMsgHubAskIndices:
-	masterSendIndices(status.MPI_SOURCE);
-	break;
+    case AlpsMsgErrorCode:
+        recvErrorCode(bufLarge);
+        masterForceHubTerm();
+        hubForceWorkerTerm();
+        break;
     case AlpsMsgHubFailFindDonor:
         --masterDoBalance_;
         break;
@@ -2240,6 +2281,9 @@ AlpsKnowledgeBrokerMPI::processMessages(char *&bufLarge,
 	break;
     case AlpsMsgTellMasterRecv:
 	--masterDoBalance_;
+	break;
+    case AlpsMsgWorkerAskIndices:
+	masterSendIndices(bufLarge);
 	break;
        
 	//-------------------------------------------------
@@ -2264,9 +2308,6 @@ AlpsKnowledgeBrokerMPI::processMessages(char *&bufLarge,
 	hubUpdateCluStatus(bufLarge, &status, MPI_COMM_WORLD);
 	blockHubReport_ = false;
 	break;
-    case AlpsMsgWorkerAskIndices:
-	hubSendIndices(status.MPI_SOURCE);
-	break;
 	
 	//--------------------------------------------------
 	// Following are worker's msg.
@@ -2289,6 +2330,9 @@ AlpsKnowledgeBrokerMPI::processMessages(char *&bufLarge,
 	decRecvCount("worker listening - AlpsMsgAskPause");
 	blockTermCheck_ = false;
 	break;
+    case AlpsMsgIndicesFromMaster:
+        workerRecvIndices(bufLarge);
+        break;
     case AlpsMsgSubTree:
 	receiveSubTree(bufLarge, status.MPI_SOURCE, &status);
 	tellHubRecv();
@@ -3720,29 +3764,29 @@ AlpsKnowledgeBrokerMPI::workerReportStatus(int tag,
 //#############################################################################
 
 void 
-AlpsKnowledgeBrokerMPI::hubAskRecvIndices()
+AlpsKnowledgeBrokerMPI::workerRecvIndices(char *&bufLarge) 
 {
+    int position = 0;
+    int size = 100;
     int nextIndex;
     int maxIndex;
     
-    char* dummyBuf = 0;
-    MPI_Status status;
-
-    MPI_Send(dummyBuf, 0, MPI_PACKED, masterRank_, AlpsMsgHubAskIndices, 
-	     MPI_COMM_WORLD);
-    MPI_Recv(&nextIndex, 1, MPI_INT, masterRank_, AlpsMsgIndicesFromMaster, 
-	     MPI_COMM_WORLD, &status);
-    MPI_Recv(&maxIndex, 1, MPI_INT, masterRank_, AlpsMsgIndicesFromMaster, 
-	     MPI_COMM_WORLD, &status);
-    incSendCount("hubAskRecvIndices()");
-    incRecvCount("hubAskRecvIndices()", 2);
-
+    MPI_Unpack(bufLarge, size, &position, &nextIndex, 1, MPI_INT, MPI_COMM_WORLD);
+    MPI_Unpack(bufLarge, size, &position, &maxIndex, 1, MPI_INT, MPI_COMM_WORLD);
+    
+#if 1
+    std::cout << "++++ worker[" << globalRank_ 
+              << "] received indices from master"
+              << ", nextIndex = " << nextIndex
+              << ", maxIndex = " << maxIndex
+              << std::endl;
+#endif
+    
     if (nextIndex < 0 || maxIndex < 0 || nextIndex > maxIndex) {
-	throw CoinError("value < 0 || maxIndex < 0 || nextIndex < maxIndex", 
-			"hubAskRecvIndices", 
-			"AlpsKnowledgeBrokerMPI");
+        haltSearch_ = true;
     }
     else {
+        haltSearch_ = false;
 	setNextNodeIndex(nextIndex);
 	setMaxNodeIndex(maxIndex);
     }
@@ -3751,106 +3795,69 @@ AlpsKnowledgeBrokerMPI::hubAskRecvIndices()
 //#############################################################################
 
 void 
-AlpsKnowledgeBrokerMPI::workerAskRecvIndices()
+AlpsKnowledgeBrokerMPI::workerAskIndices()
 {
-    int nextIndex;
-    int maxIndex;
+    int position = 0;
+    int size = model_->AlpsPar()->entry(AlpsParams::smallSize);
+
+#if 1
+    std::cout << "++++ worker[" << globalRank_ << "] ask indices from master."
+              << std::endl;
+#endif
     
-    char* dummyBuf = 0;
-    MPI_Status status;
+    MPI_Pack(&globalRank_, 1, MPI_INT, smallBuffer_, size, &position,
+             MPI_COMM_WORLD);
+    MPI_Send(smallBuffer_, position, MPI_PACKED, masterRank_, 
+             AlpsMsgWorkerAskIndices, MPI_COMM_WORLD);    
+    incSendCount("workerAskIndices()");
+}
 
-    MPI_Send(dummyBuf, 0, MPI_PACKED, myHubRank_, AlpsMsgWorkerAskIndices, 
-	     MPI_COMM_WORLD);
-    MPI_Recv(&nextIndex, 1, MPI_INT, myHubRank_, AlpsMsgIndicesFromHub, 
-	     MPI_COMM_WORLD, &status);
-    MPI_Recv(&maxIndex, 1, MPI_INT, myHubRank_, AlpsMsgIndicesFromHub, 
-	     MPI_COMM_WORLD, &status);
-    incSendCount("workerAskRecvIndices()");
-    incRecvCount("workerAskRecvIndices()", 2);
+//#############################################################################
 
-    if (nextIndex < 0 || maxIndex < 0 || nextIndex > maxIndex) {
-	throw CoinError("value < 0 || maxIndex < 0 || nextIndex < maxIndex", 
-			"workerAskRecvIndices", 
-			"AlpsKnowledgeBrokerMPI");
+void 
+AlpsKnowledgeBrokerMPI::masterSendIndices(char *&bufLarge)
+{
+    int nextIndex = getNextNodeIndex();
+    int maxIndex = getMaxNodeIndex();
+    int leftIndex = maxIndex - nextIndex;
+
+    int pos = 0;
+    int size = 100;    
+    int recvWorker = -1;
+
+    if (leftIndex >  masterIndexBatch_) {
+        maxIndex = nextIndex + masterIndexBatch_;
+	setNextNodeIndex(maxIndex + 1);
+    }
+    else if (leftIndex > 100) {
+	setNextNodeIndex(maxIndex);
     }
     else {
-	setNextNodeIndex(nextIndex);
-	setMaxNodeIndex(maxIndex);
-    }   
-}
-
-//#############################################################################
-
-void 
-AlpsKnowledgeBrokerMPI::masterSendIndices(int recvHub)
-{
-    int nextIndex = getNextNodeIndex();
-    int maxIndex = -1; 
-    const int unitNodes = unitWorkNodes_ + 10;
-
-    if (ALPS_INT_MAX - nextIndex > unitNodes) {
-	if ((ALPS_INT_MAX - nextIndex) <= masterIndexBatch_) {
-	    maxIndex = (ALPS_INT_MAX - 1) ;
-	    setNextNodeIndex(maxIndex);
-	}
-	else {
-	    maxIndex = nextIndex + masterIndexBatch_;
-	    setNextNodeIndex(maxIndex + 1);
-	}
+        // No index
+        forceTerminate_ = true;
+        nextIndex = -1;
+        maxIndex = -1;
     }
+
+    // Unpack the rank of worker.
+    MPI_Unpack(bufLarge, size, &pos, &recvWorker, 1, MPI_INT, MPI_COMM_WORLD);
     
-    MPI_Send(&nextIndex, 1, MPI_INT, recvHub, AlpsMsgIndicesFromMaster,
-	     MPI_COMM_WORLD);
-    MPI_Send(&maxIndex, 1, MPI_INT, recvHub, AlpsMsgIndicesFromMaster,
-	     MPI_COMM_WORLD);
-
-    incSendCount("masterSendIndices", 2);
-}
-
-//#############################################################################
-
-void 
-AlpsKnowledgeBrokerMPI::hubSendIndices(int recvWorker)
-{
-    int nextIndex = getNextNodeIndex();
-    int maxIndex = -1; 
-    const int unitNodes = unitWorkNodes_ + 10;
-
-    if (getMaxNodeIndex() - nextIndex > unitNodes) {
-	if ((getMaxNodeIndex() - nextIndex) <= hubIndexBatch_) {
-	    maxIndex = (getMaxNodeIndex() - 1) ;
-	    setNextNodeIndex(maxIndex);
-	}
-	else {
-	    maxIndex = nextIndex + hubIndexBatch_;
-	    setNextNodeIndex(maxIndex + 1);
-	}
-    } 
-    else {  // Assume masterIndexBatch_ > unitNodes, maybe reasonable.
-	if (globalRank_ != masterRank_) {
-	    hubAskRecvIndices();
-	}
-	else {
-	    throw CoinError("MASTER does not have enough node indices", 
-			    "HubSendIndices", 
-			    "AlpsKnowledgeBrokerMPI");
-	}
-	
-	if ((getMaxNodeIndex() - nextIndex) <= hubIndexBatch_) {
-	    maxIndex = (getMaxNodeIndex() - 1) ;
-	    setNextNodeIndex(maxIndex);
-	}
-	else {
-	    maxIndex = nextIndex + hubIndexBatch_;
-	    setNextNodeIndex(maxIndex + 1);
-	}
-    }
-
-    MPI_Send(&nextIndex, 1, MPI_INT, recvWorker, AlpsMsgIndicesFromHub, 
-	     MPI_COMM_WORLD);
-    MPI_Send(&maxIndex, 1, MPI_INT, recvWorker, AlpsMsgIndicesFromHub,
-	     MPI_COMM_WORLD);  
-    incSendCount("hubSendIndices", 2);
+#if 1
+    std::cout << "++++ master[" << globalRank_ << "] send indices to worker "<< recvWorker
+              << ", nextIndex = " << nextIndex
+              << ", maxIndex = " << maxIndex
+              << std::endl;
+#endif
+    
+    // Pack nextIndex and maxIndex into small buffer and send it.
+    pos = 0;
+    MPI_Pack(&nextIndex, 1, MPI_INT, smallBuffer_, size, &pos,
+             MPI_COMM_WORLD);
+    MPI_Pack(&maxIndex, 1, MPI_INT, smallBuffer_, size, &pos,
+             MPI_COMM_WORLD);
+    MPI_Send(smallBuffer_, pos, MPI_PACKED, recvWorker, 
+             AlpsMsgIndicesFromMaster, MPI_COMM_WORLD);
+    incSendCount("masterSendIndices");        
 }
 
 //#############################################################################
@@ -4760,31 +4767,26 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
     
     //------------------------------------------------------
     // Allcoate index, classify process types, set up knowledge pools
-    //   Master  :  [0, INT_MAX/4)]
-    //   HUBs    :  [INT_MAX/4 + 1, INT_MAX]
+    //   Master  :  [0, INT_MAX/5]
+    //   Others  :  divide [INT_MAX/5 + 1, INT_MAX]
     //------------------------------------------------------
 
-    int masterIndexR = static_cast<int>(ALPS_INT_MAX / 4.0);
-    int hubIndexR = static_cast<int>(ALPS_INT_MAX / (4.0 * hubNum_) * 3);
-    int workerIndexR = static_cast<int>(hubIndexR / (2.0 * clusterSize_));
-    int masterLow = 0;
-    int masterUp = masterIndexR + hubIndexR / 2;
-    int hubLow = masterIndexR + (globalRank_ / cluSize_) * hubIndexR + 1 ;
-    int hubUp = hubLow + hubIndexR / 2;
-    int workerLow = hubUp + workerIndexR * clusterRank_ + 1;
-    int workerUp = workerLow + workerIndexR;
-    masterIndexBatch_ = masterUp / (hubNum_ * 3);
-    hubIndexBatch_ = hubIndexR / (2 * clusterSize_ * 3);
+    int workerDown = -1, workerUp = -1;
+    int masterDown = 0;
+    int masterUp = static_cast<int>(ALPS_INT_MAX / 5);
+    int workerIndexR = static_cast<int>( static_cast<double>(ALPS_INT_MAX - masterUp)/(processNum_-1));
+    workerIndexR -= 2;  // leave some buffer
+    
+    if (globalRank_ < masterRank_) {
+        workerDown = masterUp + globalRank_ * workerIndexR;
+        workerUp = workerDown + workerIndexR;
+    }
+    else if (globalRank_ > masterRank_) {
+        workerDown = masterUp + (globalRank_-1) * workerIndexR;        
+        workerUp = workerDown + workerIndexR;
+    }
 
-#ifdef NF_DEBUG_MORE
-    std::cout << "masterIndexR = " << masterIndexR << "; hubIndexR = "
-	      << hubIndexR << "; workerIndexR = " << workerIndexR << std::endl;
-    std::cout << "masterUp = " << masterUp << "; hubLow = " << hubLow 
-	      << ";  workerLow = " << workerLow << "workerUp = " 
-	      << workerUp << std::endl;
-    std::cout << "masterIndexBatch_ = " << masterIndexBatch_ 
-	      <<  "hubIndexBatch_ = " <<  hubIndexBatch_ << std::endl;
-#endif
+    masterIndexBatch_ = masterUp / (processNum_ * 2);
 
     //------------------------------------------------------
     // Decide process type.
@@ -4792,13 +4794,22 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
 
     if (globalRank_ == masterRank_) {
 	processType_ = AlpsProcessTypeMaster;
-	setNextNodeIndex(masterLow);
+	setNextNodeIndex(masterDown);
 	setMaxNodeIndex(masterUp);
+
+#if 1
+        std::cout << "masterDown = " << masterDown 
+                  << "; masterUp = " << masterUp
+                  << "; workerDown = " << workerDown
+                  << "; workerUp = " << workerUp
+                  << "; masterIndexBatch_ = " << masterIndexBatch_
+                  << std::endl;
+#endif
     } 
     else if ( (globalRank_ % cluSize_) == masterRank_ ) {
 	processType_ = AlpsProcessTypeHub;
-	setNextNodeIndex(hubLow);
-	setMaxNodeIndex(hubUp);
+	setNextNodeIndex(workerDown);
+	setMaxNodeIndex(workerUp);
 	int hubWorkClusterSizeLimit = 
 	  model_->AlpsPar()->entry(AlpsParams::hubWorkClusterSizeLimit);
 	if (cluSize_ > hubWorkClusterSizeLimit) {
@@ -4810,7 +4821,7 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
     }
     else {
 	processType_ = AlpsProcessTypeWorker;
-	setNextNodeIndex(workerLow);
+	setNextNodeIndex(workerDown);
 	setMaxNodeIndex(workerUp);
     }
 
@@ -5694,7 +5705,6 @@ AlpsKnowledgeBrokerMPI::init()
     systemSendCount_ = 0;
     systemRecvCount_ = 0;
     masterIndexBatch_ = 0;
-    hubIndexBatch_ = 0;
     rampUpTime_ = 0.0;
     rampDownTime_ = 0.0;
     idleTime_ = 0.0;
@@ -5726,6 +5736,7 @@ AlpsKnowledgeBrokerMPI::init()
 
     rampUpSubTree_ = 0;
     unitWorkNodes_ = 0;
+    haltSearch_ = false;
 }
 
 //#############################################################################
@@ -6185,6 +6196,41 @@ AlpsKnowledgeBrokerMPI::receiveModelKnowledge(MPI_Comm comm)
         delete [] localBuffer;
     }
     localBuffer = 0;
+}
+
+//#############################################################################
+
+void
+AlpsKnowledgeBrokerMPI::sendErrorCodeToMaster(int errorCode)
+{
+    int size = model_->AlpsPar()->entry(AlpsParams::smallSize);
+    int pos = 0;
+    MPI_Pack(&errorCode, 1, MPI_INT, smallBuffer_, size, &pos, MPI_COMM_WORLD);
+    MPI_Send(smallBuffer_, pos, MPI_PACKED, masterRank_, AlpsMsgErrorCode, 
+             MPI_COMM_WORLD);
+    incSendCount("sendErrorCodeToMaster");
+}
+
+//#############################################################################
+
+void
+AlpsKnowledgeBrokerMPI::recvErrorCode(char *& bufLarge)
+{
+    int size = 10;
+    int pos = -1;
+    int errorCode = 0;
+    
+    MPI_Unpack(bufLarge, size, &pos, &errorCode, 1, MPI_INT, MPI_COMM_WORLD);
+    if (errorCode == 1) {
+        // out of memory
+        solStatus_ = ALPS_NO_MEMORY;
+    }
+    else {
+        // error
+        solStatus_ = ALPS_FAILED;
+    }
+    
+    forceTerminate_ = true;
 }
 
 //#############################################################################

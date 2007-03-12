@@ -202,7 +202,6 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
      */
     //@{
     int masterIndexBatch_;
-    int hubIndexBatch_;
     //@}
 
     /** @name Parallel statistics
@@ -268,6 +267,9 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** Number of nodes in one unit of work */
     int unitWorkNodes_;
+
+    /** Temporily halt search */
+    int haltSearch_;
     
  protected:
 
@@ -376,22 +378,14 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
      *
      */
     //@{
-    /** A hub ask for more node index from the master. Process is blocked 
-	until recv indices. If master doesn't has indices, the program 
-	terminates */
-    void hubAskRecvIndices();
+    /** A worker ask for node index from master. */
+    void workerAskIndices();
 
-    /** A worker ask for more node index from its hub. Process is blocked 
-	until recv indices. If hub doesn't has indices, the hub will ask
-	the master for index. If master also doesn't has indices, the program 
-	terminates. */
-    void workerAskRecvIndices();
+    /** A worker receive node index from master. */
+    void workerRecvIndices(char *&bufLarge);
 
-    /** Master send a batch of node indices to the receiving hub. */
-    void masterSendIndices(int recvHub);
-
-    /** A hub send a batch of node indices to the receiving worker. */
-    void hubSendIndices(int recvWorker);
+    /** Master send a batch of node indices to the receiving worker. */
+    void masterSendIndices(char *&bufLarge);
     //@}
 
     //------------------------------------------------------
@@ -525,6 +519,12 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** Change subtree to be explored if it is too worse. */
     void changeWorkingSubTree(double changeWorkThreshold);
 
+    /** Send error code to master. */
+    void sendErrorCodeToMaster(int errorCode);
+    
+    /** Receive error code and set solution status. */
+    void recvErrorCode(char *& bufLarge);
+    
  public:
 
     /** Default construtor. 
