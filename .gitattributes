@@ -95,6 +95,7 @@ Alps/examples/Knap/data/unsolve/input150_2.txt -text
 Alps/examples/Knap/data/unsolve/input150_3.txt -text
 Alps/examples/Knap/data/unsolve/input500_1.txt -text
 Alps/examples/Knap/data/unsolve/input500_2.txt -text
+Alps/examples/Knap/data/unsolve/stats -text
 Alps/examples/Knap/knap.par -text
 Alps/examples/Knap/knap.pbs -text
 Alps/inc/config_alps.h.in -text
