@@ -4,7 +4,7 @@
  * ALPS is distributed under the Common Public License as part of the        *
  * COIN-OR repository (http://www.coin-or.org).                              *
  *                                                                           *
- * Authors: Yan Xu, SAS Institute Inc.                                       *
+ * Authors: Yan Xu, Lehigh University                                       *
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
@@ -40,6 +40,7 @@ class KnapModel : public AlpsModel {
   KnapParams *KnapPar_;
 
  public: 
+
   KnapModel() : capacity_(0), sequence_(0), KnapPar_(new KnapParams) {}
   KnapModel(int cap, std::vector<std::pair<int, int> > items, int* seq)
       :

@@ -4,7 +4,7 @@
  * ALPS is distributed under the Common Public License as part of the        *
  * COIN-OR repository (http://www.coin-or.org).                              *
  *                                                                           *
- * Authors: Yan Xu, SAS Institute Inc.                                       *
+ * Authors: Yan Xu, Lehigh University                                       *
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
 	// NOTE: root will be deleted by ALPS 
 	AlpsTreeNode* root = new KnapTreeNode(&model);
 
-	// 4: Sovle the problem
+	// 4: Solve the problem
 	broker.rootSearch(root);
     
 	// 5: Report the best solution found and its ojective value
