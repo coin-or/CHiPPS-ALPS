@@ -2889,7 +2889,7 @@ AlpsKnowledgeBrokerMPI::hubSatisfyWorkerRequest(char*& bufLarge, MPI_Status* sta
     //------------------------------------------------------
 
     for (i = 0; i < clusterSize_; ++i) {
-	if (i == globalRank_ || i == requestorRank){
+	if (i == clusterRank_ || i == requestorRank){
 	    // Skip hub and the requestor.
 	    // TODO: do not skip hub if hub works.
 	    continue;
