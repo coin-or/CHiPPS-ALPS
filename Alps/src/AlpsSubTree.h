@@ -256,8 +256,7 @@ class AlpsSubTree : public AlpsKnowledge {
     }
 
     /** Remove nodes in pools in the subtree. Do not free memory. */
-    void clearNodePools() 
-    {
+    void clearNodePools() {
         if (nodePool_) {
             nodePool_->clear();
         }
@@ -267,11 +266,27 @@ class AlpsSubTree : public AlpsKnowledge {
     }
 
     /** Set root and active node to null */
-    void nullRootActiveNode() 
-    {
+    void nullRootActiveNode() {
         root_ = NULL;
         activeNode_ = NULL;
     }
+
+    /** Move nodes in node pool, null active node. */
+    void reset() {
+        // Move nodes in diving pool to normal pool.
+        AlpsTreeNode *tempNode = NULL;
+        while (diveNodePool_->getNumKnowledges() > 0) {
+            tempNode = dynamic_cast<AlpsTreeNode *>
+                (diveNodePool_->getKnowledge().first);
+            diveNodePool_->popKnowledge();
+            nodePool_->addKnowledge(tempNode, tempNode->getQuality());
+        }
+        if (activeNode_) {   
+            nodePool_->addKnowledge(activeNode_, activeNode_->getQuality());
+            activeNode_ = NULL;
+        }
+    }
+    
 };
 #endif
 

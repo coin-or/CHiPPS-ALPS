@@ -663,6 +663,11 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 
 	masterTimer.start();
 	elaspeTime = 0.0;
+        masterBalancePeriod_ = 0.50;  // Test frequency
+        
+        //std::cout << ", masterBalancePeriod_ = " << masterBalancePeriod_
+        //        << std::endl;
+        
 	while (elaspeTime < masterBalancePeriod_) {
 	    MPI_Test(&request, &flag, &status);
 	    if (flag) { // Receive a msg
@@ -5014,7 +5019,10 @@ void
 AlpsKnowledgeBrokerMPI::changeWorkingSubTree(double changeWorkThreshold)
 {
     if ( workingSubTree_ && subTreePool_->hasKnowledge() ) {
+        //std::cout << "Process[" << globalRank_ << "here 1" << std::endl;
         workingSubTree_->calculateQuality();
+        //std::cout << "Process[" << globalRank_ << "here 2" << std::endl;
+
         double curQuality = workingSubTree_->getQuality();
         double topQuality = subTreePool_->getBestQuality();
         //double topQuality = subTreePool_->getKnowledge().second;
@@ -5023,16 +5031,23 @@ AlpsKnowledgeBrokerMPI::changeWorkingSubTree(double changeWorkThreshold)
             double perDiff = ALPS_FABS(curQuality - topQuality)/
                 (ALPS_FABS(curQuality) + 1.0e-9);
             if (perDiff > changeWorkThreshold) {
-#ifdef NP_DEBUG
-                std::cout << "Change subtree " << curQuality
-                          << " to " << topQuality << std::endl;
-#endif	
+                // Need put node in regular node pool.
+                workingSubTree_->reset();
                 AlpsSubTree* tempST = workingSubTree_;
                 workingSubTree_ = dynamic_cast<AlpsSubTree* >(
                     subTreePool_->getKnowledge().first);
                 subTreePool_->popKnowledge();
                 addKnowledge(ALPS_SUBTREE, tempST, curQuality);
                 ++(psStats_.subtreeChange_);
+#if 1
+                std::cout << "Process[" << globalRank_ 
+                          << "]: change subtree " << curQuality
+                          << " to " << topQuality 
+                          << ", new working tree nodes " 
+                          << workingSubTree_->getNumNodes() 
+                          << std::endl;
+#endif
+
             }
         }
     }
@@ -5615,7 +5630,7 @@ AlpsKnowledgeBrokerMPI::doOneUnitWork(int unitWork,
 
     numNodesProcessed = 0; 
     
-    if( (workingSubTree_ == NULL) && !(subTreePool_->hasKnowledge()) ) {
+    if( !workingSubTree_ && !(subTreePool_->hasKnowledge()) ) {
         return rCode;
     }
     
@@ -5637,7 +5652,7 @@ AlpsKnowledgeBrokerMPI::doOneUnitWork(int unitWork,
                                                  treeDepth_,
                                                  betterSolution);
         
-        if ( !(workingSubTree_->nodePool()->hasKnowledge()) ) {
+        if ( !(workingSubTree_->getNumNodes()) ) {
             delete workingSubTree_;  // Empty subtree
             workingSubTree_ = NULL;
             needWorkingSubTree_ = true;
@@ -5663,7 +5678,7 @@ AlpsKnowledgeBrokerMPI::doOneUnitWork(int unitWork,
                                                  treeDepth_,
                                                  betterSolution);
         
-        if ( !( workingSubTree_->nodePool()->hasKnowledge() ) ) {
+        if ( !( workingSubTree_->getNumNodes()) ) {
             delete workingSubTree_;   // Empty subtree
             workingSubTree_ = 0;
             needWorkingSubTree_ = true;

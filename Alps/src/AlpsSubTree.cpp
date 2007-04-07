@@ -314,16 +314,25 @@ AlpsSubTree::calculateQuality()
     assert(eliteSize > 0);
 
     int nodeSelectionType = broker_->getNodeSelection()->getType();
+    const int nodeNum = nodePool_->getNumKnowledges();
+    const int diveNum = diveNodePool_->getNumKnowledges();
     
     if ( ((nodeSelectionType == ALPS_SEARCH_BEST) ||
 	  (nodeSelectionType == ALPS_SEARCH_HYBRID)) &&
 	 (eliteSize == 1) ) {
-	quality_ = nodePool_->getKnowledge().second;
-	//std::cout << "quality_ = " << quality_ << std::endl;
+        if (nodeNum) {
+            quality_ = nodePool_->getKnowledge().second;
+        }
+        if (diveNum) {
+            quality_ = CoinMin(quality_, diveNodePool_->getKnowledge().second);
+        }
+        if (activeNode_) {
+            quality_ = CoinMin(quality_, activeNode_->getQuality());
+        }
+        //std::cout << "quality_ = " << quality_ << std::endl;
 	return quality_;
     }
     
-    const int nodeNum = nodePool_->getNumKnowledges();
     if (nodeNum <= 0) {
 	std::cout << "PROC[" << getKnowledgeBroker()->getProcRank()
 		  << "] has a subtree with no node" << std::endl;
