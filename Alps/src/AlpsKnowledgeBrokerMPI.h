@@ -517,7 +517,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     void hubForceWorkerTerm();
 
     /** Change subtree to be explored if it is too worse. */
-    void changeWorkingSubTree(double changeWorkThreshold);
+    void changeWorkingSubTree(double & changeWorkThreshold);
 
     /** Send error code to master. */
     void sendErrorCodeToMaster(int errorCode);

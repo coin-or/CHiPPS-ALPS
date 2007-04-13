@@ -1210,7 +1210,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
         unitTime  = ALPS_DBL_MAX;
     }
 
-    const double changeWorkThreshold = model_->AlpsPar()->
+    double changeWorkThreshold = model_->AlpsPar()->
 	entry(AlpsParams::changeWorkThreshold);
 
     int requiredNumNodes = 
@@ -1884,7 +1884,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
         model_->AlpsPar()->entry(AlpsParams::workerMsgLevel);
     const double zeroLoad = 
 	model_->AlpsPar()->entry(AlpsParams::zeroLoad); 
-    const double changeWorkThreshold = 
+    double changeWorkThreshold = 
 	model_->AlpsPar()->entry(AlpsParams::changeWorkThreshold);
     const double needWorkThreshold = 
 	model_->AlpsPar()->entry(AlpsParams::needWorkThreshold);
@@ -5016,7 +5016,7 @@ AlpsKnowledgeBrokerMPI::hubForceWorkerTerm()
 //#############################################################################
 
 void 
-AlpsKnowledgeBrokerMPI::changeWorkingSubTree(double changeWorkThreshold)
+AlpsKnowledgeBrokerMPI::changeWorkingSubTree(double & changeWorkThreshold)
 {
     if ( workingSubTree_ && subTreePool_->hasKnowledge() ) {
         //std::cout << "Process[" << globalRank_ << "here 1" << std::endl;
@@ -5033,12 +5033,18 @@ AlpsKnowledgeBrokerMPI::changeWorkingSubTree(double changeWorkThreshold)
             if (perDiff > changeWorkThreshold) {
                 // Need put node in regular node pool.
                 workingSubTree_->reset();
+
                 AlpsSubTree* tempST = workingSubTree_;
                 workingSubTree_ = dynamic_cast<AlpsSubTree* >(
                     subTreePool_->getKnowledge().first);
                 subTreePool_->popKnowledge();
                 addKnowledge(ALPS_SUBTREE, tempST, curQuality);
                 ++(psStats_.subtreeChange_);
+                
+                // Avoid too much change.
+                if (psStats_.subtreeChange_ / 10 == 0) {
+                    changeWorkThreshold *= 2.0;
+                }
 #if 1
                 std::cout << "Process[" << globalRank_ 
                           << "]: change subtree " << curQuality
