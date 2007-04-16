@@ -77,13 +77,12 @@ enum AlpsSearchType {
 /** Type of knowledge like solution, node, cut...*/
 //#############################################################################
 
-enum AlpsKnowledgeType { 
-  ALPS_MODEL, 
-  ALPS_MODEL_GEN,
-  ALPS_NODE,
-  ALPS_SOLUTION,
-  ALPS_SUBTREE
-};
+typedef int AlpsKnowledgeType;
+const int ALPS_MODEL = 0;
+const int ALPS_MODEL_GEN = 1;
+const int ALPS_NODE = 2;
+const int ALPS_SOLUTION = 3;
+const int ALPS_SUBTREE = 4;
 
 //#############################################################################
 // Search return status
