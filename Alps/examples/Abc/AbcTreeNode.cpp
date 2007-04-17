@@ -406,7 +406,7 @@ AbcTreeNode::encode() const
 #if defined(ABC_DEBUG_MORE)
     std::cout << "AbcTreeNode::encode()--start to encode" << std::endl;
 #endif
-    AlpsEncoded* encoded = new AlpsEncoded("ALPS_NODE");
+    AlpsEncoded* encoded = new AlpsEncoded(ALPS_NODE);
     AbcNodeDesc* desc = dynamic_cast<AbcNodeDesc*>(desc_);
     AbcModel* model = dynamic_cast<AbcModel*>(desc->getModel());
 

@@ -99,9 +99,9 @@ int main(int argc, char* argv[])
 #endif
 
 	// Register model, solution, and tree node
-	broker.registerClass("ALPS_MODEL", new AbcModel);
-	broker.registerClass("ALPS_SOLUTION", new AbcSolution);
-	broker.registerClass("ALPS_NODE", new AbcTreeNode(&model));
+	broker.registerClass(ALPS_MODEL, new AbcModel);
+	broker.registerClass(ALPS_SOLUTION, new AbcSolution);
+	broker.registerClass(ALPS_NODE, new AbcTreeNode(&model));
 
 	// Formulate the root node
 	// NOTE: root will be deleted by ALPS 
