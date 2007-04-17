@@ -47,7 +47,9 @@ class AlpsModel : public AlpsKnowledge {
  public:
 
     /** Default construtor. */
-    AlpsModel() : broker_(NULL), AlpsPar_(new AlpsParams) {}
+    AlpsModel() :
+        broker_(NULL), 
+        AlpsPar_(new AlpsParams) { setType(ALPS_MODEL); }
 
     /** Destructor. */
     virtual ~AlpsModel() { delete AlpsPar_; }

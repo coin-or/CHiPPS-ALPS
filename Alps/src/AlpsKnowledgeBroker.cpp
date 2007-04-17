@@ -45,7 +45,7 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     nodeProcessingTime_(ALPS_NODE_PROCESS_TIME), // Positive
     largeSize_(100000)
 {
-    registerClass("ALPS_SUBTREE", new AlpsSubTree(this));
+    registerClass(ALPS_SUBTREE, new AlpsSubTree(this));
     handler_ = new CoinMessageHandler();
     handler_->setLogLevel(2);
     messages_ = AlpsMessage();
@@ -55,7 +55,7 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
 
 AlpsKnowledgeBroker:: ~AlpsKnowledgeBroker() 
 {
-    std::map<std::string, AlpsKnowledge*>::iterator pos, pos1;
+    std::map<int, AlpsKnowledge*>::iterator pos, pos1;
     pos = decodeMap_.begin();
     pos1 = decodeMap_.end();
     AlpsKnowledge* kl = 0;

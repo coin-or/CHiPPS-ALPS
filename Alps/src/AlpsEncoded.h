@@ -8,6 +8,8 @@
 
 #include "CoinError.hpp"
 
+#include "Alps.h"
+
 // AlpsEncoded is modified from BCP_buffer and CoinEncoded
 
 //#############################################################################
@@ -38,11 +40,13 @@ class AlpsEncoded {
     /** The amount of memory allocated for the representation. */
     size_t maxSize_;
 
-    /** A C-style string representing the type of the object. We might use RTTI
+    /** Represent the type of the object. We might use RTTI
 	to point this into the static data of the executable :-)
 	Can only be initialized during constructing. 
         User take care of memory.*/
-    std::string type_;   
+    //std::string type_;   
+
+    int type_;
 
     /** The size of the packed representation. */
     int size_;
@@ -55,42 +59,37 @@ class AlpsEncoded {
     
     /**@name Constructors and destructor */
     /*@{*/
+
     /** The default constructor creates a buffer of size 16 Kbytes with no
 	message in it. */
-    
-#if 0
     AlpsEncoded() 
 	: 
 	pos_(0), 
 	maxSize_(0x4000/*16K*/), 
-	type_(NULL), 
+	type_(0), 
 	size_(0), 
 	representation_(new char[maxSize_]) 
 	{}
-#endif 
     
-    AlpsEncoded(const char* t) 
+    /** Useful constructor. */
+    AlpsEncoded(int t) 
 	: 
-	pos_(0), 
+	pos_(0),
 	maxSize_(0), 
 	type_(t), 
 	size_(0), 
 	representation_(0) 
 	{}
 
-    // AlpsEncoded() : size_(0), representation_(NULL) {}
-    // can't use "const char*& r" as parameter
-    AlpsEncoded(const char* t, const int s, char*& r) 
+    /** Useful constructor.  Take over ownership of r. */
+    AlpsEncoded(int t, int s, char*& r) 
 	: 
 	pos_(0), 
 	maxSize_(s + 4),
 	type_(t),  
 	size_(s),
 	representation_(r) 
-	{
-            //t = 0;
-	    r = 0;  // Must take over the ownership! 
-	}                    
+	{ r = NULL; }                    
     
     /** Destructor. */
     ~AlpsEncoded() {
@@ -103,7 +102,7 @@ class AlpsEncoded {
     
     /**@name Query methods */
     ///@{
-    std::string type() const { return type_; }
+    int type() const { return type_; }
     int size() const { return size_; }
     const char* representation() const { return representation_; }
     ///@}
@@ -147,7 +146,7 @@ class AlpsEncoded {
     inline void clear(){
 	size_ = 0;
 	pos_ = 0;
-        type_.clear();
+        type_ = 0;
 	if (representation_ != 0) { 
 	    delete  representation_; 
 	    representation_ = 0; 

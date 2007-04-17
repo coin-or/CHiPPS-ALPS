@@ -346,7 +346,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     // Best-first node selection duraing rampup
 
     rampUpSubTree_ = dynamic_cast<AlpsSubTree*>
-	(const_cast<AlpsKnowledge *>(decoderObject("ALPS_SUBTREE")))
+	(const_cast<AlpsKnowledge *>(decoderObject(ALPS_SUBTREE)))
 	->newSubTree();
 
     tempNodePool->setNodeSelection(*rampUpNodeSelection_);	
@@ -1254,7 +1254,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
     workerWorkQuantities_[0] = workQuantity_ = 0.0;
     
     rampUpSubTree_ = dynamic_cast<AlpsSubTree*>
-        (const_cast<AlpsKnowledge *>(decoderObject("ALPS_SUBTREE")))->newSubTree();
+        (const_cast<AlpsKnowledge *>(decoderObject(ALPS_SUBTREE)))->newSubTree();
     rampUpSubTree_->setKnowledgeBroker(this);
     rampUpSubTree_->setNodeSelection(rampUpNodeSelection_);
     
@@ -1369,7 +1369,7 @@ AlpsKnowledgeBrokerMPI::hubMain()
                         // Hub need work, so Keep a node for self
                         AlpsSubTree* myTree = dynamic_cast<AlpsSubTree*>
                             (const_cast<AlpsKnowledge *>(
-                                 decoderObject("ALPS_SUBTREE")))->newSubTree();
+                                 decoderObject(ALPS_SUBTREE)))->newSubTree();
                         myTree->setKnowledgeBroker(this);
                         myTree->setNodeSelection(nodeSelection_);
                         
@@ -1934,7 +1934,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
     while(true) {
 
 	rampUpSubTree_ = dynamic_cast<AlpsSubTree*>
-	    (const_cast<AlpsKnowledge *>(decoderObject("ALPS_SUBTREE")))->
+	    (const_cast<AlpsKnowledge *>(decoderObject(ALPS_SUBTREE)))->
 	    newSubTree();
 	rampUpSubTree_->setKnowledgeBroker(this);
 	rampUpSubTree_->setNodeSelection(nodeSelection_);
@@ -4144,20 +4144,19 @@ AlpsKnowledgeBrokerMPI::packEncoded(AlpsEncoded* enc,
 {
     const int bufSpare = model_->AlpsPar()->entry(AlpsParams::bufSpare);
     
-    const char *type = (enc->type()).c_str();
-    int typeSize = strlen(type);
+    int type = enc->type();
     int repSize = enc->size();
 
     if(!packBuffer) {
-        size = typeSize + repSize + 2*sizeof(int) + bufSpare;
+        size = repSize + 2*sizeof(int) + bufSpare;
         packBuffer = new char[size];
     }
     
-    // Pack typeSize, repSize, type_, representation_ of enc
-    MPI_Pack(&typeSize, 1, MPI_INT, packBuffer, size, &position, comm);
+    // Pack repSize, type_, representation_ of enc
+    MPI_Pack(&type, 1, MPI_INT, packBuffer, size, &position, comm);
     MPI_Pack(&repSize, 1, MPI_INT, packBuffer, size, &position, comm);
-    MPI_Pack(const_cast<char*>(type), typeSize, MPI_CHAR, 
-	     packBuffer, size, &position, comm); 
+    //MPI_Pack(const_cast<char*>(type), typeSize, MPI_CHAR, 
+    //packBuffer, size, &position, comm); 
     MPI_Pack(const_cast<char*>(enc->representation()), repSize, MPI_CHAR, 
 	     packBuffer, size, &position, comm);
 }
@@ -4170,8 +4169,7 @@ AlpsKnowledgeBrokerMPI::unpackEncoded(char*& unpackBuffer,
                                       MPI_Comm comm,
                                       int size) 
 {
-    int typeSize;
-    int repSize;
+    int type, repSize;
     AlpsEncoded *encoded = NULL;
     
     if (size <= 0) {
@@ -4179,7 +4177,7 @@ AlpsKnowledgeBrokerMPI::unpackEncoded(char*& unpackBuffer,
     }
     
     // Unpack typeSize, repSize, type and rep from unpackBuffer_
-    MPI_Unpack(unpackBuffer, size, &position, &typeSize, 1, MPI_INT, comm);
+    MPI_Unpack(unpackBuffer, size, &position, &type, 1, MPI_INT, comm);
     
 #if defined(NF_DEBUG_MORE)
     std::cout << "PROC "<< globalRank_ <<" : typeSize is " 
@@ -4188,13 +4186,12 @@ AlpsKnowledgeBrokerMPI::unpackEncoded(char*& unpackBuffer,
 
     MPI_Unpack(unpackBuffer, size, &position, &repSize, 1, MPI_INT, comm);
   
-    char *type = new char [typeSize + 1];  // At least larger than one
-    char *rep = new char[repSize + 1];
 
-    MPI_Unpack(unpackBuffer, size, &position, type, typeSize, MPI_CHAR, comm);
+    //char *type = new char [typeSize + 1];  // At least larger than one
+    //MPI_Unpack(unpackBuffer, size, &position, type, typeSize, MPI_CHAR, comm);
+    //*(type+typeSize) = '\0'; //MUST terminate cstring so that don't read trash 
 
-    *(type+typeSize) = '\0'; //MUST terminate cstring so that don't read trash 
-    
+    char *rep = new char[repSize + 1];    
     MPI_Unpack(unpackBuffer, size, &position, rep, repSize, MPI_CHAR, comm);
     rep[repSize] = '\0';
 
@@ -4206,9 +4203,6 @@ AlpsKnowledgeBrokerMPI::unpackEncoded(char*& unpackBuffer,
     // NOTE: Take over the memory of rep, but not type.
     encoded = new AlpsEncoded(type, repSize, rep );
 
-    delete [] type;
-    type = NULL;
-    
     return encoded;
 }
 
@@ -4368,7 +4362,7 @@ AlpsKnowledgeBrokerMPI::receiveSubTree(char*& bufLarge,
                                                position, 
                                                MPI_COMM_WORLD);
 	AlpsSubTree* tempST = dynamic_cast<AlpsSubTree*>
-	    (const_cast<AlpsKnowledge *>(decoderObject("ALPS_SUBTREE")))->
+	    (const_cast<AlpsKnowledge *>(decoderObject(ALPS_SUBTREE)))->
 	    newSubTree();
 
 	tempST->setKnowledgeBroker(this);

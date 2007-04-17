@@ -46,9 +46,9 @@ int main(int argc, char* argv[])
 #endif
 	
 	// 2: Register model, solution, and tree node
-	broker.registerClass("ALPS_MODEL", new KnapModel);
-	broker.registerClass("ALPS_SOLUTION", new KnapSolution(&model));
-	broker.registerClass("ALPS_NODE", new KnapTreeNode(&model));
+	broker.registerClass(ALPS_MODEL, new KnapModel);
+	broker.registerClass(ALPS_SOLUTION, new KnapSolution(&model));
+	broker.registerClass(ALPS_NODE, new KnapTreeNode(&model));
 
 	// 3: Formulate the root node
 	// NOTE: root will be deleted by ALPS 

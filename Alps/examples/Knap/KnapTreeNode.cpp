@@ -200,7 +200,7 @@ KnapTreeNode::branch()
 AlpsEncoded*
 KnapTreeNode::encode() const 
 {
-    AlpsEncoded* encoded = new AlpsEncoded("ALPS_NODE");
+    AlpsEncoded* encoded = new AlpsEncoded(ALPS_NODE);
     const KnapNodeDesc* desc = 
 	dynamic_cast<const KnapNodeDesc*>(desc_);
 

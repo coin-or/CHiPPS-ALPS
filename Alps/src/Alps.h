@@ -78,11 +78,11 @@ enum AlpsSearchType {
 //#############################################################################
 
 typedef int AlpsKnowledgeType;
-const int ALPS_MODEL = 0;
-const int ALPS_MODEL_GEN = 1;
-const int ALPS_NODE = 2;
-const int ALPS_SOLUTION = 3;
-const int ALPS_SUBTREE = 4;
+const int ALPS_MODEL = 1;
+const int ALPS_MODEL_GEN = 2;
+const int ALPS_NODE = 3;
+const int ALPS_SOLUTION = 4;
+const int ALPS_SUBTREE = 5;
 
 //#############################################################################
 // Search return status

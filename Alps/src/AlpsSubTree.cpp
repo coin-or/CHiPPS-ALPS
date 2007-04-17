@@ -107,7 +107,7 @@ static int computeRampUpNumNodes(int minNumNodes,
 
 /** Default constructor. */
 AlpsSubTree::AlpsSubTree() 
-    : 
+    :
     root_(0),
     //nextIndex_(0), 
     nodePool_(new AlpsNodePool), 
@@ -118,6 +118,7 @@ AlpsSubTree::AlpsSubTree()
     broker_(0)
     //eliteSize_(-1)
 { 
+    setType(ALPS_SUBTREE);
     diveNodePool_->setNodeSelection(*diveNodeRule_);
 }
 
@@ -136,6 +137,7 @@ AlpsSubTree::AlpsSubTree(AlpsKnowledgeBroker* kb)
 { 
     assert(kb);
     broker_ = kb;
+    setType(ALPS_SUBTREE);
     
     //eliteSize_ = kb->getDataPool()->
     //getOwnParams()->entry(AlpsParams::eliteSize);
@@ -880,7 +882,7 @@ AlpsSubTree::encode() const
 
     nodeNum = allNodes.size();
 
-    AlpsEncoded* encoded = new AlpsEncoded("ALPS_SUBTREE");
+    AlpsEncoded* encoded = new AlpsEncoded(ALPS_SUBTREE);
 
     encoded->writeRep(nodeNum);              // First write number of nodes
     
@@ -954,15 +956,14 @@ AlpsSubTree::decode(AlpsEncoded& encoded) const
 		  << "; size = " << size << std::endl;
 #endif
 	
-	if (buf != 0) {
-	    delete buf; 
-	    buf = 0;
-	}
-    
+        // readRep allocate memory for buf.
 	encoded.readRep(buf, size);
- 
-	encodedNode = new AlpsEncoded("ALPS_NODE", size, buf); 
-	node = dynamic_cast<AlpsTreeNode* >( (broker_->decoderObject(encodedNode->type()))->decode(*encodedNode) );
+
+        // take over ownership of buf
+	encodedNode = new AlpsEncoded(ALPS_NODE, size, buf); 
+
+	node = dynamic_cast<AlpsTreeNode* >
+            ( (broker_->decoderObject(encodedNode->type()))->decode(*encodedNode) );
 
         //node->setSubTree(st);
 	node->setKnowledgeBroker(getKnowledgeBroker());

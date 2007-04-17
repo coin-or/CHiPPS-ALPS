@@ -124,7 +124,7 @@ class AlpsTreeNode : public AlpsKnowledge {
 	knowledgeBroker_(0),
 	sentMark_(0),
         diving_(false)
-	{}
+	{ setType(ALPS_NODE); }
     
     virtual ~AlpsTreeNode() {
         assert(numChildren_ == 0);

@@ -26,8 +26,7 @@
 AlpsEncoded* 
 AlpsKnowledge::encode() const
 {
-    AlpsEncoded* encoded = 
-	new AlpsEncoded(const_cast<char*>(typeid(*this).name()));
+    AlpsEncoded* encoded = new AlpsEncoded(type_);
     encoded->writeRep(*this);
     return encoded;
 }

@@ -122,7 +122,7 @@ KnapModel::encode() const
 { 
     AlpsReturnCode status = ALPS_OK;
     //  AlpsEncoded* encoded = new AlpsEncoded(typeid(*this).name());
-    AlpsEncoded* encoded = new AlpsEncoded("ALPS_MODEL");
+    AlpsEncoded* encoded = new AlpsEncoded(ALPS_MODEL);
 
     //------------------------------------------------------
     // Encode Alps part. 

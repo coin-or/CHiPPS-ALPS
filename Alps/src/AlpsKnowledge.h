@@ -20,12 +20,10 @@
 #include <memory>
 #include <typeinfo>
 
+#include "Alps.h"
 #include "AlpsEncoded.h"
 
 //#############################################################################
-// *FIXME* : For now, we use RTTI in the following methods. 
-// *FIXME* : Indices would probably be more efficient.  We have to check this.
-
 /** A function object to perform lexicographic lexicographic comparison
     between two C style strings. */
 //#############################################################################
@@ -45,43 +43,49 @@ struct AlpsStrLess
 
 class AlpsKnowledge {
 
- private:
+private:
+    AlpsKnowledge(const AlpsKnowledge&);
+    AlpsKnowledge& operator=(const AlpsKnowledge&);
     
-  AlpsKnowledge(const AlpsKnowledge&);
-  AlpsKnowledge& operator=(const AlpsKnowledge&);
+    /** The encoded object in an encoded form (could be compressed!) */
+    //FIXME: For now, we just use a regular pointer here to get it to compile.
+    //CoinPtr<AlpsEncoded> encoded_;
+    AlpsEncoded* encoded_;
 
-  /** The encoded object in an encoded form (could be compressed!) */
-  //FIXME: For now, we just use a regular pointer here to get it to compile.
-  //CoinPtr<AlpsEncoded> encoded_;
-  AlpsEncoded* encoded_;
-   
- public:
-  
-  AlpsKnowledge() : encoded_(0) {}
-  virtual ~AlpsKnowledge() {}
+protected:
+    
+    AlpsKnowledgeType type_;
 
-  /** This method should encode the content of the object and return a
-      pointer to the encoded form. 
-      
-      NOTE: This default implementation can not be
-      used when the memory of data members is not continously allocated,
-      for example, some data members are pointers, STL set, map, etc. */
-  virtual AlpsEncoded* encode() const;
-  
-  /** This method should decode and return a pointer to a \em brand \em new
-      \em object, i.e., the method must create a new object on the heap from
-      the decoded data instead of filling up the object for which the method
-      was invoked. 
-      
-      NOTE: This default implementation can not be
-      used when the memory of data members is not continously allocated,
-      for example, some data members are pointers, STL set, map, etc.
-  */
-  virtual AlpsKnowledge* decode(AlpsEncoded& encoded) const;
+public:
+    
+    AlpsKnowledge() : encoded_(0), type_(0) {}
+    virtual ~AlpsKnowledge() {}
 
-  /** Get/set encoded. */
-  inline AlpsEncoded* getEncoded() const { return encoded_; }
-  inline void setEncoded(AlpsEncoded* e) { encoded_ = e; }
+    AlpsKnowledgeType getType() { return type_; }
+    void setType(AlpsKnowledgeType t) { type_ = t; }
+
+    /** This method should encode the content of the object and return a
+        pointer to the encoded form. 
+        
+        NOTE: This default implementation can not be
+        used when the memory of data members is not continously allocated,
+        for example, some data members are pointers, STL set, map, etc. */
+    virtual AlpsEncoded* encode() const;
+    
+    /** This method should decode and return a pointer to a \em brand \em new
+        \em object, i.e., the method must create a new object on the heap from
+        the decoded data instead of filling up the object for which the method
+        was invoked. 
+            
+        NOTE: This default implementation can not be
+        used when the memory of data members is not continously allocated,
+        for example, some data members are pointers, STL set, map, etc.
+    */
+    virtual AlpsKnowledge* decode(AlpsEncoded& encoded) const;
+    
+    /** Get/set encoded. */
+    inline AlpsEncoded* getEncoded() const { return encoded_; }
+    inline void setEncoded(AlpsEncoded* e) { encoded_ = e; }
 };
 
 //#############################################################################

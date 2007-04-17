@@ -46,7 +46,7 @@ class AlpsKnowledgeBroker {
     AlpsKnowledgeBroker& operator=(const AlpsKnowledgeBroker&);
 
     /** Stores registered knowledge. */
-    std::map<std::string, AlpsKnowledge*> decodeMap_;
+    std::map<int, AlpsKnowledge*> decodeMap_;
     
  protected:
 
@@ -195,12 +195,10 @@ class AlpsKnowledgeBroker {
         NOTE: take over user knowledge's memory ownership, user doesn't
         need free memory. 
     */
-    void registerClass(const char * name, AlpsKnowledge* userKnowledge) {
-        std::string newName = name;
-        
+    void registerClass(int name, AlpsKnowledge* userKnowledge) {
         // Check if alread have one.
-        std::map<std::string, AlpsKnowledge*>::iterator pos, pos1;
-        pos = decodeMap_.find(newName);
+        std::map<int, AlpsKnowledge*>::iterator pos, pos1;
+        pos = decodeMap_.find(name);
         pos1 = decodeMap_.end();
         
         if (pos != pos1) {
@@ -209,7 +207,7 @@ class AlpsKnowledgeBroker {
             delete kl;
         }
         
-        decodeMap_[newName] = userKnowledge;
+        decodeMap_[name] = userKnowledge;
     }
 
     /** This method returns the pointer to an empty object of the registered
@@ -219,12 +217,8 @@ class AlpsKnowledgeBroker {
 	whose type is <code>name</code>:<br>
 	<code>obj = AlpsKnowledge::decoderObject(name)->decode(buf) </code> 
     */
-    const AlpsKnowledge* decoderObject(const char* name) {
-        std::string newName = name;
-	return decodeMap_[newName];
-    }
 
-    const AlpsKnowledge* decoderObject(std::string name) {
+    const AlpsKnowledge* decoderObject(int name) {
 	return decodeMap_[name];
     }
     //@}
