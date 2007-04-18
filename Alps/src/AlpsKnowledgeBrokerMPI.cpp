@@ -4579,6 +4579,12 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
     int key   = globalRank_;
 
     //------------------------------------------------------
+    // Register knowledge before broadcasting model.
+    //------------------------------------------------------
+
+    model.registerKnowledge();
+
+    //------------------------------------------------------
     // Master read in parameters and model data.
     //------------------------------------------------------
 
@@ -4874,12 +4880,6 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
     
     setupKnowledgePools();
     MPI_Barrier(MPI_COMM_WORLD);
-
-    //------------------------------------------------------
-    // Register knowledge.
-    //------------------------------------------------------
-
-    model.registerKnowledge();
 
     //------------------------------------------------------
     // Set max number of solutions.
