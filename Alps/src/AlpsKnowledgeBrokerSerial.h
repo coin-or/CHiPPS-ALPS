@@ -81,12 +81,16 @@ class AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
 	if (outputFile != 0) {                 
             // Write to outputFile
 	    std::ofstream os(outputFile);
+	    os << "============================================" << std::endl;
+	    os << "Best solution:";
 	    os << "Quality = " << getBestQuality();
 	    os << std::endl;
 	    dynamic_cast<AlpsSolution* >
 		(getBestKnowledge(ALPS_SOLUTION).first)->print(os);
 	}
 	else {                                  // Write to std::cout
+	    std::cout << "============================================" << std::endl;
+	    std::cout << "Best solution:";
 	    std::cout << "Quality = " << getBestQuality();
 	    std::cout << std::endl;
 	    dynamic_cast<AlpsSolution* >
