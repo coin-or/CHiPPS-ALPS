@@ -52,7 +52,7 @@ static Alps_message us_english[] =
     {ALPS_MSG_HOW, 100, 3, "Process[%d] %s count %d in %s"},
     {ALPS_NODE_COUNT, 104, 3, "Worker[%d] processed %d nodes, %d nodes are left"},
     {ALPS_NODE_MEM_SIZE, 106, 1, "Approximately memory size of a node is %d bytes"},
-    {ALPS_P_VERSION, 110, 1, "ALPS version 0.9.2 (Parallel, MPI)"},
+    {ALPS_P_VERSION, 110, 1, "ALPS version 1.0.0 (Parallel, MPI)"},
     {ALPS_PARAMFILE, 120, 1, "Parameter file: %s"},
     {ALPS_PEAK_MEMORY, 125, 1, "Peak memory usage: %.2f M"},
     {ALPS_RAMPUP_HUB, 130, 1, "Hub[%d]'s rampup took %g seconds to process %d nodes. Node pool has %d nodes"},
