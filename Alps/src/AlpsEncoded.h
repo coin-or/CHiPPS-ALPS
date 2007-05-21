@@ -107,7 +107,7 @@ class AlpsEncoded {
     const char* representation() const { return representation_; }
     ///@}
 
-    inline void setPosition(const int pos) throw(CoinError) {
+    inline void setPosition(const int pos) {
 	if (pos < 0 || pos >= size()) {
 	    //     const char msg [100] = "Incorrest position setting.";
 	    //throw AlpsException(__FILE__, __LINE__, msg);
@@ -214,7 +214,7 @@ class AlpsEncoded {
     template <class T> AlpsEncoded& readRep(T*& values, 
 					    int& length,
 					    bool needAllocateMemory = true)
-	throw(CoinError) {
+       {
         
 	if (needAllocateMemory) {
 	    // Need allocate memeory for arrary "values".

@@ -30,7 +30,7 @@
 //#############################################################################
 
 void
-AlpsTreeNode::removeChild(AlpsTreeNode*& child) throw(CoinError)
+AlpsTreeNode::removeChild(AlpsTreeNode*& child)
 {
 
 #if 0

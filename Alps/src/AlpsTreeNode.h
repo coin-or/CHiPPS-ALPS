@@ -260,7 +260,7 @@ class AlpsTreeNode : public AlpsKnowledge {
     /** Remove the pointer to given child from the list of children. This
 	method deletes the child as well. An error is thrown if the argument is
 	not a pointer to a child. */
-    void removeChild(AlpsTreeNode*& child) throw(CoinError);
+    void removeChild(AlpsTreeNode*& child);
 
     /** Add a child to the list of children for this node. */
     void addChild(AlpsTreeNode*& child);
