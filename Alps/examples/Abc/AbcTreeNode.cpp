@@ -1095,8 +1095,7 @@ int AbcTreeNode::chooseBranch(AbcModel *model, bool& strongFound)
 	    pseudoC = model->getPseudoList()[object];
 	    upCost = pseudoC->upCost_ * (1.0 - fraction);
 	    downCost = pseudoC->downCost_ * fraction;
-	    deg = 4.0 * std::min(upCost, downCost) +
-		1.0 * std::max(upCost, downCost);
+	    deg = 4.0 * min(upCost, downCost) + 1.0 * max(upCost, downCost);
 	    if (deg > mostDeg) {
 		mostDeg = deg;
 		mostInd = object;

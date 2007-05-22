@@ -47,8 +47,14 @@
 /* Define to the debug verbosity level (0 is no output) */
 #define COIN_ALPS_VERBOSITY 0
 
+/* Define to 1 if the ALPS package is used */
+#define COIN_HAS_ALPS 1
+
 /* Define to 1 if the CoinUtils package is used */
 #define COIN_HAS_COINUTILS 1
+
+/* Define to 1 if the Clp package is used */
+#define COIN_HAS_CLP 1
 
 /* Define to 1 if the Mpi package is used */
 /* #define COIN_HAS_MPI 1 */
