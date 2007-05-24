@@ -63,7 +63,7 @@ class AlpsSolutionPool : public AlpsKnowledgePool {
 
     /** query the current number of solutions */
     //   int getNumSolutions() const { return solutions_.size(); }
-    inline int getNumKnowledges() const { return solutions_.size(); }
+    inline int getNumKnowledges() const { return static_cast<int> (solutions_.size()); }
 
     /** return true if there are any solution stored in the solution pool */
     inline bool hasKnowledge() const 

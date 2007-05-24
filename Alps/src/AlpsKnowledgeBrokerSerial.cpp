@@ -100,7 +100,7 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
 	    }
 	    
 	    // Sub-string from pos1 to pos2(not included)
-	    int length = pos2 - pos1;
+	    int length = static_cast<int> (pos2 - pos1);
 	    //std::cout << "pos1=" << pos1 <<", pos2="<< pos2
 	    //        << ", lenght=" << length << std::endl;
 	    
@@ -165,7 +165,7 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
     // Set clock type
     //------------------------------------------------------
 
-    const bool clockType = 
+    const int clockType = 
       model_->AlpsPar()->entry(AlpsParams::clockType);
     
     timer_.setClockType(clockType);

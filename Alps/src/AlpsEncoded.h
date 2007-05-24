@@ -278,7 +278,7 @@ class AlpsEncoded {
     /** Read a <code>std::string</code> in <code>repsentation_ </code>. */
     AlpsEncoded& writeRep(std::string& value){
 	// must define here, 'cos in *_message.C we have only templated members
-	const int len = value.length();
+	const int len = static_cast<const int> (value.length());
 	make_fit( sizeof(int) + len );
 	memcpy(representation_ + size_, &len, sizeof(int));
 	size_ += sizeof(int);

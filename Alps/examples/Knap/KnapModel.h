@@ -61,7 +61,7 @@ class KnapModel : public AlpsModel {
   inline int getCapacity() const { return capacity_; }
 
   /** Get the number of items in the knapsack */
-  inline int getNumItems() const { return items_.size(); }
+  inline int getNumItems() const { return static_cast<int> (items_.size()); }
 
   /** Get the sequence of items in the knapsack */
   inline int* getSequence() const { return sequence_; }   

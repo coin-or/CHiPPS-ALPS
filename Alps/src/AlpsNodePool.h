@@ -52,13 +52,13 @@ class AlpsNodePool : public AlpsKnowledgePool {
     }
     
     /** Query the number of nodes in the node pool. */
-    inline int getNumKnowledges() const { return candidateList_.size(); }
+    inline int getNumKnowledges() const { return static_cast<int> (candidateList_.size()); }
     
     /** Get the "best value" of the nodes in node pool. */
     inline double getBestKnowledgeValue() const { 
         const std::vector<AlpsTreeNode *>& pool=candidateList_.getContainer();
         int k;
-        int size = pool.size();
+        int size = static_cast<int> (pool.size());
         double bestQuality = ALPS_OBJ_MAX;
         AlpsTreeNode * node = NULL;
         for (k = 0; k < size; ++k) {
@@ -74,7 +74,7 @@ class AlpsNodePool : public AlpsKnowledgePool {
     inline AlpsTreeNode *getBestNode() const { 
         const std::vector<AlpsTreeNode *>& pool=candidateList_.getContainer();
         int k;
-        int size = pool.size();
+        int size = static_cast<int> (pool.size());
         double bestQuality = ALPS_OBJ_MAX;
         AlpsTreeNode * bestNode = NULL;
         AlpsTreeNode * node = NULL;

@@ -46,7 +46,7 @@ class AlpsSubTreePool : public AlpsKnowledgePool {
     }
    
     /** Query the number of subtrees in the pool. */
-    inline int getNumKnowledges() const { return subTreeList_.size(); }
+    inline int getNumKnowledges() const { return static_cast<int> (subTreeList_.size()); }
   
     /** Check whether there is a subtree in the subtree pool. */
     inline bool hasKnowledge() const{ return ! (subTreeList_.empty()); }

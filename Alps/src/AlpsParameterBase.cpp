@@ -43,7 +43,7 @@ AlpsParameterSet::readFromStream(std::istream& parstream)
 
     while (!parstream.eof()) {
 	parstream.getline(line, MAX_PARAM_LINE_LENGTH);
-	const int len = strlen(line);
+	const int len = static_cast<int> (strlen(line));
 	if (len == MAX_PARAM_LINE_LENGTH - 1) {
 	    sprintf(line, "\
 There's a too long (>= %i characters) line in the parameter file.\n\
@@ -169,7 +169,7 @@ AlpsParameterSet::readFromArglist(const int argnum, const char * const * arglist
 	std::string par = arglist[i];
 	std::string sPar;
 	
-	int length = par.length();
+	int length = static_cast<int> (par.length());
 	
 	std::string::size_type pos = par.find('-');
 	
@@ -190,7 +190,7 @@ AlpsParameterSet::readFromArglist(const int argnum, const char * const * arglist
             argstring.insert(0, sPar);
             argstring.insert(length, " ");
             argstring.insert(length+1, arglist[(i+1)]);
-            int len2 = length + 1 + strlen(arglist[(i+1)]);
+            int len2 = static_cast<int> (length + 1 + strlen(arglist[(i+1)]));
             argstring.insert(len2, "\n");
         }
         else {
@@ -213,7 +213,7 @@ AlpsParameterSet::readFromArglist(const int argnum, const char * const * arglist
 void 
 AlpsParameterSet::writeToStream(std::ostream& outstream) const 
 {
-    const int size = keys_.size();
+    const int size = static_cast<int> (keys_.size());
     for (int i = 0; i < size; ++i) {
 	const std::string& key = keys_[i].first;
 	const AlpsParameter& par = keys_[i].second;

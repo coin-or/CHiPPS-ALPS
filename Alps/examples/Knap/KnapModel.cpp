@@ -98,7 +98,7 @@ void sortRatio(int * sequence, double * ratio, int num) {
 void 
 KnapModel::orderItems()
 {
-    const int n     = items_.size();
+    const int n     = static_cast<int> (items_.size());
     ratio           = new double [n];
     sequence_       = new int [n];
 
@@ -134,7 +134,7 @@ KnapModel::encode() const
     // Encode Knap part. 
     //------------------------------------------------------
 
-    const int size = items_.size();
+    const int size = static_cast<int> (items_.size());
     int* weight; 
     int* profit;
     int i;

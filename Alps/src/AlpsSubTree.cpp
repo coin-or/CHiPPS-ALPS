@@ -184,7 +184,7 @@ AlpsSubTree::~AlpsSubTree()
 //#############################################################################
 
 void
-AlpsSubTree::removeDeadNodes(AlpsTreeNode*& node) throw(CoinError)
+AlpsSubTree::removeDeadNodes(AlpsTreeNode*& node)
 {
     if (!node->isFathomed()) {
 	throw CoinError("node->isFathomed()","removeDeadNodes","AlpsSubTree");   
@@ -242,7 +242,7 @@ AlpsSubTree::createChildren(
     int i;
     const bool deleteNode = 
 	broker_->getModel()->AlpsPar()->entry(AlpsParams::deleteDeadNode);
-    const int numChildren = children.size();
+    const int numChildren = static_cast<int> (children.size());
  
     parent->setNumChildren(numChildren);
     parent->setStatus(AlpsNodeStatusBranched);
@@ -887,7 +887,7 @@ AlpsSubTree::encode() const
 	}
     }
 
-    nodeNum = allNodes.size();
+    nodeNum = static_cast<int> (allNodes.size());
 
     AlpsEncoded* encoded = new AlpsEncoded(ALPS_SUBTREE);
 
@@ -1022,7 +1022,7 @@ AlpsSubTree::decode(AlpsEncoded& encoded) const
 
     int nodeAdded = 0;
     int nodeReceived = 0;
-    nodeReceived = nodeVector.size();
+    nodeReceived = static_cast<int> (nodeVector.size());
     
     for (i = 0; i < nodeNum; ++i) {
 	node = nodeVector.back();

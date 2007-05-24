@@ -83,7 +83,7 @@ class AlpsSubTree : public AlpsKnowledge {
 	the parent is examined to determine whether it has any children
 	left. If it has none, then this function is called recursively on the
 	parent. This removes all nodes that are no longer needed. */
-    void removeDeadNodes(AlpsTreeNode*& node) throw(CoinError);
+    void removeDeadNodes(AlpsTreeNode*& node);
 
     /** This function replaces \c oldNode with \c newNode in the tree. */
     void replaceNode(AlpsTreeNode* oldNode, AlpsTreeNode* newNode);
