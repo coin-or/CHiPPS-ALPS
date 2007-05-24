@@ -51,7 +51,7 @@
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
-				DisableSpecificWarnings="4290;4267;4996;4065;4800"
+				DisableSpecificWarnings="4996;4065"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -156,10 +156,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\Alps\src\AlpsConfig.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\Alps\src\AlpsKnowledge.cpp"
 				>
 			</File>
@@ -211,6 +207,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\Alps\src\AlpsAix43.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\Alps\src\AlpsConfig.h"
 				>
 			</File>
 			<File
