@@ -279,7 +279,7 @@ class AlpsEncoded {
     AlpsEncoded& writeRep(std::string& value){
 	// must define here, 'cos in *_message.C we have only templated members
 	const int len = static_cast<const int> (value.length());
-	make_fit( static_cast<const int>(sizeof(int)) + len );
+	make_fit( sizeof(int) + len );
 	memcpy(representation_ + size_, &len, sizeof(int));
 	size_ += sizeof(int);
 	if (len > 0){
