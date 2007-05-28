@@ -102,7 +102,7 @@ static Alps_message us_english[] =
     {ALPS_S_FINAL_DEPTH, 272, 1, "Tree depth: %d"},
     {ALPS_S_FINAL_CPU, 274, 1, "Search CPU time: %.2f seconds"},
     {ALPS_S_FINAL_WALLCLOCK, 278, 1, "Search wall-clock time: %.2f seconds"},
-    {ALPS_S_VERSION, 300, 1, "ALPS version 0.9.2 (Serial)"},
+    {ALPS_S_VERSION, 300, 1, "ALPS version 1.0.0 (Serial)"},
     {ALPS_DUMMY_END, 999999, 0, ""}
 };
 
