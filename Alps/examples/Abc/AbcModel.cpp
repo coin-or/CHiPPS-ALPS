@@ -900,9 +900,9 @@ AbcModel::setupSelf()
 AlpsEncoded* 
 AbcModel::encode() const 
 { 
-    AlpsReturnCode status = ALPS_OK;
+    AlpsReturnStatus status = AlpsReturnStatusOk;
 
-    AlpsEncoded* encoded = new AlpsEncoded(ALPS_MODEL);
+    AlpsEncoded* encoded = new AlpsEncoded(AlpsKnowledgeTypeModel);
 
     //------------------------------------------------------
     // Encode Alps part. 
@@ -975,7 +975,7 @@ AbcModel::encode() const
 void
 AbcModel::decodeToSelf(AlpsEncoded& encoded) 
 {
-    AlpsReturnCode status = ALPS_OK;
+    AlpsReturnStatus status = AlpsReturnStatusOk;
 
     //------------------------------------------------------
     // Decode Alps part. 

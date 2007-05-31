@@ -74,7 +74,7 @@ class AlpsTreeSelectionBest : public AlpsTreeSelection
 {
 public:
     /** Default Constructor. */
-    AlpsTreeSelectionBest() { type_ = ALPS_SEARCH_BEST; }
+    AlpsTreeSelectionBest() { type_ = AlpsSearchTypeBestFirst; }
 
     /** Default Destructor. */
     virtual ~AlpsTreeSelectionBest() {}
@@ -90,7 +90,7 @@ class AlpsTreeSelectionBreadth : public AlpsTreeSelection
 {
 public:
     /** Default Constructor */
-    AlpsTreeSelectionBreadth() { type_ = ALPS_SEARCH_BREATH; }
+    AlpsTreeSelectionBreadth() { type_ = AlpsSearchTypeBreadthFirst; }
     
     /** Default Destructor. */
     virtual ~AlpsTreeSelectionBreadth() {}
@@ -106,7 +106,7 @@ class AlpsTreeSelectionDepth : public AlpsTreeSelection
 {
 public:
     /** Default Constructor */
-    AlpsTreeSelectionDepth() { type_ = ALPS_SEARCH_DEPTH; }
+    AlpsTreeSelectionDepth() { type_ = AlpsSearchTypeDepthFirst; }
     
     /** Default Destructor. */
     virtual ~AlpsTreeSelectionDepth() {}
@@ -122,7 +122,7 @@ class AlpsTreeSelectionEstimate : public AlpsTreeSelection
 {
 public:
     /** Default Constructor. */
-    AlpsTreeSelectionEstimate() { type_ = ALPS_SEARCH_BEST_EST; }
+    AlpsTreeSelectionEstimate() { type_ = AlpsSearchTypeBestEstimate; }
 
     /** Default Destructor. */
     virtual ~AlpsTreeSelectionEstimate() {}
@@ -140,7 +140,7 @@ class AlpsNodeSelectionBest : public AlpsNodeSelection
 {
 public:
     /** Default Constructor. */
-    AlpsNodeSelectionBest() { type_ = ALPS_SEARCH_BEST; }
+    AlpsNodeSelectionBest() { type_ = AlpsSearchTypeBestFirst; }
 
     /** Default Destructor. */
     virtual ~AlpsNodeSelectionBest() {}
@@ -158,7 +158,7 @@ class AlpsNodeSelectionBreadth : public AlpsNodeSelection
 {
 public:
     /** Default Constructor. */
-    AlpsNodeSelectionBreadth() { type_ = ALPS_SEARCH_BREATH; }
+    AlpsNodeSelectionBreadth() { type_ = AlpsSearchTypeBreadthFirst; }
 
     /** Default Destructor. */
     virtual ~AlpsNodeSelectionBreadth() {};
@@ -176,7 +176,7 @@ class AlpsNodeSelectionDepth : public AlpsNodeSelection
 {
  public:
     /** Default Constructor. */
-    AlpsNodeSelectionDepth() { type_ = ALPS_SEARCH_DEPTH; }
+    AlpsNodeSelectionDepth() { type_ = AlpsSearchTypeDepthFirst; }
 
     /** Default Destructor. */
     virtual ~AlpsNodeSelectionDepth() {};
@@ -194,7 +194,7 @@ class AlpsNodeSelectionEstimate : public AlpsNodeSelection
 {
  public:
     /** Default Constructor. */
-    AlpsNodeSelectionEstimate() { type_ = ALPS_SEARCH_BEST_EST; }
+    AlpsNodeSelectionEstimate() { type_ = AlpsSearchTypeBestEstimate; }
 
     /** Default Destructor. */
     virtual ~AlpsNodeSelectionEstimate() {}
@@ -212,7 +212,7 @@ class AlpsNodeSelectionHybrid : public AlpsNodeSelection
 {
 public:
     /** Default Constructor. */
-    AlpsNodeSelectionHybrid() { type_ = ALPS_SEARCH_HYBRID; }
+    AlpsNodeSelectionHybrid() { type_ = AlpsSearchTypeHybrid; }
 
     /** Default Destructor. */
     virtual ~AlpsNodeSelectionHybrid() {}

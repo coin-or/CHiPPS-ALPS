@@ -53,7 +53,7 @@ protected:
     
 public:
     /** Default Constructor. */
-    AlpsSearchStrategy() : weight_(-1.0), type_(ALPS_SEARCH_BEST){}
+    AlpsSearchStrategy() : weight_(-1.0), type_(AlpsSearchTypeBestFirst){}
         
     /** Default destructor. */
     virtual ~AlpsSearchStrategy() {}

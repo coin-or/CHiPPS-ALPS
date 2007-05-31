@@ -27,10 +27,10 @@
 //##############################################################################
 
 /** Pack Alps portion of node into an encoded object. */
-AlpsReturnCode 
+AlpsReturnStatus 
 AlpsModel::encodeAlps(AlpsEncoded *encoded) const
 {
-    AlpsReturnCode status = ALPS_OK;
+    AlpsReturnStatus status = AlpsReturnStatusOk;
     
     //assert(encode);
     AlpsPar_->pack(*encoded);
@@ -41,10 +41,10 @@ AlpsModel::encodeAlps(AlpsEncoded *encoded) const
 //##############################################################################
 
 /** Unpack Alps portion of node from an encoded object. */
-AlpsReturnCode 
+AlpsReturnStatus 
 AlpsModel::decodeAlps(AlpsEncoded &encoded)
 {
-    AlpsReturnCode status = ALPS_OK;
+    AlpsReturnStatus status = AlpsReturnStatusOk;
     
     //assert(encode);
     AlpsPar_->unpack(encoded);
@@ -94,8 +94,8 @@ AlpsModel::nodeLog(AlpsTreeNode *node, bool force)
         
         double feasBound = ALPS_OBJ_MAX, relBound = ALPS_OBJ_MAX;
 
-        if (broker_->getNumKnowledges(ALPS_SOLUTION) > 0) {
-            feasBound = (broker_->getBestKnowledge(ALPS_SOLUTION)).second;
+        if (broker_->getNumKnowledges(AlpsKnowledgeTypeSolution) > 0) {
+            feasBound = (broker_->getBestKnowledge(AlpsKnowledgeTypeSolution)).second;
         }
 
         bestNode = broker_->getBestNode();

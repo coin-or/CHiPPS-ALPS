@@ -135,10 +135,10 @@ AlpsTreeNode::removeDescendants()
 //#############################################################################
 
 /** Pack Alps portion of node into an encoded object. */
-AlpsReturnCode 
+AlpsReturnStatus 
 AlpsTreeNode::encodeAlps(AlpsEncoded *encoded) const 
 {
-    AlpsReturnCode status = ALPS_OK;
+    AlpsReturnStatus status = AlpsReturnStatusOk;
     
     encoded->writeRep(explicit_);
     encoded->writeRep(index_);
@@ -166,10 +166,10 @@ AlpsTreeNode::encodeAlps(AlpsEncoded *encoded) const
 //#############################################################################
 
 /** Unpack Alps portion of node from an encoded object. */
-AlpsReturnCode 
+AlpsReturnStatus 
 AlpsTreeNode::decodeAlps(AlpsEncoded &encoded) 
 {
-    AlpsReturnCode status = ALPS_OK;
+    AlpsReturnStatus status = AlpsReturnStatusOk;
     
     encoded.readRep(explicit_);
     encoded.readRep(index_);

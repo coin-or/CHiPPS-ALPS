@@ -29,7 +29,7 @@
 AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     : 
     model_(NULL),
-    phase_(ALPS_PHASE_SEARCH),
+    phase_(AlpsPhaseSearch),
     subTreePool_ (new AlpsSubTreePool),
     solPool_ (new AlpsSolutionPool),
     pools_(0),
@@ -41,7 +41,7 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     nodeLeftNum_(0),
     treeDepth_(0),
     peakMemory_(0.0),
-    solStatus_(ALPS_UNKNOWN),
+    exitStatus_(AlpsExitStatusUnknown),
     treeSelection_(0),
     nodeSelection_(0),
     msgLevel_(2),
@@ -52,7 +52,7 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     nodeProcessingTime_(ALPS_NODE_PROCESS_TIME), // Positive
     largeSize_(100000)
 {
-    registerClass(ALPS_SUBTREE, new AlpsSubTree(this));
+    registerClass(AlpsKnowledgeTypeSubTree, new AlpsSubTree(this));
     handler_ = new CoinMessageHandler();
     handler_->setLogLevel(2);
     messages_ = AlpsMessage();
@@ -171,10 +171,10 @@ AlpsKnowledgeBroker::getBestNode() const
 int 
 AlpsKnowledgeBroker::getNumKnowledges(AlpsKnowledgeType kt) const 
 {
-    if ( (kt == ALPS_SOLUTION) || (kt == ALPS_SUBTREE) ){
+    if ((kt == AlpsKnowledgeTypeSolution) || (kt == AlpsKnowledgeTypeSubTree)){
         return getKnowledgePool(kt)->getNumKnowledges();
     }
-    else if (kt == ALPS_NODE) {
+    else if (kt == AlpsKnowledgeTypeNode) {
         return nodeLeftNum_;
     }
     else {
@@ -188,10 +188,10 @@ AlpsKnowledgeBroker::getNumKnowledges(AlpsKnowledgeType kt) const
 std::pair<AlpsKnowledge*, double> 
 AlpsKnowledgeBroker::getBestKnowledge(AlpsKnowledgeType kt) const 
 { 
-    if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
+    if(kt == AlpsKnowledgeTypeSolution || kt == AlpsKnowledgeTypeSubTree) {
         return getKnowledgePool(kt)->getBestKnowledge();
     }
-    else if (kt == ALPS_NODE) {
+    else if (kt == AlpsKnowledgeTypeNode) {
         AlpsTreeNode *bn = getBestNode();
         if (bn) {
             return std::pair<AlpsKnowledge *, double>(bn, bn->getQuality());
@@ -217,23 +217,23 @@ AlpsKnowledgeBroker::setupKnowledgePools()
     //--------------------------------------------------
     int strategy = model_->AlpsPar()->entry(AlpsParams::searchStrategy);
     
-    if (strategy == AlpsBestFirst) {
+    if (strategy == AlpsSearchTypeBestFirst) {
         treeSelection_ = new AlpsTreeSelectionBest;
         nodeSelection_ = new AlpsNodeSelectionBest;
     }
-    else if (strategy == AlpsBreadthFirst) {
+    else if (strategy == AlpsSearchTypeBreadthFirst) {
         treeSelection_ = new AlpsTreeSelectionBreadth;
         nodeSelection_ = new AlpsNodeSelectionBreadth;
     }
-    else if (strategy == AlpsDepthFirst) {
+    else if (strategy == AlpsSearchTypeDepthFirst) {
         treeSelection_ = new AlpsTreeSelectionDepth;
         nodeSelection_ = new AlpsNodeSelectionDepth;
     }
-    else if (strategy == AlpsEstimate) {
+    else if (strategy == AlpsSearchTypeBestEstimate) {
         treeSelection_ = new AlpsTreeSelectionEstimate;
         nodeSelection_ = new AlpsNodeSelectionEstimate;
     }
-    else if (strategy == AlpsHybrid) {
+    else if (strategy == AlpsSearchTypeHybrid) {
         treeSelection_ = new AlpsTreeSelectionBest;
         nodeSelection_ = new AlpsNodeSelectionHybrid;
     }
@@ -245,19 +245,19 @@ AlpsKnowledgeBroker::setupKnowledgePools()
 
     strategy = model_->AlpsPar()->entry(AlpsParams::searchStrategyRampUp);
     
-    if (strategy == AlpsBestFirst) {
+    if (strategy == AlpsSearchTypeBestFirst) {
         rampUpNodeSelection_ = new AlpsNodeSelectionBest;
     }
-    else if (strategy == AlpsBreadthFirst) {
+    else if (strategy == AlpsSearchTypeBreadthFirst) {
         rampUpNodeSelection_ = new AlpsNodeSelectionBreadth;
     }
-    else if (strategy == AlpsDepthFirst) {
+    else if (strategy == AlpsSearchTypeDepthFirst) {
         rampUpNodeSelection_ = new AlpsNodeSelectionDepth;
     }
-    else if (strategy == AlpsEstimate) {
+    else if (strategy == AlpsSearchTypeBestEstimate) {
         rampUpNodeSelection_ = new AlpsNodeSelectionEstimate;
     }
-    else if (strategy == AlpsHybrid) {
+    else if (strategy == AlpsSearchTypeHybrid) {
         rampUpNodeSelection_ = new AlpsNodeSelectionHybrid;
     }
     else {
@@ -273,10 +273,10 @@ AlpsKnowledgeBroker::setupKnowledgePools()
     pools_ = new std::map<AlpsKnowledgeType, AlpsKnowledgePool*>;
 
     pools_->insert( std::pair<AlpsKnowledgeType, AlpsKnowledgePool*>
-                    ( ALPS_SOLUTION, solPool_ ) );
+                    ( AlpsKnowledgeTypeSolution, solPool_ ) );
 
     pools_->insert( std::pair<AlpsKnowledgeType, AlpsKnowledgePool*>
-                    ( ALPS_SUBTREE, subTreePool_ ) );
+                    ( AlpsKnowledgeTypeSubTree, subTreePool_ ) );
     
     subTreePool_->setComparison(*treeSelection_);    
 }

@@ -32,27 +32,19 @@ void AlpsParams::createKeywordList() {
    //-------------------------------------------------------
 
    //-------------------------------------------------------
-   // CharPar
+   // BoolPar
    //-------------------------------------------------------
 
-    keys_.push_back(make_pair(std::string("Alps_checkMemory"),
-                              AlpsParameter(AlpsCharPar, checkMemory)));
-
+   keys_.push_back(make_pair(std::string("Alps_checkMemory"),
+                              AlpsParameter(AlpsBoolPar, checkMemory)));
    keys_.push_back(make_pair(std::string("Alps_deleteDeadNode"),
-			     AlpsParameter(AlpsCharPar, 
-					   deleteDeadNode)));
+			     AlpsParameter(AlpsBoolPar, deleteDeadNode)));
    keys_.push_back(make_pair(std::string("Alps_interClusterBalance"),
-			    AlpsParameter(AlpsCharPar, 
-					  interClusterBalance)));
+			    AlpsParameter(AlpsBoolPar, interClusterBalance)));
    keys_.push_back(make_pair(std::string("Alps_intraClusterBalance"),
-			    AlpsParameter(AlpsCharPar, 
-					  intraClusterBalance)));
+			    AlpsParameter(AlpsBoolPar, intraClusterBalance)));
    keys_.push_back(make_pair(std::string("Alps_printSolution"),
-                             AlpsParameter(AlpsCharPar, 
-                                           printSolution)));
-   //-------------------------------------------------------
-   // BoolArrayPar (nothing here)
-   //-------------------------------------------------------
+                             AlpsParameter(AlpsBoolPar, printSolution)));
 
    //-------------------------------------------------------
    // IntPar
@@ -210,7 +202,7 @@ void AlpsParams::setDefaultEntries() {
 
   // IntPar
   setEntry(bufSpare, 256);
-  setEntry(clockType, ALPS_CPU_TIME);
+  setEntry(clockType, AlpsClockTypeCpu);
   setEntry(eliteSize, 1);
   setEntry(hubInitNodeNum, ALPS_NONE);
   setEntry(hubMsgLevel, 0);
@@ -225,8 +217,8 @@ void AlpsParams::setDefaultEntries() {
   setEntry(nodeLimit, ALPS_INT_MAX);
   setEntry(nodeLogInterval, 100);
   setEntry(processNum, 2);
-  setEntry(searchStrategy, ALPS_SEARCH_HYBRID);  
-  setEntry(searchStrategyRampUp, ALPS_SEARCH_BEST);  
+  setEntry(searchStrategy, AlpsSearchTypeHybrid);  
+  setEntry(searchStrategyRampUp, AlpsSearchTypeBestFirst);  
   setEntry(smallSize, 1024);      // 2^10
   setEntry(solLimit, ALPS_INT_MAX);
   setEntry(unitWorkNodes, ALPS_NOT_SET);

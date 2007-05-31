@@ -57,8 +57,8 @@ enum AlpsParameterT{
     /** The type is not yet specified. Used only in the default constructor of
 	a Alps parameter. */
     AlpsNoPar,
-    /** Character parameter. */
-    AlpsCharPar,
+    /** Bool parameter. */
+    AlpsBoolPar,
     /** Integer parameter. */
     AlpsIntPar,
     /** Double parameter. */
@@ -143,8 +143,8 @@ class AlpsParameterSet {
 	printed. */
     std::vector<std::string> obsoleteKeys_;
     
-    /** The character parameters. */
-    char*                cpar_;
+    /** The bool parameters. */
+    bool*                bpar_;
     
     /** The integer parameters. */
     int*                 ipar_;
@@ -205,7 +205,7 @@ class AlpsParameterSet {
     void setEntry(const AlpsParameter key, const char * val) {
 	switch (key.type()){
 	case AlpsNoPar: break;
-	case AlpsCharPar:        cpar_ [key.index()] = atoi(val);    break;
+	case AlpsBoolPar:        bpar_ [key.index()] = atoi(val) ? true : false;    break;
 	case AlpsIntPar:         ipar_ [key.index()] = atoi(val);    break;
 	case AlpsDoublePar:      dpar_ [key.index()] = atof(val);    break;
 	case AlpsStringPar:      spar_ [key.index()] = val;          break;
@@ -242,7 +242,7 @@ class AlpsParameterSet {
     /** The constructor allocate memory for parameters. */
     AlpsParameterSet(int c, int i, int d, int s, int sa) :
 	keys_(),
-	cpar_(new char[c]),
+	bpar_(new bool[c]),
 	ipar_(new int[i]),
 	dpar_(new double[d]),
 	spar_(new std::string[s]),
@@ -253,7 +253,7 @@ class AlpsParameterSet {
     virtual ~AlpsParameterSet() {
 	keys_.clear();
 	obsoleteKeys_.clear();
-	delete[] cpar_; cpar_ = 0;
+	delete[] bpar_; bpar_ = 0;
 	delete[] ipar_; ipar_ = 0;
 	delete[] dpar_; dpar_ = 0;
 	delete[] spar_; spar_ = 0;

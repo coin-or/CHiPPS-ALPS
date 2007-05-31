@@ -178,7 +178,7 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
 void 
 AlpsKnowledgeBrokerSerial::rootSearch(AlpsTreeNode* root)
 {
-    AlpsReturnCode status = ALPS_OK;
+    AlpsReturnStatus status = AlpsReturnStatusOk;
     
     timer_.start();
     
@@ -189,7 +189,7 @@ AlpsKnowledgeBrokerSerial::rootSearch(AlpsTreeNode* root)
     root->setExplicit(1); // True.
     
     const int mns = model_->AlpsPar()->entry(AlpsParams::solLimit);
-    setMaxNumKnowledges(ALPS_SOLUTION, mns);
+    setMaxNumKnowledges(AlpsKnowledgeTypeSolution, mns);
     
     //------------------------------------------------------
     // Construct tree.
@@ -244,19 +244,19 @@ AlpsKnowledgeBrokerSerial::searchLog()
     
     if (msgLevel_ > 0) {
 	std::cout << std::endl;
-	if (getSolStatus() == ALPS_OPTIMAL) {
+	if (getSolStatus() == AlpsExitStatusOptimal) {
 	    messageHandler()->message(ALPS_T_OPTIMAL, messages())
 		<< nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
 	}
-	else if (getSolStatus() == ALPS_NODE_LIMIT) {
+	else if (getSolStatus() == AlpsExitStatusNodeLimit) {
 	    messageHandler()->message(ALPS_T_NODE_LIMIT, messages())
 		<< nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
 	}
-	else if (getSolStatus() == ALPS_TIME_LIMIT) {
+	else if (getSolStatus() == AlpsExitStatusTimeLimit) {
 	    messageHandler()->message(ALPS_T_TIME_LIMIT, messages())
 		<< nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol; 
 	}
-	else if (getSolStatus() == ALPS_FEASIBLE) {
+	else if (getSolStatus() == AlpsExitStatusFeasible) {
 	    messageHandler()->message(ALPS_T_FEASIBLE, messages())
 		<< nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
 	}
@@ -265,7 +265,7 @@ AlpsKnowledgeBrokerSerial::searchLog()
 		<< nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
 	}
 
-	if (hasKnowledge(ALPS_SOLUTION)) {
+	if (hasKnowledge(AlpsKnowledgeTypeSolution)) {
 	    messageHandler()->message(ALPS_S_FINAL_SOL, messages())
 		<< getBestQuality() << CoinMessageEol;
 	}
@@ -289,9 +289,9 @@ AlpsKnowledgeBrokerSerial::searchLog()
                 << peakMemory_ << CoinMessageEol;
         }
         
-        if (printSolution && hasKnowledge(ALPS_SOLUTION)) {
+        if (printSolution && hasKnowledge(AlpsKnowledgeTypeSolution)) {
             AlpsSolution *solution = dynamic_cast<AlpsSolution *>
-                (getBestKnowledge(ALPS_SOLUTION).first);
+                (getBestKnowledge(AlpsKnowledgeTypeSolution).first);
             solution->print(std::cout);
         }
     }
@@ -300,7 +300,7 @@ AlpsKnowledgeBrokerSerial::searchLog()
 	std::ofstream fout(logfile_.c_str(), std::ofstream::app);
 	fout << std::endl;
 
-	if (hasKnowledge(ALPS_SOLUTION)) {
+	if (hasKnowledge(AlpsKnowledgeTypeSolution)) {
 	    fout << "Best solution quality = " << getBestQuality() << std::endl;
 	}
 	else {
@@ -316,9 +316,9 @@ AlpsKnowledgeBrokerSerial::searchLog()
 	      << std::endl;
 	fout << std::endl;
 	
-        if (printSolution && hasKnowledge(ALPS_SOLUTION)) {
+        if (printSolution && hasKnowledge(AlpsKnowledgeTypeSolution)) {
             AlpsSolution *solution = dynamic_cast<AlpsSolution *>
-                (getBestKnowledge(ALPS_SOLUTION).first);
+                (getBestKnowledge(AlpsKnowledgeTypeSolution).first);
             solution->print(fout);
         }
     }

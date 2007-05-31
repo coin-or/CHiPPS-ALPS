@@ -125,7 +125,7 @@ class AlpsKnowledgeBroker {
     double peakMemory_;
 
     /** The status of search when terminated. */
-    AlpsSolStatus solStatus_;
+    AlpsExitStatus exitStatus_;
     //@}
     
     /** @name Search strategy
@@ -284,7 +284,7 @@ class AlpsKnowledgeBroker {
     
     /** Add a knowledge pool into the Knowledge pools */
     inline void addKnowledgePool(AlpsKnowledgeType kt, AlpsKnowledgePool* kp) {
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
+	if(kt == AlpsKnowledgeTypeSolution || kt == AlpsKnowledgeTypeSubTree) {
 	    // AlpsKnowledgePool* akp = static_cast<AlpsKnowledgePool*>(kp);
 	    pools_->insert
 		(std::pair<AlpsKnowledgeType, AlpsKnowledgePool*>(kt, kp));
@@ -297,7 +297,7 @@ class AlpsKnowledgeBroker {
   
     /** Retrieve a knowledge pool in the Knowledge base */
     inline  AlpsKnowledgePool* getKnowledgePool(AlpsKnowledgeType kt) const { 
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
+	if(kt == AlpsKnowledgeTypeSolution || kt == AlpsKnowledgeTypeSubTree) {
 	    return (*pools_)[kt];
         }
 	else {
@@ -312,7 +312,7 @@ class AlpsKnowledgeBroker {
     /** Query the max number of knowledge can be stored in a given 
 	type of knowledge pools. */
     virtual int getMaxNumKnowledges(AlpsKnowledgeType kt) const {
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
+	if(kt == AlpsKnowledgeTypeSolution || kt == AlpsKnowledgeTypeSubTree) {
 	    return getKnowledgePool(kt)->getMaxNumKnowledges();
         }
 	else {
@@ -324,7 +324,7 @@ class AlpsKnowledgeBroker {
     /** Set the max number of knowledge can be stored in a given 
 	type o fknowledge pools. */
     virtual void setMaxNumKnowledges(AlpsKnowledgeType kt, int num) {
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
+	if(kt == AlpsKnowledgeTypeSolution || kt == AlpsKnowledgeTypeSubTree) {
 	    getKnowledgePool(kt)->setMaxNumKnowledges(num);
         }
 	else {
@@ -336,7 +336,7 @@ class AlpsKnowledgeBroker {
     /** Query whether there are knowledges in the given type of 
 	knowledge pools. */
     virtual bool hasKnowledge(AlpsKnowledgeType kt) const {
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE)
+	if(kt == AlpsKnowledgeTypeSolution || kt == AlpsKnowledgeTypeSubTree)
 	    return getKnowledgePool(kt)->hasKnowledge();
 	else
 	    throw CoinError("Broker doesn't manage this type of knowledge", 
@@ -346,7 +346,7 @@ class AlpsKnowledgeBroker {
     /** Get a knowledge, but doesn't remove it from the pool*/
     virtual std::pair<AlpsKnowledge*, double> 
 	getKnowledge(AlpsKnowledgeType kt) const {
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
+	if(kt == AlpsKnowledgeTypeSolution || kt == AlpsKnowledgeTypeSubTree) {
 	    return getKnowledgePool(kt)->getKnowledge();
         }
 	else {
@@ -357,7 +357,7 @@ class AlpsKnowledgeBroker {
 
     /** Remove the a knowledge from the given type of knowledge pools.*/
     virtual void popKnowledge(AlpsKnowledgeType kt) {
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
+	if(kt == AlpsKnowledgeTypeSolution || kt == AlpsKnowledgeTypeSubTree) {
 	    getKnowledgePool(kt)->popKnowledge();
         }
 	else {
@@ -374,7 +374,7 @@ class AlpsKnowledgeBroker {
     virtual void getAllKnowledges (AlpsKnowledgeType kt, 
 				   std::vector<std::pair<AlpsKnowledge*, 
 				   double> >& kls)  const { 
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
+	if(kt == AlpsKnowledgeTypeSolution || kt == AlpsKnowledgeTypeSubTree) {
 	    getKnowledgePool(kt)->getAllKnowledges(kls);
         }
 	else {
@@ -387,7 +387,7 @@ class AlpsKnowledgeBroker {
     virtual void addKnowledge(AlpsKnowledgeType kt, 
 			      AlpsKnowledge* kl, 
 			      double value ) { 
-	if(kt == ALPS_SOLUTION || kt == ALPS_SUBTREE) {
+	if(kt == AlpsKnowledgeTypeSolution || kt == AlpsKnowledgeTypeSubTree) {
 	    getKnowledgePool(kt)->addKnowledge(kl, value);
         }
 	else {
@@ -412,13 +412,13 @@ class AlpsKnowledgeBroker {
     virtual AlpsTreeNode* getBestNode() const;
 
     /** Query search termination status. */
-    AlpsSolStatus getSolStatus() const {
-	return solStatus_;
+    AlpsExitStatus getSolStatus() const {
+	return exitStatus_;
     }
 
     /** Set terminate status. */
-    void setSolStatus(AlpsSolStatus status) {
-	solStatus_ = status;
+    void setExitStatus(AlpsExitStatus status) {
+	exitStatus_ = status;
     }
 
     /** Query timer. */

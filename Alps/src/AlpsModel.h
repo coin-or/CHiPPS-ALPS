@@ -56,7 +56,7 @@ class AlpsModel : public AlpsKnowledge {
     /** Default construtor. */
     AlpsModel() :
         broker_(NULL), 
-        AlpsPar_(new AlpsParams) { setType(ALPS_MODEL); }
+        AlpsPar_(new AlpsParams) { setType(AlpsKnowledgeTypeModel); }
 
     /** Destructor. */
     virtual ~AlpsModel() { delete AlpsPar_; }
@@ -115,10 +115,10 @@ class AlpsModel : public AlpsKnowledge {
     //------------------------------------------------------
     
     /** Pack Alps portion of node into an encoded object. */
-    AlpsReturnCode encodeAlps(AlpsEncoded *encoded) const;
+    AlpsReturnStatus encodeAlps(AlpsEncoded *encoded) const;
 
     /** Unpack Alps portion of node from an encoded object. */
-    AlpsReturnCode decodeAlps(AlpsEncoded &encoded);
+    AlpsReturnStatus decodeAlps(AlpsEncoded &encoded);
     
     /** Decode model data from the encoded form and fill member data.*/
     virtual void decodeToSelf(AlpsEncoded& encoded) {}

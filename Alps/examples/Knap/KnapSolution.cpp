@@ -52,7 +52,7 @@ AlpsEncoded*
 KnapSolution::encode() const 
 { 
     //  AlpsEncoded* encoded = new AlpsEncoded(typeid(*this).name());
-    AlpsEncoded* encoded = new AlpsEncoded(ALPS_SOLUTION);
+    AlpsEncoded* encoded = new AlpsEncoded(AlpsKnowledgeTypeSolution);
 
     encoded->writeRep(value_);
     encoded->writeRep(size_);     // Base operand of `->' has non-pointer type

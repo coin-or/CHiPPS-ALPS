@@ -125,7 +125,7 @@ AlpsSubTree::AlpsSubTree()
     broker_(0)
     //eliteSize_(-1)
 { 
-    setType(ALPS_SUBTREE);
+    setType(AlpsKnowledgeTypeSubTree);
     diveNodePool_->setNodeSelection(*diveNodeRule_);
 }
 
@@ -144,7 +144,7 @@ AlpsSubTree::AlpsSubTree(AlpsKnowledgeBroker* kb)
 { 
     assert(kb);
     broker_ = kb;
-    setType(ALPS_SUBTREE);
+    setType(AlpsKnowledgeTypeSubTree);
     
     //eliteSize_ = kb->getDataPool()->
     //getOwnParams()->entry(AlpsParams::eliteSize);
@@ -326,8 +326,8 @@ AlpsSubTree::calculateQuality()
     const int nodeNum = nodePool_->getNumKnowledges();
     const int diveNum = diveNodePool_->getNumKnowledges();
     
-    if ( ((nodeSelectionType == ALPS_SEARCH_BEST) ||
-	  (nodeSelectionType == ALPS_SEARCH_HYBRID)) &&
+    if ( ((nodeSelectionType == AlpsSearchTypeBestFirst) ||
+	  (nodeSelectionType == AlpsSearchTypeHybrid)) &&
 	 (eliteSize == 1) ) {
         if (nodeNum) {
             quality_ = nodePool_->getKnowledge().second;
@@ -399,15 +399,15 @@ AlpsSubTree::calculateQuality()
 
 //#############################################################################
 
-AlpsReturnCode
+AlpsReturnStatus
 AlpsSubTree::exploreSubTree(AlpsTreeNode* root,
 			    int nodeLimit,
 			    double timeLimit,
 			    int & numNodesProcessed, /* Output */
 			    int & depth)             /* Output */
 {
-    AlpsReturnCode status = ALPS_OK;
-    AlpsSolStatus exploreStatus = ALPS_INFEASIBLE;
+    AlpsReturnStatus status = AlpsReturnStatusOk;
+    AlpsExitStatus exploreStatus = AlpsExitStatusInfeasible;
     
     bool betterSolution = false;
 
@@ -430,22 +430,22 @@ AlpsSubTree::exploreSubTree(AlpsTreeNode* root,
                              depth,             /* Output */
                              betterSolution);   /* Output */
 
-    if (exploreStatus == ALPS_NODE_LIMIT) {
-        broker_->setSolStatus(ALPS_NODE_LIMIT);
+    if (exploreStatus == AlpsExitStatusNodeLimit) {
+        broker_->setExitStatus(AlpsExitStatusNodeLimit);
     }
-    else if (exploreStatus == ALPS_TIME_LIMIT) {
-        broker_->setSolStatus(ALPS_TIME_LIMIT);
+    else if (exploreStatus == AlpsExitStatusTimeLimit) {
+        broker_->setExitStatus(AlpsExitStatusTimeLimit);
     }
-    else if (exploreStatus == ALPS_UNBOUNDED) {
-        broker_->setSolStatus(ALPS_UNBOUNDED);
+    else if (exploreStatus == AlpsExitStatusUnbounded) {
+        broker_->setExitStatus(AlpsExitStatusUnbounded);
     }
     else {
         // Search to end.
-        if (broker_->hasKnowledge(ALPS_SOLUTION)) {
-            broker_->setSolStatus(ALPS_OPTIMAL);
+        if (broker_->hasKnowledge(AlpsKnowledgeTypeSolution)) {
+            broker_->setExitStatus(AlpsExitStatusOptimal);
         }
         else {
-            broker_->setSolStatus(ALPS_INFEASIBLE);
+            broker_->setExitStatus(AlpsExitStatusInfeasible);
         }
     }
 
@@ -565,7 +565,8 @@ AlpsSubTree::rampUp(int minNumNodes,
     if (comRampUpNodes) {
         if ( (broker_->getMsgLevel() > 1) &&
              (broker_->getProcType() == AlpsProcessTypeMaster) ) {
-            broker_->messageHandler()->message(ALPS_RAMPUP_MASTER_NODES_AUTO, broker_->messages())
+            broker_->messageHandler()->message(ALPS_RAMPUP_MASTER_NODES_AUTO, 
+					       broker_->messages())
                 << broker_->getProcRank()
                 << requiredNumNodes
                 << npTime
@@ -574,7 +575,8 @@ AlpsSubTree::rampUp(int minNumNodes,
         }
         else if ( (broker_->getHubMsgLevel() > 1) &&
                   (broker_->getProcType() == AlpsProcessTypeHub) ) {
-            broker_->messageHandler()->message(ALPS_RAMPUP_HUB_NODES_AUTO, broker_->messages())
+            broker_->messageHandler()->message(ALPS_RAMPUP_HUB_NODES_AUTO, 
+					       broker_->messages())
                 << broker_->getProcRank()
                 << requiredNumNodes
                 << npTime
@@ -889,7 +891,7 @@ AlpsSubTree::encode() const
 
     nodeNum = static_cast<int> (allNodes.size());
 
-    AlpsEncoded* encoded = new AlpsEncoded(ALPS_SUBTREE);
+    AlpsEncoded* encoded = new AlpsEncoded(AlpsKnowledgeTypeSubTree);
 
     encoded->writeRep(nodeNum);              // First write number of nodes
     
@@ -967,7 +969,7 @@ AlpsSubTree::decode(AlpsEncoded& encoded) const
 	encoded.readRep(buf, size);
 
         // take over ownership of buf
-	encodedNode = new AlpsEncoded(ALPS_NODE, size, buf); 
+	encodedNode = new AlpsEncoded(AlpsKnowledgeTypeNode, size, buf); 
 
 	node = dynamic_cast<AlpsTreeNode* >
             ( (broker_->decoderObject(encodedNode->type()))->decode(*encodedNode) );
@@ -1069,11 +1071,11 @@ AlpsSubTree::decode(AlpsEncoded& encoded) const
 #if 1
 //#############################################################################
 
-AlpsReturnCode
+AlpsReturnStatus
 AlpsSubTree::exploreUnitWork(bool leaveAsIt,
 			     int unitWork,
                              double unitTime,
-                             AlpsSolStatus & exploreStatus, /* Output */
+                             AlpsExitStatus & exploreStatus, /* Output */
                              int & numNodesProcessed,       /* Output */
                              int & depth,                   /* Output */
                              bool & betterSolution)         /* Output */
@@ -1081,7 +1083,7 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
     // Start to count time.
     broker_->subTreeTimer().start();
 
-    AlpsReturnCode status = ALPS_OK;
+    AlpsReturnStatus status = AlpsReturnStatusOk;
     
     bool forceLog = false;
     bool exitIfBetter = false;
@@ -1113,8 +1115,9 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
         betterSolution = false;
     }
     
-    if( broker_->hasKnowledge(ALPS_SOLUTION) ) {
-        oldSolQuality = broker_->getBestKnowledge(ALPS_SOLUTION).second;
+    if( broker_->hasKnowledge(AlpsKnowledgeTypeSolution) ) {
+        oldSolQuality = 
+	   broker_->getBestKnowledge(AlpsKnowledgeTypeSolution).second;
     }    
     
     //------------------------------------------------------
@@ -1123,7 +1126,7 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
 
     if (!leaveAsIt) {
 	activeNode_ = NULL;
-	exploreStatus = ALPS_INFEASIBLE;    
+	exploreStatus = AlpsExitStatusInfeasible;    
 	numNodesProcessed = 0;
     }
     
@@ -1140,11 +1143,11 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
 #endif
    
 	if (numNodesProcessed > unitWork) {
-            exploreStatus = ALPS_NODE_LIMIT;
+            exploreStatus = AlpsExitStatusNodeLimit;
 	    break;
 	}
 	else if (broker_->subTreeTimer().getTime() > unitTime){
-            exploreStatus = ALPS_TIME_LIMIT;
+            exploreStatus = AlpsExitStatusTimeLimit;
 	    break;
 	}
         
@@ -1172,19 +1175,19 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
 	    activeNode_->setActive(false); 
 
 	    // Record the new sol quality if have.
-	    if( broker_->hasKnowledge(ALPS_SOLUTION) ) {
-		newSolQuality = 
-		    broker_->getBestKnowledge(ALPS_SOLUTION).second;
-		if (newSolQuality < oldSolQuality) {
-		    if (exitIfBetter) {
-			betterSolution = true;
-		    }
-		    forceLog = true;
-		    exploreStatus = ALPS_FEASIBLE;
-		    oldSolQuality = newSolQuality;    
-		    // std::cout << "betterSolution value=" << newSolQuality
-		    //  << std::endl;
-		}
+	    if( broker_->hasKnowledge(AlpsKnowledgeTypeSolution) ) {
+	       newSolQuality = 
+		   broker_->getBestKnowledge(AlpsKnowledgeTypeSolution).second;
+	       if (newSolQuality < oldSolQuality) {
+		  if (exitIfBetter) {
+		     betterSolution = true;
+		  }
+		  forceLog = true;
+		  exploreStatus = AlpsExitStatusFeasible;
+		  oldSolQuality = newSolQuality;    
+		  // std::cout << "betterSolution value=" << newSolQuality
+		  //  << std::endl;
+	       }
 	    }
 
             // Print node log.
@@ -1249,9 +1252,9 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
     // 3 better solution: move nodes from diving pool to regular pool
     //------------------------------------------------------
 
-    if ( (exploreStatus == ALPS_TIME_LIMIT) ||
-         (exploreStatus == ALPS_NODE_LIMIT) ||
-         (exploreStatus == ALPS_FEASIBLE) ) {
+    if ( (exploreStatus == AlpsExitStatusTimeLimit) ||
+         (exploreStatus == AlpsExitStatusNodeLimit) ||
+         (exploreStatus == AlpsExitStatusFeasible) ) {
         // Case 2 and 3.
 
 	if (!leaveAsIt) {
@@ -1281,10 +1284,10 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
 #else
 //#############################################################################
 
-AlpsReturnCode
+AlpsReturnStatus
 AlpsSubTree::exploreUnitWork(int unitWork,
                              double unitTime,
-                             AlpsSolStatus & exploreStatus, /* Output */
+                             AlpsExitStatus & exploreStatus, /* Output */
                              int & numNodesProcessed,       /* Output */
                              int & depth,                   /* Output */
                              bool & betterSolution)         /* Output */
@@ -1292,7 +1295,7 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     // Start to count time.
     broker_->subTreeTimer().start();
 
-    AlpsReturnCode status = ALPS_OK;
+    AlpsReturnStatus status = AlpsReturnStatusOk;
     
     int numChildren = 0;
         
@@ -1320,8 +1323,9 @@ AlpsSubTree::exploreUnitWork(int unitWork,
         betterSolution = false;
     }
     
-    if( broker_->hasKnowledge(ALPS_SOLUTION) ) {
-        oldSolQuality=broker_->getBestKnowledge(ALPS_SOLUTION).second;
+    if( broker_->hasKnowledge(AlpsKnowledgeTypeSolution) ) {
+        oldSolQuality =
+	   broker_->getBestKnowledge(AlpsKnowledgeTypeSolution).second;
     }    
 
     //------------------------------------------------------
@@ -1329,7 +1333,7 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     //------------------------------------------------------    
 
     activeNode_ = NULL;
-    exploreStatus = ALPS_INFEASIBLE;    
+    exploreStatus = AlpsExitStatusInfeasible;    
     numNodesProcessed = 0;
 
     while ( (nodePool_->hasKnowledge() || activeNode_) && 
@@ -1339,12 +1343,12 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 	broker_->timer().stop();
 	
 	if (numNodesProcessed > unitWork) {
-            exploreStatus = ALPS_NODE_LIMIT;
+            exploreStatus = AlpsExitStatusNodeLimit;
 	    break;
 	}
 	else if (broker_->subTreeTimer().getTime() > unitTime) {
-            exploreStatus = ALPS_TIME_LIMIT;
-	    // getKnowledgeBroker()->setSolStatus(ALPS_TIME_LIMIT);
+            exploreStatus = AlpsExitStatusTimeLimit;
+	    // getKnowledgeBroker()->setSolStatus(AlpsExitStatusTimeLimit);
 	    break;
 	}
         
@@ -1418,20 +1422,20 @@ AlpsSubTree::exploreUnitWork(int unitWork,
 	    activeNode_->setActive(false); 
 
 	    // Record the new sol quality if have.
-	    if( broker_->hasKnowledge(ALPS_SOLUTION) ) {
-		newSolQuality = 
-		    broker_->getBestKnowledge(ALPS_SOLUTION).second;
-		if (newSolQuality < oldSolQuality) {
-		    if (exitIfBetter) {
-			betterSolution = true;
-		    }
-		    forceLog = true;
-		    exploreStatus = ALPS_FEASIBLE;
-		    oldSolQuality = newSolQuality;
-		    
-		    // std::cout << "betterSolution value=" << newSolQuality
-		    //  << std::endl;
-		}
+	    if( broker_->hasKnowledge(AlpsKnowledgeTypeSolution) ) {
+	       newSolQuality = 
+		  broker_->getBestKnowledge(AlpsKnowledgeTypeSolution).second;
+	       if (newSolQuality < oldSolQuality) {
+		  if (exitIfBetter) {
+		     betterSolution = true;
+		  }
+		  forceLog = true;
+		  exploreStatus = AlpsExitStatusFeasible;
+		  oldSolQuality = newSolQuality;
+		  
+		  // std::cout << "betterSolution value=" << newSolQuality
+		  //  << std::endl;
+	       }
 	    }
 
             // Print node log.
@@ -1481,9 +1485,9 @@ AlpsSubTree::exploreUnitWork(int unitWork,
     // 2 reach limits:    move nodes from diving pool to regular pool
     // 3 better solution: move nodes from diving pool to regular pool
     
-    if ( (exploreStatus == ALPS_TIME_LIMIT) ||
-         (exploreStatus == ALPS_NODE_LIMIT) ||
-         (exploreStatus == ALPS_FEASIBLE) ) {
+    if ( (exploreStatus == AlpsExitStatusTimeLimit) ||
+         (exploreStatus == AlpsExitStatusNodeLimit) ||
+         (exploreStatus == AlpsExitStatusFeasible) ) {
         // Case 2 and 3.
 
         // Move nodes in diving pool to normal pool.

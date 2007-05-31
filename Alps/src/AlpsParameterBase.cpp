@@ -46,9 +46,8 @@ AlpsParameterSet::readFromStream(std::istream& parstream)
 	const int len = static_cast<int> (strlen(line));
 	if (len == MAX_PARAM_LINE_LENGTH - 1) {
 	    sprintf(line, "\
-There's a too long (>= %i characters) line in the parameter file.\n\
+There's a line that's too long (>= %i characters) in the parameter file.\n\
 This is absurd.\n", MAX_PARAM_LINE_LENGTH);
-	    //  throw BCP_fatal_error(line);
 	    throw CoinError("The line is too long.",
 			    "readFromStream", " AlpsParameterSet");
 	}
@@ -218,9 +217,9 @@ AlpsParameterSet::writeToStream(std::ostream& outstream) const
 	const std::string& key = keys_[i].first;
 	const AlpsParameter& par = keys_[i].second;
 	switch (par.type()) {
-	case AlpsCharPar:
+	case AlpsBoolPar:
 	    outstream << key.c_str() << "   "
-		      << static_cast<int>(cpar_[par.index()]) << "\n";
+		      << static_cast<int>(bpar_[par.index()]) << "\n";
 	    break;
 	case AlpsIntPar:
 	    outstream << key.c_str() << "   "

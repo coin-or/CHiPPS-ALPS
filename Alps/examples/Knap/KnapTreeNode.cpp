@@ -125,7 +125,7 @@ KnapTreeNode::process(bool isRoot, bool rampUp)
 	    foundSolution = true;
 	    KnapSolution* ksol = new KnapSolution(n, sol, val,
                             dynamic_cast<KnapModel*>(desc->getModel()));
-	    getKnowledgeBroker()->addKnowledge(ALPS_SOLUTION, ksol, -val);
+	    getKnowledgeBroker()->addKnowledge(AlpsKnowledgeTypeSolution, ksol, -val);
 	    getKnowledgeBroker()->messageHandler()->
 		message(ALPS_S_SEARCH_SOL, getKnowledgeBroker()->messages())
 		    << (getKnowledgeBroker()->getProcRank()) 
@@ -200,7 +200,7 @@ KnapTreeNode::branch()
 AlpsEncoded*
 KnapTreeNode::encode() const 
 {
-    AlpsEncoded* encoded = new AlpsEncoded(ALPS_NODE);
+    AlpsEncoded* encoded = new AlpsEncoded(AlpsKnowledgeTypeNode);
     const KnapNodeDesc* desc = 
 	dynamic_cast<const KnapNodeDesc*>(desc_);
 

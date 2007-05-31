@@ -303,12 +303,12 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** Explore a subtree from subtree pool for certain units of work/time.*/
     // The same subtree will be explored next time if it still have 
     // unexplored nodes. 
-    AlpsReturnCode doOneUnitWork(int unitWork,
-                                 double unitTime, 
-                                 AlpsSolStatus & solStatus,
-                                 int & numNodesProcessed,
-                                 int & depth,
-                                 bool & betterSolution);
+    AlpsReturnStatus doOneUnitWork(int unitWork,
+				   double unitTime, 
+				   AlpsExitStatus & exitStatus,
+				   int & numNodesProcessed,
+				   int & depth,
+				   bool & betterSolution);
     
     /** Processing messages. */
     void processMessages(char *&buffer,
@@ -601,8 +601,8 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** The master queries the quality of the best solution it knowns. */
     virtual double getBestQuality() const {
 	if (globalRank_ == masterRank_) {
-            if (getNumKnowledges(ALPS_SOLUTION) > 0) {
-                return getBestKnowledge(ALPS_SOLUTION).second;   
+            if (getNumKnowledges(AlpsKnowledgeTypeSolution) > 0) {
+                return getBestKnowledge(AlpsKnowledgeTypeSolution).second;   
             }
             else {
                 return ALPS_OBJ_MAX;

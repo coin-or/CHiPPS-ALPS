@@ -61,15 +61,15 @@ private:
 
 protected:
     
-    AlpsKnowledgeType type_;
+    KnowledgeType type_;
 
 public:
     
-    AlpsKnowledge() : encoded_(0), type_(0) {}
+    AlpsKnowledge()	: encoded_(0), type_(AlpsKnowledgeTypeUndefined) {}
     virtual ~AlpsKnowledge() {}
 
-    AlpsKnowledgeType getType() { return type_; }
-    void setType(AlpsKnowledgeType t) { type_ = t; }
+    KnowledgeType getType() { return type_; }
+    void setType(KnowledgeType t) { type_ = t; }
 
     /** This method should encode the content of the object and return a
         pointer to the encoded form. 

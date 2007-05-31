@@ -69,8 +69,8 @@ class AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
     /** The process queries the quality of the best 
 	solution that it finds. */
     virtual double getBestQuality() const {
-	if (AlpsKnowledgeBroker::hasKnowledge(ALPS_SOLUTION)) {
-	    return getBestKnowledge(ALPS_SOLUTION).second;
+	if (AlpsKnowledgeBroker::hasKnowledge(AlpsKnowledgeTypeSolution)) {
+	    return getBestKnowledge(AlpsKnowledgeTypeSolution).second;
         }
 	else {
 	    return ALPS_INC_MAX;
@@ -80,7 +80,7 @@ class AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
     /** The process outputs the best solution and the quality 
 	that it finds to a file or std::out. */
     virtual void printBestSolution(char* outputFile = 0) const {
-	if (getNumKnowledges(ALPS_SOLUTION) <= 0) {
+	if (getNumKnowledges(AlpsKnowledgeTypeSolution) <= 0) {
 	    std::cout << "\nALPS did not find a solution."
 		      << std::endl;
 	    return;
@@ -93,7 +93,7 @@ class AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
 	    os << "Quality = " << getBestQuality();
 	    os << std::endl;
 	    dynamic_cast<AlpsSolution* >
-		(getBestKnowledge(ALPS_SOLUTION).first)->print(os);
+		(getBestKnowledge(AlpsKnowledgeTypeSolution).first)->print(os);
 	}
 	else {                                  // Write to std::cout
 	    std::cout << "============================================" << std::endl;
@@ -101,7 +101,7 @@ class AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
 	    std::cout << "Quality = " << getBestQuality();
 	    std::cout << std::endl;
 	    dynamic_cast<AlpsSolution* >
-		(getBestKnowledge(ALPS_SOLUTION).first)->print(std::cout);
+		(getBestKnowledge(AlpsKnowledgeTypeSolution).first)->print(std::cout);
 	}
     }
     //@}

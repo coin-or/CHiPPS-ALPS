@@ -46,9 +46,10 @@ int main(int argc, char* argv[])
 #endif
 	
 	// 2: Register model, solution, and tree node
-	broker.registerClass(ALPS_MODEL, new KnapModel);
-	broker.registerClass(ALPS_SOLUTION, new KnapSolution(&model));
-	broker.registerClass(ALPS_NODE, new KnapTreeNode(&model));
+	broker.registerClass(AlpsKnowledgeTypeModel, new KnapModel);
+	broker.registerClass(AlpsKnowledgeTypeSolution, 
+			     new KnapSolution(&model));
+	broker.registerClass(AlpsKnowledgeTypeNode, new KnapTreeNode(&model));
 
 	// 3: Formulate the root node
 	// NOTE: root will be deleted by ALPS 
@@ -61,8 +62,8 @@ int main(int argc, char* argv[])
 	//broker.printBestSolution();
         
 #ifdef NF_DEBUG
-	const int numSol = broker.getNumKnowledges(ALPS_SOLUTION);
-	broker.messageHandler()->message(ALPS_SOLUTION_COUNT,broker.messages())
+	const int numSol = broker.getNumKnowledges(AlpsKnowledgeTypeSolution);
+	broker.messageHandler()->message(AlpsKnowledgeTypeSolution_COUNT,broker.messages())
 	    << broker.getProcRank() << numSol << CoinMessageEol;
 #endif
 

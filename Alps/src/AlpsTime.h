@@ -93,7 +93,7 @@ class AlpsTimer
     double wall_;
     
  public:
-    AlpsTimer() : clockType_(ALPS_WALL_CLOCK), limit_(ALPS_DBL_MAX) { reset(); }
+    AlpsTimer() : clockType_(AlpsClockTypeWallClock), limit_(ALPS_DBL_MAX) { reset(); }
     AlpsTimer(double lt) : limit_(lt) { reset(); }
     ~AlpsTimer()  {}
 
@@ -142,9 +142,9 @@ class AlpsTimer
     
     /** Get time depends on clock type. */
     double getTime() {
-      assert( (clockType_ == ALPS_CPU_TIME) ||
-	      (clockType_ == ALPS_WALL_CLOCK) );
-      if (clockType_ == ALPS_CPU_TIME) {
+      assert( (clockType_ == AlpsClockTypeCpu) ||
+	      (clockType_ == AlpsClockTypeWallClock) );
+      if (clockType_ == AlpsClockTypeCpu) {
 	finishCpu_ = AlpsCpuTime();
 	cpu_ = finishCpu_ - startCpu_;
 	return cpu_;

@@ -34,27 +34,13 @@
 #endif
 
 //#############################################################################
-
-/** Clock type */
-#define ALPS_CPU_TIME    1
-#define ALPS_WALL_CLOCK  2
-
+/** The possible values for clock type. */
 //#############################################################################
 
-/** Search strategy
-    -- best-first (0)
-    -- best-first-estimate (1)
-    -- breadth-first (2)
-    -- depth-first (3)
-    -- hybrid (4)
-    Default: hybrid
-*/
-
-#define ALPS_SEARCH_BEST       0
-#define ALPS_SEARCH_BEST_EST   1
-#define ALPS_SEARCH_BREATH     2
-#define ALPS_SEARCH_DEPTH      3
-#define ALPS_SEARCH_HYBRID     4
+enum AlpsClockType {
+   AlpsClockTypeCpu,
+   AlpsClockTypeWallClock
+};
 
 //#############################################################################
 /** The possible stati for the search nodes. */
@@ -73,48 +59,53 @@ enum AlpsNodeStatus {
 //#############################################################################
 
 enum AlpsSearchType {
-    AlpsBestFirst = 0,
-    AlpsBreadthFirst,
-    AlpsDepthFirst,
-    AlpsEstimate,
-    AlpsHybrid
+    AlpsSearchTypeBestFirst = 0,
+    AlpsSearchTypeBreadthFirst,
+    AlpsSearchTypeDepthFirst,
+    AlpsSearchTypeBestEstimate,
+    AlpsSearchTypeHybrid
 };
 
 //#############################################################################
 /** Type of knowledge like solution, node, cut...*/
 //#############################################################################
 
-typedef int AlpsKnowledgeType;
-const int ALPS_MODEL = 1;
-const int ALPS_MODEL_GEN = 2;
-const int ALPS_NODE = 3;
-const int ALPS_SOLUTION = 4;
-const int ALPS_SUBTREE = 5;
+typedef int KnowledgeType;
+
+enum AlpsKnowledgeType{
+   AlpsKnowledgeTypeModel = 0,
+   AlpsKnowledgeTypeModelGen, 
+   AlpsKnowledgeTypeNode,
+   AlpsKnowledgeTypeSolution,
+   AlpsKnowledgeTypeSubTree,
+   AlpsKnowledgeTypeUndefined
+};
 
 //#############################################################################
 // Search return status
 //#############################################################################
 
-enum AlpsSolStatus {
-    ALPS_UNKNOWN = -1,
-    ALPS_OPTIMAL,
-    ALPS_TIME_LIMIT, 
-    ALPS_NODE_LIMIT,
-    ALPS_FEASIBLE,
-    ALPS_INFEASIBLE,
-    ALPS_NO_MEMORY,
-    ALPS_FAILED,
-    ALPS_UNBOUNDED
+enum AlpsExitStatus {
+    AlpsExitStatusUnknown = -1,
+    AlpsExitStatusOptimal,
+    AlpsExitStatusTimeLimit, 
+    AlpsExitStatusNodeLimit,
+    AlpsExitStatusFeasible,
+    AlpsExitStatusInfeasible,
+    AlpsExitStatusNoMemory,
+    AlpsExitStatusFailed,
+    AlpsExitStatusUnbounded
 };
 
 //#############################################################################
 // Return code.
 //#############################################################################
 
-enum AlpsReturnCode {
-    ALPS_OK = 0,
-    ALPS_ERR_NO_INT,  /* No integer variable.*/
-    ALPS_ERR_NO_MEM
+enum AlpsReturnStatus {
+    AlpsReturnStatusOk = 0,
+    AlpsReturnStatusErr,
+    AlpsReturnStatusErrNoInt,  /* No integer variable.*/
+    AlpsReturnStatusErrNoMem
 };
 
 //#############################################################################
@@ -122,9 +113,9 @@ enum AlpsReturnCode {
 //#############################################################################
 
 enum AlpsPhase {
-    ALPS_PHASE_RAMPUP = 0,
-    ALPS_PHASE_SEARCH,
-    ALPS_PHASE_RAMPDOWN
+    AlpsPhaseRampup = 0,
+    AlpsPhaseSearch,
+    AlpasPhaseRampdown
 };
 
 #define ALPS_NODE_PROCESS_TIME  0.0123

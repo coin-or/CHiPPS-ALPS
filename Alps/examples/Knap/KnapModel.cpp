@@ -120,9 +120,9 @@ KnapModel::orderItems()
 AlpsEncoded* 
 KnapModel::encode() const 
 { 
-    AlpsReturnCode status = ALPS_OK;
+    AlpsReturnStatus status = AlpsReturnStatusOk;
     //  AlpsEncoded* encoded = new AlpsEncoded(typeid(*this).name());
-    AlpsEncoded* encoded = new AlpsEncoded(ALPS_MODEL);
+    AlpsEncoded* encoded = new AlpsEncoded(AlpsKnowledgeTypeModel);
 
     //------------------------------------------------------
     // Encode Alps part. 
@@ -172,7 +172,7 @@ KnapModel::decodeToSelf(AlpsEncoded& encoded)
     int* profit;
     int* seq;
     
-    AlpsReturnCode status = ALPS_OK;
+    AlpsReturnStatus status = AlpsReturnStatusOk;
 
     //------------------------------------------------------
     // Decode Alps part. 

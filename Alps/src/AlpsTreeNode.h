@@ -131,7 +131,7 @@ class AlpsTreeNode : public AlpsKnowledge {
 	knowledgeBroker_(0),
 	sentMark_(0),
         diving_(false)
-	{ setType(ALPS_NODE); }
+	{ setType(AlpsKnowledgeTypeNode); }
     
     virtual ~AlpsTreeNode() {
         assert(numChildren_ == 0);
@@ -357,10 +357,10 @@ class AlpsTreeNode : public AlpsKnowledge {
  protected:
     
     /** Pack Alps portion of node into an encoded object. */
-    AlpsReturnCode encodeAlps(AlpsEncoded *encoded) const;
+    AlpsReturnStatus encodeAlps(AlpsEncoded *encoded) const;
     
     /** Unpack Alps portion of node from an encoded object. */
-    AlpsReturnCode decodeAlps(AlpsEncoded &encoded);
+    AlpsReturnStatus decodeAlps(AlpsEncoded &encoded);
 
 };
 #endif

@@ -41,7 +41,7 @@ class AlpsSolution : public AlpsKnowledge {
  public:
     
     /** Default constructor. */
-    AlpsSolution() { setType(ALPS_SOLUTION); }
+    AlpsSolution() { setType(AlpsKnowledgeTypeSolution); }
 
     /** Destructor. */
     virtual ~AlpsSolution() {}

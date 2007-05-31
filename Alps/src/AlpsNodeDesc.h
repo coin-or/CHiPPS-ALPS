@@ -52,16 +52,16 @@ class AlpsNodeDesc {
     inline void setModel(AlpsModel* m) { model_ = m; }
 
     /** Pack node description into an encoded. */
-    virtual AlpsReturnCode encode(AlpsEncoded *encoded) const {
-    	AlpsReturnCode status = ALPS_OK;
+    virtual AlpsReturnStatus encode(AlpsEncoded *encoded) const {
+    	AlpsReturnStatus status = AlpsReturnStatusOk;
 	// Should never be called.
 	assert(0);
 	return status;
     }
 
     /** Unpack a node description from an encoded. Fill member data. */
-    virtual AlpsReturnCode decode(AlpsEncoded &encoded) {
-    	AlpsReturnCode status = ALPS_OK;
+    virtual AlpsReturnStatus decode(AlpsEncoded &encoded) {
+    	AlpsReturnStatus status = AlpsReturnStatusOk;
 	assert(0);
 	return status;
     }

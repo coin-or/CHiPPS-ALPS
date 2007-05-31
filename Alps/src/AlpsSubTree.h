@@ -220,7 +220,7 @@ class AlpsSubTree : public AlpsKnowledge {
     /** Explore the subtree from \c root as the root of the subtree for given
 	number of nodes or time, depending on which one reach first. 
 	Only for serial code. */
-    virtual AlpsReturnCode exploreSubTree(AlpsTreeNode* root,
+    virtual AlpsReturnStatus exploreSubTree(AlpsTreeNode* root,
 					  int nodeLimit,  
 					  double timeLimit,
 					  int & numNodesProcesse, /* Output */
@@ -231,10 +231,10 @@ class AlpsSubTree : public AlpsKnowledge {
 	do not put activeNode_ in pool, do not move nodes in 
 	divePool_ in regular pool.
     */
-    AlpsReturnCode exploreUnitWork(bool leaveAsIt, 
+    AlpsReturnStatus exploreUnitWork(bool leaveAsIt, 
 				   int unitWork,
                                    double unitTime,
-                                   AlpsSolStatus & solStatus,/*not for parallel*/
+                                   AlpsExitStatus & solStatus,/*not for parallel*/
                                    int & numNodesProcessed, /* Output */
                                    int & depth,             /* Output */
                                    bool & betterSolution);  /* Output */

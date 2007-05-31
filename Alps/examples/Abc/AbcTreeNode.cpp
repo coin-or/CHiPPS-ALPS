@@ -180,7 +180,7 @@ AbcTreeNode::process(bool isRoot, bool rampUp)
 	AbcSolution* sol = new AbcSolution(numCols, 
 					   m->bestSolution(),
 					   m->getObjValue());
-	getKnowledgeBroker()->addKnowledge(ALPS_SOLUTION, sol, 
+	getKnowledgeBroker()->addKnowledge(AlpsKnowledgeTypeSolution, sol, 
 					   m->getObjValue());
     }
     
@@ -213,7 +213,8 @@ AbcTreeNode::process(bool isRoot, bool rampUp)
 		AbcSolution* ksol = new AbcSolution(numCols, 
 						    m->getColSolution(), 
 						    val);
-		getKnowledgeBroker()->addKnowledge(ALPS_SOLUTION, ksol, val); 
+		getKnowledgeBroker()->addKnowledge(AlpsKnowledgeTypeSolution, 
+						   ksol, val); 
 	    }
 	    setStatus(AlpsNodeStatusFathomed);
 	}
@@ -233,8 +234,8 @@ AbcTreeNode::process(bool isRoot, bool rampUp)
 			AbcSolution *sol = new AbcSolution(numCols, 
 							   m->bestSolution(),
 							   m->getObjValue());
-			getKnowledgeBroker()->addKnowledge(ALPS_SOLUTION, sol, 
-							   m->getObjValue());
+			getKnowledgeBroker()->addKnowledge(
+                           AlpsKnowledgeTypeSolution, sol, m->getObjValue());
 			
 		    }	
 		    if (action == -1) { 
@@ -413,7 +414,7 @@ AbcTreeNode::encode() const
 #if defined(ABC_DEBUG_MORE)
     std::cout << "AbcTreeNode::encode()--start to encode" << std::endl;
 #endif
-    AlpsEncoded* encoded = new AlpsEncoded(ALPS_NODE);
+    AlpsEncoded* encoded = new AlpsEncoded(AlpsKnowledgeTypeNode);
     AbcNodeDesc* desc = dynamic_cast<AbcNodeDesc*>(desc_);
     AbcModel* model = dynamic_cast<AbcModel*>(desc->getModel());
 

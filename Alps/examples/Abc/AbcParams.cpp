@@ -32,8 +32,7 @@ AbcParams::createKeywordList() {
     //-------------------------------------------------------------------------
     // CharPar
     keys_.push_back(make_pair(std::string("Abc_cutDuringRampup"),
-			      AlpsParameter(AlpsCharPar, 
-					    cutDuringRampup)));
+			      AlpsParameter(AlpsBoolPar, cutDuringRampup)));
     
     //-------------------------------------------------------------------------
     // BoolArrayPar
@@ -41,11 +40,9 @@ AbcParams::createKeywordList() {
     //-------------------------------------------------------------------------
     // IntPar
     keys_.push_back(make_pair(std::string("Abc_statusInterval"),
-			      AlpsParameter(AlpsIntPar, 
-					    statusInterval)));
+			      AlpsParameter(AlpsIntPar, statusInterval)));
     keys_.push_back(make_pair(std::string("Abc_logLevel"),
-			      AlpsParameter(AlpsIntPar, 
-					    logLevel)));
+			      AlpsParameter(AlpsIntPar, logLevel)));
 
     //-------------------------------------------------------------------------
     // DoublePar
