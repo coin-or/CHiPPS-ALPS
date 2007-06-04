@@ -230,6 +230,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\Alps\src\AlpsKnowledge.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\Alps\src\AlpsKnowledgeBroker.h"
 				>
 			</File>
