@@ -44,6 +44,7 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     exitStatus_(AlpsExitStatusUnknown),
     treeSelection_(0),
     nodeSelection_(0),
+    rampUpNodeSelection_(0),
     msgLevel_(2),
     hubMsgLevel_(0),
     workerMsgLevel_(0),
