@@ -165,6 +165,8 @@ Alps/src/AlpsConfig.h -text
 Alps/src/Makefile.am -text
 Alps/src/Makefile.in -text
 Alps/test/Makefile.am -text
+/Externals.release -text
+/Externals.stable -text
 /Makefile.am -text
 /Makefile.in -text
 /README -text
