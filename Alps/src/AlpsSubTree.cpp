@@ -347,21 +347,29 @@ AlpsSubTree::calculateQuality()
 		  << "] has a subtree with no node" << std::endl;
 	assert(nodeNum > 0);
     }
-   
-    std::vector<AlpsTreeNode* > allNodes = 
+
+    // Diving pool has no nodes if not using hybrid search.
+    assert(diveNum == 0);
+
+    if (activeNode_) {
+        if ( (activeNode_->getStatus() != AlpsNodeStatusFathomed) &&
+             (activeNode_->getStatus() != AlpsNodeStatusBranched) ) {
+            quality_ = activeNode_->getQuality();
+        }
+    }
+
+    // Get best quality values of nodes in node pool.
+    std::vector<AlpsTreeNode* > nodeVector = 
 	nodePool_->getCandidateList().getContainer();
-    const int numNodes = getNumNodes();
-    std::vector<AlpsTreeNode* >::iterator pos = allNodes.begin();
+    std::vector<AlpsTreeNode* >::iterator pos = nodeVector.begin();
      
     std::multimap<double, AlpsTreeNode*> eliteList;
     std::multimap<double, AlpsTreeNode*>::iterator posEnd;    
-
-    for (int i = 0; i < numNodes; ++i) {
+    
+    for (int i = 0; i < nodeNum; ++i) {
 	AlpsTreeNode* node = (*pos);
 	double quality = (*pos)->getQuality();
-
 	++pos;
-        
         if (eliteSize == 1) {
             if (quality_ > quality) {
                 quality_ = quality;
@@ -868,7 +876,7 @@ AlpsSubTree::encode() const
     // root of the subtree.
     //------------------------------------------------------
 
-    std::vector<AlpsTreeNode* > allNodes;
+    std::vector<AlpsTreeNode* > nodeVector;
     std::stack<AlpsTreeNode* > nodeStack;
 
     int i = -1, nodeNum = 0; 
@@ -881,7 +889,7 @@ AlpsSubTree::encode() const
     while( !nodeStack.empty() ) {
 	curNode = nodeStack.top();
 	nodeStack.pop();
-	allNodes.push_back(curNode);         // The first is root_ 
+	nodeVector.push_back(curNode);         // The first is root_ 
  
 	numChildren = curNode->getNumChildren();
 	for (i = 0; i < numChildren; ++i) {
@@ -889,7 +897,7 @@ AlpsSubTree::encode() const
 	}
     }
 
-    nodeNum = static_cast<int> (allNodes.size());
+    nodeNum = static_cast<int> (nodeVector.size());
 
     AlpsEncoded* encoded = new AlpsEncoded(AlpsKnowledgeTypeSubTree);
 
@@ -898,7 +906,7 @@ AlpsSubTree::encode() const
     AlpsTreeNode* node = NULL;
   
     for (i = 0; i < nodeNum; ++i) {          // Write all nodes to rep of enc
-	node = allNodes[i];
+	node = nodeVector[i];
 	encoded->writeRep(node->getExplicit()); 
 	AlpsEncoded* enc = node->encode();
 	encoded->writeRep(enc->size());
