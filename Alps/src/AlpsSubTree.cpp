@@ -325,7 +325,14 @@ AlpsSubTree::calculateQuality()
     int nodeSelectionType = broker_->getNodeSelection()->getType();
     const int nodeNum = nodePool_->getNumKnowledges();
     const int diveNum = diveNodePool_->getNumKnowledges();
-    
+
+    // Check if no node.
+    if ( (nodeNum + diveNum <= 0) && (activeNode_ == NULL) ) {
+	std::cout << "PROC[" << getKnowledgeBroker()->getProcRank()
+		  << "] has a subtree with no node" << std::endl;
+	assert(0);
+    }
+
     if ( ((nodeSelectionType == AlpsSearchTypeBestFirst) ||
 	  (nodeSelectionType == AlpsSearchTypeHybrid)) &&
 	 (eliteSize == 1) ) {
@@ -342,12 +349,6 @@ AlpsSubTree::calculateQuality()
 	return quality_;
     }
     
-    if (nodeNum <= 0) {
-	std::cout << "PROC[" << getKnowledgeBroker()->getProcRank()
-		  << "] has a subtree with no node" << std::endl;
-	assert(nodeNum > 0);
-    }
-
     // Diving pool has no nodes if not using hybrid search.
     assert(diveNum == 0);
 
