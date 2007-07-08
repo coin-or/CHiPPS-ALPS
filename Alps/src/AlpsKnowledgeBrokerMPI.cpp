@@ -613,10 +613,6 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	} 
     }
 
-    //------------------------------------------------------
-    // End of Master's Ramp-up and start to search.
-    //------------------------------------------------------
-
     // Master-hub's rampup stops
     rampUpTime_ = masterTimer.getTime();
     
@@ -631,21 +627,22 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
                                    (rampUpTime_-rampUpTimeMaster)/treeSizeByHub);
     }   
 
-    setPhase(AlpsPhaseSearch);
-
     /* Reset to normal selection. */
     rampUpSubTree_->setNodeSelection(nodeSelection_);
 
-#ifdef NF_DEBUG
-    std::cout << "MASTER: after rampup." << std::endl;
-#endif
-    
+
     //======================================================
+    // End of Master's Ramp-up and start to search.
+    //======================================================
+
+    setPhase(AlpsPhaseSearch);
+
+    //------------------------------------------------------
     // MASTER SCHEDULER: 
     // a. Listen and process messages periodically. 
     // b. Do termination check if the conditions are statisfied, otherwise,
     //    balances the workload of hubs.
-    //======================================================
+    //------------------------------------------------------
 
     masterBalancePeriod_ = computeBalancePeriod(masterBalancePeriod_,
                                                 nodeProcessingTime_);
@@ -1475,10 +1472,6 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	}
     }
 
-    //------------------------------------------------------
-    // End of Hub's Ramp-up and start to search.
-    //------------------------------------------------------
-
     rampUpTime_ = hubTimer.getTime();
 
     if (hubMsgLevel_ > 0) {
@@ -1491,19 +1484,23 @@ AlpsKnowledgeBrokerMPI::hubMain()
         nodeProcessingTime_ = rampUpTime_/nodeProcessedNum_;
     }
 
-    setPhase(AlpsPhaseSearch);
-
     /* Reset to normal selection. */
     rampUpSubTree_->setNodeSelection(nodeSelection_);
-    
+
     //======================================================
+    // End of Hub's Ramp-up and start to search.
+    //======================================================
+
+    setPhase(AlpsPhaseSearch);
+    
+    //------------------------------------------------------
     // HUB SCHEDULER:
     // (1) Listen and process messages periodically.
     // (2) If required, do one unit of work.
     // (3) Send work quality, quantity, and msg counts to Master.
     // (4) Balance workload quality of my workers.
     // (5) Do termination check if requred.
-    //======================================================
+    //------------------------------------------------------
 
     hubReportPeriod_ = computeBalancePeriod(hubReportPeriod_, 
 					   nodeProcessingTime_);
@@ -2000,25 +1997,26 @@ AlpsKnowledgeBrokerMPI::workerMain()
                      true);
     // receiveModelKnowlege(clusterComm_);
 
-    //------------------------------------------------------
-    // End of worker's Ramp-up and start to search.
-    //------------------------------------------------------
-
     rampUpTime_ = workerTimer.getTime();
+
+
+    //======================================================
+    // End of worker's Ramp-up and start to search.
+    //======================================================
 
     if (workerMsgLevel > 0) {
         messageHandler()->message(ALPS_SEARCH_WORKER_START, messages())
             <<globalRank_ << CoinMessageEol;
     }
-    
+
     setPhase(AlpsPhaseSearch);
 
-    //======================================================
+    //------------------------------------------------------
     // WORKER SCHEDULER:
     // (1) Listen and process messages until no message is in msg queue.
     // (2) Do one unit of work.
     // (3) Report status or check termination.
-    //======================================================
+    //------------------------------------------------------
 
     MPI_Request request;
     
@@ -2130,7 +2128,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
                     updateWorkloadInfo();
                     sendErrorCodeToMaster(errorCode);   
                 }                
-
+		
 		// Adjust workingSubTree_ if it 'much' worse than the best one
                 changeWorkingSubTree(changeWorkThreshold);
 		
@@ -2146,15 +2144,14 @@ AlpsKnowledgeBrokerMPI::workerMain()
 		}
 		
 		// Share generated knowledge.
-                // TODO: not working, too many messages.
 		sendModelKnowledge(MPI_COMM_WORLD, // Comm
                                    globalRank_);   // Receiver(no use)
 	    } 
 	    else {  
                 // Worker is idle.
-	      if (!isIdle) {
-		  workerTimer.start();
-		  isIdle = true;
+		if (!isIdle) {
+		    workerTimer.start();
+		    isIdle = true;
 		}
 	    }
             
