@@ -4521,22 +4521,26 @@ AlpsKnowledgeBrokerMPI::sendSubTree(const int receiver,
     int position = 0;
 
     AlpsEncoded* enc = st->encode();
-
+    
     packEncoded(enc, buf, size, position, MPI_COMM_WORLD);
+
+#if 0//def NF_DEBUG
+        std::cout << "WORKER["<< globalRank_ 
+                  << "]: donor a subtree to PROC " << receiver
+                  << "; buf pos = " << position 
+                  << "; buf size = " << size 
+		  << "; largeSize_ = " << largeSize_ <<  std::endl; 
+#endif
 
     if (size <= largeSize_) {
         sendBuf(buf, size, position, receiver, tag, MPI_COMM_WORLD);
         success = true;
-#ifdef NF_DEBUG
-        std::cout << "WORKER["<< globalRank_ 
-                  << "]: donor a subtree to PROC " << receiver
-                  << "; buf pos = " << position 
-                  << "; buf size = " << size <<  std::endl; 
-#endif
     }
     else {
-        // Must not happen.
-        assert(0);
+        // msg size is larger than buffer size. Must not happen.
+	success = false;
+	std::cout<<"WARNING: Subtree size is larger than message buffer size, will split it."
+		 <<std::endl;
     }
     
     if (buf) {
@@ -6124,8 +6128,8 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(MPI_Comm comm, int receiver)
     
     //std::cout << "----- 1. position = " << position << std::endl;
     
-    // Encode generated model knowledge
-    AlpsEncoded *encoded = model_->encodeKnowlegeShared();
+    // Retrieve and pack generated model knowledge
+    AlpsEncoded *encoded = model_->packSharedKnowlege();
     
     if (encoded) {
         hasKnowledge = true;
@@ -6253,8 +6257,8 @@ AlpsKnowledgeBrokerMPI::receiveModelKnowledge(MPI_Comm comm)
         // Record actuall buffer size for broadcasting
         modelGenPos_ = position;
         
-        // decode knowledge from larger buffer.
-        model_->decodeKnowledgeShared(*encodedModelGen);
+        // Upack and store knowledge from larger buffer.
+        model_->unpackSharedKnowledge(*encodedModelGen);
 
         delete encodedModelGen; 
         encodedModelGen = 0;
