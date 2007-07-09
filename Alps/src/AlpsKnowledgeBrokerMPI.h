@@ -215,6 +215,15 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
      *
      */
     //@{
+    /** Master timer */
+    AlpsTimer masterTimer_;
+
+    /** Hub timer */
+    AlpsTimer hubTimer_;
+
+    /** Worker timer */
+    AlpsTimer workerTimer_;
+    
     /** The time spent in ramp up. */
     double rampUpTime_;
 
@@ -314,8 +323,15 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     void processMessages(char *&buffer,
                          MPI_Status &status, 
                          MPI_Request &request);
-    
-    
+
+    /** Static load balancing: Root Initialization */
+    void rootInitMaster(AlpsTreeNode* root);
+    void rootInitHub();
+    void rootInitWorker();
+
+    /** Static load balancing: sweep */
+    void sweep();
+
     //------------------------------------------------------
 
     /** @name Load balancing member functions
