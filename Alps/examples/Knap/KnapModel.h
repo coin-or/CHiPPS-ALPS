@@ -70,9 +70,12 @@ class KnapModel : public AlpsModel {
 
   /** Read in Alps and Knap parameters. */
   virtual void readParameters(const int argnum, const char * const * arglist){
-      std::cout << "Reading in ALPS parameters ..." << std::endl;
       AlpsPar_->readFromArglist(argnum, arglist);
-      std::cout << "Reading in KNAP parameters ..." << std::endl;
+      int msgLevel = AlpsPar_->entry(AlpsParams::msgLevel);
+      if (msgLevel > 0) {
+	  std::cout << "Reading in KNAP parameters ..." << std::endl;
+	  std::cout << "Reading in ALPS parameters ..." << std::endl;
+      }
       KnapPar_->readFromArglist(argnum, arglist);
   }
    

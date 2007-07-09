@@ -38,11 +38,23 @@ class AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
     AlpsKnowledgeBrokerSerial& operator=(const AlpsKnowledgeBrokerSerial&);
 
  public:
+    /** Default constructor. */
     AlpsKnowledgeBrokerSerial() 
 	: 
 	AlpsKnowledgeBroker() 
 	{} 
 
+    /** Userful constructor. 
+	Note need read in parameters and data seperately. */
+    AlpsKnowledgeBrokerSerial(AlpsModel& model) 
+	: 
+	AlpsKnowledgeBroker() 
+	{
+	    initializeSearch(0, NULL, model); 
+	}   
+
+    /** Userful constructor. 
+	Read in parameters from arguments. Also read in data. */
     AlpsKnowledgeBrokerSerial(int argc, 
 			      char* argv[], 
 			      AlpsModel& model) 
@@ -51,6 +63,10 @@ class AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
 	{ 
 	    initializeSearch(argc, argv, model); 
 	}
+
+
+    /** Destructor. */
+    virtual ~AlpsKnowledgeBrokerSerial() {}
 
     //-------------------------------------------------------------------------
     /** @name Report the search results.

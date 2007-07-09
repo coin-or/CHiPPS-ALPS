@@ -32,11 +32,6 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
 					    char* argv[], 
 					    AlpsModel& model) {
 
-    if (msgLevel_ > 0) {
-        messageHandler()->message(ALPS_S_VERSION, messages())
-            << CoinMessageEol;
-    }
-    
     // Store a pointer to model
     model.setKnowledgeBroker(this);
     model_ = &model;
@@ -46,6 +41,23 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
     //--------------------------------------------------
 
     model.readParameters(argc, argv);
+
+    //--------------------------------------------------
+    // Set up messege, logfile.
+    //--------------------------------------------------
+
+    msgLevel_ = model_->AlpsPar()->entry(AlpsParams::msgLevel);
+    messageHandler()->setLogLevel(msgLevel_);
+    
+    logFileLevel_ = model_->AlpsPar()->entry(AlpsParams::logFileLevel);
+    if (logFileLevel_ > 0) {    // Require log file
+	logfile_ = model_->AlpsPar()->entry(AlpsParams::logFile);
+    }
+    
+    if (msgLevel_ > 0) {
+        messageHandler()->message(ALPS_S_VERSION, messages())
+            << CoinMessageEol;
+    }
 
     //--------------------------------------------------
     // If there two args: xecutable + instance.
@@ -137,18 +149,6 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
     model.preprocess();
     model.setupSelf();
 
-    //--------------------------------------------------
-    // Set up messege, logfile.
-    //--------------------------------------------------
-
-    msgLevel_ = model_->AlpsPar()->entry(AlpsParams::msgLevel);
-    messageHandler()->setLogLevel(msgLevel_);
-    
-    logFileLevel_ = model_->AlpsPar()->entry(AlpsParams::logFileLevel);
-    if (logFileLevel_ > 0) {    // Require log file
-	logfile_ = model_->AlpsPar()->entry(AlpsParams::logFile);
-    }
-    
     //--------------------------------------------------
     // Set up solution pool and subtree pool, set comparision.
     //--------------------------------------------------
