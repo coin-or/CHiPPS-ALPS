@@ -5881,6 +5881,9 @@ void
 AlpsKnowledgeBrokerMPI::printBestSolution(char* outputFile) const 
 {
     if (globalRank_ == masterRank_) {
+
+	if (msgLevel_ < 1) return;
+
 	if (getNumKnowledges(AlpsKnowledgeTypeSolution) <= 0) {
 	    std::cout << "\nALPS did not find a solution."
 		      << std::endl;

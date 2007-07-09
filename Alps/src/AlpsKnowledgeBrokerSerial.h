@@ -96,6 +96,9 @@ class AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
     /** The process outputs the best solution and the quality 
 	that it finds to a file or std::out. */
     virtual void printBestSolution(char* outputFile = 0) const {
+
+	if (msgLevel_ < 1) return;
+	
 	if (getNumKnowledges(AlpsKnowledgeTypeSolution) <= 0) {
 	    std::cout << "\nALPS did not find a solution."
 		      << std::endl;
