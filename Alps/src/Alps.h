@@ -142,6 +142,9 @@ enum AlpsPhase {
 #define ALPS_ZERO             1.0e-14
 #define ALPS_GEN_TOL          1.0e-6
 #define ALPS_QUALITY_TOL      1.0e-5
+#define ALPS_SMALL_3          1.0e-3
+#define ALPS_SMALL_4          1.0e-4
+#define ALPS_SMALL_5          1.0e-5
 
 //#############################################################################
 
