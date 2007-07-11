@@ -80,7 +80,8 @@ public:
     virtual AlpsEncoded* encode() const;
 
     /** Pack into a encode object. */
-    virtual AlpsReturnStatus encode(AlpsEncoded *encoded){}
+    virtual AlpsReturnStatus encode(AlpsEncoded *encoded)
+	{ return AlpsReturnStatusOk; }
     
     /** This method should decode and return a pointer to a \em brand \em new
         \em object, i.e., the method must create a new object on the heap from

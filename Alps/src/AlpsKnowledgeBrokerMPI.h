@@ -255,6 +255,9 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** Indicate whether a worker need to as for work from its hub */
     bool blockAskForWork_;
 
+    /** Buffer attached to MPI when sharing generated knowledge. */
+    char *attachBuffer_;
+    
     /** Large message buffer. */
     char *largeBuffer_;
 
@@ -474,15 +477,6 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** Receive a subtree from the sender process and add it into
 	the subtree pool.*/
     void receiveSubTree(char*& buf, int sender, MPI_Status* status);
-
-    /** Send a buffer to the target process. */
-    // Only used in sendSubTree().
-    void sendBuf(char*& buf, 
-		 int size, 
-		 int position, 
-		 const int target, 
-		 const int tag, 
-		 MPI_Comm comm);
 
     /** Send the size and content of a buffer to the target process. */
     // NOTE: comm is hubComm_ or clusterComm_.
