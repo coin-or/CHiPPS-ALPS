@@ -78,6 +78,9 @@ public:
         used when the memory of data members is not continously allocated,
         for example, some data members are pointers, STL set, map, etc. */
     virtual AlpsEncoded* encode() const;
+
+    /** Pack into a encode object. */
+    virtual AlpsReturnStatus encode(AlpsEncoded *encoded){}
     
     /** This method should decode and return a pointer to a \em brand \em new
         \em object, i.e., the method must create a new object on the heap from
