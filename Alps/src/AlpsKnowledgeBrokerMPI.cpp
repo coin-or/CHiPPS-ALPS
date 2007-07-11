@@ -5839,11 +5839,12 @@ AlpsKnowledgeBrokerMPI::~AlpsKnowledgeBrokerMPI()
 	delete [] hubNodeProcesseds_;
 	hubNodeProcesseds_ = 0;
     }
-
+#if 0
     if (attachBuffer_) {
         delete [] attachBuffer_;
         attachBuffer_ = 0;
     }
+#endif
     if (largeBuffer_) {
         delete [] largeBuffer_;
         largeBuffer_ = 0;
