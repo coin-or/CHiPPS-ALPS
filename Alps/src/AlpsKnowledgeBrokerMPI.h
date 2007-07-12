@@ -95,6 +95,9 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** Whether hub should also work as a worker. */
     bool hubWork_;
+
+    /** Send subtree request. */
+    MPI_Request subTreeRequest_;
     //@}
 
     /** @name Incumbent data

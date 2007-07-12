@@ -2573,7 +2573,7 @@ AlpsKnowledgeBrokerMPI::donateWork(char*& anyBuffer,
 
     char* dummyBuf = 0;
     double receiverWorkload = 0.0;
-    bool hasSentSubTree = false;
+    bool sentSuccessful = false;
     AlpsSubTree* aSubTree = 0;    
 
 #ifdef NF_DEBUG_MORE
@@ -2583,7 +2583,10 @@ AlpsKnowledgeBrokerMPI::donateWork(char*& anyBuffer,
 	<< CoinMessageEol;
 #endif
 
-    // Find out to which process I should donate
+    //------------------------------------------------------
+    // Find out to which process I should donate.
+    //------------------------------------------------------
+
     if (recvID == -1) {
 	MPI_Unpack(anyBuffer, size, &pos, &receiverID, 1, MPI_INT, MPI_COMM_WORLD);
 	MPI_Unpack(anyBuffer, size, &pos, &receiverWorkload, 1, MPI_DOUBLE, 
@@ -2592,6 +2595,17 @@ AlpsKnowledgeBrokerMPI::donateWork(char*& anyBuffer,
     else {
 	receiverID = recvID;
 	receiverWorkload = recvWL;
+    }
+
+
+    //------------------------------------------------------
+    // Check if previous sending subtree has completed.
+    //------------------------------------------------------
+
+    int alreadySent = true;
+    if (subTreeRequest_ != MPI_REQUEST_NULL){
+	MPI_Status sentStatus;
+	MPI_Test(&subTreeRequest_, &alreadySent, &sentStatus);
     }
     
     //------------------------------------------------------
@@ -2602,78 +2616,80 @@ AlpsKnowledgeBrokerMPI::donateWork(char*& anyBuffer,
     // Case 3: Otherwise, sent a empty msg.
     //------------------------------------------------------
 
-    if (subTreePool_->hasKnowledge()) {   // Case 1
-	aSubTree = 
-	    dynamic_cast<AlpsSubTree* >(subTreePool_->getKnowledge().first);
-
-	hasSentSubTree = sendSubTree(receiverID, aSubTree, tag);
+    if (alreadySent) {
+	if (subTreePool_->hasKnowledge()) {   // Case 1
+	    aSubTree = dynamic_cast<AlpsSubTree* >
+		(subTreePool_->getKnowledge().first);
+	    sentSuccessful = sendSubTree(receiverID, aSubTree, tag);
         
-        if (hasSentSubTree) {
-            ++(psStats_.subtreeWhole_);
-            
-            subTreePool_->popKnowledge();
-            // Since sent to other process, delete it.
-            delete aSubTree;
-            aSubTree = NULL;
-            if (msgLevel_ > 100) {
-                messageHandler()->message(ALPS_DONATE_WHOLE, messages()) 
-                    << globalRank_ << receiverID << status->MPI_TAG << CoinMessageEol;
-            }
-        }
-        else {
-            // Split subtree.
-            aSubTree = aSubTree->splitSubTree(treeSize);
-            if (treeSize > ALPS_GEN_TOL) {
-                ++(psStats_.subtreeSplit_);
-                
-                hasSentSubTree = sendSubTree(receiverID, aSubTree, tag);
-                assert(hasSentSubTree == true);
-                
-                // Since sent to other process, delete it.
-                delete aSubTree;
-                aSubTree = NULL;
-            }
+	    if (sentSuccessful) {
+		++(psStats_.subtreeWhole_);
+		
+		subTreePool_->popKnowledge();
+		// Since sent to other process, delete it.
+		delete aSubTree;
+		aSubTree = NULL;
+		if (msgLevel_ > 100) {
+		    messageHandler()->message(ALPS_DONATE_WHOLE, messages()) 
+			<< globalRank_ << receiverID 
+			<< status->MPI_TAG << CoinMessageEol;
+		}
+	    }
+	    else {
+		// Split subtree.
+		aSubTree = aSubTree->splitSubTree(treeSize);
+		if (treeSize > ALPS_GEN_TOL) {
+		    ++(psStats_.subtreeSplit_);
+		    sentSuccessful = sendSubTree(receiverID, aSubTree, tag);
+		    assert(sentSuccessful == true);
+		    // Since sent to other process, delete it.
+		    delete aSubTree;
+		    aSubTree = NULL;
+		}
 
-            if (msgLevel_ > 100) {
-                messageHandler()->message(ALPS_DONATE_SPLIT, messages()) 
-                    << globalRank_ << receiverID << status->MPI_TAG 
-                    << CoinMessageEol;
-            }
-        }
-    }
-    else if (workingSubTree_ != 0) {     // Case 2
-	aSubTree = workingSubTree_->splitSubTree(treeSize);
-	if (treeSize > ALPS_GEN_TOL) {
-            ++(psStats_.subtreeSplit_);
-
-	    hasSentSubTree = sendSubTree(receiverID, aSubTree, tag);
-            assert(hasSentSubTree == true);
-
-	    // Since sent to other process, delete it.
-	    delete aSubTree;
-            aSubTree = NULL;
-
-            if (msgLevel_ > 100) {
-                messageHandler()->message(ALPS_DONATE_SPLIT, messages()) 
-                    << globalRank_ << receiverID << status->MPI_TAG 
-                    << CoinMessageEol;
-            }
+		if (msgLevel_ > 100) {
+		    messageHandler()->message(ALPS_DONATE_SPLIT, messages())
+			<< globalRank_ << receiverID << status->MPI_TAG 
+			<< CoinMessageEol;
+		}
+	    }
 	}
-    }   
+	else if (workingSubTree_ != 0) {     // Case 2
+	    aSubTree = workingSubTree_->splitSubTree(treeSize);
+	    if (treeSize > ALPS_GEN_TOL) {
+		++(psStats_.subtreeSplit_);
+		
+		sentSuccessful = sendSubTree(receiverID, aSubTree, tag);
+		assert(sentSuccessful == true);
+		
+		// Since sent to other process, delete it.
+		delete aSubTree;
+		aSubTree = NULL;
+		
+		if (msgLevel_ > 100) {
+		    messageHandler()->message(ALPS_DONATE_SPLIT, messages()) 
+			<< globalRank_ << receiverID << status->MPI_TAG 
+			<< CoinMessageEol;
+		}
+	    }
+	}   
+    }
 
-    if (!hasSentSubTree) {               // Case 3
+    if (!sentSuccessful && !alreadySent) {               // Case 3
 #ifdef NF_DEBUG
 	std::cout << "donateWork(): " << globalRank_ << "has nothing send to " 
 		  << receiverID << std::endl;
 #endif
-
         ++(psStats_.donateFail_);
 
-	MPI_Send(dummyBuf, 0, MPI_PACKED, receiverID, tag, MPI_COMM_WORLD);
+	//MPI_Send(dummyBuf, 0, MPI_PACKED, receiverID, tag, MPI_COMM_WORLD);
+	MPI_Isend(dummyBuf, 0, MPI_PACKED, receiverID, tag, 
+		  MPI_COMM_WORLD, &subTreeRequest_); // request is overrided.
 
         if (msgLevel_ > 100) {
             messageHandler()->message(ALPS_DONATE_FAIL, messages()) 
-                << globalRank_ << receiverID << status->MPI_TAG << CoinMessageEol;
+                << globalRank_ << receiverID << status->MPI_TAG 
+		<< CoinMessageEol;
         }
     }
     else {
@@ -4402,9 +4418,10 @@ AlpsKnowledgeBrokerMPI::receiveSubTree(char*& bufLarge,
 	addKnowledge(AlpsKnowledgeTypeSubTree, subTree, subTree->getQuality());
 
 
-#ifdef NF_DEBUG_MORE
+#if 1
 	std::cout << "WORKER " << globalRank_ << " : received a subtree from " 
-		  << sender << "; num of subtrees = " 
+		  << sender << " of size " << count
+		  << "; num of subtrees = "
 		  << getNumKnowledges(AlpsKnowledgeTypeSubTree) <<std::endl; 
 #endif
 
@@ -4501,7 +4518,6 @@ AlpsKnowledgeBrokerMPI::sendSubTree(const int receiver,
     int position = 0;
 
     AlpsEncoded* enc = st->encode();
-    
     packEncoded(enc, buf, size, position, MPI_COMM_WORLD);
 
 #if 1
@@ -4515,7 +4531,20 @@ AlpsKnowledgeBrokerMPI::sendSubTree(const int receiver,
     assert(size > 0);
 	
     if (size <= largeSize_) {
+	// Attach buffer 
+#if 0
+	if (!attachBuffer_) {
+	    int attachSize = largeSize_ + MPI_BSEND_OVERHEAD;
+	    attachBuffer_ =  new char [attachSize];
+	    MPI_Buffer_attach(attachBuffer_, attachSize);
+	}
+	//MPI_Bsend(buf, position, MPI_PACKED, receiver, tag, MPI_COMM_WORLD);
 	MPI_Send(buf, position, MPI_PACKED, receiver, tag, MPI_COMM_WORLD);
+#endif
+	MPI_Request request;
+	MPI_Isend(buf, position, MPI_PACKED, receiver, tag, 
+		  MPI_COMM_WORLD, &request);
+
         success = true;
     }
     else {
@@ -5726,6 +5755,7 @@ AlpsKnowledgeBrokerMPI::init()
     processType_ = AlpsProcessTypeAny;
     processTypeList_ = NULL;
     hubWork_ = false;
+    subTreeRequest_ = MPI_REQUEST_NULL;
     incumbentValue_ = ALPS_INC_MAX;
     incumbentID_ = 0;
     updateIncumbent_ = false;
@@ -6157,12 +6187,14 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(MPI_Comm comm, int receiver)
 
         assert(comm == MPI_COMM_WORLD);
 
+#if 0
 	// Attach buffer 
 	if (!attachBuffer_) {
 	    int attachSize = 2 * (largeSize_  + MPI_BSEND_OVERHEAD );
 	    attachBuffer_ =  new char [attachSize];
 	    MPI_Buffer_attach(attachBuffer_, attachSize);
 	}
+#endif
 	
 #if 1   
         std::cout << "---- Process[" << globalRank_ 
@@ -6177,21 +6209,27 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(MPI_Comm comm, int receiver)
         if (leftSeq != -1) {
             int leftRank = sequenceToRank(globalRank_, leftSeq);
 	    // Buffered send
-	    MPI_Bsend(largeBuffer2_, position, MPI_PACKED, leftRank, 
-		      AlpsMsgModelGenSearch, comm);
+	    //MPI_Bsend(largeBuffer2_, position, MPI_PACKED, leftRank, 
+	    //      AlpsMsgModelGenSearch, comm);
 	    //MPI_Send(largeBuffer2_, position, MPI_PACKED, leftRank, 
-	    //   AlpsMsgModelGenSearch, comm);
+	    //     AlpsMsgModelGenSearch, comm);
+	    MPI_Request leftRequest;
+	    MPI_Isend(largeBuffer2_, position, MPI_PACKED, leftRank,
+		      AlpsMsgModelGenSearch, comm, &leftRequest);
             incSendCount("sendModelKnowledge during search");        
         }
         
         if (rightSeq != -1) {
             int rightRank = sequenceToRank(globalRank_, rightSeq);
 	    // Buffered send
- 	    MPI_Bsend(largeBuffer2_, position, MPI_PACKED, rightRank, 
-		      AlpsMsgModelGenSearch, comm);
+ 	    //MPI_Bsend(largeBuffer2_, position, MPI_PACKED, rightRank, 
+	    //      AlpsMsgModelGenSearch, comm);
  	    //MPI_Send(largeBuffer2_, position, MPI_PACKED, rightRank, 
 	    //     AlpsMsgModelGenSearch, comm);
-            incSendCount("sendModelKnowledge during search");
+	    MPI_Request rightRequest;
+	    MPI_Isend(largeBuffer2_, position, MPI_PACKED, rightRank,
+		      AlpsMsgModelGenSearch, comm, &rightRequest);
+	    incSendCount("sendModelKnowledge during search");
         }
     }
 }
