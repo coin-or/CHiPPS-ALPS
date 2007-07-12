@@ -2596,7 +2596,7 @@ AlpsKnowledgeBrokerMPI::donateWork(char*& anyBuffer,
 	receiverID = recvID;
 	receiverWorkload = recvWL;
     }
-
+    
 
     //------------------------------------------------------
     // Check if previous sending subtree has completed.
@@ -2606,6 +2606,18 @@ AlpsKnowledgeBrokerMPI::donateWork(char*& anyBuffer,
     if (subTreeRequest_ != MPI_REQUEST_NULL){
 	MPI_Status sentStatus;
 	MPI_Test(&subTreeRequest_, &alreadySent, &sentStatus);
+	if (alreadySent) {
+	    std::cout << "++++ Process[" << globalRank_ 
+		      << "] have completed sending a subtree." << std::endl;
+	}
+	else {
+	    std::cout << "++++ Process[" << globalRank_
+		      << "] haven't completed sending a subtree." << std::endl;
+	}
+    }
+    else {
+	 std::cout << "++++ Process[" << globalRank_ 
+		   << "] ready to sent a subtree." << std::endl;
     }
     
     //------------------------------------------------------
@@ -2675,10 +2687,10 @@ AlpsKnowledgeBrokerMPI::donateWork(char*& anyBuffer,
 	}   
     }
 
-    if (!sentSuccessful && !alreadySent) {               // Case 3
-#ifdef NF_DEBUG
+    if (!sentSuccessful || !alreadySent) {               // Case 3
+#if 1
 	std::cout << "donateWork(): " << globalRank_ << "has nothing send to " 
-		  << receiverID << std::endl;
+		  << receiverID <<"; alreadySent "<<alreadySent<< std::endl;
 #endif
         ++(psStats_.donateFail_);
 
@@ -4509,7 +4521,7 @@ AlpsKnowledgeBrokerMPI::sendSubTree(const int receiver,
 {
 #ifdef NF_DEBUG
     std::cout << "WORKER["<< globalRank_ 
-	      << "]: start to donor a subtree to PROC " << receiver << std::endl;
+	      << "]: start to donate a subtree to PROC " << receiver << std::endl;
 #endif
 
     bool success = false;
@@ -4533,17 +4545,16 @@ AlpsKnowledgeBrokerMPI::sendSubTree(const int receiver,
     if (size <= largeSize_) {
 	// Attach buffer 
 #if 0
+	//MPI_Bsend(buf, position, MPI_PACKED, receiver, tag, MPI_COMM_WORLD);
+	MPI_Send(buf, position, MPI_PACKED, receiver, tag, MPI_COMM_WORLD);
+#endif
 	if (!attachBuffer_) {
 	    int attachSize = largeSize_ + MPI_BSEND_OVERHEAD;
 	    attachBuffer_ =  new char [attachSize];
 	    MPI_Buffer_attach(attachBuffer_, attachSize);
 	}
-	//MPI_Bsend(buf, position, MPI_PACKED, receiver, tag, MPI_COMM_WORLD);
-	MPI_Send(buf, position, MPI_PACKED, receiver, tag, MPI_COMM_WORLD);
-#endif
-	MPI_Request request;
-	MPI_Isend(buf, position, MPI_PACKED, receiver, tag, 
-		  MPI_COMM_WORLD, &request);
+	MPI_Ibsend(buf, position, MPI_PACKED, receiver, tag, 
+		   MPI_COMM_WORLD, &subTreeRequest_);
 
         success = true;
     }
