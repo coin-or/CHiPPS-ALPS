@@ -5767,6 +5767,8 @@ AlpsKnowledgeBrokerMPI::init()
     processTypeList_ = NULL;
     hubWork_ = false;
     subTreeRequest_ = MPI_REQUEST_NULL;
+    modelKnowRequest_ = MPI_REQUEST_NULL;
+    forwardRequest_ = MPI_REQUEST_NULL;
     incumbentValue_ = ALPS_INC_MAX;
     incumbentID_ = 0;
     updateIncumbent_ = false;
@@ -6100,6 +6102,18 @@ void
 AlpsKnowledgeBrokerMPI::forwardModelKnowledge()
 {
     assert(modelGenPos_ > 0);
+
+    if (forwardRequest_ != MPI_REQUEST_NULL) {
+	// Test if previous sending has completed.
+	int alreadySent = false;
+	MPI_Status sentStatus;
+	MPI_Test(&forwardRequest_, &alreadySent, &sentStatus);
+	if (!alreadySent) { // Previous sending hasn't complete
+	    std::cout << "++++ Previous forwardModelKnowledge hasn't finished." 
+		      << std::endl;
+	    return;
+	}
+    }
     
     // Binary forewarding
     int mySeq = rankToSequence(modelGenID_, globalRank_);
@@ -6118,8 +6132,8 @@ AlpsKnowledgeBrokerMPI::forwardModelKnowledge()
     if (leftSeq != -1) {
         // Note: modelGenPos_ is set by recieveModelKnowledge
         int leftRank = sequenceToRank(modelGenID_, leftSeq);
-        MPI_Send(largeBuffer_, modelGenPos_, MPI_PACKED, leftRank, 
-                 AlpsMsgModelGenSearch, MPI_COMM_WORLD);
+        MPI_Isend(largeBuffer_, modelGenPos_, MPI_PACKED, leftRank, 
+		  AlpsMsgModelGenSearch, MPI_COMM_WORLD, &forwardRequest_);
         std::cout << "++++ forwardModelKnowledge: leftRank = " 
                   << leftRank << std::endl;
         
@@ -6130,8 +6144,8 @@ AlpsKnowledgeBrokerMPI::forwardModelKnowledge()
         int rightRank = sequenceToRank(modelGenID_, rightSeq);
         std::cout << "++++ forwardModelKnowledge: rightRank = " 
                   << rightRank << std::endl;
-        MPI_Send(largeBuffer_, modelGenPos_, MPI_PACKED, rightRank, 
-                 AlpsMsgModelGenSearch, MPI_COMM_WORLD);
+        MPI_Isend(largeBuffer_, modelGenPos_, MPI_PACKED, rightRank, 
+		  AlpsMsgModelGenSearch, MPI_COMM_WORLD, &forwardRequest_);
         incSendCount("forwardModelKnowledge during search");
     }
 }
@@ -6195,8 +6209,16 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(MPI_Comm comm, int receiver)
         }
     }
     else if ( hasKnowledge && (phase_ == AlpsPhaseSearch) ) {
-
         assert(comm == MPI_COMM_WORLD);
+	if (modelKnowRequest_ != MPI_REQUEST_NULL) {
+	    // Test if previous sending has completed.
+	    int alreadySent = false;
+	    MPI_Status sentStatus;
+	    MPI_Test(&modelKnowRequest_, &alreadySent, &sentStatus);
+	    if (!alreadySent) { // Previous sending hasn't complete
+		return;
+	    }
+	}
 
 #if 0
 	// Attach buffer 
