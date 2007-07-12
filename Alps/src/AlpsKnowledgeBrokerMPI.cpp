@@ -5767,8 +5767,10 @@ AlpsKnowledgeBrokerMPI::init()
     processTypeList_ = NULL;
     hubWork_ = false;
     subTreeRequest_ = MPI_REQUEST_NULL;
-    modelKnowRequest_ = MPI_REQUEST_NULL;
-    forwardRequest_ = MPI_REQUEST_NULL;
+    modelKnowRequestL_ = MPI_REQUEST_NULL;
+    modelKnowRequestR_ = MPI_REQUEST_NULL;
+    forwardRequestL_ = MPI_REQUEST_NULL;
+    forwardRequestR_ = MPI_REQUEST_NULL;
     incumbentValue_ = ALPS_INC_MAX;
     incumbentID_ = 0;
     updateIncumbent_ = false;
@@ -6103,18 +6105,6 @@ AlpsKnowledgeBrokerMPI::forwardModelKnowledge()
 {
     assert(modelGenPos_ > 0);
 
-    if (forwardRequest_ != MPI_REQUEST_NULL) {
-	// Test if previous sending has completed.
-	int alreadySent = false;
-	MPI_Status sentStatus;
-	MPI_Test(&forwardRequest_, &alreadySent, &sentStatus);
-	if (!alreadySent) { // Previous sending hasn't complete
-	    std::cout << "++++ Previous forwardModelKnowledge hasn't finished." 
-		      << std::endl;
-	    return;
-	}
-    }
-    
     // Binary forewarding
     int mySeq = rankToSequence(modelGenID_, globalRank_);
     int leftSeq = leftSequence(mySeq, processNum_);
@@ -6130,10 +6120,22 @@ AlpsKnowledgeBrokerMPI::forwardModelKnowledge()
 #endif
 
     if (leftSeq != -1) {
+	if (forwardRequestL_ != MPI_REQUEST_NULL) {
+	    // Test if previous sending has completed.
+	    int alreadySent = false;
+	    MPI_Status sentStatus;
+	    MPI_Test(&forwardRequestL_, &alreadySent, &sentStatus);
+	    if (!alreadySent) { // Previous sending hasn't complete
+		std::cout << "++++ Previous left forwardModelKnowledge hasn't finished." 
+			  << std::endl;
+		return;
+	    }
+	}
+
         // Note: modelGenPos_ is set by recieveModelKnowledge
         int leftRank = sequenceToRank(modelGenID_, leftSeq);
         MPI_Isend(largeBuffer_, modelGenPos_, MPI_PACKED, leftRank, 
-		  AlpsMsgModelGenSearch, MPI_COMM_WORLD, &forwardRequest_);
+		  AlpsMsgModelGenSearch, MPI_COMM_WORLD, &forwardRequestL_);
         std::cout << "++++ forwardModelKnowledge: leftRank = " 
                   << leftRank << std::endl;
         
@@ -6141,11 +6143,22 @@ AlpsKnowledgeBrokerMPI::forwardModelKnowledge()
     }
     
     if (rightSeq != -1) {
+	if (forwardRequestR_ != MPI_REQUEST_NULL) {
+	    // Test if previous sending has completed.
+	    int alreadySent = false;
+	    MPI_Status sentStatus;
+	    MPI_Test(&forwardRequestR_, &alreadySent, &sentStatus);
+	    if (!alreadySent) { // Previous sending hasn't complete
+		std::cout << "++++ Previous right forwardModelKnowledge hasn't finished." 
+			  << std::endl;
+		return;
+	    }
+	}
         int rightRank = sequenceToRank(modelGenID_, rightSeq);
         std::cout << "++++ forwardModelKnowledge: rightRank = " 
                   << rightRank << std::endl;
         MPI_Isend(largeBuffer_, modelGenPos_, MPI_PACKED, rightRank, 
-		  AlpsMsgModelGenSearch, MPI_COMM_WORLD, &forwardRequest_);
+		  AlpsMsgModelGenSearch, MPI_COMM_WORLD, &forwardRequestR_);
         incSendCount("forwardModelKnowledge during search");
     }
 }
@@ -6210,16 +6223,6 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(MPI_Comm comm, int receiver)
     }
     else if ( hasKnowledge && (phase_ == AlpsPhaseSearch) ) {
         assert(comm == MPI_COMM_WORLD);
-	if (modelKnowRequest_ != MPI_REQUEST_NULL) {
-	    // Test if previous sending has completed.
-	    int alreadySent = false;
-	    MPI_Status sentStatus;
-	    MPI_Test(&modelKnowRequest_, &alreadySent, &sentStatus);
-	    if (!alreadySent) { // Previous sending hasn't complete
-		return;
-	    }
-	}
-	
 #if 0
 	// Attach buffer 
 	if (!attachBuffer_) {
@@ -6227,8 +6230,8 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(MPI_Comm comm, int receiver)
 	    attachBuffer_ =  new char [attachSize];
 	    MPI_Buffer_attach(attachBuffer_, attachSize);
 	}
-#endif
-	
+#endif	
+
 #if 1   
         std::cout << "---- Process[" << globalRank_ 
                   << "]: Share mode knowledge by buffer sending, "
@@ -6241,28 +6244,44 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(MPI_Comm comm, int receiver)
         int rightSeq = rightSequence(mySeq, processNum_);
         
         if (leftSeq != -1) {
+	    if (modelKnowRequestL_ != MPI_REQUEST_NULL) {
+		// Test if previous sending has completed.
+		int alreadySent = false;
+		MPI_Status sentStatus;
+		MPI_Test(&modelKnowRequestL_, &alreadySent, &sentStatus);
+		if (!alreadySent) { // Previous sending hasn't complete
+		    return;
+		}
+	    }
             int leftRank = sequenceToRank(globalRank_, leftSeq);
 	    // Buffered send
 	    //MPI_Bsend(largeBuffer2_, position, MPI_PACKED, leftRank, 
 	    //      AlpsMsgModelGenSearch, comm);
 	    //MPI_Send(largeBuffer2_, position, MPI_PACKED, leftRank, 
 	    //     AlpsMsgModelGenSearch, comm);
-	    MPI_Request leftRequest;
 	    MPI_Isend(largeBuffer2_, position, MPI_PACKED, leftRank,
-		      AlpsMsgModelGenSearch, comm, &leftRequest);
+		      AlpsMsgModelGenSearch, comm, &modelKnowRequestL_);
             incSendCount("sendModelKnowledge during search");        
         }
         
         if (rightSeq != -1) {
+	    if (modelKnowRequestR_ != MPI_REQUEST_NULL) {
+		// Test if previous sending has completed.
+		int alreadySent = false;
+		MPI_Status sentStatus;
+		MPI_Test(&modelKnowRequestR_, &alreadySent, &sentStatus);
+		if (!alreadySent) { // Previous sending hasn't complete
+		    return;
+		}
+	    }
             int rightRank = sequenceToRank(globalRank_, rightSeq);
 	    // Buffered send
  	    //MPI_Bsend(largeBuffer2_, position, MPI_PACKED, rightRank, 
 	    //      AlpsMsgModelGenSearch, comm);
  	    //MPI_Send(largeBuffer2_, position, MPI_PACKED, rightRank, 
 	    //     AlpsMsgModelGenSearch, comm);
-	    MPI_Request rightRequest;
 	    MPI_Isend(largeBuffer2_, position, MPI_PACKED, rightRank,
-		      AlpsMsgModelGenSearch, comm, &rightRequest);
+		      AlpsMsgModelGenSearch, comm, &modelKnowRequestR_);
 	    incSendCount("sendModelKnowledge during search");
         }
     }
