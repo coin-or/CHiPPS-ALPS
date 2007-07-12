@@ -100,6 +100,10 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     MPI_Request subTreeRequest_;
 
     /** Send model knoledge request. */
+    MPI_Request solRequestL_;
+    MPI_Request solRequestR_;
+
+    /** Send model knoledge request. */
     MPI_Request modelKnowRequestL_;
     MPI_Request modelKnowRequestR_;
 

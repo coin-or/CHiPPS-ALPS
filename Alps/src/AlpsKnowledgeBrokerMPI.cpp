@@ -4059,8 +4059,8 @@ AlpsKnowledgeBrokerMPI::sendIncumbent()
 		  <<" : init send a solution - L,  value = " 
 		  << incumbentValue_ << " to "<< leftRank << std::endl; 
 #endif
-	MPI_Send(smallBuffer_, position, MPI_PACKED, leftRank, AlpsMsgIncumbentTwo, 
-		 MPI_COMM_WORLD);
+	MPI_Isend(smallBuffer_, position, MPI_PACKED, leftRank, AlpsMsgIncumbentTwo, 
+		  MPI_COMM_WORLD, &forwardRequestL_);
 	incSendCount("sendIncumbent()");
     }
     
@@ -4071,8 +4071,8 @@ AlpsKnowledgeBrokerMPI::sendIncumbent()
 		  <<" : init send a solution - R,  value = " 
 		  << incumbentValue_ << " to "<< rightRank << std::endl; 
 #endif
-	MPI_Send(smallBuffer_, position, MPI_PACKED, rightRank, AlpsMsgIncumbentTwo, 
-		 MPI_COMM_WORLD);
+	MPI_Isend(smallBuffer_, position, MPI_PACKED, rightRank, AlpsMsgIncumbentTwo, 
+		  MPI_COMM_WORLD, &forwardRequestR_);
 	incSendCount("sendIncumbent()");
     }
 }
@@ -5767,6 +5767,8 @@ AlpsKnowledgeBrokerMPI::init()
     processTypeList_ = NULL;
     hubWork_ = false;
     subTreeRequest_ = MPI_REQUEST_NULL;
+    solRequestL_ = MPI_REQUEST_NULL;
+    solRequestR_ = MPI_REQUEST_NULL;
     modelKnowRequestL_ = MPI_REQUEST_NULL;
     modelKnowRequestR_ = MPI_REQUEST_NULL;
     forwardRequestL_ = MPI_REQUEST_NULL;
