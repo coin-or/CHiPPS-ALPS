@@ -6219,7 +6219,7 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(MPI_Comm comm, int receiver)
 		return;
 	    }
 	}
-
+	
 #if 0
 	// Attach buffer 
 	if (!attachBuffer_) {
@@ -6231,7 +6231,8 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(MPI_Comm comm, int receiver)
 	
 #if 1   
         std::cout << "---- Process[" << globalRank_ 
-                  << "]: Share mode knowledge by buffer sending" << std::endl;
+                  << "]: Share mode knowledge by buffer sending, "
+		  << "position " << position << std::endl;
 #endif
    
         // During search, binary sending
