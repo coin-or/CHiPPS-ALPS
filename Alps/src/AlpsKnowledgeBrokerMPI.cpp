@@ -6516,8 +6516,8 @@ AlpsKnowledgeBrokerMPI::spiralMaster(AlpsTreeNode *root)
     
     // Manage rampup
     bool inRampUp = true;
-    int numFinishSiginal = 1; // Count master itself
     int donorNodes = 0;
+    int numFinishSiginal = 1; // Count master itself
     MPI_Status status;
 
     while (inRampUp) {
@@ -6544,10 +6544,8 @@ AlpsKnowledgeBrokerMPI::spiralMaster(AlpsTreeNode *root)
 	// If send all process finish signial, then exit.
 	if (numFinishSiginal == processNum_) {
 	    inRampUp = false;
-	}    
+	} 
     }
-    
-    
 }
 
 //#############################################################################
@@ -6648,6 +6646,13 @@ AlpsKnowledgeBrokerMPI::spiralProcessNode()
 void 
 AlpsKnowledgeBrokerMPI::spiralDonateNode()
 {
+    // Get receiver rank
+    int position = 0;
+    int receiver;
+    MPI_Unpack(largeBuffer_, largeSize_, &position, &receiver, 1, 
+	       MPI_INT,MPI_COMM_WORLD);
+
+    // Send a node to receiver
     
 }
 
