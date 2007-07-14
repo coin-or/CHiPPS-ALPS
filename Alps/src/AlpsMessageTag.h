@@ -192,7 +192,11 @@ enum AlpsMessageTag{
 
   /** When requested by master during inter balance, hub failed to identify 
       a donor worker. */
-  AlpsMsgHubFailFindDonor
+  AlpsMsgHubFailFindDonor,
+  /** Load info during ramp up */
+  AlpsMsgRampUpLoad,
+  /** Donate during ramp up */
+  AlpsMsgRampUpDonate
 };
 
 #endif

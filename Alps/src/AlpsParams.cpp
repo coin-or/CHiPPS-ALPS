@@ -114,6 +114,10 @@ void AlpsParams::createKeywordList() {
 			     AlpsParameter(AlpsIntPar, 
 					   processNum)));
    //
+   keys_.push_back(make_pair(std::string("Alps_staticBalanceScheme"),
+			     AlpsParameter(AlpsIntPar,
+					   staticBalanceScheme)));
+   //
    keys_.push_back(make_pair(std::string("Alps_searchStrategy"),
 			     AlpsParameter(AlpsIntPar, 
 					   searchStrategy)));
@@ -217,6 +221,7 @@ void AlpsParams::setDefaultEntries() {
   setEntry(nodeLimit, ALPS_INT_MAX);
   setEntry(nodeLogInterval, 100);
   setEntry(processNum, 2);
+  setEntry(staticBalanceScheme, 0);
   setEntry(searchStrategy, AlpsSearchTypeHybrid);  
   setEntry(searchStrategyRampUp, AlpsSearchTypeBestFirst);  
   setEntry(smallSize, 1024);      // 2^10

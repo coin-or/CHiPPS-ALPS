@@ -347,9 +347,10 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     void rootInitHub();
     void rootInitWorker();
 
-    /** Static load balancing: sweep */
-    void sweep();
-
+    /** Static load balancing: spiral */
+    void spiralMaster(AlpsTreeNode* root);
+    void spiralHubWorker();
+    
     //------------------------------------------------------
 
     /** @name Load balancing member functions
@@ -485,9 +486,9 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** First receive the size and the contend of a node, then construct 
 	a subtree with this received node. */
     // NOTE: comm is hubComm_ or clusterComm_
-    void receiveSizeNode(int sender,
-			 MPI_Comm comm, 
-			 MPI_Status* status);
+    void receiveRampUpNode(int sender,
+			   MPI_Comm comm, 
+			   MPI_Status* status);
 
     /** Receive a subtree from the sender process and add it into
 	the subtree pool.*/
@@ -505,7 +506,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** Send the size and the content of the best node of a given subtree 
 	to the target process. */
     // NOTE: comm is hubComm_ or clusterComm_.
-    void sendSizeNode(const int target, MPI_Comm comm);
+    void sendRampUpNode(const int target, MPI_Comm comm);
 
     /** Send a given subtree to the target process. */
     bool sendSubTree(const int target, AlpsSubTree*& st, int tag);
@@ -557,8 +558,14 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** Receive error code and set solution status. */
     void recvErrorCode(char *& bufLarge);
     
+    /** Unpack the node, explore it and send load info to master. */
+    void spiralProcessNode();
+    
+    /** Unpack msg and donate a node. */
+    void spiralDonateNode();
+    
  public:
-
+    
     /** Default construtor. 
         NOTE: must call initializeSearch() later. */
     AlpsKnowledgeBrokerMPI()

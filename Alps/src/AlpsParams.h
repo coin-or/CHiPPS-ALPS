@@ -118,6 +118,11 @@ class AlpsParams : public AlpsParameterSet {
           Default: 2
           Not used since can get actual number of processes from MPI. */
       processNum,
+      /** Static load balancing scheme
+	  -- root initialization (0)
+	  -- spiral (1)
+      */
+      staticBalanceScheme,
       /** Search strategy
           -- best-first (0)
           -- best-first-estimate (1)
