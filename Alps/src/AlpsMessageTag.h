@@ -33,7 +33,7 @@ enum AlpsMessageTag{
   /** The message tag indicating that the send ask the recv to
       continue or terminate. */
   // 0
-  AlpsMsgContOrTerm,
+  AlpsMsgContOrTerm = 0,
 
   /** Ask the receiver worker to donor workload to the specified worker. */
   // 1
@@ -68,8 +68,6 @@ enum AlpsMessageTag{
   /** The message tag indicating that the send ask the recv to terminate. */
   // 8
   AlpsMsgAskTerminate,
-
-  AlpsMsgErrorCode,
 
   /** The message tag indicating that the process sent the message is idle. */
   // 9
@@ -154,49 +152,63 @@ enum AlpsMessageTag{
   // 29
   AlpsMsgTellHubRecv,
 
-  // 31
+  // 30
   AlpsMsgIndicesFromMaster,
 
-  // 32
+  // 31
   AlpsMsgWorkerAskIndices,
 
-  // 34
+  // 32
   AlpsMsgForceTerm,
 
-  // 35
+  // 33
   AlpsMsgMasterIncumbent,
 
-  // 36
+  // 34
   AlpsMsgHubIncumbent,
 
-  // 37
+  // 35
   AlpsMsgAskHubPause,
+
   /** Ask the receiver worker to donor workload to the specified worker. */
-  // 38
+  // 36
   AlpsMsgAskDonateToWorker,
   
-  // 39
+  // 37
   AlpsMsgSubTreeByWorker,
 
-  // 40
+  // 38
   AlpsMsgIncumbentTwo,
   
   /** The message tag indicating that knowledge generated during rampup about
       model is being sent or received. */
-  // 41
+  // 39
   AlpsMsgModelGenRampUp,
+
   /** The message tag indicating that knowledge generated during search about
       model is being sent or received. */
-  // 42
+  // 40
   AlpsMsgModelGenSearch,
 
   /** When requested by master during inter balance, hub failed to identify 
       a donor worker. */
+  // 41
   AlpsMsgHubFailFindDonor,
+
   /** Load info during ramp up */
+  // 42
   AlpsMsgRampUpLoad,
+
   /** Donate during ramp up */
-  AlpsMsgRampUpDonate
+  // 43
+  AlpsMsgRampUpDonate,
+
+  /** Hub finished ramp up. Used in spiral method. */
+  // 44
+  AlpsMsgFinishInitHub,
+
+  /** Error code. */
+  AlpsMsgErrorCode
 };
 
 #endif

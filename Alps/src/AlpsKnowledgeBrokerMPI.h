@@ -72,8 +72,8 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** The actual size of the cluster to which the process belongs. */
     int clusterSize_;
 
-    /** The reqested size of a cluster. */
-    int cluSize_;
+    /** The user reqested size of a cluster. */
+    int userClusterSize_;
 
     /** The local rank of the process in clusterComm_. */
     int clusterRank_;
@@ -349,7 +349,8 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** Static load balancing: spiral */
     void spiralMaster(AlpsTreeNode* root);
-    void spiralHubWorker();
+    void spiralHub();
+    void spiralWorker();
     
     //------------------------------------------------------
 
@@ -508,6 +509,10 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     // NOTE: comm is hubComm_ or clusterComm_.
     void sendRampUpNode(const int target, MPI_Comm comm);
 
+    /** Send a node from rampUpSubTree's node pool and generated model 
+        knowledge */
+    void sendNodeModelGen(int receiver);
+    
     /** Send a given subtree to the target process. */
     bool sendSubTree(const int target, AlpsSubTree*& st, int tag);
 
