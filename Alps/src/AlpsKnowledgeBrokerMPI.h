@@ -511,7 +511,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** Send a node from rampUpSubTree's node pool and generated model 
         knowledge */
-    void sendNodeModelGen(int receiver);
+    void sendNodeModelGen(int receiver, int doUnitWork);
     
     /** Send a given subtree to the target process. */
     bool sendSubTree(const int target, AlpsSubTree*& st, int tag);
@@ -564,7 +564,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     void recvErrorCode(char *& bufLarge);
     
     /** Unpack the node, explore it and send load info to master. */
-    void spiralProcessNode();
+    void spiralRecvProcessNode();
     
     /** Unpack msg and donate a node. */
     void spiralDonateNode();
