@@ -252,7 +252,6 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     const double zeroLoad = 
 	model_->AlpsPar()->entry(AlpsParams::zeroLoad);
 
-
     masterBalancePeriod_ =
         model_->AlpsPar()->entry(AlpsParams::masterBalancePeriod);
     largeSize_ = model_->AlpsPar()->entry(AlpsParams::largeSize);
@@ -356,7 +355,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     }
 
     //======================================================
-    // End of Master's Ramp-up and start to search.
+    // Search for solutions.
     //======================================================
 
     setPhase(AlpsPhaseSearch);
@@ -3968,6 +3967,7 @@ void
 AlpsKnowledgeBrokerMPI::sendNodeModelGen(int receiver, int doUnitWork) 
 {
     int position = 0;
+    AlpsEncoded* enc = NULL;
     
     // Pack if doUnitWork
     MPI_Pack(&doUnitWork, 1, MPI_INT, largeBuffer_, largeSize_, &position,
@@ -3976,18 +3976,36 @@ AlpsKnowledgeBrokerMPI::sendNodeModelGen(int receiver, int doUnitWork)
     // Pack a node
     AlpsTreeNode* node = dynamic_cast<AlpsTreeNode* >
 	(rampUpSubTree_->nodePool()->getKnowledge().first);
-    AlpsEncoded* enc = node->encode();
+    enc = node->encode();
     rampUpSubTree_->nodePool()->popKnowledge();
     delete node;   // Since sending to other process
     
     packEncoded(enc, largeBuffer_, largeSize_, position, MPI_COMM_WORLD);
+    delete enc; 
+    enc = NULL;
+
+    // Pack generated model knowledge
+    int hasKnowledge = 0;
+    enc = model_->packSharedKnowlege();
+    if (enc) {
+        hasKnowledge = 1;
+        // Pack flag indicating that there is model knowledge
+        MPI_Pack(&hasKnowledge, 1, MPI_INT, largeBuffer_, largeSize_, 
+                 &position, MPI_COMM_WORLD);
+        // pack knowledge
+        packEncoded(enc, largeBuffer_, largeSize_, position, MPI_COMM_WORLD);
+        delete enc; 
+        enc = NULL;
+    }
+    else {
+        // Pack flag indicating that there is no model knowledge
+        MPI_Pack(&hasKnowledge, 1, MPI_INT, largeBuffer_, largeSize_, 
+                 &position, MPI_COMM_WORLD);
+    }
+    
     MPI_Send(largeBuffer_, position, MPI_PACKED, receiver, AlpsMsgNode, 
              MPI_COMM_WORLD);
-
-    if (enc) {
-	delete enc;  
-	enc = 0;                 // Allocated in encode()
-    }
+    
 }
 
 //#############################################################################
@@ -6197,8 +6215,6 @@ AlpsKnowledgeBrokerMPI::rootInitHub()
     
     MPI_Status status;
 
-    const int smallSize = 
-	model_->AlpsPar()->entry(AlpsParams::smallSize);
     int requiredNumNodes = 
         model_->AlpsPar()->entry(AlpsParams::hubInitNodeNum);
 
@@ -6769,9 +6785,10 @@ AlpsKnowledgeBrokerMPI::spiralWorker()
 void 
 AlpsKnowledgeBrokerMPI::spiralRecvProcessNode()
 {
-
-
+    //--------------------------------------------
     // Unpack if doUnitWork
+    //--------------------------------------------
+
     int pos = 0;
     int doUnitWork = 0;
     MPI_Unpack(largeBuffer_, largeSize_, &pos, &doUnitWork, 1, 
@@ -6779,8 +6796,11 @@ AlpsKnowledgeBrokerMPI::spiralRecvProcessNode()
 
     std::cout << "PROCESS " << globalRank_ << " : received a node, doUnitWork "
               << doUnitWork << std::endl;    
-    
+
+    //--------------------------------------------
     // Unpack a node
+    //--------------------------------------------
+
     rampUpSubTree_ = dynamic_cast<AlpsSubTree*>
         (const_cast<AlpsKnowledge *>(decoderObject(AlpsKnowledgeTypeSubTree)))->newSubTree();
     rampUpSubTree_->setKnowledgeBroker(this);
@@ -6806,8 +6826,29 @@ AlpsKnowledgeBrokerMPI::spiralRecvProcessNode()
 	encodedNode = 0;
     }
     node = NULL;
+
+    //--------------------------------------------
+    // Unpack model knowledge
+    //--------------------------------------------
+    int hasKnowledge = 0;
+    MPI_Unpack(largeBuffer_, largeSize_, &pos, &hasKnowledge, 1, 
+	       MPI_INT, MPI_COMM_WORLD);
+    if (hasKnowledge) {
+        // Upack knowledge from buffer.
+        AlpsEncoded* encodedModelGen = unpackEncoded(largeBuffer_,
+                                                     pos,
+                                                     MPI_COMM_WORLD,
+                                                     largeSize_);
+        // Upack and store knowledge from larger buffer.
+        model_->unpackSharedKnowledge(*encodedModelGen);
+        delete encodedModelGen;
+        encodedModelGen = NULL;
+    }
     
-    // Handle the subtree
+    //--------------------------------------------
+    // Do one unit work or store the subtree
+    //--------------------------------------------
+
     if (doUnitWork) {
         // Do one unit of work and report load info
         int requiredNumNodes = 2;
@@ -6885,6 +6926,7 @@ AlpsKnowledgeBrokerMPI::spiralDonateNode()
     // Send the encoded node
     position = 0;
     int doUnitWork = 1;
+    int hasKnowledge = 0;
 
     // Pack if doUnitWork
     MPI_Pack(&doUnitWork, 1, MPI_INT, largeBuffer_, largeSize_, &position,
@@ -6892,7 +6934,8 @@ AlpsKnowledgeBrokerMPI::spiralDonateNode()
     packEncoded(enc, largeBuffer_, largeSize_, position, MPI_COMM_WORLD);
     MPI_Send(largeBuffer_, position, MPI_PACKED, receiver, AlpsMsgNode, 
              MPI_COMM_WORLD); 
-
+    MPI_Pack(&hasKnowledge, 1, MPI_INT, largeBuffer_, largeSize_, &position,
+             MPI_COMM_WORLD);
     if (enc) {
 	delete enc;  
 	enc = 0;                 // Allocated in encode()
