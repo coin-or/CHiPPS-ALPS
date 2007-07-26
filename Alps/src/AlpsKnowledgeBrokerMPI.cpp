@@ -336,10 +336,12 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	}
     }
 
+    MPI_Barrier(MPI_COMM_WORLD); // Sync before rampup    
+
     //======================================================
     // Master's Ramp-up.
     //======================================================
-
+    
     setPhase(AlpsPhaseRampup);
     switch (staticBalanceScheme) {
     case AlpsRootInit:
@@ -938,11 +940,6 @@ AlpsKnowledgeBrokerMPI::hubMain()
     hubReportPeriod_ = model_->AlpsPar()->entry(AlpsParams::hubReportPeriod);
     largeSize_ = model_->AlpsPar()->entry(AlpsParams::largeSize);
 
-    // Allocate msg buffers
-    largeBuffer_ = new char [largeSize_];
-    largeBuffer2_ = new char [largeSize_];
-    smallBuffer_ = new char [smallSize];
-
     unitWorkNodes_ = model_->AlpsPar()->entry(AlpsParams::unitWorkNodes);
     if (unitWorkNodes_ <= 0) {
         comUnitWork = true;
@@ -968,6 +965,28 @@ AlpsKnowledgeBrokerMPI::hubMain()
     workerNodeProcesseds_[0] = nodeProcessedNum_;
     workerWorkQualities_[0] = workQuality_;
     workerWorkQuantities_[0] = workQuantity_ = 0.0;
+
+    //------------------------------------------------------
+    // Recv tree node size and send it to my worker.
+    // NOTE: master's rank is always 0 in hubComm_.
+    //------------------------------------------------------
+    
+    MPI_Recv(&nodeMemSize_, 1, MPI_INT, 0, AlpsMsgNodeSize, hubComm_, &status);
+    for (i = 0; i < clusterSize_; ++i) {
+	if (i != clusterRank_) {
+	    MPI_Send(&nodeMemSize_, 1, MPI_INT, i, AlpsMsgNodeSize, 
+                     clusterComm_);
+	}
+    }
+
+    // Adjust largeSize to avoid extreme cases.
+    largeSize_ = CoinMax(largeSize_, nodeMemSize_ * 3);  
+
+    largeBuffer_ = new char [largeSize_];
+    largeBuffer2_ = new char [largeSize_];
+    smallBuffer_ = new char [smallSize];
+
+    MPI_Barrier(MPI_COMM_WORLD); // Sync before rampup    
     
     //======================================================
     // Hub's Ramp-up.
@@ -1408,13 +1427,25 @@ AlpsKnowledgeBrokerMPI::workerMain()
     }
 
     largeSize_ = model_->AlpsPar()->entry(AlpsParams::largeSize);
+
+    workerTimer_.setClockType(AlpsClockTypeWallClock);
+    msgTimer.setClockType(AlpsClockTypeWallClock);
+
+    //------------------------------------------------------
+    // Recv node memory size from hub.
+    //------------------------------------------------------
+    
+    MPI_Recv(&nodeMemSize_, 1, MPI_INT, masterRank_, /* masterRank_ is 0 or 1*/
+	     AlpsMsgNodeSize, clusterComm_, &status);
+
+    // Adjust largeSize to avoid extreme cases.
+    largeSize_ = CoinMax(largeSize_, nodeMemSize_ * 3);
     
     largeBuffer_ = new char [largeSize_];
     largeBuffer2_ = new char [largeSize_];
     smallBuffer_ = new char [smallSize];
 
-    workerTimer_.setClockType(AlpsClockTypeWallClock);
-    msgTimer.setClockType(AlpsClockTypeWallClock);
+    MPI_Barrier(MPI_COMM_WORLD); // Sync before rampup    
 
     //======================================================
     // Worker's Ramp-up.
@@ -4205,7 +4236,6 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
 	//std::cout << "Here1" << std::endl;
     }
 
-
     MPI_Barrier(MPI_COMM_WORLD);
 
     //------------------------------------------------------
@@ -6191,26 +6221,6 @@ AlpsKnowledgeBrokerMPI::rootInitHub()
     }
 
     //------------------------------------------------------
-    // Recv tree node size and send it to my worker.
-    // NOTE: master's rank is always 0 in hubComm_.
-    //------------------------------------------------------
-
-    MPI_Recv(&nodeMemSize_, 1, MPI_INT, 0, AlpsMsgNodeSize, hubComm_, &status);
-    for (i = 0; i < clusterSize_; ++i) {
-	if (i != clusterRank_) {
-	    MPI_Send(&nodeMemSize_, 1, MPI_INT, i, AlpsMsgNodeSize, 
-                     clusterComm_);
-	}
-    }
-
-    // Adjust largeSize to avoid extreme cases.
-    largeSize_ = CoinMax(largeSize_, nodeMemSize_ * 3);  
-
-    largeBuffer_ = new char [largeSize_];
-    largeBuffer2_ = new char [largeSize_];
-    smallBuffer_ = new char [smallSize];
-
-    //------------------------------------------------------
     // Receive subtrees (nodes) sent by Master.
     // NOTE: Put all nodes in rampUpSubtree_. We just want to use the 
     //       subtree's functions to generates more nodes.
@@ -6416,16 +6426,6 @@ AlpsKnowledgeBrokerMPI::rootInitWorker()
         model_->AlpsPar()->entry(AlpsParams::workerMsgLevel);
  
     workerTimer_.start();
-
-    //------------------------------------------------------
-    // Recv tree node size from hub.
-    //------------------------------------------------------
-    
-    MPI_Recv(&nodeMemSize_, 1, MPI_INT, masterRank_, /* masterRank_ is 0 or 1*/
-	     AlpsMsgNodeSize, clusterComm_, &status);
-    
-    // Adjust largeSize to avoid extreme cases.
-    largeSize_ = CoinMax(largeSize_, nodeMemSize_ * 3);
 
     //------------------------------------------------------
     // Recv subtrees(nodes) sent by my hub.
