@@ -1,0 +1,71 @@
+These instructions are for UNIX-like systems (including Linux, Cygwin and
+MSys) only. If Microsoft Visual Studio projects are maintained for this
+package, you can find instructions at
+
+  https://projects.coin-or.org/MSDevStudio
+
+**********************************************************************
+***                         DOWNLOAD                               ***
+**********************************************************************
+
+You can obtain the source code for the Alps package in two ways:
+
+1. Obtain the source directly from the COIN-OR subversion repository
+   (recommended).  For this you needs the program 'svn' installed on
+   your machine, and output of "svn --version" must contain 
+   "handles 'https' scheme".
+
+   Assuming that you want to download the code into a subdirectory
+   "COIN-Alps", you type
+
+   svn co https://projects.coin-or.org/svn/Cops/Alps/stable/1.0 Alps-1.0
+
+2. Download the tarball from http://www.coin-or.org/download/source/Cops and
+   extract it, for example, with
+
+   tar -xzvf Alps-1.0.0.tgz
+
+   More detailed download instructions can be found at
+
+   https://projects.coin-or.org/Cops
+
+**********************************************************************
+***      CONFIGURATION, COMPILE, INSTALLATION                      ***
+**********************************************************************
+
+1. Serial Solver
+----------------
+
+Go into the directory that you just downloaded or extracted (e.g. Alps-1.0),
+then you type following commands:
+
+  1) ./configure
+  2) make
+  3) make test
+  4) make install 
+
+2. Parallel Solver (MPI as message passing interface) 
+-----------------------------------------------------
+
+Configuration and and compilation of the MPI parallel solver is system
+dependent. The user has to specify options --with-mpi-incdir, --with-mpi-lib,
+MPICC, and MPICXX. The following is an example.
+
+Go into the directory that you just downloaded or extracted (e.g. Blis-0.6),
+type
+
+  1) ./configure --enable-debug --with-mpi-incdir=/home/yanxu1/src/mpich/include --with-mpi-lib='-L/home/yanxu1/src/mpich/lib  -lmpich -lpthread -lrt' MPICC=mpicc MPICXX=mpiCC
+  2) make 
+  3) make install
+
+You might want to specify other options, in case you don't want to 
+use the default choices that configure makes (e.g., compilers). 
+Please visit
+
+   https://projects.coin-or.org/BuildTools
+
+and the COPS Trac page
+
+   https://projects.coin-or.org/Cops
+
+for more information.

@@ -1,0 +1,39 @@
+echo "input75_1"
+echo Problem = input75_1 > out/input75_1.out.$1
+mpirun -np $1 -machinefile machines ./knap -par knap.par -Alps_instance ~/Blis-trunck/Alps/examples/Knap/data/input75_1.txt >> out/input75_1.out.$1
+
+echo "input75_2"
+echo Problem = input75_2 > out/input75_2.out.$1
+mpirun -np $1 -machinefile machines ./knap -par knap.par -Alps_instance ~/Blis-trunck/Alps/examples/Knap/data/input75_2.txt >> out/input75_2.out.$1
+
+echo "input75_3"
+echo Problem = input75_3 > out/input75_3.out.$1
+mpirun -np $1 -machinefile machines ./knap -par knap.par -Alps_instance ~/Blis-trunck/Alps/examples/Knap/data/input75_3.txt >> out/input75_3.out.$1
+
+echo "input75_4"
+echo Problem = input75_4 > out/input75_4.out.$1
+mpirun -np $1 -machinefile machines ./knap -par knap.par -Alps_instance ~/Blis-trunck/Alps/examples/Knap/data/input75_4.txt >> out/input75_4.out.$1
+
+echo "input75_5"
+echo Problem = input75_5 > out/input75_5.out.$1
+mpirun -np $1 -machinefile machines ./knap -par knap.par -Alps_instance ~/Blis-trunck/Alps/examples/Knap/data/input75_5.txt >> out/input75_5.out.$1
+
+echo "input100_1"
+echo Problem = input100_1 > out/input100_1.out.$1
+mpirun -np $1 -machinefile machines ./knap -par knap.par -Alps_instance ~/Blis-trunck/Alps/examples/Knap/data/input100_1.txt >> out/input100_1.out.$1
+
+echo "input100_2"
+echo Problem = input100_2 > out/input100_2.out.$1
+mpirun -np $1 -machinefile machines ./knap -par knap.par -Alps_instance ~/Blis-trunck/Alps/examples/Knap/data/input100_2.txt >> out/input100_2.out.$1
+
+echo "input100_3"
+echo Problem = input100_3 > out/input100_3.out.$1
+mpirun -np $1 -machinefile machines ./knap -par knap.par -Alps_instance ~/Blis-trunck/Alps/examples/Knap/data/input100_3.txt >> out/input100_3.out.$1
+
+echo "input100_4"
+echo Problem = input100_4 > out/input100_4.out.$1
+mpirun -np $1 -machinefile machines ./knap -par knap.par -Alps_instance ~/Blis-trunck/Alps/examples/Knap/data/input100_4.txt >> out/input100_4.out.$1
+
+echo "input100_5"
+echo Problem = input100_5 > out/input100_5.out.$1
+mpirun -np $1 -machinefile machines ./knap -par knap.par -Alps_instance ~/Blis-trunck/Alps/examples/Knap/data/input100_5.txt >> out/input100_5.out.$1
