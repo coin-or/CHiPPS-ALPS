@@ -1,0 +1,8 @@
+#This is the file format for reading in the files for the knapsack
+#solver. 
+CAPACITY 20
+ITEM 5 11
+ITEM 6 12
+ITEM 7 13
+ITEM 8 15
+ITEM 9 15
