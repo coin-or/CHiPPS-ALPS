@@ -167,7 +167,7 @@ class AlpsSubTree : public AlpsKnowledge {
     }
     
     /** Get the quality of this subtree. */
-    inline double getQuality() const { return quality_; };
+    inline double getQuality() const { return quality_; }
 
     /** Get the emtimated quality of this subtree. */
     inline double getSolEstimate() const { 
