@@ -94,7 +94,7 @@ class AlpsNodePool : public AlpsKnowledgePool {
     
     /** Get the node with highest priority. Doesn't remove it from the pool*/
     inline std::pair<AlpsKnowledge*, double> getKnowledge() const {
-	return std::make_pair( candidateList_.top(), 
+	return std::make_pair( (AlpsKnowledge*)candidateList_.top(), 
 			       candidateList_.top()->getQuality() );
     }
     
@@ -130,7 +130,7 @@ class AlpsNodePool : public AlpsKnowledgePool {
     /** Delete all the nodes in the pool and free memory. */
     void deleteGuts() {
 	std::vector<AlpsTreeNode* > nodeVec = candidateList_.getContainer();
-	for_each(nodeVec.begin(), nodeVec.end(), DeletePtrObject());
+	std::for_each(nodeVec.begin(), nodeVec.end(), DeletePtrObject());
         candidateList_.clear();
         assert(candidateList_.size() == 0);
         
