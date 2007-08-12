@@ -73,7 +73,7 @@ public:
      *
      */
     //@{
-    inline const double getWeight() const { return weight_; }
+    inline double getWeight() const { return weight_; }
     inline void setWeight(double nw) { weight_ = nw; }
     //@}
     

@@ -1112,8 +1112,10 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
 
     AlpsSearchStrategy<AlpsTreeNode*> *nodeSel = broker_->getNodeSelection();
 
+#ifdef ALPS_MEMORY_USAGE
     bool checkMemory = broker_->getModel()->AlpsPar()->
 	entry(AlpsParams::checkMemory);
+#endif
     
     //------------------------------------------------------
     // Check if required to exit when find a solution.
