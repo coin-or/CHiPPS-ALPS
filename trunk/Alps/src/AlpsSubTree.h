@@ -245,7 +245,8 @@ class AlpsSubTree : public AlpsKnowledge {
                        int requiredNumNodes,
                        int& depth,
                        AlpsTreeNode* root = NULL);
-    
+
+    using  AlpsKnowledge::encode ;
     /** This method should encode the content of the subtree and return a
 	pointer to the encoded form. Only parallel code need this function. */
     virtual AlpsEncoded* encode() const;
