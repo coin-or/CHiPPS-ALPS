@@ -94,7 +94,8 @@ class AlpsNodePool : public AlpsKnowledgePool {
     
     /** Get the node with highest priority. Doesn't remove it from the pool*/
     inline std::pair<AlpsKnowledge*, double> getKnowledge() const {
-	return std::make_pair( (AlpsKnowledge*)candidateList_.top(), 
+        return std::make_pair( static_cast<AlpsKnowledge *>
+			       (candidateList_.top()),
 			       candidateList_.top()->getQuality() );
     }
     

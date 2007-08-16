@@ -53,7 +53,8 @@ class AlpsSubTreePool : public AlpsKnowledgePool {
     
     /** Get a subtree from subtree pool, doesn't remove it from the pool*/
     inline std::pair<AlpsKnowledge*, double> getKnowledge() const {
-	return std::make_pair( (AlpsKnowledge*)subTreeList_.top(), 
+	return std::make_pair( static_cast<AlpsKnowledge *>
+			       (subTreeList_.top()), 
 			       subTreeList_.top()->getQuality() );
     }
 

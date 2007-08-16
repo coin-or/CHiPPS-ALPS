@@ -76,7 +76,8 @@ class AlpsSolutionPool : public AlpsKnowledgePool {
 //			      solutions_.begin()->first);
 //    }
     inline std::pair<AlpsKnowledge*, double> getKnowledge() const {
-	return std::make_pair((AlpsKnowledge*)solutions_.begin()->second,
+	return std::make_pair(static_cast<AlpsKnowledge *>
+			      (solutions_.begin()->second),
 			      solutions_.begin()->first);
     }
 
@@ -150,7 +151,8 @@ class AlpsSolutionPool : public AlpsKnowledgePool {
 //			      solutions_.begin()->first);
 //    }
     inline std::pair<AlpsKnowledge*, double> getBestKnowledge() const {
-	return std::make_pair((AlpsKnowledge*)solutions_.begin()->second,
+	return std::make_pair(static_cast<AlpsKnowledge *>
+			      (solutions_.begin()->second),
 			      solutions_.begin()->first);
     }
 
@@ -170,7 +172,8 @@ class AlpsSolutionPool : public AlpsKnowledgePool {
 	sols.reserve(sols.size() + solutions_.size());
 	std::multimap<double, AlpsSolution*>::const_iterator si;
 	for (si = solutions_.begin(); si != solutions_.end(); ++si) {
-	    sols.push_back(std::make_pair((AlpsKnowledge*)si->second, si->first));
+	    sols.push_back(std::make_pair(static_cast<AlpsKnowledge *>
+					  (si->second), si->first));
 	}
     }
     
