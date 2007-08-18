@@ -294,9 +294,6 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     root->setIndex(0);
     root->setExplicit(1); // Always true for root.
 
-    // Start to measure rampup
-    masterTimer_.start();
-    
     //------------------------------------------------------
     // Estimate a tree node size and send it to other hubs.
     //------------------------------------------------------
@@ -341,6 +338,9 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     // Master's Ramp-up.
     //======================================================
     
+    // Start to measure rampup
+    masterTimer_.start();
+
     setPhase(AlpsPhaseRampup);
     switch (staticBalanceScheme) {
     case AlpsRootInit:
@@ -353,6 +353,8 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	throw CoinError("Unknown static balance scheme", "masterMain", 
 			"AlpsKnowledgeBrokerMPI");
     }
+
+    rampUpTime_ = masterTimer_.getTime();
 
     //======================================================
     // Search for solutions.
@@ -991,6 +993,9 @@ AlpsKnowledgeBrokerMPI::hubMain()
     // Hub's Ramp-up.
     //======================================================
 
+    // Start to measure rampup
+    hubTimer_.start();
+
     setPhase(AlpsPhaseRampup);
     switch (staticBalanceScheme) {
     case AlpsRootInit:
@@ -1003,6 +1008,8 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	throw CoinError("Unknown static balance scheme", "hubMain", 
 			"AlpsKnowledgeBrokerMPI");
     }
+
+    rampUpTime_ = hubTimer_.getTime();
 
     //======================================================
     // Hub's search
@@ -1450,6 +1457,8 @@ AlpsKnowledgeBrokerMPI::workerMain()
     // Worker's Ramp-up.
     //======================================================
 
+    workerTimer_.start();
+
     setPhase(AlpsPhaseRampup);
     switch (staticBalanceScheme) {
     case AlpsRootInit:
@@ -1462,6 +1471,8 @@ AlpsKnowledgeBrokerMPI::workerMain()
 	throw CoinError("Unknown static balance scheme", "workerMain", 
 			"AlpsKnowledgeBrokerMPI");
     }
+
+    rampUpTime_ = workerTimer_.getTime();
 
     //======================================================
     // Worker start to search.
@@ -1879,7 +1890,7 @@ AlpsKnowledgeBrokerMPI::processMessages(char *&bufLarge,
 	std::cout << "PROC " << globalRank_ << " : processMessages"
 		  << " : received UNKNOWN message. tag = " 
 		  << status.MPI_TAG <<  std::endl; 
-	throw CoinError("Unknown message type", "workmain", 
+	throw CoinError("Unknown message type", "workermain", 
 			"AlpsKnowledgeBrokerMPI");
     }
 
@@ -6189,7 +6200,6 @@ AlpsKnowledgeBrokerMPI::rootInitMaster(AlpsTreeNode* root)
 	} 
     }
 
-    // Master-hub's rampup stops
     rampUpTime_ = masterTimer_.getTime();
     
     if (msgLevel_ > 0) {
@@ -6221,9 +6231,6 @@ AlpsKnowledgeBrokerMPI::rootInitHub()
 
     int requiredNumNodes = 
         model_->AlpsPar()->entry(AlpsParams::hubInitNodeNum);
-
-    // Start to measure rampup
-    hubTimer_.start();
 
     rampUpSubTree_ = dynamic_cast<AlpsSubTree*>
         (const_cast<AlpsKnowledge *>
@@ -6445,8 +6452,6 @@ AlpsKnowledgeBrokerMPI::rootInitWorker()
     const int workerMsgLevel = 
         model_->AlpsPar()->entry(AlpsParams::workerMsgLevel);
  
-    workerTimer_.start();
-
     //------------------------------------------------------
     // Recv subtrees(nodes) sent by my hub.
     //------------------------------------------------------
@@ -6514,7 +6519,6 @@ AlpsKnowledgeBrokerMPI::rootInitWorker()
                      true);
     // receiveModelKnowlege(clusterComm_);
 
-    rampUpTime_ = workerTimer_.getTime();
 }
 
 //#############################################################################
