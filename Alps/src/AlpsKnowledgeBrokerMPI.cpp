@@ -2051,6 +2051,7 @@ AlpsKnowledgeBrokerMPI::donateWork(char*& anyBuffer,
     if (subTreeRequest_ != MPI_REQUEST_NULL){
 	MPI_Status sentStatus;
 	MPI_Test(&subTreeRequest_, &alreadySent, &sentStatus);
+#if 0        
 	if (alreadySent) {
 	    std::cout << "++++ Process[" << globalRank_ 
 		      << "] have completed sending a subtree." << std::endl;
@@ -2059,10 +2060,13 @@ AlpsKnowledgeBrokerMPI::donateWork(char*& anyBuffer,
 	    std::cout << "++++ Process[" << globalRank_
 		      << "] haven't completed sending a subtree." << std::endl;
 	}
+#endif
     }
     else {
-	 std::cout << "++++ Process[" << globalRank_ 
-		   << "] ready to sent a subtree." << std::endl;
+#if 0
+        std::cout << "++++ Process[" << globalRank_ 
+                  << "] ready to sent a subtree." << std::endl;
+#endif
     }
     
     //------------------------------------------------------
