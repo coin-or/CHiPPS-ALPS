@@ -2133,7 +2133,7 @@ AlpsKnowledgeBrokerMPI::donateWork(char*& anyBuffer,
     }
 
     if (!sentSuccessful || !alreadySent) {               // Case 3
-#if 1
+#if 0
 	std::cout << "donateWork(): " << globalRank_ << "has nothing send to " 
 		  << receiverID <<"; alreadySent "<<alreadySent<< std::endl;
 #endif
@@ -3879,7 +3879,7 @@ AlpsKnowledgeBrokerMPI::receiveSubTree(char*& bufLarge,
 	addKnowledge(AlpsKnowledgeTypeSubTree, subTree, subTree->getQuality());
 
 
-#if 1
+#if 0
 	std::cout << "WORKER " << globalRank_ << " : received a subtree from " 
 		  << sender << " of size " << count
 		  << "; num of subtrees = "
@@ -4030,7 +4030,7 @@ AlpsKnowledgeBrokerMPI::sendSubTree(const int receiver,
     AlpsEncoded* enc = st->encode();
     packEncoded(enc, buf, size, position, MPI_COMM_WORLD);
 
-#if 1
+#if 0
     std::cout << "WORKER["<< globalRank_ 
 	      << "]: donor a subtree to PROC " << receiver
 	      << "; buf pos = " << position 
@@ -4591,7 +4591,7 @@ AlpsKnowledgeBrokerMPI::changeWorkingSubTree(double & changeWorkThreshold)
                 if (psStats_.subtreeChange_ / 10 == 0) {
                     changeWorkThreshold *= 2.0;
                 }
-#if 1
+#if 0
                 std::cout << "Process[" << globalRank_ 
                           << "]: change subtree " << curQuality
                           << " to " << topQuality 
@@ -5737,7 +5737,7 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(MPI_Comm comm, int receiver)
 	}
 #endif	
 
-#if 1   
+#if 0   
         std::cout << "---- Process[" << globalRank_ 
                   << "]: Share mode knowledge by buffer sending, "
 		  << "position " << position << std::endl;
