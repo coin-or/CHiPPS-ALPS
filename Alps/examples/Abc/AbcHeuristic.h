@@ -71,7 +71,7 @@ public:
   */
   virtual int solution(double & objectiveValue,
 		       double * newSolution,
-		       OsiCuts & cs) {return 0;};
+		       OsiCuts & cs) {return 0;}
 
 protected:
 
@@ -119,7 +119,7 @@ public:
 
   /// Set seed
   void setSeed(int value)
-  { seed_ = value;};
+  { seed_ = value;}
 
 protected:
   // Data

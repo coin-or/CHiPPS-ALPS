@@ -948,7 +948,7 @@ class AbcModel : public AlpsModel {
 	}
 
     /// Priorities
-    inline const int * priority() const { return priority_;};
+    inline const int * priority() const { return priority_;}
 
     /// Returns priority level for an object (or 1000 if no priorities exist)
     inline int priority(int sequence) const
@@ -957,7 +957,7 @@ class AbcModel : public AlpsModel {
 		return priority_[sequence];
 	    else
 		return 1000;
-	};
+	}
     
     /** The method that encodes the model into a encoded object. */
     virtual AlpsEncoded* encode() const;

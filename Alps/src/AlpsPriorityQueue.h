@@ -52,7 +52,7 @@ class AlpsPriorityQueue {
     /** Set comparison function and resort heap. */
     void setComparison(AlpsSearchStrategy<T>& c) {
 	comparison_.strategy_ = &c;
-	make_heap(vec_.begin(), vec_.end(), comparison_);
+	std::make_heap(vec_.begin(), vec_.end(), comparison_);
     }
 
     /** Return the top element of the heap. */
@@ -61,12 +61,12 @@ class AlpsPriorityQueue {
     /** Add a element to the heap. */
     void push(T x) {
 	vec_.push_back(x);
-	push_heap(vec_.begin(), vec_.end(), comparison_);
+	std::push_heap(vec_.begin(), vec_.end(), comparison_);
     }
 
     /** Remove the top element from the heap. */
     void pop() {
-	pop_heap(vec_.begin(), vec_.end(), comparison_);
+	std::pop_heap(vec_.begin(), vec_.end(), comparison_);
 	vec_.pop_back();
     }
 

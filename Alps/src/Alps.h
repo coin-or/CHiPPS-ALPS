@@ -27,6 +27,8 @@
 #include <cfloat>
 #include <cstdio>
 
+#include "CoinFinite.hpp"
+
 //#############################################################################
 
 #if defined(__linux__)
@@ -135,14 +137,14 @@ enum AlpsPhase {
 // Big number
 //#############################################################################
 
-#define ALPS_DBL_MAX          DBL_MAX
+#define ALPS_DBL_MAX          COIN_DBL_MAX
 #define ALPS_INC_MAX          1.0e80
 #define ALPS_OBJ_MAX          1.0e75
 #define ALPS_OBJ_MAX_LESS     1.0e70
 #define ALPS_BND_MAX          1.0e20
 #define ALPS_INFINITY         1.0e20
 
-#define ALPS_INT_MAX          INT_MAX
+#define ALPS_INT_MAX          COIN_INT_MAX
 
 //#############################################################################
 // Small number

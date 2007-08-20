@@ -109,8 +109,8 @@ AbcBranchDefaultDecision::betterBranch(int thisOne, int bestSoFar,
     int betterWay = 0;
     if (beforeSolution) {
 	if (bestObject_ < 0) {
-	    bestNumberUp_ = INT_MAX;
-	    bestNumberDown_ = INT_MAX;
+	    bestNumberUp_ = COIN_INT_MAX;
+	    bestNumberDown_ = COIN_INT_MAX;
 	}
 	
 	// before solution - choose smallest number could add in depth as well

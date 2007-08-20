@@ -53,7 +53,7 @@ public:
     AlpsNodeSelection() {}
     
     /** Default Destructor. */
-    virtual ~AlpsNodeSelection() {};
+    virtual ~AlpsNodeSelection() {}
     
     /** This returns true if the depth of node y is lesser
 	than that of node x */
@@ -161,7 +161,7 @@ public:
     AlpsNodeSelectionBreadth() { type_ = AlpsSearchTypeBreadthFirst; }
 
     /** Default Destructor. */
-    virtual ~AlpsNodeSelectionBreadth() {};
+    virtual ~AlpsNodeSelectionBreadth() {}
 
     /** This returns true if the depth of node y is lesser
         than that of node x */
@@ -179,7 +179,7 @@ class AlpsNodeSelectionDepth : public AlpsNodeSelection
     AlpsNodeSelectionDepth() { type_ = AlpsSearchTypeDepthFirst; }
 
     /** Default Destructor. */
-    virtual ~AlpsNodeSelectionDepth() {};
+    virtual ~AlpsNodeSelectionDepth() {}
 
     /** This returns true if the depth of node y is greater than 
         that of node x. */

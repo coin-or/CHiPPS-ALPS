@@ -378,15 +378,16 @@ AlpsSubTree::calculateQuality()
         }
         else {
             if (static_cast<int>(eliteList.size()) < eliteSize) {
-                eliteList.insert(std::pair<double,AlpsTreeNode*>(quality,node));
+                std::pair<const double,AlpsTreeNode*> sa(quality,node);
+                eliteList.insert(sa);
 		
             }
             else {  // ==   
                 posEnd = eliteList.end();
                 --posEnd;
                 if (quality < posEnd->first) {
-                    eliteList.insert(std::pair<double, AlpsTreeNode*>
-				 (quality, node));
+                    std::pair<const double, AlpsTreeNode*> sa(quality, node);
+                    eliteList.insert(sa);
                     posEnd = eliteList.end();
                     --posEnd;
                     eliteList.erase(posEnd);
@@ -1111,8 +1112,10 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
 
     AlpsSearchStrategy<AlpsTreeNode*> *nodeSel = broker_->getNodeSelection();
 
+#ifdef ALPS_MEMORY_USAGE
     bool checkMemory = broker_->getModel()->AlpsPar()->
 	entry(AlpsParams::checkMemory);
+#endif
     
     //------------------------------------------------------
     // Check if required to exit when find a solution.

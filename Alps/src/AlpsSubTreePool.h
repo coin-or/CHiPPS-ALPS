@@ -53,7 +53,8 @@ class AlpsSubTreePool : public AlpsKnowledgePool {
     
     /** Get a subtree from subtree pool, doesn't remove it from the pool*/
     inline std::pair<AlpsKnowledge*, double> getKnowledge() const {
-	return std::make_pair( subTreeList_.top(), 
+	return std::make_pair( static_cast<AlpsKnowledge *>
+			       (subTreeList_.top()), 
 			       subTreeList_.top()->getQuality() );
     }
 
@@ -80,7 +81,7 @@ class AlpsSubTreePool : public AlpsKnowledgePool {
     /** Delete the subtrees in the pool. */
     void deleteGuts() {
 	std::vector<AlpsSubTree* > treeVec = subTreeList_.getContainer();
-	for_each(treeVec.begin(), treeVec.end(), DeletePtrObject());
+	std::for_each(treeVec.begin(), treeVec.end(), DeletePtrObject());
         subTreeList_.clear();
         assert(subTreeList_.size() == 0);
     }
