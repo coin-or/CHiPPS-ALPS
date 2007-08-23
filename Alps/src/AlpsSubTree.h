@@ -59,6 +59,9 @@ class AlpsSubTree : public AlpsKnowledge {
     
     /** Diving node comparing rule. */
     AlpsSearchStrategy<AlpsTreeNode*> * diveNodeRule_;
+
+    /** Diving depth */
+    int diveDepth_;
     
     //   /** The next index to be assigned to a new search tree node */
     //   AlpsNodeIndex_t nextIndex_;
@@ -178,6 +181,15 @@ class AlpsSubTree : public AlpsKnowledge {
             return ALPS_OBJ_MAX;
         };
     }
+
+    /** Increment dive depth */
+    void incDiveDepth(int num=1) {  diveDepth_ += num; }
+
+    /** Get dive depth */
+    int getDiveDepth() { return diveDepth_; }
+
+    /** Set dive depth */
+    void setDiveDepth(int num) { diveDepth_ = num; }
     
     /** Calcuate  and return the quality of this subtree, which is measured
 	by the quality of the specified number of nodes.*/
@@ -293,6 +305,8 @@ class AlpsSubTree : public AlpsKnowledge {
             nodePool_->addKnowledge(activeNode_, activeNode_->getQuality());
             activeNode_ = NULL;
         }
+
+        diveDepth_ = 0;
     }
     
 };

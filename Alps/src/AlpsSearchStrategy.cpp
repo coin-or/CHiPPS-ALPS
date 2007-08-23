@@ -89,8 +89,24 @@ AlpsTreeNode*
 AlpsNodeSelectionHybrid::selectNextNode(AlpsSubTree *subTree)
 {
     AlpsTreeNode *node = subTree->activeNode();
+
+    /* Check if dive too deep */
+    if (node) {
+        if (subTree->getDiveDepth() > 10) {
+            /* Too deep, put nodes in dive pool to regular pool. */
+            //std::cout << "++++ TOO DEEP: depth " << subTree->getDiveDepth() 
+            //       << std::endl;
+            subTree->reset();
+            node = NULL;
+        }
+    }
     
-    if (!node) {
+    if (node) {
+        subTree->incDiveDepth();
+        node->setDiving(true);
+    }
+    else {
+        subTree->setDiveDepth(0);
 	if (subTree->diveNodePool()->getNumKnowledges() > 0) {
 	    node = dynamic_cast<AlpsTreeNode*>(subTree->diveNodePool()->getKnowledge().first); 
 	    node->setDiving(false);	    
@@ -112,9 +128,6 @@ AlpsNodeSelectionHybrid::selectNextNode(AlpsSubTree *subTree)
                   << ", estimate = " << node->getSolEstimate()
                   << std::endl;
 #endif
-    }
-    else {
-        node->setDiving(true);
     }
     
     return node;
