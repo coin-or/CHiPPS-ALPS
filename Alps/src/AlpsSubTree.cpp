@@ -645,13 +645,35 @@ AlpsSubTree::splitSubTree(int& returnSize, int size)
     AlpsTreeNode* subTreeRoot = 0;
     AlpsTreeNode* rootParent = 0;
 
+    int nodeMemSize = getKnowledgeBroker()->getNodeMemSize();
     int LS = broker_->getLargeSize()/2;
-    int maxAllowNodes = LS / getKnowledgeBroker()->getNodeMemSize();
-    maxAllowNodes = (maxAllowNodes > 0) ? maxAllowNodes : 1;
+    int maxAllowNodes = LS / nodeMemSize;
+    
+    if (maxAllowNodes == 0) {
+        returnSize = 0;
+        return st;
+    }
 
     // At most send 50 nodes
-    maxAllowNodes = (maxAllowNodes > 50) ? 50 : maxAllowNodes;
-    
+    if (nodeMemSize < 10000) {
+        maxAllowNodes = (maxAllowNodes > 100) ? 100 : maxAllowNodes;
+    }
+    else if (nodeMemSize < 50000) {
+        maxAllowNodes = (maxAllowNodes > 50) ? 30 : maxAllowNodes;
+    }
+    else if (nodeMemSize < 100000) {
+        maxAllowNodes = (maxAllowNodes > 30) ? 20 : maxAllowNodes;
+    }
+    else if (nodeMemSize < 500000) {
+        maxAllowNodes = (maxAllowNodes > 10) ? 5 : maxAllowNodes;
+    }
+    else if (nodeMemSize < 1000000) {
+        maxAllowNodes = (maxAllowNodes > 3) ? 3 : maxAllowNodes;
+    }
+    else {
+        maxAllowNodes = 1;
+    }
+
 #if 0
     //------------------------------------------------------
     // This is a way to find the subtree root. Do a breath first search
