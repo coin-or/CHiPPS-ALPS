@@ -92,7 +92,7 @@ AlpsNodeSelectionHybrid::selectNextNode(AlpsSubTree *subTree)
 
     /* Check if dive too deep */
     if (node) {
-        if (subTree->getDiveDepth() > 10) {
+        if (subTree->getDiveDepth() > 15) {
             /* Too deep, put nodes in dive pool to regular pool. */
             //std::cout << "++++ TOO DEEP: depth " << subTree->getDiveDepth() 
             //       << std::endl;
