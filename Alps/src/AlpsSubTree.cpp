@@ -648,6 +648,9 @@ AlpsSubTree::splitSubTree(int& returnSize, int size)
     int LS = broker_->getLargeSize()/2;
     int maxAllowNodes = LS / getKnowledgeBroker()->getNodeMemSize();
     maxAllowNodes = (maxAllowNodes > 0) ? maxAllowNodes : 1;
+
+    // At most send 50 nodes
+    maxAllowNodes = (maxAllowNodes > 50) ? 50 : maxAllowNodes;
     
 #if 0
     //------------------------------------------------------
