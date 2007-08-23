@@ -124,6 +124,9 @@ class AlpsKnowledgeBroker {
     /** The depth of the node that with best solution. */
     int bestSolDepth_;
 
+    /** The number of nodes pocessed to find the solution. */
+    int bestSolNode_;
+
     /** Peak memory usage. */
     double peakMemory_;
 

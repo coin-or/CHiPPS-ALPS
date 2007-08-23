@@ -3227,9 +3227,14 @@ AlpsKnowledgeBrokerMPI::unpackSetIncumbent(char*& bufLarge, MPI_Status* status)
 
     // Assume minimization
     if (incVal < incumbentValue_) {
+        // Better solution 
 	incumbentValue_ = incVal;
 	incumbentID_ = incID;
 	accept = true;
+
+        if (globalRank_ == masterRank_) {
+            bestSolNode_ = systemNodeProcessed_;
+        }
 	
 #ifdef NF_DEBUG_MORE
 	std::cout << "PROC " << globalRank_ << " : accept incVal = " 
@@ -4993,8 +4998,9 @@ AlpsKnowledgeBrokerMPI::searchLog()
 	    // Solution.
 	    //----------------------------------------------
 
-	    logFout << "Best solution quality = " << getBestQuality();
-	    logFout << std::endl;
+	    logFout << "Best solution quality = " << getBestQuality()
+                    << " ; node required = " << bestSolNode_;
+            logFout << std::endl;
 	    if (hasKnowledge(AlpsKnowledgeTypeSolution) ) {
 		dynamic_cast<AlpsSolution* >
 		    (getBestKnowledge(AlpsKnowledgeTypeSolution).first)->print(logFout);
@@ -5174,6 +5180,7 @@ AlpsKnowledgeBrokerMPI::searchLog()
 		      <<", total wallclock = " << sumWallClock << std::endl;
             
             std::cout << "Best solution quality = " << getBestQuality()
+                      << " ; node required = " << bestSolNode_
                       << std::endl;
             std::cout << "*****************************************************"
                       << std::endl;
