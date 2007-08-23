@@ -267,7 +267,7 @@ AlpsKnowledgeBrokerSerial::searchLog()
 
 	if (hasKnowledge(AlpsKnowledgeTypeSolution)) {
 	    messageHandler()->message(ALPS_S_FINAL_SOL, messages())
-		<< getBestQuality() << CoinMessageEol;
+		<< getBestQuality() << bestSolDepth_ << CoinMessageEol;
 	}
 	else {
 	    messageHandler()->message(ALPS_S_FINAL_NO_SOL, messages())

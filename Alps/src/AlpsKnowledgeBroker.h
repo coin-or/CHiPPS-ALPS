@@ -121,6 +121,9 @@ class AlpsKnowledgeBroker {
     /** The depth of the tree. */
     int treeDepth_;
 
+    /** The depth of the node that with best solution. */
+    int bestSolDepth_;
+
     /** Peak memory usage. */
     double peakMemory_;
 
@@ -268,6 +271,12 @@ class AlpsKnowledgeBroker {
 
     /** Get tree depth */
     int getTreeDepth() { return treeDepth_; }
+
+    /** Get best solution depth */
+    int getBestSolDepth() { return bestSolDepth_; }
+
+    /** Set best solution depth */
+    void setBestSolDepth(int depth) { bestSolDepth_ = depth; }
 
     /** Set peak memory usage. */
     void setPeakMemory(double size) { peakMemory_ = size; }

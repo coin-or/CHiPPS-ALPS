@@ -96,7 +96,7 @@ static Alps_message us_english[] =
     {ALPS_S_NODE_COUNT, 240, 1, "Processed %d nodes, has %d nodes, best relaxed %g, best feasible %g"},
     {ALPS_S_SEARCH_START, 250, 1, "Search solutions ..."},
     {ALPS_S_SEARCH_SOL, 255, 3, "Process %d found a better solution %g"},
-    {ALPS_S_FINAL_SOL, 260, 1, "Quality of the best solution found: %g"},
+    {ALPS_S_FINAL_SOL, 260, 1, "Quality of the best solution found: %g ; depth %d"},
     {ALPS_S_FINAL_NO_SOL, 264, 1, "No solution found"},
     {ALPS_S_FINAL_NODE_PROCESSED, 268, 1, "Number of nodes processed: %d"},
     {ALPS_S_FINAL_NODE_LEFT, 270, 1, "Number of nodes left: %d"},

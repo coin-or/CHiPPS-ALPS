@@ -130,6 +130,10 @@ KnapTreeNode::process(bool isRoot, bool rampUp)
 		message(ALPS_S_SEARCH_SOL, getKnowledgeBroker()->messages())
 		    << (getKnowledgeBroker()->getProcRank()) 
 		    << valRelax << CoinMessageEol;
+
+	    if (depth_ < getKnowledgeBroker()->getBestSolDepth()){
+		getKnowledgeBroker()->setBestSolDepth(depth_);
+	    }
 	}    
 	setStatus(AlpsNodeStatusFathomed);   // set the status to fathomed
     }
