@@ -148,9 +148,12 @@ static int computeUnitNodes(int oldUnitNodes,
 
 //#############################################################################
 
-static double computeBalancePeriod(double oldBalancePeriod,
+static double computeBalancePeriod(bool hasUserInput,
+                                   double oldBalancePeriod,
 				   double nodeProcessingTime)
 {
+    if (hasUserInput) return oldBalancePeriod;
+    
     double newPeriod = 0.1;
     
     if (nodeProcessingTime < 1.0e-14) {
@@ -254,6 +257,13 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 
     masterBalancePeriod_ =
         model_->AlpsPar()->entry(AlpsParams::masterBalancePeriod);
+    if (masterBalancePeriod_ > 0.0) {
+        userBalancePeriod_ = true;
+    }
+    else {
+        masterBalancePeriod_ = -masterBalancePeriod_ ;
+    }
+    
     largeSize_ = model_->AlpsPar()->entry(AlpsParams::largeSize);
 
     //------------------------------------------------------
@@ -369,7 +379,8 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     //    otherwise, balances the workload of hubs.
     //------------------------------------------------------
 
-    masterBalancePeriod_ = computeBalancePeriod(masterBalancePeriod_,
+    masterBalancePeriod_ = computeBalancePeriod(userBalancePeriod_,
+                                                masterBalancePeriod_,
                                                 nodeProcessingTime_);
 
     if (msgLevel_ > 0 && interCB) {
@@ -392,8 +403,8 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 
 	masterTimer_.start();
 	elaspeTime = 0.0;
-        masterBalancePeriod_ = 0.50;  // Test frequency
-        
+
+        //masterBalancePeriod_ = 0.50;  // Test frequency
         //std::cout << ", masterBalancePeriod_ = " << masterBalancePeriod_
         //        << std::endl;
         
@@ -939,6 +950,13 @@ AlpsKnowledgeBrokerMPI::hubMain()
 	entry(AlpsParams::changeWorkThreshold);
 
     hubReportPeriod_ = model_->AlpsPar()->entry(AlpsParams::hubReportPeriod);
+    if (hubReportPeriod_ > 0.0) {
+        userBalancePeriod_ = true;
+    }
+    else {
+        hubReportPeriod_ = -hubReportPeriod_;
+    }
+
     largeSize_ = model_->AlpsPar()->entry(AlpsParams::largeSize);
 
     unitWorkNodes_ = model_->AlpsPar()->entry(AlpsParams::unitWorkNodes);
@@ -1026,8 +1044,9 @@ AlpsKnowledgeBrokerMPI::hubMain()
     // (5) Do termination check if requred.
     //------------------------------------------------------
 
-    hubReportPeriod_ = computeBalancePeriod(hubReportPeriod_, 
-					   nodeProcessingTime_);
+    hubReportPeriod_ = computeBalancePeriod(userBalancePeriod_,
+                                            hubReportPeriod_, 
+                                            nodeProcessingTime_);
 
     if (hubMsgLevel_ > 5 && intraCB) {
 	messageHandler()->message(ALPS_LOADBAL_HUB_PERIOD, messages())
@@ -2601,11 +2620,13 @@ AlpsKnowledgeBrokerMPI::hubUpdateCluStatus(char*& bufLarge,
         }
 
         if (globalRank_ == masterRank_) {
-            masterBalancePeriod_ = computeBalancePeriod(masterBalancePeriod_,
+            masterBalancePeriod_ = computeBalancePeriod(userBalancePeriod_,
+                                                        masterBalancePeriod_,
                                                         nodeProcessingTime_);
         }
         else {
-            hubReportPeriod_ = computeBalancePeriod(hubReportPeriod_,
+            hubReportPeriod_ = computeBalancePeriod(userBalancePeriod_,
+                                                    hubReportPeriod_,
                                                     nodeProcessingTime_);
         }
         
@@ -3015,7 +3036,8 @@ AlpsKnowledgeBrokerMPI::masterUpdateSysStatus(char*& bufLarge,
             nodeProcessingTime_ = 0.5 * (nodeProcessingTime_ + npTime);
         }
 
-        masterBalancePeriod_ = computeBalancePeriod(masterBalancePeriod_,
+        masterBalancePeriod_ = computeBalancePeriod(userBalancePeriod_,
+                                                    masterBalancePeriod_,
                                                     nodeProcessingTime_);
 #if 0
         std::cout << "MASTER[" << globalRank_ << "]: After updateSystem(),"
@@ -5353,6 +5375,8 @@ AlpsKnowledgeBrokerMPI::init()
     rampUpSubTree_ = 0;
     unitWorkNodes_ = 0;
     haltSearch_ = false;
+
+    userBalancePeriod_ = false;
 }
 
 //#############################################################################

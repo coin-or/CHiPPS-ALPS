@@ -184,6 +184,9 @@ class AlpsKnowledgeBroker {
     /** The size of largest message buffer can be sent or received. */
     int largeSize_;
 
+    /** Has user input balance period */
+    bool userBalancePeriod_;
+    
  public:
 
     /** Default constructor. */

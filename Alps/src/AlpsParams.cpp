@@ -232,8 +232,8 @@ void AlpsParams::setDefaultEntries() {
   // DoublePar
   setEntry(changeWorkThreshold, 0.05);
   setEntry(donorThreshold, 0.02);
-  setEntry(hubReportPeriod, 0.01);
-  setEntry(masterBalancePeriod, 0.03);
+  setEntry(hubReportPeriod, -0.01);// Negative default, user can change
+  setEntry(masterBalancePeriod, -0.03);// Negative default, user can change
   setEntry(needWorkThreshold, 2);
   setEntry(receiverThreshold, 0.02);
   setEntry(timeLimit, ALPS_DBL_MAX);
