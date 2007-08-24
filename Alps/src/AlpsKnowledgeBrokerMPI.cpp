@@ -4089,7 +4089,7 @@ AlpsKnowledgeBrokerMPI::sendSubTree(const int receiver,
 	MPI_Send(buf, position, MPI_PACKED, receiver, tag, MPI_COMM_WORLD);
 #endif
 	if (!attachBuffer_) {
-	    int attachSize = largeSize_* 2 + MPI_BSEND_OVERHEAD;
+	    int attachSize = largeSize_* 4 + MPI_BSEND_OVERHEAD;
 	    attachBuffer_ =  new char [attachSize];
 	    MPI_Buffer_attach(attachBuffer_, attachSize);
 	}
