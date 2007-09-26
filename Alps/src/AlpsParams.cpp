@@ -221,7 +221,7 @@ void AlpsParams::setDefaultEntries() {
   setEntry(nodeLimit, ALPS_INT_MAX);
   setEntry(nodeLogInterval, 100);
   setEntry(processNum, 2);
-  setEntry(staticBalanceScheme, 0);
+  setEntry(staticBalanceScheme, 1);  // Spiral
   setEntry(searchStrategy, AlpsSearchTypeHybrid);  
   setEntry(searchStrategyRampUp, AlpsSearchTypeBestFirst);  
   setEntry(smallSize, 1024);      // 2^10
