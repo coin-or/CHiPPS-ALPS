@@ -859,7 +859,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 		masterBalanceHubs();
 		++masterCheckCount;
 		if (masterCheckCount % 10 == 0) {
-                    if (msgLevel_ > 0) {
+                    if (msgLevel_ > 10) {
                         messageHandler()->message(ALPS_LOADBAL_MASTER, messages())
                             << globalRank_ << masterCheckCount << CoinMessageEol;
                     }
@@ -879,7 +879,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 		hubBalanceWorkers();
 		++hubCheckCount;
 		if (hubCheckCount % 10 == 0) {
-                    if (msgLevel_ > 0) {
+                    if (msgLevel_ > 10) {
                         messageHandler()->message(ALPS_LOADBAL_HUB, messages())
                             << globalRank_ << hubCheckCount << CoinMessageEol;
                     }
@@ -3550,7 +3550,7 @@ AlpsKnowledgeBrokerMPI::sendIncumbent()
     
     if (leftSeq != -1) {
 	int leftRank = sequenceToRank(incumbentID_, leftSeq);
-#if defined(NF_DEBUG_MORE)  
+#if 0
 	std::cout << "PROC " <<  globalRank_
 		  <<" : init send a solution - L,  value = " 
 		  << incumbentValue_ << " to "<< leftRank << std::endl; 
@@ -3562,7 +3562,7 @@ AlpsKnowledgeBrokerMPI::sendIncumbent()
     
     if (rightSeq != -1) {
 	int rightRank = sequenceToRank(incumbentID_, rightSeq);
-#if defined(NF_DEBUG_MORE)  
+#if 0
 	std::cout << "PROC " <<  globalRank_
 		  <<" : init send a solution - R,  value = " 
 		  << incumbentValue_ << " to "<< rightRank << std::endl; 
@@ -4187,15 +4187,11 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
 	model.readParameters(argc, argv);
         
         msgLevel_ = model_->AlpsPar()->entry(AlpsParams::msgLevel);
+        hubNum_ = model_->AlpsPar()->entry(AlpsParams::hubNum);
 
         if (msgLevel_ > 0) {
             messageHandler()->message(ALPS_P_VERSION, messages())
                 << CoinMessageEol;
-        }
-
-	//std::cout << "argc=" << argc << std::endl;
-	
-        if (msgLevel_ > 0) {
             messageHandler()->message(ALPS_LAUNCH, messages())
                 << processNum_ << CoinMessageEol;
         }
@@ -4341,6 +4337,10 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
 	else {
 	    --hubNum_;
 	}
+    }
+    if ( (globalRank_ == masterRank_) && (msgLevel_ > 0) ) {
+        messageHandler()->message(ALPS_HUB_NUM, messages())
+            << hubNum_ << CoinMessageEol;
     }
 
     //------------------------------------------------------
@@ -5959,6 +5959,11 @@ AlpsKnowledgeBrokerMPI::rootInitMaster(AlpsTreeNode* root)
 
     AlpsNodePool* tempNodePool= NULL;
 
+    if (msgLevel_ > 0) {
+	messageHandler()->message(ALPS_STATIC_BALANCE_BEG, messages())
+	    << "the Two-level Root Initialization" << CoinMessageEol;
+    }
+
     //------------------------------------------------------
     // Create required number of subtrees(nodes) for hubs.
     //------------------------------------------------------
@@ -6249,6 +6254,11 @@ AlpsKnowledgeBrokerMPI::rootInitMaster(AlpsTreeNode* root)
 
     // Free pool.
     delete tempNodePool;
+
+    if (msgLevel_ > 0) {
+	messageHandler()->message(ALPS_STATIC_BALANCE_END, messages())
+	    << "the Two-level Root Initialization" << CoinMessageEol;
+    }
 }
 
 //#############################################################################
@@ -6560,7 +6570,25 @@ AlpsKnowledgeBrokerMPI::spiralMaster(AlpsTreeNode *root)
     // Create initial number of nodes (large than 1)
     int k;
     int requiredNumNodes = 2;
+    int receiver, pos, sender;
+    int numSent = 0;
+    int numLoaded = 0;
+    int doUnitWork = 1;
+    int donorNodes = 0;
+    int numFinishSiginal = 1; // Count master itself
+
+    bool stopSearch = false;
+    bool inRampUp = true;
+    double incVal;
+    
+    MPI_Status status;
+
     const int smallSize = model_->AlpsPar()->entry(AlpsParams::smallSize);
+
+    if (msgLevel_ > 0) {
+	messageHandler()->message(ALPS_STATIC_BALANCE_BEG, messages())
+	    << "the Spiral Initialization" << CoinMessageEol;
+    }
 
     if (msgLevel_ > 0 && requiredNumNodes > 0) {
 	messageHandler()->message(ALPS_RAMPUP_MASTER_START, messages())
@@ -6582,8 +6610,9 @@ AlpsKnowledgeBrokerMPI::spiralMaster(AlpsTreeNode *root)
     // Distribute created nodes to other processes
     int numGenNodes = rampUpSubTree_->nodePool()->getNumKnowledges();
 
-    std::cout << "master: spiral: numGenNodes = " << numGenNodes
-              << std::endl;
+#if 0
+    std::cout << "master: spiral: numGenNodes = " << numGenNodes<< std::endl;
+#endif
 
     if (numGenNodes == 0) {
         // Send initialization complete signal to other processes.
@@ -6593,13 +6622,13 @@ AlpsKnowledgeBrokerMPI::spiralMaster(AlpsTreeNode *root)
 			 AlpsMsgFinishInit, MPI_COMM_WORLD);
 	    }
 	}
-	return; //Exit rampup since master completed the search.
+        stopSearch = true;
+        goto TERM_SPIRAL_MASTER;
     }
 
-    int numSent = 0;
-    int numLoaded = 0;
-    int doUnitWork = 1;
-    
+    numSent = 0;
+    numLoaded = 0;
+    doUnitWork = 1;
     if (numGenNodes > processNum_ - 2) {
         doUnitWork = 0;
     }
@@ -6621,21 +6650,20 @@ AlpsKnowledgeBrokerMPI::spiralMaster(AlpsTreeNode *root)
     rampUpSubTree_->nullRootActiveNode();
     
     // Manage rampup
-    bool inRampUp = true;
-    int donorNodes = 0;
-    int numFinishSiginal = 1; // Count master itself
-    MPI_Status status;
+    inRampUp = true;
+    donorNodes = 0;
+    numFinishSiginal = 1; // Count master itself
 
     if (doUnitWork) {
         // If ask other process do unit work, then they will report back.
         while (inRampUp) {
             MPI_Recv(&donorNodes, 1, MPI_INT, MPI_ANY_SOURCE, 
                      AlpsMsgRampUpLoad, MPI_COMM_WORLD, &status);
-            int sender = status.MPI_SOURCE;
+            sender = status.MPI_SOURCE;
             if ((donorNodes > 1) && (numLoaded < processNum_)) {
                 // Ask the sender to donate a node to process numLoaded;
-                int receiver = numLoaded;
-                int pos = 0;
+                receiver = numLoaded;
+                pos = 0;
                 MPI_Pack(&receiver, 1, MPI_INT, smallBuffer_, smallSize, &pos,
                          MPI_COMM_WORLD);
                 MPI_Send(smallBuffer_, pos, MPI_PACKED, sender, 
@@ -6648,8 +6676,8 @@ AlpsKnowledgeBrokerMPI::spiralMaster(AlpsTreeNode *root)
                 ++numFinishSiginal;
             }
             
-            // If send all process finish signial, then exit.
-            if (numFinishSiginal == processNum_) {
+            // If send all "loaded process" finish signial, then exit.
+            if (numFinishSiginal == numLoaded) {
                 inRampUp = false;
             } 
         }
@@ -6664,8 +6692,40 @@ AlpsKnowledgeBrokerMPI::spiralMaster(AlpsTreeNode *root)
 	}
     }
 
+
+TERM_SPIRAL_MASTER:
+    
     MPI_Barrier(MPI_COMM_WORLD);
-    std::cout << "master: spiral: finished." << std::endl;
+    
+    //------------------------------------------------------
+    // If have better solution, broadcast its value and process id.
+    //------------------------------------------------------
+
+    if (!stopSearch && hasKnowledge(AlpsKnowledgeTypeSolution)) {
+	incVal = getBestKnowledge(AlpsKnowledgeTypeSolution).second;
+	if(incVal < incumbentValue_) {   // Assume Minimization
+	    incumbentValue_ = incVal;
+	    incumbentID_ = globalRank_;
+            sendKnowledge(AlpsKnowledgeTypeSolution, //useful
+                          globalRank_,
+                          0,
+                          smallBuffer_,
+                          0,
+                          MPI_ANY_TAG,
+                          MPI_COMM_WORLD,
+                          false);
+	    //sendIncumbent();
+            if (msgLevel_ > 0) {
+                messageHandler()->message(ALPS_RAMPUP_MASTER_SOL, messages())
+                    << globalRank_ << incVal << CoinMessageEol;
+            }
+	} 
+    }
+
+    if (msgLevel_ > 0) {
+	messageHandler()->message(ALPS_STATIC_BALANCE_END, messages())
+	    << "the Spiral Initialization" << CoinMessageEol;
+    }
 }
 
 //#############################################################################
@@ -6701,8 +6761,10 @@ AlpsKnowledgeBrokerMPI::spiralHub()
 	}
     }
 
-    std::cout << "hub[" << globalRank_ 
-              << "]: spiral: exited from while." << std::endl;
+    if (hubMsgLevel_ > 10) {
+        std::cout << "hub[" << globalRank_ 
+                  << "]: spiral: exited from while." << std::endl;
+    }
     
     if (hubWork_) {
         // Put rampup subtree in pool
@@ -6747,7 +6809,35 @@ AlpsKnowledgeBrokerMPI::spiralHub()
     }
 
     MPI_Barrier(MPI_COMM_WORLD);
-    std::cout << "hub: spiral: finished." << std::endl;
+    
+    if (hubMsgLevel_ > 10) {
+        std::cout << "hub: spiral: finished." << std::endl;
+    }
+
+    //------------------------------------------------------
+    // If have better solution, broadcast its value and process id.
+    //------------------------------------------------------
+
+    if (hasKnowledge(AlpsKnowledgeTypeSolution)) {
+	double incVal = getBestKnowledge(AlpsKnowledgeTypeSolution).second;
+	if(incVal < incumbentValue_) {   // Assume Minimization
+	    incumbentValue_ = incVal;
+	    incumbentID_ = globalRank_;
+            sendKnowledge(AlpsKnowledgeTypeSolution, //useful
+                          globalRank_,
+                          0,
+                          smallBuffer_,
+                          0,
+                          MPI_ANY_TAG,
+                          MPI_COMM_WORLD,
+                          false);
+	    //sendIncumbent();
+            if (msgLevel_ > 0) {
+                messageHandler()->message(ALPS_RAMPUP_HUB_SOL, messages())
+                    << globalRank_ << incVal << CoinMessageEol;
+            }
+	} 
+    }
 }
 
 //#############################################################################
@@ -6803,8 +6893,10 @@ AlpsKnowledgeBrokerMPI::spiralWorker()
 	}
     }
 
+#if 0
     std::cout << "worker[" << globalRank_ 
               << "]: spiral: exited from while." << std::endl;
+#endif
 
     // Put rampup subtree in pool
     if (rampUpSubTree_) {
@@ -6816,7 +6908,36 @@ AlpsKnowledgeBrokerMPI::spiralWorker()
     }
 
     MPI_Barrier(MPI_COMM_WORLD);
+
+    //------------------------------------------------------
+    // If have better solution, broadcast its value and process id.
+    //------------------------------------------------------
+
+    if (hasKnowledge(AlpsKnowledgeTypeSolution)) {
+	double incVal = getBestKnowledge(AlpsKnowledgeTypeSolution).second;
+	if(incVal < incumbentValue_) {   // Assume Minimization
+	    incumbentValue_ = incVal;
+	    incumbentID_ = globalRank_;
+            sendKnowledge(AlpsKnowledgeTypeSolution, //useful
+                          globalRank_,
+                          0,
+                          smallBuffer_,
+                          0,
+                          MPI_ANY_TAG,
+                          MPI_COMM_WORLD,
+                          false);
+	    //sendIncumbent();
+            if (msgLevel_ > 0) {
+                messageHandler()->message(ALPS_RAMPUP_WORKER_SOL, messages())
+                    << globalRank_ << incVal << CoinMessageEol;
+            }
+	} 
+    }
+
+#if 0
     std::cout << "worker[" << globalRank_<<"]: spiral: finished." << std::endl;
+#endif
+
 }
 
 //#############################################################################
@@ -6832,9 +6953,10 @@ AlpsKnowledgeBrokerMPI::spiralRecvProcessNode()
     int doUnitWork = 0;
     MPI_Unpack(largeBuffer_, largeSize_, &pos, &doUnitWork, 1, 
 	       MPI_INT, MPI_COMM_WORLD);
-
+#if 0
     std::cout << "PROCESS " << globalRank_ << " : received a node, doUnitWork "
               << doUnitWork << std::endl;    
+#endif
 
     //--------------------------------------------
     // Unpack a node
@@ -6898,12 +7020,19 @@ AlpsKnowledgeBrokerMPI::spiralRecvProcessNode()
     
         // Send load infor to master
         int numNodes = rampUpSubTree_->getNumNodes();
+        //std::cout << "numNodes = " << numNodes << std::endl;
+        
         const int smallSize = model_->AlpsPar()->entry(AlpsParams::smallSize);
+
         pos = 0;
         MPI_Pack(&numNodes, 1, MPI_INT, smallBuffer_, smallSize, &pos,
                  MPI_COMM_WORLD);
         MPI_Send(smallBuffer_, pos, MPI_PACKED, masterRank_,
                  AlpsMsgRampUpLoad, MPI_COMM_WORLD);
+        if (numNodes == 0) {
+            delete rampUpSubTree_;
+            rampUpSubTree_ = NULL;
+        }
     }
     else {
         // Put rampup subtree in subtree pool
@@ -6995,6 +7124,11 @@ AlpsKnowledgeBrokerMPI::spiralDonateNode()
              MPI_COMM_WORLD);
     MPI_Send(smallBuffer_, pos, MPI_PACKED, masterRank_, AlpsMsgRampUpLoad, 
              MPI_COMM_WORLD);
+
+    if (numNodes == 0) {
+        delete rampUpSubTree_;
+        rampUpSubTree_ = NULL;
+    }
 }
 
 //#############################################################################
