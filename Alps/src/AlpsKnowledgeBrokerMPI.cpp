@@ -6014,6 +6014,12 @@ AlpsKnowledgeBrokerMPI::rootInitMaster(AlpsTreeNode* root)
 		    break; // Break in the sending round
 		}
 		if (hubRanks_[i] != globalRank_) { 
+		    // NOTE: master's rank is always 0 in hubComm_.
+                    if (msgLevel_ > 100) {
+                        std::cout << "master send a node to hub " 
+				  << hubRanks_[i]
+                                  << std::endl;
+                    }
                     sendKnowledge(AlpsKnowledgeTypeNode,
                                   globalRank_,
                                   i,
@@ -6023,12 +6029,6 @@ AlpsKnowledgeBrokerMPI::rootInitMaster(AlpsTreeNode* root)
                                   hubComm_,
                                   true);
 
-		    // NOTE: master's rank is always 0 in hubComm_.
-                    if (msgLevel_ > 100) {
-                        std::cout << "master send a node to hub " 
-				  << hubRanks_[i]
-                                  << std::endl;
-                    }
 		}
 		else {
 		    AlpsTreeNode* nodeM = dynamic_cast<AlpsTreeNode* >
@@ -6170,11 +6170,11 @@ AlpsKnowledgeBrokerMPI::rootInitMaster(AlpsTreeNode* root)
                                   true);
 
 		    ++numSent2;
-#ifdef NF_DEBUG
-		    std::cout << "MASTER/HUB " << clusterRank_
-			      <<" : sent nodes to Worker " 
-			      << i << std::endl; 
-#endif
+                    if (msgLevel_ > 200) {
+                        std::cout << "MASTER/HUB " << clusterRank_
+                                  <<" : sent nodes to Worker " 
+                                  << i << std::endl; 
+                    }
 		}
 	    }
 	}
@@ -6610,14 +6610,18 @@ AlpsKnowledgeBrokerMPI::spiralMaster(AlpsTreeNode *root)
     // Distribute created nodes to other processes
     int numGenNodes = rampUpSubTree_->nodePool()->getNumKnowledges();
 
-#if 0
-    std::cout << "master: spiral: numGenNodes = " << numGenNodes<< std::endl;
-#endif
+    if (msgLevel_ > 200) {
+        std::cout << "master: spiral: numGenNodes = " << numGenNodes<< std::endl;
+    }
+    
 
     if (numGenNodes == 0) {
         // Send initialization complete signal to other processes.
 	for (k = 0; k < processNum_; ++k) {
 	    if (k != globalRank_) {
+                if (msgLevel_ > 200) {
+                    std::cout<<"master: spiral: ask others to exit"<<std::endl;
+                }
 		MPI_Send(smallBuffer_, 0, MPI_PACKED, k,
 			 AlpsMsgFinishInit, MPI_COMM_WORLD);
 	    }
@@ -6639,6 +6643,10 @@ AlpsKnowledgeBrokerMPI::spiralMaster(AlpsTreeNode *root)
 		break; // Distributed all nodes
 	    }
 	    if (k != globalRank_) {
+                if (msgLevel_ > 200) {
+                    std::cout << "master: spiral: send a node to process "
+                              << k << std::endl;
+                }
                 sendNodeModelGen(k, doUnitWork);
 		++numSent;
 	    }
@@ -6934,10 +6942,9 @@ AlpsKnowledgeBrokerMPI::spiralWorker()
 	} 
     }
 
-#if 0
-    std::cout << "worker[" << globalRank_<<"]: spiral: finished." << std::endl;
-#endif
-
+    if (msgLevel_ > 200) {
+        std::cout << "worker[" << globalRank_<<"]: spiral: finished." << std::endl;
+    }
 }
 
 //#############################################################################
@@ -6953,10 +6960,10 @@ AlpsKnowledgeBrokerMPI::spiralRecvProcessNode()
     int doUnitWork = 0;
     MPI_Unpack(largeBuffer_, largeSize_, &pos, &doUnitWork, 1, 
 	       MPI_INT, MPI_COMM_WORLD);
-#if 0
-    std::cout << "PROCESS " << globalRank_ << " : received a node, doUnitWork "
-              << doUnitWork << std::endl;    
-#endif
+    if (msgLevel_ > 200) {
+        std::cout << "PROCESS " << globalRank_ << " : received a node, doUnitWork "
+                  << doUnitWork << std::endl;    
+    }
 
     //--------------------------------------------
     // Unpack a node
@@ -7020,7 +7027,10 @@ AlpsKnowledgeBrokerMPI::spiralRecvProcessNode()
     
         // Send load infor to master
         int numNodes = rampUpSubTree_->getNumNodes();
-        //std::cout << "numNodes = " << numNodes << std::endl;
+        if (msgLevel_ > 200) {
+            std::cout << "PROCESS " << globalRank_ 
+                      << " : numNodes = " << numNodes << std::endl;
+        }
         
         const int smallSize = model_->AlpsPar()->entry(AlpsParams::smallSize);
 
@@ -7055,10 +7065,19 @@ AlpsKnowledgeBrokerMPI::spiralDonateNode()
     int position = 0;
     int receiver = -1;
 
+    int numNodes = rampUpSubTree_->getNumNodes();   
+    assert(numNodes > 0);
+
     MPI_Unpack(largeBuffer_, largeSize_, &position, &receiver, 1, 
 	       MPI_INT, MPI_COMM_WORLD);
 
+    if (msgLevel_ > 200) {
+        std::cout << "worker " << globalRank_ << ": spiral: has " << numNodes
+                  << " nodes; send a node to process "
+                  << receiver << std::endl;
+    }
     // Get a node for receiver
+    // Send load infor to master
     AlpsTreeNode* node = dynamic_cast<AlpsTreeNode* >
 	(rampUpSubTree_->nodePool()->getKnowledge().first);
     AlpsEncoded* enc = node->encode();
@@ -7108,7 +7127,14 @@ AlpsKnowledgeBrokerMPI::spiralDonateNode()
 	delete enc;  
 	enc = 0;                 // Allocated in encode()
     }
-    
+
+    // Send load infor to master
+    int numNodesAfter = rampUpSubTree_->getNumNodes();  
+    if (msgLevel_ > 200) {
+        std::cout << "worker " << globalRank_ << ": spiral: has "
+                  << numNodesAfter << " nodes after donating" << std::endl;
+    }
+
     // Do one unit of work
     int requiredNumNodes = 2;
     nodeProcessedNum_ += rampUpSubTree_->rampUp(1,  // minimum number
@@ -7117,15 +7143,19 @@ AlpsKnowledgeBrokerMPI::spiralDonateNode()
                                                 NULL);
     
     // Send load infor to master
-    int numNodes = rampUpSubTree_->getNumNodes();    
+    numNodesAfter = rampUpSubTree_->getNumNodes();  
+    if (msgLevel_ > 200) {
+        std::cout << "worker " << globalRank_ << ": spiral: has "
+                  << numNodesAfter << " nodes after do unit work" << std::endl;
+    }
     const int smallSize = model_->AlpsPar()->entry(AlpsParams::smallSize);
     int pos = 0;
-    MPI_Pack(&numNodes, 1, MPI_INT, smallBuffer_, smallSize, &pos,
+    MPI_Pack(&numNodesAfter, 1, MPI_INT, smallBuffer_, smallSize, &pos,
              MPI_COMM_WORLD);
     MPI_Send(smallBuffer_, pos, MPI_PACKED, masterRank_, AlpsMsgRampUpLoad, 
              MPI_COMM_WORLD);
 
-    if (numNodes == 0) {
+    if (numNodesAfter == 0) {
         delete rampUpSubTree_;
         rampUpSubTree_ = NULL;
     }
