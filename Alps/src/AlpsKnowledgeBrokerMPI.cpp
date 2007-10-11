@@ -6576,6 +6576,7 @@ AlpsKnowledgeBrokerMPI::spiralMaster(AlpsTreeNode *root)
     int doUnitWork = 1;
     int donorNodes = 0;
     int numFinishSiginal = 1; // Count master itself
+    int numCompleted = 0;
 
     bool stopSearch = false;
     bool inRampUp = true;
@@ -6661,7 +6662,8 @@ AlpsKnowledgeBrokerMPI::spiralMaster(AlpsTreeNode *root)
     inRampUp = true;
     donorNodes = 0;
     numFinishSiginal = 1; // Count master itself
-
+    numCompleted = 0;
+    
     if (doUnitWork) {
         // If ask other process do unit work, then they will report back.
         while (inRampUp) {
@@ -6682,10 +6684,38 @@ AlpsKnowledgeBrokerMPI::spiralMaster(AlpsTreeNode *root)
                 MPI_Send(smallBuffer_, 0, MPI_PACKED, sender,
                          AlpsMsgFinishInit, MPI_COMM_WORLD);
                 ++numFinishSiginal;
+                if (donorNodes < 1) {
+                    ++numCompleted;
+                }
             }
             
-            // If send all "loaded process" finish signial, then exit.
-            if (numFinishSiginal == numLoaded) {
+            //----------------------------------------------
+            // If have sent all "loaded" processes finish signial OR
+            // if all "loaded" processes have no nodes, search completed.
+            //----------------------------------------------
+            // NOTE: numLoaded is greater than the actual number of nodes 
+            //       sent by 1
+            //----------------------------------------------
+
+            if (numCompleted == numLoaded - 1){
+                if (msgLevel_ > 200) {
+                    std::cout<<"master: spiral: no nodes left, search completed."
+                             << std::endl;
+                }
+                inRampUp = false;
+                // Send finish signal to rest processes
+                for (k = numLoaded; k < processNum_; ++k) {
+                    MPI_Send(smallBuffer_, 0, MPI_PACKED, k,
+                             AlpsMsgFinishInit, MPI_COMM_WORLD);
+                    ++numFinishSiginal;
+                }
+                assert(numFinishSiginal == processNum_);
+            }
+            else if (numFinishSiginal == numLoaded) {
+                if (msgLevel_ > 200) {
+                    std::cout<<"master: spiral: all processed have been loaded."
+                             << std::endl;
+                }
                 inRampUp = false;
             } 
         }
