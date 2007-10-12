@@ -6632,7 +6632,7 @@ AlpsKnowledgeBrokerMPI::spiralMaster(AlpsTreeNode *root)
     }
 
     numSent = 0;
-    numLoaded = 0;
+    numLoaded = 1;
     doUnitWork = 1;
     if (numGenNodes > processNum_ - 2) {
         doUnitWork = 0;
@@ -6660,7 +6660,7 @@ AlpsKnowledgeBrokerMPI::spiralMaster(AlpsTreeNode *root)
     
     // Manage rampup
     inRampUp = true;
-    donorNodes = 0;
+    donorNodes = 0; // Count master itself
     numFinishSiginal = 1; // Count master itself
     numCompleted = 0;
     
@@ -6711,7 +6711,8 @@ AlpsKnowledgeBrokerMPI::spiralMaster(AlpsTreeNode *root)
                 }
                 assert(numFinishSiginal == processNum_);
             }
-            else if (numFinishSiginal == numLoaded) {
+            
+	    if (numFinishSiginal == processNum_) {
                 if (msgLevel_ > 200) {
                     std::cout<<"master: spiral: all processed have been loaded."
                              << std::endl;
