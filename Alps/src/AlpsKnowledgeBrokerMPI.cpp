@@ -6823,23 +6823,26 @@ AlpsKnowledgeBrokerMPI::spiralHub()
     else {
 	// hub send its nodes to its workers.
         int i;
-        const int numNode = rampUpSubTree_->nodePool()->getNumKnowledges();
         int numSent = 0;
-        int receiver = -1;
-        
-	while ( numSent < numNode) {
-	    for (i = 0; i < clusterSize_; ++i) {
-		if (numSent == numNode ) break;
-                if (i != clusterRank_) {
-                    // Send a node to work receiver
-                    receiver = cluster2GlobalRank(masterRank_, myHubRank_, i);
-                    sendNodeModelGen(receiver, 0); // Just recv, no unit work
-                    ++numSent;
-                }
-	    } 
-	} // EOF of while loop
-        assert(rampUpSubTree_->getNumNodes() == 0);
-        rampUpSubTree_->nullRootActiveNode();
+        int receiver = -1;        
+
+        if (rampUpSubTree_) { // Probably deleted by spiralRecvProcessNode()
+            const int numNode = rampUpSubTree_->nodePool()->getNumKnowledges();
+            while ( numSent < numNode) {
+                for (i = 0; i < clusterSize_; ++i) {
+                    if (numSent == numNode ) break;
+                    if (i != clusterRank_) {
+                        // Send a node to work receiver
+                        receiver = 
+                            cluster2GlobalRank(masterRank_, myHubRank_, i);
+                        sendNodeModelGen(receiver, 0); // Just recv,not work
+                        ++numSent;
+                    }
+                } 
+            } // EOF of while loop
+            assert(rampUpSubTree_->getNumNodes() == 0);
+            rampUpSubTree_->nullRootActiveNode();
+        }
         
         // Send hub finish tag
         char* dummyBuf = 0;
