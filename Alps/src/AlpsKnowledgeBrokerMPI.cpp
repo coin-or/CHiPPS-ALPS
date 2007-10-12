@@ -6650,8 +6650,8 @@ AlpsKnowledgeBrokerMPI::spiralMaster(AlpsTreeNode *root)
                 }
                 sendNodeModelGen(k, doUnitWork);
 		++numSent;
+                ++numLoaded;
 	    }
-	    ++numLoaded;
 	}
     }
 
@@ -6697,6 +6697,11 @@ AlpsKnowledgeBrokerMPI::spiralMaster(AlpsTreeNode *root)
             //       sent by 1
             //----------------------------------------------
 
+            if (msgLevel_ > 200) {
+                std::cout<<"master: spiral: numCompleted = " << numCompleted
+                         << "; numLoaded = " << numLoaded << std::endl;
+            }
+        
             if (numCompleted == numLoaded - 1){
                 if (msgLevel_ > 200) {
                     std::cout<<"master: spiral: no nodes left, search completed."
