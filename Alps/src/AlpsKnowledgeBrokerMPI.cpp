@@ -5000,7 +5000,7 @@ AlpsKnowledgeBrokerMPI::searchLog()
 
             if (hasKnowledge(AlpsKnowledgeTypeSolution)) {
                 logFout << "Best solution quality = " << getBestQuality()
-                        << " ; node required = " << bestSolNode_;
+                        << " ; node required to find this solution = " << bestSolNode_;
                 logFout << std::endl;
             }
             else {
@@ -5185,7 +5185,7 @@ AlpsKnowledgeBrokerMPI::searchLog()
 		      <<", total wallclock = " << sumWallClock << std::endl;
             if (hasKnowledge(AlpsKnowledgeTypeSolution)) {
                 std::cout << "Best solution quality = " << getBestQuality()
-                          << " ; node required = " << bestSolNode_
+                          << " ; node required to find this solution = " << bestSolNode_
                           << std::endl;
             }
             else {
@@ -5482,7 +5482,7 @@ AlpsKnowledgeBrokerMPI::printBestSolution(char* outputFile) const
 	    // Write to outputFile
 	    std::ofstream os(outputFile);
             if (hasKnowledge(AlpsKnowledgeTypeSolution)) {
-                os << "Best solution quality = "<<getBestQuality()<< std::endl;
+                os << "Quality = "<<getBestQuality()<< std::endl;
                 dynamic_cast<AlpsSolution* >
                     (getBestKnowledge(AlpsKnowledgeTypeSolution).first)->print(os);
             }
@@ -5496,9 +5496,8 @@ AlpsKnowledgeBrokerMPI::printBestSolution(char* outputFile) const
             std::cout << "=================== BEST SOLUTION ==================="
                       << std::endl;
             if (hasKnowledge(AlpsKnowledgeTypeSolution)) {
-                std::cout << "Best solution quality = " << getBestQuality()
+                std::cout << "Quality = " << getBestQuality()
                           << std::endl;
-                std::cout << "Best solution: " << std::endl;
                 dynamic_cast<AlpsSolution* >(getBestKnowledge(AlpsKnowledgeTypeSolution).first)->print(std::cout);
             }
             else {
