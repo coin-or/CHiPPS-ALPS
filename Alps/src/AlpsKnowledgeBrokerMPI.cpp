@@ -4998,9 +4998,14 @@ AlpsKnowledgeBrokerMPI::searchLog()
 	    // Solution.
 	    //----------------------------------------------
 
-	    logFout << "Best solution quality = " << getBestQuality()
-                    << " ; node required = " << bestSolNode_;
-            logFout << std::endl;
+            if (hasKnowledge(AlpsKnowledgeTypeSolution)) {
+                logFout << "Best solution quality = " << getBestQuality()
+                        << " ; node required = " << bestSolNode_;
+                logFout << std::endl;
+            }
+            else {
+                logFout << "No solution was found." << std::endl;
+            }
 	    if (hasKnowledge(AlpsKnowledgeTypeSolution) ) {
 		dynamic_cast<AlpsSolution* >
 		    (getBestKnowledge(AlpsKnowledgeTypeSolution).first)->print(logFout);
@@ -5075,7 +5080,7 @@ AlpsKnowledgeBrokerMPI::searchLog()
                     << CoinMessageEol;
             }
 
-            std::cout << "\n******************* SEARCH RESULTS ******************"
+            std::cout << "\n=================== SEARCH RESULTS =================="
                       << std::endl;
 
             //----------------------------------------------
@@ -5178,15 +5183,18 @@ AlpsKnowledgeBrokerMPI::searchLog()
 		      << ", max = " << maxWallClock
 		      << ", min = "<< minWallClock 
 		      <<", total wallclock = " << sumWallClock << std::endl;
-            
-            std::cout << "Best solution quality = " << getBestQuality()
-                      << " ; node required = " << bestSolNode_
-                      << std::endl;
-            std::cout << "*****************************************************"
-                      << std::endl;
-        } // Print msg if msgLevel_ > 0
-
-    }  // Only master log
+            if (hasKnowledge(AlpsKnowledgeTypeSolution)) {
+                std::cout << "Best solution quality = " << getBestQuality()
+                          << " ; node required = " << bestSolNode_
+                          << std::endl;
+            }
+            else {
+                std::cout << "No solution was found." << std::endl;
+            }
+            std::cout << "====================================================="
+                      << std::endl << std::endl;
+        } // EOF msgLevel_ > 0
+    }  // EOF master log
 
     if (globalRank_ == masterRank_) {
 	delete [] tSizes;     tSizes = 0;
@@ -5470,25 +5478,34 @@ AlpsKnowledgeBrokerMPI::printBestSolution(char* outputFile) const
 
 	if (msgLevel_ < 1) return;
 
-	if (getNumKnowledges(AlpsKnowledgeTypeSolution) <= 0) {
-	    std::cout << "\nALPS did not find a solution."
-		      << std::endl;
-	    return;
-	}
 	if (outputFile != 0) {               
 	    // Write to outputFile
 	    std::ofstream os(outputFile);
-	    os << "Quality = " << getBestQuality();
-	    os << std::endl;
-	    dynamic_cast<AlpsSolution* >
-		(getBestKnowledge(AlpsKnowledgeTypeSolution).first)->print(os);
+            if (hasKnowledge(AlpsKnowledgeTypeSolution)) {
+                os << "Best solution quality = "<<getBestQuality()<< std::endl;
+                dynamic_cast<AlpsSolution* >
+                    (getBestKnowledge(AlpsKnowledgeTypeSolution).first)->print(os);
+            }
+            else {
+                os << "No solution was found." << std::endl;
+            }
 	}
 	else {             
 	    // Write to std::cout
-	    std::cout << "Quality = " << getBestQuality();
-	    std::cout << "\nBest solution: " << std::endl;
-	    dynamic_cast<AlpsSolution* >
-		(getBestKnowledge(AlpsKnowledgeTypeSolution).first)->print(std::cout);
+            std::cout << std::endl;
+            std::cout << "=================== BEST SOLUTION ==================="
+                      << std::endl;
+            if (hasKnowledge(AlpsKnowledgeTypeSolution)) {
+                std::cout << "Best solution quality = " << getBestQuality()
+                          << std::endl;
+                std::cout << "Best solution: " << std::endl;
+                dynamic_cast<AlpsSolution* >(getBestKnowledge(AlpsKnowledgeTypeSolution).first)->print(std::cout);
+            }
+            else {
+                std::cout << "No solution was found." << std::endl;
+            }
+            std::cout << "====================================================="
+                      << std::endl << std::endl;
 	}
     }
 }
@@ -6974,7 +6991,7 @@ AlpsKnowledgeBrokerMPI::spiralWorker()
                           MPI_COMM_WORLD,
                           false);
 	    //sendIncumbent();
-            if (msgLevel_ > 0) {
+            if (msgLevel_ > 10) {
                 messageHandler()->message(ALPS_RAMPUP_WORKER_SOL, messages())
                     << globalRank_ << incVal << CoinMessageEol;
             }
