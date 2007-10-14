@@ -5493,8 +5493,15 @@ AlpsKnowledgeBrokerMPI::printBestSolution(char* outputFile) const
 	else {             
 	    // Write to std::cout
             std::cout << std::endl;
-            std::cout << "=================== BEST SOLUTION ==================="
-                      << std::endl;
+	    if (getSolStatus() == AlpsExitStatusOptimal) {
+		std::cout << "================= OPTIMAL SOLUTION =================="
+			  << std::endl;
+	    }
+	    else {
+		std::cout << "=================== BEST SOLUTION ==================="
+			  << std::endl;		
+	    }
+	    
             if (hasKnowledge(AlpsKnowledgeTypeSolution)) {
                 std::cout << "Quality = " << getBestQuality()
                           << std::endl;
