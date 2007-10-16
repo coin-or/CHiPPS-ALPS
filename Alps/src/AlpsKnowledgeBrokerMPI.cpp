@@ -5498,7 +5498,7 @@ AlpsKnowledgeBrokerMPI::printBestSolution(char* outputFile) const
 			  << std::endl;
 	    }
 	    else {
-		std::cout << "=================== BEST SOLUTION ==================="
+		std::cout << "================= BEST SOLUTION FOUND ==============="
 			  << std::endl;		
 	    }
 	    

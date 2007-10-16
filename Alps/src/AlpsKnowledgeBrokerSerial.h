@@ -112,7 +112,7 @@ class AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
 		os << "Optimal solution:" << std::endl;
 	    }
 	    else {
-		os << "Best solution:" << std::endl;
+		os << "Best solution found:" << std::endl;
 	    }
 	    os << "Quality = " << getBestQuality();
 	    os << std::endl;
@@ -125,7 +125,7 @@ class AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
 		std::cout << "Optimal solution:" << std::endl;
 	    }
 	    else {
-		std::cout << "Best solution:" << std::endl;
+		std::cout << "Best solution found:" << std::endl;
 	    }
 	    std::cout << "Quality = " << getBestQuality();
 	    std::cout << std::endl;
