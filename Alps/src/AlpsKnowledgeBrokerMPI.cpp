@@ -5482,7 +5482,7 @@ AlpsKnowledgeBrokerMPI::printBestSolution(char* outputFile) const
 	    // Write to outputFile
 	    std::ofstream os(outputFile);
             if (hasKnowledge(AlpsKnowledgeTypeSolution)) {
-                os << "Quality = "<<getBestQuality()<< std::endl;
+                os << "Cost = " << getBestQuality() << std::endl;
                 dynamic_cast<AlpsSolution* >
                     (getBestKnowledge(AlpsKnowledgeTypeSolution).first)->print(os);
             }
@@ -5503,7 +5503,7 @@ AlpsKnowledgeBrokerMPI::printBestSolution(char* outputFile) const
 	    }
 	    
             if (hasKnowledge(AlpsKnowledgeTypeSolution)) {
-                std::cout << "Quality = " << getBestQuality()
+                std::cout << "Cost = " << getBestQuality()
                           << std::endl;
                 dynamic_cast<AlpsSolution* >(getBestKnowledge(AlpsKnowledgeTypeSolution).first)->print(std::cout);
             }

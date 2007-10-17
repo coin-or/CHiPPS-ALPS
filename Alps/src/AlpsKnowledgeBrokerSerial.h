@@ -114,7 +114,7 @@ class AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
 	    else {
 		os << "Best solution found:" << std::endl;
 	    }
-	    os << "Quality = " << getBestQuality();
+	    os << "Cost = " << getBestQuality();
 	    os << std::endl;
 	    dynamic_cast<AlpsSolution* >
 		(getBestKnowledge(AlpsKnowledgeTypeSolution).first)->print(os);
@@ -127,7 +127,7 @@ class AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
 	    else {
 		std::cout << "Best solution found:" << std::endl;
 	    }
-	    std::cout << "Quality = " << getBestQuality();
+	    std::cout << "Cost = " << getBestQuality();
 	    std::cout << std::endl;
 	    dynamic_cast<AlpsSolution* >
 		(getBestKnowledge(AlpsKnowledgeTypeSolution).first)->print(std::cout);
