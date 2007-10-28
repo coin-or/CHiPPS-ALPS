@@ -304,7 +304,7 @@ AlpsKnowledgeBrokerSerial::searchLog()
 	    fout << "Best solution quality = " << getBestQuality() << std::endl;
 	}
 	else {
-	    fout << "Not solution found" << std::endl;
+	    fout << "No solution was found." << std::endl;
 	}
 	fout << "Number of nodes processed = "<<nodeProcessedNum_ << std::endl;
 	fout << "Number of nodes left = " << nodeLeftNum_ << std::endl;
