@@ -1,4 +1,5 @@
 * text=auto !eol
+Alps/MSVisualStudio/v8/libAlps.vcproj -text
 Alps/Makefile.am -text
 Alps/Makefile.in -text
 Alps/alps_addlibs.txt.in -text
@@ -27,11 +28,11 @@ Alps/examples/Abc/AbcTreeNode.cpp -text
 Alps/examples/Abc/AbcTreeNode.h -text
 Alps/examples/Abc/INSTALL -text
 Alps/examples/Abc/LICENSE -text
+Alps/examples/Abc/MSVisualStudio/v8/Abc.sln -text
+Alps/examples/Abc/MSVisualStudio/v8/Abc.suo -text
+Alps/examples/Abc/MSVisualStudio/v8/Abc.vcproj -text
 Alps/examples/Abc/Makefile.in -text
 Alps/examples/Abc/README -text
-Alps/examples/Abc/Win32/v8/Abc.sln -text
-Alps/examples/Abc/Win32/v8/Abc.suo -text
-Alps/examples/Abc/Win32/v8/Abc.vcproj -text
 Alps/examples/Abc/abc.par.in -text
 Alps/examples/Abc/abc.pbs -text
 Alps/examples/Abc/data/egout.mps -text
@@ -52,12 +53,12 @@ Alps/examples/Knap/KnapSolution.h -text
 Alps/examples/Knap/KnapTreeNode.cpp -text
 Alps/examples/Knap/KnapTreeNode.h -text
 Alps/examples/Knap/LICENSE -text
+Alps/examples/Knap/MSVisualStudio/v8/Knap.sln -text
+Alps/examples/Knap/MSVisualStudio/v8/Knap.suo -text
+Alps/examples/Knap/MSVisualStudio/v8/Knap.vcproj -text
 Alps/examples/Knap/Makefile.in -text
 Alps/examples/Knap/README -text
 Alps/examples/Knap/TODO -text
-Alps/examples/Knap/Win32/v8/Knap.sln -text
-Alps/examples/Knap/Win32/v8/Knap.suo -text
-Alps/examples/Knap/Win32/v8/Knap.vcproj -text
 Alps/examples/Knap/data/Hard/hardKnapStat -text
 Alps/examples/Knap/data/Hard/input100_30.txt -text
 Alps/examples/Knap/data/Hard/input100_31.txt -text

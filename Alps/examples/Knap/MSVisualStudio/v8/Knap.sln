@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual C++ Express 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libAlps", "..\..\..\..\..\Win32\v8\Alps\libAlps.vcproj", "{246A8CAC-4D2A-4D9D-9B5A-BEB99C0F2E89}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libAlps", "..\..\..\..\..\Alps\MSVisualStudio\v8\libAlps.vcproj", "{246A8CAC-4D2A-4D9D-9B5A-BEB99C0F2E89}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Knap", "Knap.vcproj", "{BD941FC3-17B1-4596-89FA-D969599F1DAC}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -9,7 +9,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Knap", "Knap.vcproj", "{BD9
 		{246A8CAC-4D2A-4D9D-9B5A-BEB99C0F2E89} = {246A8CAC-4D2A-4D9D-9B5A-BEB99C0F2E89}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libCoinUtils", "..\..\..\..\..\Win32\v8\CoinUtils\libCoinUtils\libCoinUtils.vcproj", "{C4867F15-438D-4FF8-8388-62FBAAA9786C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libCoinUtils", "..\..\..\..\..\CoinUtils\MSVisualStudio\v8\libCoinUtils\libCoinUtils.vcproj", "{C4867F15-438D-4FF8-8388-62FBAAA9786C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
