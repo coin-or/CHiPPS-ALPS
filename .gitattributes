@@ -173,7 +173,6 @@ Alps/test/Makefile.am -text
 /Makefile.am -text
 /Makefile.in -text
 /README -text
-Win32/v8/libAlps.vcproj -text
 /config.guess -text
 /config.sub -text
 /configure -text
