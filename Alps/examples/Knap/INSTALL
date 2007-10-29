@@ -1,106 +1,59 @@
-PREREQUISITES FOR INSTALLATION
-==============================
+TO BUILD AND RUN SERIAL KNAP (UNIX-LIKE ENVIRONMENTS)
+=====================================================
 
-NOTE: CoinDir is the path to the directory of COIN
-NOTE: AlpsDir is the path to the directory of COIN/Alps
-NOTE: KnapDir is the path to the directory of COIN/Examples/Knap
-NOTE: TargetDir is the path to the directory where targets are put in,
-      whose name is derived from the platform name (as returned by `uname`)
-      and the optimization level (KnapDir/Linux-g or KnapDir/Linux-O). 
+1. Download and build ALPS-1.0 serial library. Please refer to the INSTALL
+file in the installation directory.
 
-1. Download the necessary components (Alps, Coin) of COIN
-   - Alps depends on Coin.
-   - Knap depends on Coin
-2. At the moment, on (*)nix platforms, you must use g++ 2.95.2 or higher.
-3. must use gnu make
-4. To make the documentation, doxygen must be installed
+2. In BUILDDIR/Alps/examples/Knap, type 'make' to build the executable.
 
-
-TO BUILD AND RUN SERIAL KNAP
-============================
-
-1. Build Alps serial library. Please refer to the INSTALL file in AlpsDir.
-
-2. Build Knap. In CoinDir/Examples/Knap, 'make' to build the 
-   executable, which will be placed in the target subdirectory (TargetDir).
-
-3. If do NOT want to use the default parameter values, users can modify them.
-   (AlpsDir/include/AlpsParams.h has explanations of each parameter.)
-
-   There are two ways to change parameters:
-   - parameter file: KnapDir/knap.par
+3. Modify parameters if desired. ALPS-1.0/Alps/include/AlpsParams.h has
+explanations of each parameter. There are two ways to specify parameters:
+   - parameter file: knap.par
    - command line
 
-   Users must specify:
+The user must specify:
    - which instance to solve
 
-   Users can specify:
+The users can specify:
    - maximum solution time
    - log level, etc.
 
-4. To run Knap, in KnapDir, type
+4. To run Knap, type 
 
-	TargetDir/knap -param knap.par
-	
+	BUILDDIR/Alps/examples/Knap/knap -param knap.par
+
    Knap can also read in parameters from command line, for instance
 
-	TargetDir/knap -Alps_instance ./data/input3.txt
+	BUILDDIR/Alps/examples/Knap/knap -Alps_instance ./data/input3.txt
 	
+TO BUILD AND RUN PARALLEL KNAP (UNIX_LIKE ENVIRONMENTS)
+======================================================
 
-TO BUILD AND RUN PARALLEL KNAP
-==============================
+1. Download and build ALPS-1.0 serial library. Please refer to the INSTALL
+file in the installation directory.
 
-1. Build Alps parallel library. Please refer to the INSTALL file in AlpsDir.
+2. In BUILDDIR/Alps/examples/Knap, type 'make' to build the executable.
 
-2. Build Knap. In KnapDir, 'make' to build the executable, 
-   which will be placed in the target subdirectory (TargetDir).
-
-3. If do NOT want to use the default parameter values, users can modify them.
-   (AlpsDir/include/AlpsParams.h has explanations of each parameter.)
-
-   There are two ways to change parameters:
-   - parameter file: KnapDir/knap.par
+3. Modify parameters if desired. ALPS-1.0/Alps/include/AlpsParams.h has
+explanations of each parameter. There are two ways to specify parameters:
+   - parameter file: knap.par
    - command line
 
-   Users must specify:
+The user must specify:
    - which instance to solve
    - how many processes to be launched 
 
-   Users can specify:
+The user can specify:
    - how many hubs
    - maximum solution time
    - log level, etc.
 
-4. The way to run parallel version depends on users' computing environment.
-   Users can ask help from their system administrators if not sure.
-   A common way is to enter following command in KnapDir:
+4. The way to run the parallel version depends on users' computing
+environment, but in general the command line should look something like
 
-      mpirun -np numProcesses TargetDir/knap -param knap.par
+    mpirun -np numProcesses BUILDDIR/Alps/examples/Knap/knap -param knap.par
+	
+TO BUILD AND RUN SERIAL KNAP (MS VISUAL STUDIO)
+====================================================
 
-SOLVER OUTPUT
-=============
-
-For example, in KnapDir, type following command to solve instance input2 using
-serial Knap:
-
-./Linux-g/knap -Alps_instance data/input2.txt
-
-*****************************
-* ALPS Version 0.6 (Serial) *
-*****************************
-
-Reading in ALPS parameters ...
-Reading in KNAP parameters ...
-Problem = input2.txt
-Data file = data/input2.txt
-Log file = input2.txt.log
-
-Number of nodes processed = 119
-Number of nodes left = 0
-Tree depth = 10
-Search CPU time = 0.001 seconds
-Search wallclock = 0.001 seconds
-Best solution quality = -81
-
-Quality = -81
-2       4       6       7       9       10
+See INSTALL file in the ALPS distribution

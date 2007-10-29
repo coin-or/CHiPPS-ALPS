@@ -25,11 +25,11 @@ You can obtain the source code for the Alps package in two ways:
 *** CONFIGURATION, COMPILE, INSTALLATION (UNIX-LIKE ENVIRONMENTS)  ***
 **********************************************************************
 
-1. Serial Solver
-----------------
+1. Serial Library
+-----------------
 
 Switch to the directory in which you just downloaded or extracted the source
-(e.g. Alps-1.0) and execute the following commands:
+(e.g., Alps-1.0) and execute the following commands:
 
   1) ./configure
   2) make
@@ -48,8 +48,8 @@ and the COPS Trac page
 
 for more information.
 
-2. Parallel Solver (MPI as message passing interface) 
------------------------------------------------------
+2. Parallel Library (MPI as message passing interface) 
+------------------------------------------------------
 
 For configuration and and compilation of the MPI parallel solver, the user has
 to specify the location of MPI with options --with-mpi-incdir, --with-mpi-lib,
