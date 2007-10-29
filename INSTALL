@@ -1,8 +1,3 @@
-These instructions are for UNIX-like systems (including Linux, Cygwin and
-MSys) only. If Microsoft Visual Studio projects are maintained for this
-package, you can find instructions at
-
-  https://projects.coin-or.org/MSDevStudio
 
 **********************************************************************
 ***                         DOWNLOAD                               ***
@@ -11,16 +6,13 @@ package, you can find instructions at
 You can obtain the source code for the Alps package in two ways:
 
 1. Obtain the source directly from the COIN-OR subversion repository
-   (recommended).  For this you needs the program 'svn' installed on
-   your machine, and output of "svn --version" must contain 
-   "handles 'https' scheme".
-
-   Assuming that you want to download the code into a subdirectory
-   "COIN-Alps", you type
+   (recommended). For this, you need a subversion client installed. For a
+   command-line client, check out the code with
 
    svn co https://projects.coin-or.org/svn/Cops/Alps/stable/1.0 Alps-1.0
 
-2. Download the tarball from http://www.coin-or.org/download/source/Cops and
+2. Download the source in a compressed file from from
+   http://www.coin-or.org/download/source/Cops and
    extract it, for example, with
 
    tar -xzvf Alps-1.0.0.tgz
@@ -30,31 +22,42 @@ You can obtain the source code for the Alps package in two ways:
    https://projects.coin-or.org/Cops
 
 **********************************************************************
-***      CONFIGURATION, COMPILE, INSTALLATION                      ***
+*** CONFIGURATION, COMPILE, INSTALLATION (UNIX-LIKE ENVIRONMENTS)  ***
 **********************************************************************
 
-1. Serial Solver
-----------------
+1. Serial Library
+-----------------
 
-Go into the directory that you just downloaded or extracted (e.g. Alps-1.0),
-then you type following commands:
+Switch to the directory in which you just downloaded or extracted the source
+(e.g., Alps-1.0) and execute the following commands:
 
   1) ./configure
   2) make
   3) make test
   4) make install 
 
-2. Parallel Solver (MPI as message passing interface) 
------------------------------------------------------
+You might want to specify other options, in case you don't want to 
+use the default choices that configure makes (e.g., compilers). 
+Please visit
 
-Configuration and and compilation of the MPI parallel solver is system
-dependent. The user has to specify options --with-mpi-incdir, --with-mpi-lib,
-MPICC, and MPICXX. The following is an example.
+   https://projects.coin-or.org/BuildTools
 
-Go into the directory that you just downloaded or extracted (e.g. Blis-0.6),
-type
+and the COPS Trac page
 
-  1) ./configure --enable-debug --with-mpi-incdir=/home/yanxu1/src/mpich/include --with-mpi-lib='-L/home/yanxu1/src/mpich/lib  -lmpich -lpthread -lrt' MPICC=mpicc MPICXX=mpiCC
+   https://projects.coin-or.org/Cops
+
+for more information.
+
+2. Parallel Library (MPI as message passing interface) 
+------------------------------------------------------
+
+For configuration and and compilation of the MPI parallel solver, the user has
+to specify the location of MPI with options --with-mpi-incdir, --with-mpi-lib,
+MPICC, and MPICXX. Switch to the directory that you just downloaded or
+extracted (e.g. Alps-1.0) and execute the following commands (substituting the
+correct paths and command names).
+
+  1) ./configure --enable-static --disable-shared --with-mpi-incdir=/usr/local/mpich/include --with-mpi-lib='-L/usr/local/mpich/lib  -lmpich' MPICC=mpicc MPICXX=mpiCC
   2) make 
   3) make install
 
@@ -69,3 +72,18 @@ and the COPS Trac page
    https://projects.coin-or.org/Cops
 
 for more information.
+
+3. Building Examples
+--------------------
+
+To build example codes (ABC and KNAP), configure and build as above. Switch
+into the appropriate subdirectory in the source distribution and type "make".
+
+**********************************************************************
+***      CONFIGURATION, COMPILE, INSTALLATION (MS Visual C++)      ***
+**********************************************************************
+
+MSVC++ project and solution files are provided for all libraries and example
+codes. Simpl open the files corresponding to the project you wish to build and
+build it.
+
