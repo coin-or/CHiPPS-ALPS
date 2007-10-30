@@ -1,6 +1,0 @@
-Renaming...
-
-Get rid of ifdefs for SERIAL vs. PARALLEL in main()
-
-main() is too complicated for a user to write.
-

@@ -58,7 +58,6 @@ Alps/examples/Knap/MSVisualStudio/v8/Knap.suo -text
 Alps/examples/Knap/MSVisualStudio/v8/Knap.vcproj -text
 Alps/examples/Knap/Makefile.in -text
 Alps/examples/Knap/README -text
-Alps/examples/Knap/TODO -text
 Alps/examples/Knap/data/input1.txt -text
 Alps/examples/Knap/data/input100_1.txt -text
 Alps/examples/Knap/data/input100_2.txt -text
@@ -78,7 +77,6 @@ Alps/examples/Knap/data/knap.mod -text
 Alps/examples/Knap/data/knapGen.cpp -text
 Alps/examples/Knap/data/toAmplDat.cpp -text
 Alps/examples/Knap/knap.par -text
-Alps/examples/Knap/knap.pbs -text
 Alps/inc/config_alps.h.in -text
 Alps/src/AlpsConfig.h -text
 Alps/src/Makefile.am -text
