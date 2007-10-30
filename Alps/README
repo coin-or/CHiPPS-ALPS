@@ -1,13 +1,13 @@
 ALPS Version 1.0 README
 =======================
 
-Welcome to Alps. Alps is distributed under the Common Public License
+Welcome to ALPS. ALPS is distributed under the Common Public License
 Version 1.0 and is freely redistributable. All source code and documentation 
 is Copyright 2001-2007 by Lehigh University, Yan Xu, and Ted Ralphs.
 This README may be distributed freely.
 
-WHAT IS ALPS
-============
+WHAT IS ALPS?
+=============
 
 Alps is a framework for implementing parallel graph search algorithms. Its
 methodology generalizes many of the notions of an LP-based branch-and-bound
@@ -26,9 +26,11 @@ https://projects.coin-or.org/Cops
 DOCUMENTATION
 =============
 
-The html documentation of the classes in Alps (See INSTALL) can be created
-readily. A user's guide that is under preparation can show users how to 
-develop an application based Alps and how to use existing applications.
+The html documentation of the classes in ALPS (See INSTALL) can be created
+readily using the doygne automatic documentation system. A user's guide is
+under preparation that will discuss how to use ALPS and how to develop an
+application based on Alps. Sorry, it is still "coming soon" :). See the
+existing applications for an idea of how it is done.
 
 INSTALLATION
 ============

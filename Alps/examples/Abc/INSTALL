@@ -20,17 +20,17 @@ The users can specify:
 
 4. To run Abc, type 
 
-	BUILDDIR/Bcps/examples/Abc/abc -param abc.par
+	BUILDDIR/Alps/examples/Abc/abc -param abc.par
 
    Abc can also read in parameters from command line, for instance
 
-	BUILDDIR/Bcps/examples/Abc/abc -Alps_instance ../../Data/Sample/p0033.mps
+	BUILDDIR/Alps/examples/Abc/abc -Alps_instance ../../Data/Sample/p0033.mps
 	
 
 TO BUILD AND RUN PARALLEL ABC (UNIX_LIKE ENVIRONMENTS)
 ======================================================
 
-1. Download and build ALPS-1.0 serial library. Please refer to the INSTALL
+1. Download and build ALPS-1.0 parallel library. Please refer to the INSTALL
 file in the installation directory.
 
 2. In BUILDDIR/Alps/examples/Abc, type 'make' to build the executable.
@@ -58,4 +58,4 @@ environment, but in general the command line should look something like
 TO BUILD AND RUN SERIAL ABC (MS VISUAL STUDIO)
 ====================================================
 
-See INSTALL file in the ALPS distribution
+See INSTALL file in the ALPS distribution.

@@ -1,26 +1,26 @@
 KNAP Version 1.0 README
 =======================
 
-Welcome to Alps. Alps is distributed under the Common Public License Version
+Welcome to ALPS. ALPS is distributed under the Common Public License Version
 1.0 and is freely redistributable. All source code and documentation is
 Copyright 2001-2007 byLehigh University, Yan Xu, Ted Ralphs, Matthew Saltzman
 and others. This README may be distributed freely.
 
 
-WHAT IS KNAP
-============
+WHAT IS KNAP?
+=============
 
-Knap is an example of the applications developed on top of Alps (See 
-the README of Alps to know what Alps is). Knap is a branch and bound 
-based solver to solve Knapsack problems.
+Knap is an example of the applications developed on top of ALPS (see 
+the README of ALPS for details on ALPS itself). Knap is a branch and bound 
+based solver to solve knapsack problems.
 
 
 DOCUMENTATION
 =============
 
-The html documentation of the classes in Alps (See INSTALL of Alps) can 
-be created. A user's guide that is under preparation that can help 
-users to develop an application.
+The html documentation of the classes in ALPS (see the INSTALL file of ALPS)
+can be created using doxygen. A user's guide is under preparation that will
+help users to develop an application.
 
 
 INSTALLATION
