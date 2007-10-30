@@ -1,9 +1,0 @@
-NOTE: Time shows the wallclocks when run on a cluster
-at Clemson University by using 64 processors (1.6 GHz).
-
-Instance      Time    Node
--------------------------------
-input150_1      365
-input150_2      386     962669564
-input150_4     2411    1664329028
-input150_8      740     946664246
