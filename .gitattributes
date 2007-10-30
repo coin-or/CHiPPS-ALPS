@@ -34,7 +34,6 @@ Alps/examples/Abc/MSVisualStudio/v8/Abc.vcproj -text
 Alps/examples/Abc/Makefile.in -text
 Alps/examples/Abc/README -text
 Alps/examples/Abc/abc.par.in -text
-Alps/examples/Abc/abc.pbs -text
 Alps/examples/Abc/data/egout.mps -text
 Alps/examples/Abc/data/flugpl.mps -text
 Alps/examples/Abc/data/gen.mps -text
