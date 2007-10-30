@@ -102,7 +102,7 @@ DIST_COMMON = README $(am__configure_deps) \
 	$(top_srcdir)/examples/Abc/Makefile.in \
 	$(top_srcdir)/examples/Abc/abc.par.in \
 	$(top_srcdir)/examples/Knap/Makefile.in \
-	$(top_srcdir)/inc/config_alps.h.in AUTHORS TODO
+	$(top_srcdir)/inc/config_alps.h.in AUTHORS
 @HAVE_EXTERNALS_TRUE@am__append_2 = Externals
 @HAVE_EXTERNALS_TRUE@am__append_3 = .Externals-stamp
 subdir = .
