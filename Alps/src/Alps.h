@@ -101,6 +101,7 @@ enum AlpsExitStatus {
     AlpsExitStatusOptimal,
     AlpsExitStatusTimeLimit, 
     AlpsExitStatusNodeLimit,
+    AlpsExitStatusSolLimit,
     AlpsExitStatusFeasible,
     AlpsExitStatusInfeasible,
     AlpsExitStatusNoMemory,

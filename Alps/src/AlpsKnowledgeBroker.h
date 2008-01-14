@@ -112,6 +112,9 @@ class AlpsKnowledgeBroker {
     /** Secondary timer. */
     AlpsTimer tempTimer_;
 
+    /** The number of solutions found. */
+    int solNum_;
+
     /** The number of nodes have been processed. */
     int nodeProcessedNum_;
     
