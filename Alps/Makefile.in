@@ -143,6 +143,7 @@ ACLOCAL = @ACLOCAL@
 ADDLIBS = @ADDLIBS@
 ADD_CFLAGS = @ADD_CFLAGS@
 ADD_CXXFLAGS = @ADD_CXXFLAGS@
+ALPSDOCDIR = @ALPSDOCDIR@
 ALPSOBJDIR = @ALPSOBJDIR@
 ALPSSRCDIR = @ALPSSRCDIR@
 ALWAYS_FALSE_FALSE = @ALWAYS_FALSE_FALSE@
@@ -161,10 +162,13 @@ CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CDEFS = @CDEFS@
 CFLAGS = @CFLAGS@
+CGLDOCDIR = @CGLDOCDIR@
 CGLOBJDIR = @CGLOBJDIR@
 CGLSRCDIR = @CGLSRCDIR@
+CLPDOCDIR = @CLPDOCDIR@
 CLPOBJDIR = @CLPOBJDIR@
 CLPSRCDIR = @CLPSRCDIR@
+COINUTILSDOCDIR = @COINUTILSDOCDIR@
 COINUTILSOBJDIR = @COINUTILSOBJDIR@
 COINUTILSSRCDIR = @COINUTILSSRCDIR@
 COIN_HAS_ALPS_FALSE = @COIN_HAS_ALPS_FALSE@
@@ -226,6 +230,7 @@ MPILIB = @MPILIB@
 OBJEXT = @OBJEXT@
 OPT_CFLAGS = @OPT_CFLAGS@
 OPT_CXXFLAGS = @OPT_CXXFLAGS@
+OSIDOCDIR = @OSIDOCDIR@
 OSIOBJDIR = @OSIOBJDIR@
 OSISRCDIR = @OSISRCDIR@
 PACKAGE = @PACKAGE@
@@ -330,6 +335,7 @@ EXTRA_DIST = examples/Abc/AbcBranchActual.cpp \
 #                  Installation of the addlibs file                    #
 ########################################################################
 addlibsfile = alps_addlibs.txt
+addlibsdir = $(prefix)/share/doc/coin/$(PACKAGE_NAME)/
 
 ########################################################################
 #                         Maintainer Stuff                             #
@@ -803,7 +809,7 @@ distclean-local:
 .PHONY: test unitTest
 
 install-exec-local: install-doc
-	$(install_sh_DATA) $(addlibsfile) $(DESTDIR)$(libdir)/$(addlibsfile)
+	$(install_sh_DATA) $(addlibsfile) $(addlibsdir)/$(addlibsfile)
 
 uninstall-local: uninstall-doc
 	rm -f $(DESTDIR)$(libdir)/$(addlibsfile)
