@@ -39,10 +39,10 @@ unitTest_LDADD = \
 
 # List additional libraries
 LIBS += $(ADDLIBS) \
-	`cat $(CGLDOCDIR)/cgl_addlibs.txt` \
-	`cat $(OSIDOCDIR)/osi_addlibs.txt` \
-	`cat $(CLPDOCDIR)/clp_addlibs.txt` \
-	`cat $(COINUTILSDOCDIR)/coinutils_addlibs.txt`
+	`cat $(CGLOBJDIR)/cgl_addlibs.txt` \
+	`cat $(OSIOBJDIR)/osi_addlibs.txt` \
+	`cat $(CLPOBJDIR)/clp_addlibs.txt` \
+	`cat $(COINUTILSOBJDIR)/coinutils_addlibs.txt`
 
 # Here list all include flags, relative to this "srcdir" directory.  This
 # "cygpath" stuff is necessary to compile with native compilers on Cygwin
