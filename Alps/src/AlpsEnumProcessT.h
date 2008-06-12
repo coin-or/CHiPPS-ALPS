@@ -29,7 +29,9 @@
 /** This enumerative constant describes the various process types. */
 
 enum AlpsProcessType {
-  /** */
+    /** Serial */
+  AlpsProcessTypeSerial = 1,
+  /** Master process */
   AlpsProcessTypeMaster,
   /** */
   AlpsProcessTypeHub,

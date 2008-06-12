@@ -238,6 +238,8 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     //------------------------------------------------------
     // Get parameters.
     //------------------------------------------------------
+    const int printSystemStatus = 
+        model_->AlpsPar()->entry(AlpsParams::printSystemStatus);
     
     const int staticBalanceScheme = 
 	model_->AlpsPar()->entry(AlpsParams::staticBalanceScheme);
@@ -568,7 +570,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 			    << CoinMessageEol;  
 		    }
                 }
-                else {
+                else if (printSystemStatus) {
 		    if (incumbentValue_ < ALPS_INFINITY) {
 			messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
 			    << systemNodeProcessed_ 
@@ -620,6 +622,12 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
 	    preSysSendCount = systemSendCount_;
 	    blockTermCheck_ = false;   // Activate termination check
 	}
+
+        // Print node log if there is and not force terminate
+        // (will print system status)
+        if (!forceTerminate_) {
+            getModel()->nodeLog(NULL, false);
+        }
 
 #if 0
 	std::cout << "blockTermCheck_=" << blockTermCheck_
@@ -808,7 +816,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
                             << CoinMessageEol;
                     }
                 }
-                else {
+                else if (printSystemStatus) {
                     if (incumbentValue_ < ALPS_INFINITY) {
                         messageHandler()->message(ALPS_LOADREPORT_MASTER, messages())
                             << systemNodeProcessed_ 
@@ -4560,11 +4568,11 @@ void AlpsKnowledgeBrokerMPI::rootSearch(AlpsTreeNode* root)
     // log statistics.
     //------------------------------------------------------
 
-    searchLog();
     if (processType_ == AlpsProcessTypeMaster) {
 	model_->postprocess();
 	model_->modelLog();
     }
+    searchLog();
 }
 
 //#############################################################################
@@ -5349,7 +5357,6 @@ AlpsKnowledgeBrokerMPI::init()
     workerNodeProcesseds_ = 0;
     clusterNodeProcessed_ = 0;
     hubNodeProcesseds_ = 0;
-    systemNodeProcessed_ = 0;
     sendCount_ = 0;
     recvCount_ = 0;
     clusterSendCount_ = 0;
@@ -5390,7 +5397,7 @@ AlpsKnowledgeBrokerMPI::init()
     rampUpSubTree_ = 0;
     unitWorkNodes_ = 0;
     haltSearch_ = false;
-
+    
     userBalancePeriod_ = false;
 }
 

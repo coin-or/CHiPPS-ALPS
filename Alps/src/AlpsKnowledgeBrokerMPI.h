@@ -189,9 +189,6 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** To record how many nodes processed for each hub */
     int* hubNodeProcesseds_;
-
-    /** To record how many nodes processed by the system. */
-    int systemNodeProcessed_;
     //@}
 
     /** @name Message counts
@@ -304,7 +301,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** Temporily halt search */
     int haltSearch_;
-    
+
  protected:
 
     /** Initialize member data. */
@@ -370,6 +367,9 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** Calculate the work quality and quantity on this process. */
     void updateWorkloadInfo();
 
+    virtual int getNumNodeLeftSystem()
+    { return static_cast<int>(systemWorkQuantity_); }
+    
     /** A worker donate its workload to the specified worker. */
     void donateWork(char*& buf, 
 		    int tag,
@@ -593,7 +593,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     
     /** Destructor. */
     ~AlpsKnowledgeBrokerMPI();
-    
+
     /** Query the global rank of the process. */
     virtual int getProcRank() const { return globalRank_; }
 
@@ -649,6 +649,9 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
             return ALPS_OBJ_MAX;
         }
     }
+
+    /** Get best estimalted quality in system. */
+    virtual double getBestEstimateQuality() { return systemWorkQuality_; }
 
     /** Master prints out the best solution that it knows. */
     virtual void printBestSolution(char* outputFile = 0) const;
