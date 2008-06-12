@@ -110,6 +110,10 @@ void AlpsParams::createKeywordList() {
 			     AlpsParameter(AlpsIntPar, 
 					   nodeLogInterval)));
    //
+   keys_.push_back(make_pair(std::string("Alps_printSystemStatus"),
+			     AlpsParameter(AlpsIntPar, 
+					   printSystemStatus)));
+   //
    keys_.push_back(make_pair(std::string("Alps_processNum"),
 			     AlpsParameter(AlpsIntPar, 
 					   processNum)));
@@ -220,6 +224,7 @@ void AlpsParams::setDefaultEntries() {
   setEntry(msgLevel, 2);
   setEntry(nodeLimit, ALPS_INT_MAX);
   setEntry(nodeLogInterval, 100);
+  setEntry(printSystemStatus, 1);
   setEntry(processNum, 2);
   setEntry(staticBalanceScheme, 1);  // Spiral
   setEntry(searchStrategy, AlpsSearchTypeHybrid);  

@@ -117,6 +117,10 @@ class AlpsKnowledgeBroker {
 
     /** The number of nodes have been processed. */
     int nodeProcessedNum_;
+
+    /** To record how many nodes processed by the system
+        (used in parallel code). */
+    int systemNodeProcessed_;
     
     /** The number of nodes left. */
     int nodeLeftNum_;
@@ -192,6 +196,9 @@ class AlpsKnowledgeBroker {
 
     /** Has user input balance period */
     bool userBalancePeriod_;
+    
+    /** Times that node log is printed. */
+    int numNodeLog_;
     
  public:
 
@@ -423,6 +430,11 @@ class AlpsKnowledgeBroker {
 	return nodeProcessedNum_;
     }
 
+    /** Query the number of node processed by the system. */
+    int getNumNodesProcessedSystem() const {
+	return systemNodeProcessed_;
+    }
+
     /** Update the number of left nodes on this process. */
     virtual int updateNumNodesLeft();
     
@@ -488,6 +500,11 @@ class AlpsKnowledgeBroker {
         of the best solution that it knows. */
     virtual double getBestQuality() const = 0;
 
+    /** Get best estimalted quality in system. */
+    virtual double getBestEstimateQuality() { return ALPS_OBJ_MAX; }
+
+    virtual int getNumNodeLeftSystem(){ return nodeLeftNum_; }
+
     /** The process (serial) / the master (parallel) outputs the best 
 	solution that it knows to a file or std::out. */
     virtual void printBestSolution(char* outputFile = 0) const = 0;
@@ -501,8 +518,7 @@ class AlpsKnowledgeBroker {
 
     /** Query the type (master, hub, or worker) of the process */
     virtual AlpsProcessType getProcType() const
-    { return AlpsProcessTypeMaster; } /* Serial is master */
-    
+    { return AlpsProcessTypeSerial; } /* Default is serial */
     
     /** @name Query and set node index
      *  
@@ -583,6 +599,12 @@ class AlpsKnowledgeBroker {
 
     /** Return log file level. */
     int getlogFileLevel() { return logFileLevel_; }
+
+    /** Get times that node log has been printed */
+    int getNumNodeLog() const { return numNodeLog_; }
+    
+    /** Get times that node log has been printed */
+    void setNumNodeLog(int num) { numNodeLog_ = num; }
     //@}
 };
 #endif

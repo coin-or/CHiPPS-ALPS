@@ -84,7 +84,8 @@ AlpsModel::nodeLog(AlpsTreeNode *node, bool force)
 
     AlpsTreeNode *bestNode = NULL;
     
-    if (broker_->getProcType() != AlpsProcessTypeMaster) {
+    if ( (broker_->getProcType() != AlpsProcessTypeMaster) &&
+         (broker_->getProcType() != AlpsProcessTypeSerial) ) {
         return;
     }
 

@@ -114,6 +114,9 @@ class AlpsParams : public AlpsParameterSet {
       /** Node log interval. 
           Default: 100 */
       nodeLogInterval,
+      /** Print system status: 0: do not print, 1: print.
+          Default: 1;*/
+      printSystemStatus,
       /** The total number of processes that are launched for parallel code. 
           Default: 2
           Not used since can get actual number of processes from MPI. */
