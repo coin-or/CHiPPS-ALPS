@@ -45,8 +45,6 @@ void AlpsParams::createKeywordList() {
 			    AlpsParameter(AlpsBoolPar, intraClusterBalance)));
    keys_.push_back(make_pair(std::string("Alps_printSolution"),
                              AlpsParameter(AlpsBoolPar, printSolution)));
-   keys_.push_back(make_pair(std::string("Alps_bakOutput"),
-                             AlpsParameter(AlpsBoolPar, bakOutput)));
 
    //-------------------------------------------------------
    // IntPar
@@ -203,13 +201,12 @@ void AlpsParams::createKeywordList() {
 
 void AlpsParams::setDefaultEntries() {
 
-  // BoolPar
+  // CharPar
   setEntry(checkMemory, false);
   setEntry(deleteDeadNode, true);
   setEntry(interClusterBalance, true);
   setEntry(intraClusterBalance, true);
   setEntry(printSolution, false);
-  setEntry(bakOutput, false);
 
   // IntPar
   setEntry(bufSpare, 256);

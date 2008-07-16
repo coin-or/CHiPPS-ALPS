@@ -55,9 +55,6 @@ class AlpsParams : public AlpsParameterSet {
           logFileLevel permits. 
           Default: false. */
       printSolution,
-      /** Whether to produce output that can be used with BAK to produce
-	  graphical representations of the tree, etc. */
-      bakOutput,
       /***/
       endOfBoolParams
   };

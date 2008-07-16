@@ -29,63 +29,6 @@
 //#############################################################################
 //#############################################################################
 
-void 
-AlpsTreeNode::setStatus(const AlpsNodeStatus stat) 
-{ 
-
-   if (knowledgeBroker_->getModel()->AlpsPar()->entry(AlpsParams::bakOutput)){
-       double elapsed = knowledgeBroker_->timer().getWallClock();
-       std::cout << elapsed;
-       switch (stat){
-       case AlpsNodeStatusCandidate:
-       case AlpsNodeStatusEvaluated:
-	  std::cout << " candidate " << index_ << " " << parent_->getIndex();
-	  if (parent_->getChild(0) == this){
-	     std::cout << " L ";
-	  }else{
-	     std::cout << " R ";
-	  }
-	  std::cout << quality_ << " 0.0 0.0" << std::endl;
-	  break;
-	  
-       case AlpsNodeStatusPregnant:
-	  std::cout << " pregnant " << index_ << " " << parent_->getIndex();
-	  if (parent_->getChild(0) == this){
-	     std::cout << " L ";
-	  }else{
-	     std::cout << " R ";
-	  }
-	  std::cout << quality_ << " 0.0 0.0" << std::endl;
-	  break;
-
-       case AlpsNodeStatusBranched:
-	  std::cout << " branched " << index_ << " " << parent_->getIndex();
-	  if (parent_->getChild(0) == this){
-	     std::cout << " L ";
-	  }else{
-	     std::cout << " R ";
-	  }
-	  std::cout << quality_ << " 0.0 0.0" << std::endl;
-	  break;
-
-       case AlpsNodeStatusFathomed:
-	  std::cout << " fathomed " << index_ << " " << parent_->getIndex();
-	  if (parent_->getChild(0) == this){
-	     std::cout << " L ";
-	  }else{
-	     std::cout << " R ";
-	  }
-	  std::cout << std::endl;
-	  break;
-
-	default:
-	  break;
-
-       }       
-   }
-   status_ = stat; 
-}
-
 void
 AlpsTreeNode::removeChild(AlpsTreeNode*& child)
 {
