@@ -108,7 +108,7 @@ class AlpsTreeNode : public AlpsKnowledge {
     
     /** When processing it, if it is in the diving processing. */
     bool diving_;
-    
+
  public:
     AlpsTreeNode() 
 	:
@@ -174,7 +174,7 @@ class AlpsTreeNode : public AlpsKnowledge {
     /** Query/set the current status. */
     ///@{
     inline AlpsNodeStatus getStatus() const { return status_; }
-    inline void setStatus(const AlpsNodeStatus stat) { status_ = stat; }
+    void setStatus(const AlpsNodeStatus stat);
     ///@}
     
     /** Query functions about specific stati. */
