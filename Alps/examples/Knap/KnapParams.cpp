@@ -10,7 +10,7 @@
  *          Matthew Saltzman, Clemson University                             *
  *                                                                           * 
  *                                                                           *
- * Copyright (C) 2001-2007, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ * Copyright (C) 2001-2008, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
 #include "KnapParams.h"
