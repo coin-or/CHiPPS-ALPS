@@ -9,17 +9,17 @@ You can obtain the source code for the Alps package in two ways:
    (recommended). For this, you need a subversion client installed. For a
    command-line client, check out the code with
 
-   svn co https://projects.coin-or.org/svn/Cops/Alps/stable/1.0 Alps-1.0
+   svn co https://projects.coin-or.org/svn/CHiPPS/Alps/stable/1.0 Alps-1.0
 
 2. Download the source in a compressed file from from
-   http://www.coin-or.org/download/source/Cops and
+   http://www.coin-or.org/download/source/CHiPPS and
    extract it, for example, with
 
    tar -xzvf Alps-1.0.0.tgz
 
    More detailed download instructions can be found at
 
-   https://projects.coin-or.org/Cops
+   https://projects.coin-or.org/CHiPPS
 
 **********************************************************************
 *** CONFIGURATION, COMPILE, INSTALLATION (UNIX-LIKE ENVIRONMENTS)  ***
@@ -42,9 +42,9 @@ Please visit
 
    https://projects.coin-or.org/BuildTools
 
-and the COPS Trac page
+and the CHiPPS Trac page
 
-   https://projects.coin-or.org/Cops
+   https://projects.coin-or.org/CHiPPS
 
 for more information.
 

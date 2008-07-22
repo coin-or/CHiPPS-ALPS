@@ -15,13 +15,13 @@ algorithm, allowing the implementation of a wide range of algorithms with a
 simplified interface. Alps implements the search handling methods required for
 implementing large-scale, data-intensive parallel search algorithms, such as
 those used for solving discrete optimization problems. It is the base layer of
-the Cops (COIN Open Parallel Search Framework) library hierarchy that will
-includes a library for solving mixed integer linear programs (Blis).
+the CHiPPS (COIN High Performance Parallel Search) library hierarchy that will
+includes a library for solving mixed integer linear programs (BLIS).
 
 PROJECT WEB PAGE
 ================
 
-https://projects.coin-or.org/Cops
+https://projects.coin-or.org/CHiPPS
 
 DOCUMENTATION
 =============
@@ -67,10 +67,10 @@ Matt Saltzman (mjs@clemson.edu)
 2. List Serve
 
 Alps users should use the Coin-Discuss mailing list. To subscribe, go to 
-http://list.coin-or.org/mailman/listinfo/cops
+http://list.coin-or.org/mailman/listinfo/chipps
 
 3. Bug Reports
 
-Bug reports should be reported on the Cops development web site at
+Bug reports should be reported on the CHiPPS development web site at
 
-https://projects.coin-or.org/Cops/newticket
+https://projects.coin-or.org/CHiPPS/newticket
