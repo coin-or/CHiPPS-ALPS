@@ -17,7 +17,7 @@
  *          Matthew Saltzman, Clemson University                             *
  *                                                                           * 
  *                                                                           *
- * Copyright (C) 2001-2007, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ * Copyright (C) 2001-2008, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
 #include <algorithm>
@@ -4993,14 +4993,16 @@ AlpsKnowledgeBrokerMPI::searchLog()
 	    logFout << "Std Dev of RampDown = " << stdRampDown << std::endl;
 	    
 	    // Overall. 
-	    logFout << "Search CPU time = " << timer_.getCpuTime() <<" seconds"
-		    << ", max = " << maxCpuTime
-		    << ", min = "<< minCpuTime 
-		    << ", total CPU time = " << sumCpuTime << std::endl;
-	    logFout <<"Search wallclock  = "<<timer_.getWallClock()<<" seconds"
-		    << ", max = " << maxWallClock
-		    << ", min = "<< minWallClock 
-		    <<", total wallclock = " << sumWallClock << std::endl;
+	    logFout << "Search CPU time (master) = " << timer_.getCpuTime() 
+		    << " seconds" <<  std::endl;
+	    logFout << "Max CPU time (worker) = " << maxCpuTime << std::endl; 
+	    logFout << "Min CPU time (worker) = " << minCpuTime << std::endl; 
+	    logFout << "Total CPU time = " << sumCpuTime << std::endl; 
+	    logFout << "Search wallclock time (master) = " 
+		    << timer_.getWallClock() << " seconds" <<  std::endl;
+	    logFout << "Max wallclock (worker) = "<< maxWallClock << std::endl; 
+	    logFout << "Min wallclock (worker) = "<< minWallClock << std::endl; 
+	    logFout << "Total wallclock = " << sumWallClock << std::endl; 
 
 	    //----------------------------------------------
 	    // Solution.
@@ -5008,8 +5010,9 @@ AlpsKnowledgeBrokerMPI::searchLog()
 
             if (hasKnowledge(AlpsKnowledgeTypeSolution)) {
                 logFout << "Best solution quality = " << getBestQuality()
-                        << " ; node required to find this solution = " << bestSolNode_;
-                logFout << std::endl;
+			<<  std::endl;
+		logFout << "Nodes processed before finding this solution = " 
+			<< bestSolNode_ << std::endl;
             }
             else {
                 logFout << "No solution was found." << std::endl;
@@ -6618,7 +6621,7 @@ AlpsKnowledgeBrokerMPI::spiralMaster(AlpsTreeNode *root)
 
     if (msgLevel_ > 0) {
 	messageHandler()->message(ALPS_STATIC_BALANCE_BEG, messages())
-	    << "the Spiral Initialization" << CoinMessageEol;
+	    << "spiral initialization" << CoinMessageEol;
     }
 
     if (msgLevel_ > 0 && requiredNumNodes > 0) {
@@ -6798,7 +6801,7 @@ TERM_SPIRAL_MASTER:
 
     if (msgLevel_ > 0) {
 	messageHandler()->message(ALPS_STATIC_BALANCE_END, messages())
-	    << "the Spiral Initialization" << CoinMessageEol;
+	    << "spiral initialization" << CoinMessageEol;
     }
 }
 

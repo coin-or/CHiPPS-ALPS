@@ -17,7 +17,7 @@
  *          Matthew Saltzman, Clemson University                             *
  *                                                                           * 
  *                                                                           *
- * Copyright (C) 2001-2007, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ * Copyright (C) 2001-2008, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
 #include "AlpsMessage.h"
@@ -61,7 +61,7 @@ static Alps_message us_english[] =
     {ALPS_MSG_HOW, 100, 3, "Process[%d] %s count %d in %s"},
     {ALPS_NODE_COUNT, 104, 3, "Worker[%d] processed %d nodes, %d nodes are left"},
     {ALPS_NODE_MEM_SIZE, 106, 1, "The memory size of a node is about %d bytes"},
-    {ALPS_P_VERSION, 110, 1, "ALPS version 0.95.0 (Parallel, MPI)"},
+    {ALPS_P_VERSION, 110, 1, "ALPS version 1.0 (Parallel, MPI)"},
     {ALPS_PARAMFILE, 120, 1, "Parameter file: %s"},
     {ALPS_PEAK_MEMORY, 125, 1, "Peak memory usage: %.2f M"},
     {ALPS_RAMPUP_HUB, 130, 1, "Hub[%d]'s rampup took %g seconds to process %d nodes. Node pool has %d nodes"},
@@ -82,7 +82,7 @@ static Alps_message us_english[] =
     {ALPS_SEARCH_WORKER_START, 155, 3, "Worker[%d] is searching solutions ..." },
     {ALPS_SOLUTION_COUNT, 160, 3, "Process[%d] has %d solutions"},
     {ALPS_SOLUTION_SEARCH, 162, 3, "Worker[%d] found a better solution %g during search"}, 
-    {ALPS_STATIC_BALANCE_BEG, 165, 1, "Starts %s"},
+    {ALPS_STATIC_BALANCE_BEG, 165, 1, "Starting %s"},
     {ALPS_STATIC_BALANCE_END, 166, 1, "Completed %s"},
     {ALPS_TERM_FORCE_NODE, 170, 1, "Master asked other processes to stop searching due to reaching node limt %d"},
     {ALPS_TERM_FORCE_TIME, 172, 1, "Master asked other processes to stop searching due to reaching time limt %.2f seconds"},
@@ -107,7 +107,7 @@ static Alps_message us_english[] =
     {ALPS_S_FINAL_DEPTH, 272, 1, "Tree depth: %d"},
     {ALPS_S_FINAL_CPU, 274, 1, "Search CPU time: %.2f seconds"},
     {ALPS_S_FINAL_WALLCLOCK, 278, 1, "Search wall-clock time: %.2f seconds"},
-    {ALPS_S_VERSION, 300, 1, "ALPS version 0.95.0 (Serial)"},
+    {ALPS_S_VERSION, 300, 1, "ALPS version 1.0 (Serial)"},
     {ALPS_DUMMY_END, 999999, 0, ""}
 };
 
