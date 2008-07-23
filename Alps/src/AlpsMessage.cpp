@@ -82,7 +82,7 @@ static Alps_message us_english[] =
     {ALPS_SEARCH_WORKER_START, 155, 3, "Worker[%d] is searching solutions ..." },
     {ALPS_SOLUTION_COUNT, 160, 3, "Process[%d] has %d solutions"},
     {ALPS_SOLUTION_SEARCH, 162, 3, "Worker[%d] found a better solution %g during search"}, 
-    {ALPS_STATIC_BALANCE_BEG, 165, 1, "Starts %s"},
+    {ALPS_STATIC_BALANCE_BEG, 165, 1, "Starting %s"},
     {ALPS_STATIC_BALANCE_END, 166, 1, "Completed %s"},
     {ALPS_TERM_FORCE_NODE, 170, 1, "Master asked other processes to stop searching due to reaching node limt %d"},
     {ALPS_TERM_FORCE_SOL, 174, 1, "Master asked other processes to stop searching due to reaching solution limt %d"},
