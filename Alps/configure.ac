@@ -119,7 +119,8 @@ AC_CONFIG_LINKS(test/AbcBranchActual.cpp:examples/Abc/AbcBranchActual.cpp
                 test/AbcSolution.cpp:examples/Abc/AbcSolution.cpp
                 test/AbcSolution.h:examples/Abc/AbcSolution.h
                 test/AbcTreeNode.cpp:examples/Abc/AbcTreeNode.cpp
-                test/AbcTreeNode.h:examples/Abc/AbcTreeNode.h)
+                test/AbcTreeNode.h:examples/Abc/AbcTreeNode.h
+                test/flugpl.mps:examples/Abc/data/flugpl.mps)
 
 # In case this is a VPATH configuration we need to make sure that the
 # input files for the examples are available in the VPATH directory.

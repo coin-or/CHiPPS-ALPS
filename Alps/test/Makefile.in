@@ -57,7 +57,7 @@ CONFIG_CLEAN_FILES = AbcBranchActual.cpp AbcBranchActual.h \
 	AbcCutGenerator.h AbcHeuristic.cpp AbcHeuristic.h AbcMain.cpp \
 	AbcMessage.cpp AbcMessage.h AbcModel.cpp AbcModel.h \
 	AbcNodeDesc.h AbcParams.cpp AbcParams.h AbcSolution.cpp \
-	AbcSolution.h AbcTreeNode.cpp AbcTreeNode.h
+	AbcSolution.h AbcTreeNode.cpp AbcTreeNode.h flugpl.mps
 PROGRAMS = $(noinst_PROGRAMS)
 nodist_unitTest_OBJECTS = AbcBranchActual.$(OBJEXT) \
 	AbcBranchBase.$(OBJEXT) AbcCutGenerator.$(OBJEXT) \

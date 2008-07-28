@@ -2780,7 +2780,7 @@ rm -f conftest.err conftest.$ac_objext \
       *-linux-*)
         case "$CC" in
           icc* | */icc*)
-            coin_opt_cflags="-O3 -ip"
+            coin_opt_cflags="-O3 -ip -mp1"
             coin_add_cflags=""
             coin_dbg_cflags="-g"
             # Check if -i_dynamic is necessary (for new glibc library)
@@ -20808,7 +20808,7 @@ fi
 
 # In this case, the source code is taken from the Alps examples directory
 
-                                                                                                                                                                                                        ac_config_links="$ac_config_links test/AbcBranchActual.cpp:examples/Abc/AbcBranchActual.cpp test/AbcBranchActual.h:examples/Abc/AbcBranchActual.h test/AbcBranchBase.cpp:examples/Abc/AbcBranchBase.cpp test/AbcBranchBase.h:examples/Abc/AbcBranchBase.h test/AbcCutGenerator.cpp:examples/Abc/AbcCutGenerator.cpp test/AbcCutGenerator.h:examples/Abc/AbcCutGenerator.h test/AbcHeuristic.cpp:examples/Abc/AbcHeuristic.cpp test/AbcHeuristic.h:examples/Abc/AbcHeuristic.h test/AbcMain.cpp:examples/Abc/AbcMain.cpp test/AbcMessage.cpp:examples/Abc/AbcMessage.cpp test/AbcMessage.h:examples/Abc/AbcMessage.h test/AbcModel.cpp:examples/Abc/AbcModel.cpp test/AbcModel.h:examples/Abc/AbcModel.h test/AbcNodeDesc.h:examples/Abc/AbcNodeDesc.h test/AbcParams.cpp:examples/Abc/AbcParams.cpp test/AbcParams.h:examples/Abc/AbcParams.h test/AbcSolution.cpp:examples/Abc/AbcSolution.cpp test/AbcSolution.h:examples/Abc/AbcSolution.h test/AbcTreeNode.cpp:examples/Abc/AbcTreeNode.cpp test/AbcTreeNode.h:examples/Abc/AbcTreeNode.h"
+                                                                                                                                                                                                                  ac_config_links="$ac_config_links test/AbcBranchActual.cpp:examples/Abc/AbcBranchActual.cpp test/AbcBranchActual.h:examples/Abc/AbcBranchActual.h test/AbcBranchBase.cpp:examples/Abc/AbcBranchBase.cpp test/AbcBranchBase.h:examples/Abc/AbcBranchBase.h test/AbcCutGenerator.cpp:examples/Abc/AbcCutGenerator.cpp test/AbcCutGenerator.h:examples/Abc/AbcCutGenerator.h test/AbcHeuristic.cpp:examples/Abc/AbcHeuristic.cpp test/AbcHeuristic.h:examples/Abc/AbcHeuristic.h test/AbcMain.cpp:examples/Abc/AbcMain.cpp test/AbcMessage.cpp:examples/Abc/AbcMessage.cpp test/AbcMessage.h:examples/Abc/AbcMessage.h test/AbcModel.cpp:examples/Abc/AbcModel.cpp test/AbcModel.h:examples/Abc/AbcModel.h test/AbcNodeDesc.h:examples/Abc/AbcNodeDesc.h test/AbcParams.cpp:examples/Abc/AbcParams.cpp test/AbcParams.h:examples/Abc/AbcParams.h test/AbcSolution.cpp:examples/Abc/AbcSolution.cpp test/AbcSolution.h:examples/Abc/AbcSolution.h test/AbcTreeNode.cpp:examples/Abc/AbcTreeNode.cpp test/AbcTreeNode.h:examples/Abc/AbcTreeNode.h test/flugpl.mps:examples/Abc/data/flugpl.mps"
 
 
 # In case this is a VPATH configuration we need to make sure that the
@@ -21538,6 +21538,7 @@ do
   "test/AbcSolution.h" ) CONFIG_LINKS="$CONFIG_LINKS test/AbcSolution.h:examples/Abc/AbcSolution.h" ;;
   "test/AbcTreeNode.cpp" ) CONFIG_LINKS="$CONFIG_LINKS test/AbcTreeNode.cpp:examples/Abc/AbcTreeNode.cpp" ;;
   "test/AbcTreeNode.h" ) CONFIG_LINKS="$CONFIG_LINKS test/AbcTreeNode.h:examples/Abc/AbcTreeNode.h" ;;
+  "test/flugpl.mps" ) CONFIG_LINKS="$CONFIG_LINKS test/flugpl.mps:examples/Abc/data/flugpl.mps" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "inc/config_alps.h" ) CONFIG_HEADERS="$CONFIG_HEADERS inc/config_alps.h" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
