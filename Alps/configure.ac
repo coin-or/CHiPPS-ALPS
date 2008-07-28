@@ -119,8 +119,31 @@ AC_CONFIG_LINKS(test/AbcBranchActual.cpp:examples/Abc/AbcBranchActual.cpp
                 test/AbcSolution.cpp:examples/Abc/AbcSolution.cpp
                 test/AbcSolution.h:examples/Abc/AbcSolution.h
                 test/AbcTreeNode.cpp:examples/Abc/AbcTreeNode.cpp
-                test/AbcTreeNode.h:examples/Abc/AbcTreeNode.h
-                test/flugpl.mps:examples/Abc/data/flugpl.mps)
+                test/AbcTreeNode.h:examples/Abc/AbcTreeNode.h)
+
+EXAMPLE_FILES="flugpl.mps"
+
+lnkcmd=
+if test "$enable_doscompile" != no; then
+  lnkcmd=cp
+fi
+case "$CC" in
+  cl* | */cl* | CL* | */CL* | icl* | */icl* | ICL* | */ICL*)
+    lnkcmd=cp ;;
+esac
+if test "$lnkcmd" = cp; then
+  AC_MSG_NOTICE([Copying example files (flugpl.mps)])
+else
+  AC_PROG_LN_S
+  AC_MSG_NOTICE([Creating links to the example files (flugpl.mps)])
+  lnkcmd="$LN_S"
+fi
+for file in $EXAMPLE_FILES; do
+  rm -f $file
+  $lnkcmd `cd $srcdir/examples/Abc/data; pwd`/$file test/$file
+done
+
+#AC_COIN_EXAMPLE_FILES([examples/Abc/data/flugpl.mps])
 
 # In case this is a VPATH configuration we need to make sure that the
 # input files for the examples are available in the VPATH directory.
