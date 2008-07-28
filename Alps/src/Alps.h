@@ -1,4 +1,4 @@
-/*===========================================================================*
+/ *===========================================================================*
  * This file is part of the Abstract Library for Parallel Search (ALPS).     *
  *                                                                           *
  * ALPS is distributed under the Common Public License as part of the        *
