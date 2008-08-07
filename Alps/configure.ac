@@ -138,6 +138,7 @@ else
   AC_MSG_NOTICE([Creating links to the example files (flugpl.mps)])
   lnkcmd="$LN_S"
 fi
+mkdir -p test
 for file in $EXAMPLE_FILES; do
   rm -f $file
   $lnkcmd `cd $srcdir/examples/Abc/data; pwd`/$file test/$file
