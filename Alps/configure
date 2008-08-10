@@ -20811,42 +20811,30 @@ fi
                                                                                                                                                                                                         ac_config_links="$ac_config_links test/AbcBranchActual.cpp:examples/Abc/AbcBranchActual.cpp test/AbcBranchActual.h:examples/Abc/AbcBranchActual.h test/AbcBranchBase.cpp:examples/Abc/AbcBranchBase.cpp test/AbcBranchBase.h:examples/Abc/AbcBranchBase.h test/AbcCutGenerator.cpp:examples/Abc/AbcCutGenerator.cpp test/AbcCutGenerator.h:examples/Abc/AbcCutGenerator.h test/AbcHeuristic.cpp:examples/Abc/AbcHeuristic.cpp test/AbcHeuristic.h:examples/Abc/AbcHeuristic.h test/AbcMain.cpp:examples/Abc/AbcMain.cpp test/AbcMessage.cpp:examples/Abc/AbcMessage.cpp test/AbcMessage.h:examples/Abc/AbcMessage.h test/AbcModel.cpp:examples/Abc/AbcModel.cpp test/AbcModel.h:examples/Abc/AbcModel.h test/AbcNodeDesc.h:examples/Abc/AbcNodeDesc.h test/AbcParams.cpp:examples/Abc/AbcParams.cpp test/AbcParams.h:examples/Abc/AbcParams.h test/AbcSolution.cpp:examples/Abc/AbcSolution.cpp test/AbcSolution.h:examples/Abc/AbcSolution.h test/AbcTreeNode.cpp:examples/Abc/AbcTreeNode.cpp test/AbcTreeNode.h:examples/Abc/AbcTreeNode.h"
 
 
-EXAMPLE_FILES="flugpl.mps"
 
-lnkcmd=
-if test "$enable_doscompile" != no; then
-  lnkcmd=cp
+
+
+
+echo "$as_me:$LINENO: checking which command should be used to link input files" >&5
+echo $ECHO_N "checking which command should be used to link input files... $ECHO_C" >&6
+coin_link_input_cmd="$LN_S"
+if test "$enable_doscompile" = mingw; then
+  coin_link_input_cmd=cp
 fi
 case "$CC" in
   cl* | */cl* | CL* | */CL* | icl* | */icl* | ICL* | */ICL*)
-    lnkcmd=cp ;;
+    coin_link_input_cmd=cp ;;
 esac
-if test "$lnkcmd" = cp; then
-  { echo "$as_me:$LINENO: Copying example files (flugpl.mps)" >&5
-echo "$as_me: Copying example files (flugpl.mps)" >&6;}
-else
-  echo "$as_me:$LINENO: checking whether ln -s works" >&5
-echo $ECHO_N "checking whether ln -s works... $ECHO_C" >&6
-LN_S=$as_ln_s
-if test "$LN_S" = "ln -s"; then
-  echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6
-else
-  echo "$as_me:$LINENO: result: no, using $LN_S" >&5
-echo "${ECHO_T}no, using $LN_S" >&6
-fi
+echo "$as_me:$LINENO: result: $coin_link_input_cmd" >&5
+echo "${ECHO_T}$coin_link_input_cmd" >&6
 
-  { echo "$as_me:$LINENO: Creating links to the example files (flugpl.mps)" >&5
-echo "$as_me: Creating links to the example files (flugpl.mps)" >&6;}
-  lnkcmd="$LN_S"
-fi
+
 mkdir -p test
+EXAMPLE_FILES="flugpl.mps"
 for file in $EXAMPLE_FILES; do
   rm -f $file
-  $lnkcmd `cd $srcdir/examples/Abc/data; pwd`/$file test/$file
+  $coin_link_input_cmd `cd $srcdir/examples/Abc/data; pwd`/$file test/$file
 done
-
-#AC_COIN_EXAMPLE_FILES([examples/Abc/data/flugpl.mps])
 
 # In case this is a VPATH configuration we need to make sure that the
 # input files for the examples are available in the VPATH directory.
@@ -20869,23 +20857,6 @@ done
 
 
 # Finally, we let configure write all the output...
-
-
-
-
-echo "$as_me:$LINENO: checking which command should be used to link input files" >&5
-echo $ECHO_N "checking which command should be used to link input files... $ECHO_C" >&6
-coin_link_input_cmd="$LN_S"
-if test "$enable_doscompile" = mingw; then
-  coin_link_input_cmd=cp
-fi
-case "$CC" in
-  cl* | */cl* | CL* | */CL* | icl* | */icl* | ICL* | */ICL*)
-    coin_link_input_cmd=cp ;;
-esac
-echo "$as_me:$LINENO: result: $coin_link_input_cmd" >&5
-echo "${ECHO_T}$coin_link_input_cmd" >&6
-
 
 
 if test x$coin_skip_ac_output != xyes; then
