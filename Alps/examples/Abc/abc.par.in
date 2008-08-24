@@ -27,8 +27,8 @@ Alps_maxHubWorkSize 2
 Alps_hubReportFreqency 10000
 Alps_nodeSelStrategy 0      # 0: best bound 1: DFS 2: BFS 3: hybrid
 Alps_subTreeCompareRule 0   # 0: quality 1: quantity 2: root depth 3: hybrid
-Alps_instance  @abs_source_dir@/examples/Abc/data/flugpl.mps
-#Alps_instance @abs_source_dir@/examples/Abc/data/knap3.mps
+Alps_instance flugpl.mps
+#Alps_instance knap3.mps
 #Alps_instance /home/yax2/COIN/Cbc/Samples/miplib3/10teams.gz   #
 #Alps_instance /home/yax2/COIN/Cbc/Samples/miplib3/air03.gz     #
 #Alps_instance /home/yax2/COIN/Cbc/Samples/miplib3/air04.gz     #
