@@ -121,6 +121,15 @@ AC_CONFIG_LINKS(test/AbcBranchActual.cpp:examples/Abc/AbcBranchActual.cpp
                 test/AbcTreeNode.cpp:examples/Abc/AbcTreeNode.cpp
                 test/AbcTreeNode.h:examples/Abc/AbcTreeNode.h)
 
+AC_COIN_LINK_INPUT_CMD
+
+mkdir -p test
+EXAMPLE_FILES="flugpl.mps"
+for file in $EXAMPLE_FILES; do
+  rm -f $file
+  $coin_link_input_cmd `cd $srcdir/examples/Abc/data; pwd`/$file test/$file
+done
+
 # In case this is a VPATH configuration we need to make sure that the
 # input files for the examples are available in the VPATH directory.
 
