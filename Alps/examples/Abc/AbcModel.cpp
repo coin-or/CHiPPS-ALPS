@@ -200,7 +200,7 @@ AbcModel::solveWithCuts(OsiCuts & cuts, int numberTries,
 	    int numberAfter =
 		numberRowCutsAfter + numberColumnCutsAfter + lastNumberCuts;
 	    if (numberAfter > maximumWhich) {
-		maximumWhich = max(maximumWhich * 2 + 100, numberAfter);
+		maximumWhich = std::max(maximumWhich * 2 + 100, numberAfter);
 		int * temp = new int[2 * maximumWhich];
 		memcpy(temp, whichGenerator, numberBefore * sizeof(int));
 		delete [] whichGenerator;

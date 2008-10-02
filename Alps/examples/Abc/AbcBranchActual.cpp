@@ -114,7 +114,7 @@ AbcBranchDefaultDecision::betterBranch(int thisOne, int bestSoFar,
 	}
 	
 	// before solution - choose smallest number could add in depth as well
-	int bestNumber = min(bestNumberUp_, bestNumberDown_);
+	int bestNumber = std::min(bestNumberUp_, bestNumberDown_);
 	if (numInfUp < numInfDn) {
 	    if (numInfUp < bestNumber) {
 		betterWay = 1;
@@ -135,7 +135,7 @@ AbcBranchDefaultDecision::betterBranch(int thisOne, int bestSoFar,
 	    if (numInfUp < bestNumber) {
 		better = true;
 	    } else if (numInfUp == bestNumber) {
-		if (min(changeUp, changeDn) < bestCriterion_)
+		if (std::min(changeUp, changeDn) < bestCriterion_)
 		    better = true;
 	    }
 	    if (better) {
@@ -162,7 +162,7 @@ AbcBranchDefaultDecision::betterBranch(int thisOne, int bestSoFar,
     }
 
     if (betterWay) {
-	bestCriterion_ = min(changeUp, changeDn);
+	bestCriterion_ = std::min(changeUp, changeDn);
 	bestChangeUp_ = changeUp;
 	bestNumberUp_ = numInfUp;
 	bestChangeDown_ = changeDn;

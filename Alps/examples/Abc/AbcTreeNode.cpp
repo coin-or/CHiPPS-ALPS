@@ -53,8 +53,8 @@ static double checkInfeasibility(AbcModel* model, const int columnNumber,
     const double * lower = solver->getColLower();
     const double * upper = solver->getColUpper();
     double value = solution[columnNumber];
-    value = max(value, lower[columnNumber]);
-    value = min(value, upper[columnNumber]);
+    value = std::max(value, lower[columnNumber]);
+    value = std::min(value, upper[columnNumber]);
     /*printf("%d %g %g %g %g\n",columnNumber_,value,lower[columnNumber_],
     solution[columnNumber_],upper[columnNumber_]);*/
     double nearest = floor(value + 0.5);
@@ -585,7 +585,7 @@ int AbcTreeNode::chooseBranch(AbcModel *model, bool& strongFound)
     bool beforeSolution = model->getSolutionCount()==0;
     int numberStrong = model->numberStrong();
     int numberObjects = model->numberIntegers();
-    int maximumStrong = max(min(model->numberStrong(), numberObjects), 1);
+    int maximumStrong = std::max(std::min(model->numberStrong(), numberObjects), 1);
     int numberColumns = model->getNumCols();
     double * saveUpper = new double[numberColumns];
     double * saveLower = new double[numberColumns];
@@ -674,7 +674,7 @@ int AbcTreeNode::chooseBranch(AbcModel *model, bool& strongFound)
 		choice[iSmallest].downMovement = otherWay;
 		saveOtherWay = otherWay;
 		choice[iSmallest].possibleBranch = object;
-		numberStrong = max(numberStrong, iSmallest + 1);
+		numberStrong = std::max(numberStrong, iSmallest + 1);
 		choice[iSmallest].objectNumber = i;
 		int j;
 		iSmallest = -1;
@@ -1000,7 +1000,7 @@ int AbcTreeNode::chooseBranch(AbcModel *model, bool& strongFound)
 		averageCostPerIteration += choice[i].downMovement +
 		    choice[i].upMovement;
 		smallestNumberInfeasibilities = 
-		    min(min(choice[i].numIntInfeasDown,
+		    std::min(std::min(choice[i].numIntInfeasDown,
 			    choice[i].numIntInfeasUp),
 			smallestNumberInfeasibilities);
 	    }
@@ -1096,7 +1096,7 @@ int AbcTreeNode::chooseBranch(AbcModel *model, bool& strongFound)
 	    pseudoC = model->getPseudoList()[object];
 	    upCost = pseudoC->upCost_ * (1.0 - fraction);
 	    downCost = pseudoC->downCost_ * fraction;
-	    deg = 4.0 * min(upCost, downCost) + 1.0 * max(upCost, downCost);
+	    deg = 4.0 * std::min(upCost, downCost) + 1.0 * std::max(upCost, downCost);
 	    if (deg > mostDeg) {
 		mostDeg = deg;
 		mostInd = object;
