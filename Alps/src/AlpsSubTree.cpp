@@ -247,6 +247,12 @@ AlpsSubTree::createChildren(
     const int numChildren = static_cast<int> (children.size());
  
     parent->setNumChildren(numChildren);
+
+    if (!numChildren){
+       parent->setStatus(AlpsNodeStatusFathomed);
+       return;
+    }
+
     parent->setStatus(AlpsNodeStatusBranched);
     
     for (i = 0; i < numChildren; ++i) {
