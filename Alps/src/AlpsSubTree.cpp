@@ -249,7 +249,6 @@ AlpsSubTree::createChildren(
     parent->setNumChildren(numChildren);
 
     if (!numChildren){
-       parent->setStatus(AlpsNodeStatusFathomed);
        return;
     }
 
@@ -521,9 +520,11 @@ AlpsSubTree::rampUp(int minNumNodes,
 	case AlpsNodeStatusPregnant : {
 	    std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
 		children = node->branch();
-	    createChildren(node, children);
-	    if (depth < node->getDepth() + 1) {    // Record the depth of tree
-		depth = node->getDepth() + 1;
+	    if (static_cast<int> (children.size()) > 0){
+	       createChildren(node, children);
+	       if (depth < node->getDepth() + 1) {    // Record the depth of tree
+		  depth = node->getDepth() + 1;
+	       }
 	    }
 	    break;
 	}
