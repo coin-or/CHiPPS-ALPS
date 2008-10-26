@@ -45,7 +45,6 @@ AlpsNodeSelection::createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node)
     std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
 	children = node->branch();
     subTree->createChildren(node, children);
-    /* No active node now. */
     subTree->setActiveNode(0);
 }
 

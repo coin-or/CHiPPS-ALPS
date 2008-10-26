@@ -119,7 +119,7 @@ AlpsSubTree::AlpsSubTree()
     //nextIndex_(0), 
     nodePool_(new AlpsNodePool), 
     diveNodePool_(new AlpsNodePool), 
-    diveNodeRule_(new AlpsNodeSelectionEstimate),
+    diveNodeRule_(new AlpsNodeSelectionBest),
     diveDepth_(0),
     activeNode_(0),
     quality_(ALPS_OBJ_MAX),
@@ -139,7 +139,7 @@ AlpsSubTree::AlpsSubTree(AlpsKnowledgeBroker* kb)
     // nextIndex_(0), 
     nodePool_(new AlpsNodePool),
     diveNodePool_(new AlpsNodePool),
-    diveNodeRule_(new AlpsNodeSelectionEstimate),
+    diveNodeRule_(new AlpsNodeSelectionBest),
     diveDepth_(0),
     activeNode_(0),
     quality_(ALPS_OBJ_MAX)
@@ -421,6 +421,7 @@ AlpsSubTree::exploreSubTree(AlpsTreeNode* root,
 			    int nodeLimit,
 			    double timeLimit,
 			    int & numNodesProcessed, /* Output */
+			    int & numNodesBranched,  /* Output */
 			    int & depth)             /* Output */
 {
     AlpsReturnStatus status = AlpsReturnStatusOk;
@@ -444,6 +445,7 @@ AlpsSubTree::exploreSubTree(AlpsTreeNode* root,
                              timeLimit,
                              exploreStatus,
                              numNodesProcessed, /* Output */
+			     numNodesBranched,  /* Output */
                              depth,             /* Output */
                              betterSolution);   /* Output */
 
@@ -1120,6 +1122,7 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
                              double unitTime,
                              AlpsExitStatus & exploreStatus, /* Output */
                              int & numNodesProcessed,       /* Output */
+                             int & numNodesBranched,        /* Output */
                              int & depth,                   /* Output */
                              bool & betterSolution)         /* Output */
 {
@@ -1253,31 +1256,33 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
                 }
             }
 #endif
-
 	    switch (activeNode_->getStatus()) {
-	    case AlpsNodeStatusCandidate :
-	    case AlpsNodeStatusEvaluated :
-	    case AlpsNodeStatusPregnant :
-		break;
-	    case AlpsNodeStatusFathomed :
-		if (deleteNode) {
-		    removeDeadNodes(activeNode_);
-                }
-                activeNode_ = NULL;
-		break;
-	    default : 
-                // AlpsNodeStatus::branched ==> this is impossible
-		throw CoinError("Impossible status: branched", 
-				"exploreSubTree", "AlpsSubTree"); 
+	     case AlpsNodeStatusCandidate :
+	     case AlpsNodeStatusEvaluated :
+	     case AlpsNodeStatusPregnant :
+	       /* Has to go back in the queue for further consideration */
+	       nodePool_->addKnowledge(activeNode_, activeNode_->getQuality());
+	       break;
+	     case AlpsNodeStatusFathomed :
+	       if (deleteNode) {
+		  removeDeadNodes(activeNode_);
+	       }
+	       break;
+	     default : 
+	       // AlpsNodeStatus::branched ==> this is impossible
+	       throw CoinError("Impossible status: branched", 
+			       "exploreSubTree", "AlpsSubTree"); 
 	    }
-
+	    
             // Increment by 1.
 	    ++numNodesProcessed;
 	    break;
-	default : // branched or fathomed
-	    throw CoinError("Impossible status: branched or fathomed", 
-			    "exploreSubTree", "AlpsSubTree"); 
+	 default : // branched or fathomed
+	   throw CoinError("Impossible status: branched or fathomed", 
+			   "exploreSubTree", "AlpsSubTree"); 
 	}
+	/* No active node now. */
+	activeNode_ = NULL;
     }
     
     if (numNodesProcessed) {
