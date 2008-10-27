@@ -222,6 +222,7 @@ AlpsKnowledgeBrokerSerial::rootSearch(AlpsTreeNode* root)
 					     timer_.limit_,
 					     nodeProcessedNum_, 
 					     nodeBranchedNum_,
+					     nodeDiscardedNum_,
 					     treeDepth_);
     
     updateNumNodesLeft();
@@ -278,6 +279,8 @@ AlpsKnowledgeBrokerSerial::searchLog()
 	    << nodeProcessedNum_ << CoinMessageEol;
 	messageHandler()->message(ALPS_S_FINAL_NODE_BRANCHED, messages())
 	    << nodeBranchedNum_ << CoinMessageEol;
+	messageHandler()->message(ALPS_S_FINAL_NODE_DISCARDED, messages())
+	    << nodeDiscardedNum_ << CoinMessageEol;
 	messageHandler()->message(ALPS_S_FINAL_NODE_LEFT, messages())
 	    << nodeLeftNum_ << CoinMessageEol; 
 	messageHandler()->message(ALPS_S_FINAL_DEPTH, messages())

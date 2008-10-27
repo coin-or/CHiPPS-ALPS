@@ -189,6 +189,8 @@ class AlpsTreeNode : public AlpsKnowledge {
 	return status_ == AlpsNodeStatusBranched; }
     inline bool isFathomed() const  {
 	return status_ == AlpsNodeStatusFathomed; }
+    inline bool isDiscarded() const  {
+	return status_ == AlpsNodeStatusDiscarded; }
     ///@}
     
     /** Query/set node in-process indicator. */

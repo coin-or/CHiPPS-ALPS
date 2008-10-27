@@ -118,8 +118,11 @@ class AlpsKnowledgeBroker {
     /** The number of nodes that have been processed. */
     int nodeProcessedNum_;
 
-    /** The number of nodes that have been processed. */
+    /** The number of nodes that have been branched. */
     int nodeBranchedNum_;
+
+    /** The number of nodes that have been discarded before processing. */
+    int nodeDiscardedNum_;
 
     /** To record how many nodes processed by the system
         (used in parallel code). */
@@ -436,6 +439,11 @@ class AlpsKnowledgeBroker {
     /** Query the number of node processed by this process. */
     int getNumNodesBranched() const {
 	return nodeBranchedNum_;
+    }
+
+    /** Query the number of node processed by this process. */
+    int getNumNodesDiscarded() const {
+	return nodeDiscardedNum_;
     }
 
     /** Query the number of node processed by the system. */

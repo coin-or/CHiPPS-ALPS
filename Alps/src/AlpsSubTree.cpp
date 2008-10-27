@@ -188,7 +188,7 @@ AlpsSubTree::~AlpsSubTree()
 void
 AlpsSubTree::removeDeadNodes(AlpsTreeNode*& node)
 {
-    if (!node->isFathomed()) {
+    if (!node->isFathomed() && !node->isDiscarded()) {
 	throw CoinError("node->isFathomed()","removeDeadNodes","AlpsSubTree");   
     }
 
@@ -270,26 +270,27 @@ AlpsSubTree::createChildren(
     for (i = 0; i < numChildren; ++i) {
 	AlpsTreeNode* child = parent->getChild(i);
 	switch (child->getStatus()) {
-	case AlpsNodeStatusCandidate:
-	case AlpsNodeStatusEvaluated:
-	case AlpsNodeStatusPregnant:
+	 case AlpsNodeStatusCandidate:
+	 case AlpsNodeStatusEvaluated:
+	 case AlpsNodeStatusPregnant:
 	    if (diveNodePool) {
-		diveNodePool->addKnowledge(child, child->getSolEstimate());
+	       diveNodePool->addKnowledge(child, child->getSolEstimate());
 	    }
 	    else {
-		nodePool_->addKnowledge(child, child->getQuality());
+	       nodePool_->addKnowledge(child, child->getQuality());
 	    }
 	    break;
-	case AlpsNodeStatusFathomed:
+	 case AlpsNodeStatusFathomed:
+	 case AlpsNodeStatusDiscarded: 
 	    // Based on a parameter deleteNode, we decide whether to
 	    // clean up the tree or preserve it for posterity
-	    if (deleteNode) {
-		removeDeadNodes(child);
-            }
-	    break;
-	default: // AlpsNodeStatus::branched ==> this is impossible
-	    throw CoinError("impossible status: branched",
-			    "createChildren", "AlpsSubTree");
+	   if (deleteNode) {
+	      removeDeadNodes(child);
+	   }
+	   break;
+	 default: // AlpsNodeStatus::branched ==> this is impossible
+	   throw CoinError("impossible status: branched",
+			   "createChildren", "AlpsSubTree");
 	}
     }
 }
@@ -361,6 +362,7 @@ AlpsSubTree::calculateQuality()
 
     if (activeNode_) {
         if ( (activeNode_->getStatus() != AlpsNodeStatusFathomed) &&
+	     (activeNode_->getStatus() != AlpsNodeStatusDiscarded) &&
              (activeNode_->getStatus() != AlpsNodeStatusBranched) ) {
             quality_ = activeNode_->getQuality();
         }
@@ -422,6 +424,7 @@ AlpsSubTree::exploreSubTree(AlpsTreeNode* root,
 			    double timeLimit,
 			    int & numNodesProcessed, /* Output */
 			    int & numNodesBranched,  /* Output */
+			    int & numNodesDiscarded, /* Output */
 			    int & depth)             /* Output */
 {
     AlpsReturnStatus status = AlpsReturnStatusOk;
@@ -446,6 +449,7 @@ AlpsSubTree::exploreSubTree(AlpsTreeNode* root,
                              exploreStatus,
                              numNodesProcessed, /* Output */
 			     numNodesBranched,  /* Output */
+			     numNodesDiscarded, /* Output */
                              depth,             /* Output */
                              betterSolution);   /* Output */
 
@@ -563,6 +567,7 @@ AlpsSubTree::rampUp(int minNumNodes,
 		nodePool_->addKnowledge(node, node->getQuality());
 		break;
 	    case AlpsNodeStatusFathomed :
+	    case AlpsNodeStatusDiscarded :
 		// Based on the parameter deleteNode, we decide whether to
 		// clean up the tree or preserve it for posterity
 		if (deleteNode) {
@@ -1123,6 +1128,7 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
                              AlpsExitStatus & exploreStatus, /* Output */
                              int & numNodesProcessed,       /* Output */
                              int & numNodesBranched,        /* Output */
+                             int & numNodesDiscarded,       /* Output */
                              int & depth,                   /* Output */
                              bool & betterSolution)         /* Output */
 {
@@ -1278,6 +1284,12 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
 	      removeDeadNodes(activeNode_);
 	   }
 	   break;
+	 case AlpsNodeStatusDiscarded :
+	   ++numNodesDiscarded;
+	   if (deleteNode) {
+	      removeDeadNodes(activeNode_);
+	   }
+	   break;
 	 default : 
 	   // AlpsNodeStatus::branched ==> this is impossible
 	   throw CoinError("Impossible status: branched", 
@@ -1359,7 +1371,8 @@ AlpsSubTree::getBestKnowledgeValue() const
     }
     else {
 	if ( (activeNode_) &&
-	     (activeNode_->getStatus() != AlpsNodeStatusFathomed) ) {
+	     (activeNode_->getStatus() != AlpsNodeStatusFathomed && 
+	      activeNode_->getStatus() != AlpsNodeStatusDiscarded) ) {
 	    if (activeNode_->getQuality() < bv2){
 		return activeNode_->getQuality();
 	    }
@@ -1396,7 +1409,8 @@ AlpsSubTree::getBestNode() const
     }
     
     if (activeNode_ && 
-	(activeNode_->getStatus() != AlpsNodeStatusFathomed) ) {
+	(activeNode_->getStatus() != AlpsNodeStatusFathomed && 
+	 activeNode_->getStatus() != AlpsNodeStatusDiscarded) ) {
 	
 	if (bestNode) {
 	    if (bestNode->getQuality() > activeNode_->getQuality()) {
