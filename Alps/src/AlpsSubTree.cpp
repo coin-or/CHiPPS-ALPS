@@ -1256,31 +1256,35 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
                 }
             }
 #endif
-	    switch (activeNode_->getStatus()) {
-	     case AlpsNodeStatusCandidate :
-	     case AlpsNodeStatusEvaluated :
-	     case AlpsNodeStatusPregnant :
-	       /* Has to go back in the queue for further consideration */
-	       nodePool_->addKnowledge(activeNode_, activeNode_->getQuality());
-	       break;
-	     case AlpsNodeStatusFathomed :
-	       if (deleteNode) {
-		  removeDeadNodes(activeNode_);
-	       }
-	       break;
-	     default : 
-	       // AlpsNodeStatus::branched ==> this is impossible
-	       throw CoinError("Impossible status: branched", 
-			       "exploreSubTree", "AlpsSubTree"); 
-	    }
-	    
-            // Increment by 1.
-	    ++numNodesProcessed;
 	    break;
 	 default : // branched or fathomed
 	   throw CoinError("Impossible status: branched or fathomed", 
 			   "exploreSubTree", "AlpsSubTree"); 
 	}
+	switch (activeNode_->getStatus()) {
+	 case AlpsNodeStatusPregnant :
+	   ++numNodesProcessed;
+	 case AlpsNodeStatusCandidate :
+	 case AlpsNodeStatusEvaluated :
+	   /* Has to go back in the queue for further consideration */
+	   nodePool_->addKnowledge(activeNode_, activeNode_->getQuality());
+	   break;
+	 case AlpsNodeStatusBranched :
+	   ++numNodesBranched;
+	   break;
+	 case AlpsNodeStatusFathomed :
+	   ++numNodesProcessed;
+	   if (deleteNode) {
+	      removeDeadNodes(activeNode_);
+	   }
+	   break;
+	 default : 
+	   // AlpsNodeStatus::branched ==> this is impossible
+	   throw CoinError("Impossible status: branched", 
+			   "exploreSubTree", "AlpsSubTree"); 
+	}
+	
+	// Increment by 1.
 	/* No active node now. */
 	activeNode_ = NULL;
     }

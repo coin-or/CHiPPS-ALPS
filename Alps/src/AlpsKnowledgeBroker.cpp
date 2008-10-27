@@ -39,6 +39,7 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     maxIndex_(INT_MAX),
     solNum_(0),
     nodeProcessedNum_(0),
+    nodeBranchedNum_(0),
     nodeLeftNum_(0),
     treeDepth_(0),
     bestSolDepth_(INT_MAX),

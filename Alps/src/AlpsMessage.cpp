@@ -105,6 +105,7 @@ static Alps_message us_english[] =
     {ALPS_S_FINAL_SOL, 260, 1, "Quality of the best solution found: %g ; depth %d"},
     {ALPS_S_FINAL_NO_SOL, 264, 1, "No solution found"},
     {ALPS_S_FINAL_NODE_PROCESSED, 268, 1, "Number of nodes processed: %d"},
+    {ALPS_S_FINAL_NODE_BRANCHED, 269, 1, "Number of nodes branched: %d"},
     {ALPS_S_FINAL_NODE_LEFT, 270, 1, "Number of nodes left: %d"},
     {ALPS_S_FINAL_DEPTH, 272, 1, "Tree depth: %d"},
     {ALPS_S_FINAL_CPU, 274, 1, "Search CPU time: %.2f seconds"},
