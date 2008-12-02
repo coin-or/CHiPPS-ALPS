@@ -56,8 +56,8 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     logFileLevel_(0),
     nodeMemSize_(0),
     nodeProcessingTime_(ALPS_NODE_PROCESS_TIME), // Positive
-    largeSize_(100000),
     systemNodeProcessed_(0),
+    largeSize_(100000),
     numNodeLog_(0)
 {
     registerClass(AlpsKnowledgeTypeSubTree, new AlpsSubTree(this));
