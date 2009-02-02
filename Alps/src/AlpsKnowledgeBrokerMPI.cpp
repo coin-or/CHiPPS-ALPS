@@ -3581,6 +3581,8 @@ AlpsKnowledgeBrokerMPI::sendIncumbent()
 #endif
 	MPI_Isend(smallBuffer_, position, MPI_PACKED, leftRank, 
                   AlpsMsgIncumbentTwo, MPI_COMM_WORLD, &forwardRequestL_);
+        MPI_Status sentStatusL;
+        MPI_Wait(&forwardRequestL_, &sentStatusL);
 	incSendCount("sendIncumbent()");
     }
     
@@ -3593,6 +3595,8 @@ AlpsKnowledgeBrokerMPI::sendIncumbent()
 #endif
 	MPI_Isend(smallBuffer_, position, MPI_PACKED, rightRank, 
                   AlpsMsgIncumbentTwo, MPI_COMM_WORLD, &forwardRequestR_);
+        MPI_Status sentStatusR;
+        MPI_Wait(&forwardRequestR_, &sentStatusR);
 	incSendCount("sendIncumbent()");
     }
 }
@@ -5275,6 +5279,9 @@ AlpsKnowledgeBrokerMPI::doOneUnitWork(int unitWork,
     
     AlpsReturnStatus rCode = AlpsReturnStatusOk;
 
+    int numNodesBranched = 0;  /* Output */
+    int numNodesDiscarded = 0; /* Output */
+        
     numNodesProcessed = 0; 
     
     if( !workingSubTree_ && !(subTreePool_->hasKnowledge()) ) {
@@ -5286,9 +5293,11 @@ AlpsKnowledgeBrokerMPI::doOneUnitWork(int unitWork,
         deleteSubTrees();
         return rCode;
     }
+#if 1
     
     if ( ! needWorkingSubTree_ )  {
         // Already has a subtree working on.
+        
         
         assert(workingSubTree_);
         rCode = workingSubTree_->exploreUnitWork(true, /* leaveAsIt*/
@@ -5296,6 +5305,8 @@ AlpsKnowledgeBrokerMPI::doOneUnitWork(int unitWork,
                                                  unitTime,
                                                  exitStatus,
                                                  numNodesProcessed,
+                                                 numNodesBranched,  /* Output */
+                                                 numNodesDiscarded, /* Output */
                                                  treeDepth_,
                                                  betterSolution);
         
@@ -5322,6 +5333,8 @@ AlpsKnowledgeBrokerMPI::doOneUnitWork(int unitWork,
                                                  unitTime,
                                                  exitStatus,
                                                  numNodesProcessed,
+                                                 numNodesBranched,  /* Output */
+                                                 numNodesDiscarded, /* Output */
                                                  treeDepth_,
                                                  betterSolution);
         
@@ -5337,7 +5350,7 @@ AlpsKnowledgeBrokerMPI::doOneUnitWork(int unitWork,
             workingSubTree_ = 0;
         }
     }
-
+#endif
     return rCode;
 }
 
@@ -5749,9 +5762,12 @@ AlpsKnowledgeBrokerMPI::forwardModelKnowledge()
         int leftRank = sequenceToRank(modelGenID_, leftSeq);
         MPI_Isend(largeBuffer_, modelGenPos_, MPI_PACKED, leftRank, 
 		  AlpsMsgModelGenSearch, MPI_COMM_WORLD, &forwardRequestL_);
+#if 0
         std::cout << "++++ forwardModelKnowledge: leftRank = " 
                   << leftRank << std::endl;
-        
+#endif
+        MPI_Status sentStatusL;
+        MPI_Wait(&forwardRequestL_, &sentStatusL);   
         incSendCount("forwardModelKnowledge during search");        
     }
     
@@ -5768,10 +5784,14 @@ AlpsKnowledgeBrokerMPI::forwardModelKnowledge()
 	    }
 	}
         int rightRank = sequenceToRank(modelGenID_, rightSeq);
+#if 0
         std::cout << "++++ forwardModelKnowledge: rightRank = " 
                   << rightRank << std::endl;
+#endif
         MPI_Isend(largeBuffer_, modelGenPos_, MPI_PACKED, rightRank, 
 		  AlpsMsgModelGenSearch, MPI_COMM_WORLD, &forwardRequestR_);
+        MPI_Status sentStatusR;
+        MPI_Wait(&forwardRequestR_, &sentStatusR);
         incSendCount("forwardModelKnowledge during search");
     }
 }
@@ -5875,6 +5895,8 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(MPI_Comm comm, int receiver)
 	    //     AlpsMsgModelGenSearch, comm);
 	    MPI_Isend(largeBuffer2_, position, MPI_PACKED, leftRank,
 		      AlpsMsgModelGenSearch, comm, &modelKnowRequestL_);
+            MPI_Status sentStatusL;
+            MPI_Wait(&forwardRequestL_, &sentStatusL);
             incSendCount("sendModelKnowledge during search");        
         }
         
@@ -5896,6 +5918,8 @@ AlpsKnowledgeBrokerMPI::sendModelKnowledge(MPI_Comm comm, int receiver)
 	    //     AlpsMsgModelGenSearch, comm);
 	    MPI_Isend(largeBuffer2_, position, MPI_PACKED, rightRank,
 		      AlpsMsgModelGenSearch, comm, &modelKnowRequestR_);
+            MPI_Status sentStatusR;
+            MPI_Wait(&forwardRequestR_, &sentStatusR);
 	    incSendCount("sendModelKnowledge during search");
         }
     }
