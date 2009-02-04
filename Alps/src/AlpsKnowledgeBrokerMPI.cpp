@@ -3554,8 +3554,7 @@ void
 AlpsKnowledgeBrokerMPI::sendIncumbent()
 {
     int position = 0;
-    int size = 
-	model_->AlpsPar()->entry(AlpsParams::smallSize);
+    int size = model_->AlpsPar()->entry(AlpsParams::smallSize);
     
     int mySeq = rankToSequence(incumbentID_, globalRank_);
     int leftSeq = leftSequence(mySeq, processNum_);
@@ -3581,9 +3580,6 @@ AlpsKnowledgeBrokerMPI::sendIncumbent()
 #endif
 	MPI_Isend(smallBuffer_, position, MPI_PACKED, leftRank, 
                   AlpsMsgIncumbentTwo, MPI_COMM_WORLD, &forwardRequestL_);
-        MPI_Status sentStatusL;
-        MPI_Wait(&forwardRequestL_, &sentStatusL);
-	incSendCount("sendIncumbent()");
     }
     
     if (rightSeq != -1) {
@@ -3595,6 +3591,15 @@ AlpsKnowledgeBrokerMPI::sendIncumbent()
 #endif
 	MPI_Isend(smallBuffer_, position, MPI_PACKED, rightRank, 
                   AlpsMsgIncumbentTwo, MPI_COMM_WORLD, &forwardRequestR_);
+    }
+
+    if (leftSeq != -1) {
+        MPI_Status sentStatusL;
+        MPI_Wait(&forwardRequestL_, &sentStatusL);
+	incSendCount("sendIncumbent()");
+    }
+    
+    if (rightSeq != -1) {
         MPI_Status sentStatusR;
         MPI_Wait(&forwardRequestR_, &sentStatusR);
 	incSendCount("sendIncumbent()");
