@@ -39,6 +39,8 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     maxIndex_(INT_MAX),
     solNum_(0),
     nodeProcessedNum_(0),
+    nodeBranchedNum_(0),
+    nodeDiscardedNum_(0),
     nodeLeftNum_(0),
     treeDepth_(0),
     bestSolDepth_(INT_MAX),
@@ -54,8 +56,8 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     logFileLevel_(0),
     nodeMemSize_(0),
     nodeProcessingTime_(ALPS_NODE_PROCESS_TIME), // Positive
-    largeSize_(100000),
     systemNodeProcessed_(0),
+    largeSize_(100000),
     numNodeLog_(0)
 {
     registerClass(AlpsKnowledgeTypeSubTree, new AlpsSubTree(this));

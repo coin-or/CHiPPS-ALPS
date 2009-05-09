@@ -235,8 +235,10 @@ class AlpsSubTree : public AlpsKnowledge {
     virtual AlpsReturnStatus exploreSubTree(AlpsTreeNode* root,
 					  int nodeLimit,  
 					  double timeLimit,
-					  int & numNodesProcesse, /* Output */
-					  int & depth);           /* Output */
+					  int & numNodesProcessed, /* Output */
+					  int & numNodesBranched,  /* Output */
+					  int & numNodesDiscarded, /* Output */
+					  int & depth);            /* Output */
     
     /** Explore the subtree for certain amount of work/time. 
 	leaveAsIt means exit immediately after reseach limits:
@@ -248,6 +250,8 @@ class AlpsSubTree : public AlpsKnowledge {
                                    double unitTime,
                                    AlpsExitStatus & solStatus,/*not for parallel*/
                                    int & numNodesProcessed, /* Output */
+                                   int & numNodesBranched,  /* Output */
+                                   int & numNodesDiscarded, /* Output */
                                    int & depth,             /* Output */
                                    bool & betterSolution);  /* Output */
     

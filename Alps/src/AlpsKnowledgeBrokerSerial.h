@@ -44,7 +44,7 @@ class AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
 	AlpsKnowledgeBroker() 
 	{} 
 
-    /** Userful constructor. 
+    /** Useful constructor. 
 	Note need read in parameters and data seperately. */
     AlpsKnowledgeBrokerSerial(AlpsModel& model) 
 	: 

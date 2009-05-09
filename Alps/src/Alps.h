@@ -62,7 +62,8 @@ enum AlpsNodeStatus {
     AlpsNodeStatusEvaluated,
     AlpsNodeStatusPregnant,
     AlpsNodeStatusBranched,
-    AlpsNodeStatusFathomed
+    AlpsNodeStatusFathomed,
+    AlpsNodeStatusDiscarded
 };
 
 //#############################################################################

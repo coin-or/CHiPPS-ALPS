@@ -221,6 +221,8 @@ AlpsKnowledgeBrokerSerial::rootSearch(AlpsTreeNode* root)
 					     nodeLimit,
 					     timer_.limit_,
 					     nodeProcessedNum_, 
+					     nodeBranchedNum_,
+					     nodeDiscardedNum_,
 					     treeDepth_);
     
     updateNumNodesLeft();
@@ -275,6 +277,10 @@ AlpsKnowledgeBrokerSerial::searchLog()
 	}
 	messageHandler()->message(ALPS_S_FINAL_NODE_PROCESSED, messages())
 	    << nodeProcessedNum_ << CoinMessageEol;
+	messageHandler()->message(ALPS_S_FINAL_NODE_BRANCHED, messages())
+	    << nodeBranchedNum_ << CoinMessageEol;
+	messageHandler()->message(ALPS_S_FINAL_NODE_DISCARDED, messages())
+	    << nodeDiscardedNum_ << CoinMessageEol;
 	messageHandler()->message(ALPS_S_FINAL_NODE_LEFT, messages())
 	    << nodeLeftNum_ << CoinMessageEol; 
 	messageHandler()->message(ALPS_S_FINAL_DEPTH, messages())
@@ -307,7 +313,8 @@ AlpsKnowledgeBrokerSerial::searchLog()
 	    fout << "No solution was found." << std::endl;
 	}
 	fout << "Number of nodes processed = "<<nodeProcessedNum_ << std::endl;
-	fout << "Number of nodes left = " << nodeLeftNum_ << std::endl;
+	fout << "Number of nodes branched = "<<nodeBranchedNum_ << std::endl;
+	fout << "Number of nodes left in queue= " << nodeLeftNum_ << std::endl;
 	fout << "Tree depth = " << treeDepth_ << std::endl;
 	
 	fout << "Search CPU time =  " << timer_.getCpuTime() << " seconds"
