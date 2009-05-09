@@ -17,7 +17,7 @@
 #          Matthew Saltzman, Clemson University                            #
 #                                                                          #
 #                                                                          #
-# Copyright (C) 2001-2008, Lehigh University, Yan Xu, and Ted Ralphs.      #
+# Copyright (C) 2001-2009, Lehigh University, Yan Xu, and Ted Ralphs.      #
 # All Rights Reserved.                                                     #
 #==========================================================================#
 
@@ -29,7 +29,7 @@
 
 AC_PREREQ(2.59)
 
-AC_INIT([Alps],[1.0],[https://projects.coin-or.org/Alps/newticket])
+AC_INIT([Alps],[1.1],[https://projects.coin-or.org/Alps/newticket])
 
 AC_COPYRIGHT([
 Copyright 2006 International Business Machines and others.
