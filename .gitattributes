@@ -1,5 +1,6 @@
 * text=auto !eol
 Alps/MSVisualStudio/v8/libAlps.vcproj -text
+Alps/MSVisualStudio/v9/libAlps.vcproj -text
 Alps/Makefile.am -text
 Alps/Makefile.in -text
 Alps/alps_addlibs.txt.in -text
@@ -31,6 +32,9 @@ Alps/examples/Abc/LICENSE -text
 Alps/examples/Abc/MSVisualStudio/v8/Abc.sln -text
 Alps/examples/Abc/MSVisualStudio/v8/Abc.suo -text
 Alps/examples/Abc/MSVisualStudio/v8/Abc.vcproj -text
+Alps/examples/Abc/MSVisualStudio/v9/Abc.sln -text
+Alps/examples/Abc/MSVisualStudio/v9/Abc.suo -text
+Alps/examples/Abc/MSVisualStudio/v9/Abc.vcproj -text
 Alps/examples/Abc/Makefile.in -text
 Alps/examples/Abc/README -text
 Alps/examples/Abc/abc.par.in -text
@@ -56,6 +60,9 @@ Alps/examples/Knap/LICENSE -text
 Alps/examples/Knap/MSVisualStudio/v8/Knap.sln -text
 Alps/examples/Knap/MSVisualStudio/v8/Knap.suo -text
 Alps/examples/Knap/MSVisualStudio/v8/Knap.vcproj -text
+Alps/examples/Knap/MSVisualStudio/v9/Knap.sln -text
+Alps/examples/Knap/MSVisualStudio/v9/Knap.suo -text
+Alps/examples/Knap/MSVisualStudio/v9/Knap.vcproj -text
 Alps/examples/Knap/Makefile.in -text
 Alps/examples/Knap/README -text
 Alps/examples/Knap/TODO -text

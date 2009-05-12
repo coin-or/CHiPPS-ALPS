@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C++ Express 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Knap", "Knap.vcproj", "{BD941FC3-17B1-4596-89FA-D969599F1DAC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C4867F15-438D-4FF8-8388-62FBAAA9786C} = {C4867F15-438D-4FF8-8388-62FBAAA9786C}
+		{246A8CAC-4D2A-4D9D-9B5A-BEB99C0F2E89} = {246A8CAC-4D2A-4D9D-9B5A-BEB99C0F2E89}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libAlps", "..\..\..\..\MSVisualStudio\v9\libAlps.vcproj", "{246A8CAC-4D2A-4D9D-9B5A-BEB99C0F2E89}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libCoinUtils", "..\..\..\..\..\CoinUtils\MSVisualStudio\v9\libCoinUtils\libCoinUtils.vcproj", "{C4867F15-438D-4FF8-8388-62FBAAA9786C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BD941FC3-17B1-4596-89FA-D969599F1DAC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BD941FC3-17B1-4596-89FA-D969599F1DAC}.Debug|Win32.Build.0 = Debug|Win32
+		{BD941FC3-17B1-4596-89FA-D969599F1DAC}.Release|Win32.ActiveCfg = Release|Win32
+		{BD941FC3-17B1-4596-89FA-D969599F1DAC}.Release|Win32.Build.0 = Release|Win32
+		{246A8CAC-4D2A-4D9D-9B5A-BEB99C0F2E89}.Debug|Win32.ActiveCfg = Debug|Win32
+		{246A8CAC-4D2A-4D9D-9B5A-BEB99C0F2E89}.Debug|Win32.Build.0 = Debug|Win32
+		{246A8CAC-4D2A-4D9D-9B5A-BEB99C0F2E89}.Release|Win32.ActiveCfg = Release|Win32
+		{246A8CAC-4D2A-4D9D-9B5A-BEB99C0F2E89}.Release|Win32.Build.0 = Release|Win32
+		{C4867F15-438D-4FF8-8388-62FBAAA9786C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C4867F15-438D-4FF8-8388-62FBAAA9786C}.Debug|Win32.Build.0 = Debug|Win32
+		{C4867F15-438D-4FF8-8388-62FBAAA9786C}.Release|Win32.ActiveCfg = Release|Win32
+		{C4867F15-438D-4FF8-8388-62FBAAA9786C}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
