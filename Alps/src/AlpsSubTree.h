@@ -91,6 +91,11 @@ class AlpsSubTree : public AlpsKnowledge {
     /** This function replaces \c oldNode with \c newNode in the tree. */
     void replaceNode(AlpsTreeNode* oldNode, AlpsTreeNode* newNode);
 
+    /** Fathom all nodes on this subtree. 
+     *  Set activeNode_ and root_ to NULL.
+     */
+    void fathomAllNodes();
+
  public:
     
     /** Default constructor. */

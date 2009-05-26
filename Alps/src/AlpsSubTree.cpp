@@ -124,7 +124,7 @@ AlpsSubTree::AlpsSubTree()
     activeNode_(0),
     quality_(ALPS_OBJ_MAX),
     broker_(0)
-    //eliteSize_(-1)
+                        //eliteSize_(-1)
 { 
     setType(AlpsKnowledgeTypeSubTree);
     diveNodePool_->setNodeSelection(*diveNodeRule_);
@@ -181,6 +181,32 @@ AlpsSubTree::~AlpsSubTree()
     }
     
     delete diveNodeRule_;
+}
+
+//#############################################################################
+
+/** Fathom all nodes in this subtree. 
+ *  Set activeNode_ and root_ to NULL.
+ */
+void 
+AlpsSubTree::fathomAllNodes() 
+{
+    if (nodePool_ != NULL) {
+        nodePool_->clear(); // Nodes will be freed by deleting root
+    }
+    
+    if (diveNodePool_ != NULL) { 
+        diveNodePool_->clear(); // Nodes will be freed by deleting root
+    }
+
+    if (root_ != NULL) {
+	//std::cout << "- delete root" << std::endl;
+        root_->removeDescendants();
+        delete root_;
+	root_ = NULL;
+    }
+
+    activeNode_ = NULL;
 }
 
 //#############################################################################
@@ -249,7 +275,7 @@ AlpsSubTree::createChildren(
     parent->setNumChildren(numChildren);
 
     if (!numChildren){
-       return;
+        return;
     }
 
     parent->setStatus(AlpsNodeStatusBranched);
@@ -270,27 +296,27 @@ AlpsSubTree::createChildren(
     for (i = 0; i < numChildren; ++i) {
 	AlpsTreeNode* child = parent->getChild(i);
 	switch (child->getStatus()) {
-	 case AlpsNodeStatusCandidate:
-	 case AlpsNodeStatusEvaluated:
-	 case AlpsNodeStatusPregnant:
+        case AlpsNodeStatusCandidate:
+        case AlpsNodeStatusEvaluated:
+        case AlpsNodeStatusPregnant:
 	    if (diveNodePool) {
-	       diveNodePool->addKnowledge(child, child->getSolEstimate());
+                diveNodePool->addKnowledge(child, child->getSolEstimate());
 	    }
 	    else {
-	       nodePool_->addKnowledge(child, child->getQuality());
+                nodePool_->addKnowledge(child, child->getQuality());
 	    }
 	    break;
-	 case AlpsNodeStatusFathomed:
-	 case AlpsNodeStatusDiscarded: 
+        case AlpsNodeStatusFathomed:
+        case AlpsNodeStatusDiscarded: 
 	    // Based on a parameter deleteNode, we decide whether to
 	    // clean up the tree or preserve it for posterity
-	   if (deleteNode) {
-	      removeDeadNodes(child);
-	   }
-	   break;
-	 default: // AlpsNodeStatus::branched ==> this is impossible
-	   throw CoinError("impossible status: branched",
-			   "createChildren", "AlpsSubTree");
+            if (deleteNode) {
+                removeDeadNodes(child);
+            }
+            break;
+        default: // AlpsNodeStatus::branched ==> this is impossible
+            throw CoinError("impossible status: branched",
+                            "createChildren", "AlpsSubTree");
 	}
     }
 }
@@ -527,10 +553,10 @@ AlpsSubTree::rampUp(int minNumNodes,
 	    std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
 		children = node->branch();
 	    if (static_cast<int> (children.size()) > 0){
-	       createChildren(node, children);
-	       if (depth < node->getDepth() + 1) {    // Record the depth of tree
-		  depth = node->getDepth() + 1;
-	       }
+                createChildren(node, children);
+                if (depth < node->getDepth() + 1) {    // Record the depth of tree
+                    depth = node->getDepth() + 1;
+                }
 	    }
 	    break;
 	}
@@ -1171,7 +1197,7 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
     
     if( broker_->hasKnowledge(AlpsKnowledgeTypeSolution) ) {
         oldSolQuality = 
-	   broker_->getBestKnowledge(AlpsKnowledgeTypeSolution).second;
+            broker_->getBestKnowledge(AlpsKnowledgeTypeSolution).second;
     }    
     
     //------------------------------------------------------
@@ -1210,111 +1236,118 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
         
 	switch (activeNode_->getStatus()) {
 	case AlpsNodeStatusPregnant: 
-	  if (depth < activeNode_->getDepth() + 1) {
-	     depth = activeNode_->getDepth() + 1;
-	  }
-	  nodeSel->createNewNodes(this, activeNode_);
-	  switch (activeNode_->getStatus()) {
-	   case AlpsNodeStatusPregnant :
-	   case AlpsNodeStatusCandidate :
-	   case AlpsNodeStatusEvaluated :
-	     /* Has to go back in the queue for further consideration */
-	     nodePool_->addKnowledge(activeNode_, activeNode_->getQuality());
-	     break;
-	   case AlpsNodeStatusBranched :
-	     ++numNodesBranched;
-	     break;
-	   case AlpsNodeStatusFathomed :
-	     ++numNodesBranched;
-	     if (deleteNode) {
-		removeDeadNodes(activeNode_);
-	     }
-	     break;
-	   case AlpsNodeStatusDiscarded :
-	     if (deleteNode) {
-		removeDeadNodes(activeNode_);
-	     }
-	     break;
-	   default : 
-	     throw CoinError("Unknown status", 
-			     "exploreSubTree", "AlpsSubTree"); 
-	  }
-	  break;
+            if (depth < activeNode_->getDepth() + 1) {
+                depth = activeNode_->getDepth() + 1;
+            }
+            nodeSel->createNewNodes(this, activeNode_);
+            switch (activeNode_->getStatus()) {
+            case AlpsNodeStatusPregnant :
+            case AlpsNodeStatusCandidate :
+            case AlpsNodeStatusEvaluated :
+                /* Has to go back in the queue for further consideration */
+                nodePool_->addKnowledge(activeNode_, activeNode_->getQuality());
+                break;
+            case AlpsNodeStatusBranched :
+                ++numNodesBranched;
+                break;
+            case AlpsNodeStatusFathomed :
+                ++numNodesBranched;
+                if (deleteNode) {
+                    removeDeadNodes(activeNode_);
+                }
+                break;
+            case AlpsNodeStatusDiscarded :
+                if (deleteNode) {
+                    removeDeadNodes(activeNode_);
+                }
+                break;
+            default : 
+                throw CoinError("Unknown status", 
+                                "exploreSubTree", "AlpsSubTree"); 
+            }
+            break;
 	case AlpsNodeStatusCandidate:
 	case AlpsNodeStatusEvaluated:
-	  activeNode_->setActive(true);
-	  if (activeNode_ == root_) {
-	     activeNode_->process(true);
-	  }
-	  else {
-	     activeNode_->process();
-	  }           
-	  activeNode_->setActive(false); 
+            activeNode_->setActive(true);
+            if (activeNode_ == root_) {
+                activeNode_->process(true);
+            }
+            else {
+                activeNode_->process();
+            }           
+            activeNode_->setActive(false); 
 	  
-	  // Record the new sol quality if have.
-	  if( broker_->hasKnowledge(AlpsKnowledgeTypeSolution) ) {
-	     newSolQuality = 
-		broker_->getBestKnowledge(AlpsKnowledgeTypeSolution).second;
-	     if (newSolQuality < oldSolQuality) {
-		if (exitIfBetter) {
-		   betterSolution = true;
-		}
-		forceLog = true;
-		exploreStatus = AlpsExitStatusFeasible;
-		oldSolQuality = newSolQuality;    
-		// std::cout << "betterSolution value=" << newSolQuality
-		//  << std::endl;
-	     }
-	  }
+            // Record the new sol quality if have.
+            if( broker_->hasKnowledge(AlpsKnowledgeTypeSolution) ) {
+                newSolQuality = 
+                    broker_->getBestKnowledge(AlpsKnowledgeTypeSolution).second;
+                if (newSolQuality < oldSolQuality) {
+                    if (exitIfBetter) {
+                        betterSolution = true;
+                    }
+                    forceLog = true;
+                    exploreStatus = AlpsExitStatusFeasible;
+                    oldSolQuality = newSolQuality;    
+                    // std::cout << "betterSolution value=" << newSolQuality
+                    //  << std::endl;
+                }
+            }
 	  
-	  // Print node log for serial code.
-	  broker_->getModel()->nodeLog(activeNode_, forceLog);
-	  forceLog = false;
+            // Print node log for serial code.
+            broker_->getModel()->nodeLog(activeNode_, forceLog);
+            forceLog = false;
 	  
-	  // Check memory usage
+            // Check memory usage
 #ifdef ALPS_MEMORY_USAGE
-	  //std::cout << "checkMemory = " << checkMemory << std::endl;
+            //std::cout << "checkMemory = " << checkMemory << std::endl;
 	  
-	  if (checkMemory) {
-	     struct mallinfo memInfo = mallinfo();
-	     double memUsage = static_cast<double>(memInfo.uordblks + memInfo.hblkhd) / 1024.0;
-	     memUsage /= 1024.0;
-	     if (memUsage > broker_->getPeakMemory()) {
-		broker_->setPeakMemory(memUsage);
-		std::cout << "memusge = " << broker_->getPeakMemory() << std::endl;
-	     }
-	  }
+            if (checkMemory) {
+                struct mallinfo memInfo = mallinfo();
+                double memUsage = static_cast<double>(memInfo.uordblks + memInfo.hblkhd) / 1024.0;
+                memUsage /= 1024.0;
+                if (memUsage > broker_->getPeakMemory()) {
+                    broker_->setPeakMemory(memUsage);
+                    std::cout << "memusge = " << broker_->getPeakMemory() << std::endl;
+                }
+            }
 #endif
-	  switch (activeNode_->getStatus()) {
-	   case AlpsNodeStatusPregnant :
-	     ++numNodesProcessed;
-	   case AlpsNodeStatusCandidate :
-	   case AlpsNodeStatusEvaluated :
-	     /* Has to go back in the queue for further consideration */
-	     nodePool_->addKnowledge(activeNode_, activeNode_->getQuality());
-	     break;
-	   case AlpsNodeStatusFathomed :
-	     ++numNodesProcessed;
-	     if (deleteNode) {
-		removeDeadNodes(activeNode_);
-	     }
-	     break;
-	   case AlpsNodeStatusDiscarded :
-	     ++numNodesDiscarded;
-	     if (deleteNode) {
-		removeDeadNodes(activeNode_);
-	     }
-	     break;
-	   default : 
-	     throw CoinError("Unknown status", 
-			     "exploreSubTree", "AlpsSubTree"); 
-	  }
-	  break;
-	 default : // branched or fathomed
-	   throw CoinError("Impossible status: branched or fathomed", 
-			   "exploreSubTree", "AlpsSubTree"); 
+            switch (activeNode_->getStatus()) {
+            case AlpsNodeStatusPregnant :
+                ++numNodesProcessed;
+            case AlpsNodeStatusCandidate :
+            case AlpsNodeStatusEvaluated :
+                /* Has to go back in the queue for further consideration */
+                nodePool_->addKnowledge(activeNode_, activeNode_->getQuality());
+                break;
+            case AlpsNodeStatusFathomed :
+                ++numNodesProcessed;
+                if (deleteNode) {
+                    removeDeadNodes(activeNode_);
+                }
+                break;
+            case AlpsNodeStatusDiscarded :
+                ++numNodesDiscarded;
+                if (deleteNode) {
+                    removeDeadNodes(activeNode_);
+                }
+                break;
+            default : 
+                throw CoinError("Unknown status", 
+                                "exploreSubTree", "AlpsSubTree"); 
+            }
+            break;
+        default : // branched or fathomed
+            throw CoinError("Impossible status: branched or fathomed", 
+                            "exploreSubTree", "AlpsSubTree");
 	}
+        
 	activeNode_ = NULL;
+
+        /* Delete all nodes if required. */
+        if (broker_->getModel()->fathomAllNodes()) {
+            /* Delete all nodes on this subtree. */
+            fathomAllNodes();
+        }
     }
     
     if (numNodesProcessed) {

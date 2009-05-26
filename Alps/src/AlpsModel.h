@@ -110,6 +110,9 @@ class AlpsModel : public AlpsKnowledge {
     /** Node log. */
     virtual void nodeLog(AlpsTreeNode *node, bool force);
 
+    /** Return true if all nodes on this process can be fathomed.*/
+    virtual bool fathomAllNodes() { return false; }
+    
     //------------------------------------------------------
     // For parallel.
     //------------------------------------------------------
