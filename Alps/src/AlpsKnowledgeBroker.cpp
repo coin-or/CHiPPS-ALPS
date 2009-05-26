@@ -41,6 +41,7 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     nodeProcessedNum_(0),
     nodeBranchedNum_(0),
     nodeDiscardedNum_(0),
+    systemNodeProcessed_(0),
     nodeLeftNum_(0),
     treeDepth_(0),
     bestSolDepth_(INT_MAX),
@@ -56,7 +57,6 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     logFileLevel_(0),
     nodeMemSize_(0),
     nodeProcessingTime_(ALPS_NODE_PROCESS_TIME), // Positive
-    systemNodeProcessed_(0),
     largeSize_(100000),
     numNodeLog_(0)
 {
