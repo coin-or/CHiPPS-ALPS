@@ -9,13 +9,13 @@ You can obtain the source code for the Alps package in two ways:
    (recommended). For this, you need a subversion client installed. For a
    command-line client, check out the code with
 
-   svn co https://projects.coin-or.org/svn/CHiPPS/Alps/stable/1.0 Alps-1.0
+   svn co https://projects.coin-or.org/svn/CHiPPS/Alps/stable/1.1 Alps-1.1
 
 2. Download the source in a compressed file from from
    http://www.coin-or.org/download/source/CHiPPS and
    extract it, for example, with
 
-   tar -xzvf Alps-1.0.0.tgz
+   tar -xzvf Alps-1.1.0.tgz
 
    More detailed download instructions can be found at
 
@@ -29,7 +29,7 @@ You can obtain the source code for the Alps package in two ways:
 -----------------
 
 Switch to the directory in which you just downloaded or extracted the source
-(e.g., Alps-1.0) and execute the following commands:
+(e.g., Alps-1.1) and execute the following commands:
 
   1) ./configure
   2) make
@@ -54,7 +54,7 @@ for more information.
 For configuration and and compilation of the MPI parallel solver, the user has
 to specify the location of MPI with options --with-mpi-incdir, --with-mpi-lib,
 MPICC, and MPICXX. Switch to the directory that you just downloaded or
-extracted (e.g. Alps-1.0) and execute the following commands (substituting the
+extracted (e.g., Alps-1.1) and execute the following commands (substituting the
 correct paths and command names).
 
   1) ./configure --enable-static --disable-shared --with-mpi-incdir=/usr/local/mpich/include --with-mpi-lib='-L/usr/local/mpich/lib  -lmpich' MPICC=mpicc MPICXX=mpiCC
