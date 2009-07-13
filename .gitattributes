@@ -176,7 +176,7 @@ Alps/src/AlpsConfig.h -text
 Alps/src/Makefile.am -text
 Alps/src/Makefile.in -text
 Alps/test/Makefile.am -text
-/Externals -text
+/Dependencies -text
 /LICENSE -text
 /Makefile.am -text
 /Makefile.in -text
