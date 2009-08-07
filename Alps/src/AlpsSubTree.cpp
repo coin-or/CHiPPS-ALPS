@@ -270,8 +270,10 @@ AlpsSubTree::createChildren(
     int i;
     const bool deleteNode = 
 	broker_->getModel()->AlpsPar()->entry(AlpsParams::deleteDeadNode);
+    const int msgLevel = 
+	broker_->getModel()->AlpsPar()->entry(AlpsParams::msgLevel);
     const int numChildren = static_cast<int> (children.size());
- 
+
     parent->setNumChildren(numChildren);
 
     if (!numChildren){
@@ -280,6 +282,12 @@ AlpsSubTree::createChildren(
 
     parent->setStatus(AlpsNodeStatusBranched);
     
+    if (msgLevel >= 100){
+	std::cout << std::endl;
+	std::cout << "Creating children of node " << parent->getIndex();
+	std::cout << " with indices: ";
+    }
+
     for (i = 0; i < numChildren; ++i) {
 	AlpsTreeNode* child = parent->createNewTreeNode(children[i].first);
 	parent->setChild(i, child);
@@ -291,6 +299,13 @@ AlpsSubTree::createChildren(
 	child->setActive(false);
 	child->setDepth(parent->getDepth() + 1);
 	child->setIndex(nextIndex());
+	if (msgLevel >= 100){
+	    std::cout << child->getIndex() << " ";
+	}
+    }
+
+    if (msgLevel >= 100){
+	std::cout << std::endl;
     }
 
     for (i = 0; i < numChildren; ++i) {
