@@ -1,15 +1,15 @@
-# Copyright (C) 2006 International Business Machines and others.
+# Copyright (C) 2006 Lehigh University, Ted Ralphs, Yan Xu, and others.
 # All Rights Reserved.
 # This file is distributed under the Common Public License.
 
 ## $Id: Makefile.am 507 2006-06-03 03:20:16Z andreasw $
 
-# Author:  Andreas Waechter           IBM    2006-04-13
+# Author:  Yan Xu Lehigh
 
 AUTOMAKE_OPTIONS = foreign
 
 ########################################################################
-#                      unitTest for CoinUtils                          #
+#                      unitTest for Alps                               #
 ########################################################################
 
 noinst_PROGRAMS = unitTest
