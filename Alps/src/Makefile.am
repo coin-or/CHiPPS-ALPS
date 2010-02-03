@@ -1,4 +1,4 @@
-# Copyright (C) 2006 International Business Machines and others.
+# Copyright (C) 2006-2010 Lehigh University, Ted Ralphs, Yan Xu, and others.
 # All Rights Reserved.
 # This file is distributed under the Common Public License.
 
