@@ -65,9 +65,7 @@ libAlps_la_LDFLAGS = $(LT_LDFLAGS)
 
 # Here list all include flags, relative to this "srcdir" directory.  This
 # "cygpath" stuff is necessary to compile with native compilers on Windows.
-AM_CPPFLAGS = \
-	-I`$(CYGPATH_W) $(COINUTILSSRCDIR)/src` \
-	-I`$(CYGPATH_W) $(COINUTILSOBJDIR)/inc`
+AM_CPPFLAGS = $(COINUTILS_CFLAGS) 
 
 # Include MPI header directory if MPI is used
 if COIN_HAS_MPI
@@ -120,9 +118,6 @@ includecoin_HEADERS = \
 ConfigHeader = AlpsConfig.h
 
 install-exec-local:
-	echo "#ifndef HAVE_CONFIG_H" >bla
-	echo "#define HAVE_CONFIG_H" >>bla
-	echo "#endif" >> bla
 	cat $(srcdir)/$(ConfigHeader) >> bla
 	$(install_sh_DATA) bla $(DESTDIR)$(includecoindir)/$(ConfigHeader)
 	rm -f bla

@@ -29,13 +29,31 @@
 
 AC_PREREQ(2.59)
 
-AC_INIT([Alps],[1.0],[https://projects.coin-or.org/Alps/newticket])
+AC_INIT([Alps],[trunk],[https://projects.coin-or.org/CHiPPS/newticket])
 
 AC_COPYRIGHT([
-Copyright 2006 International Business Machines and others.
-All Rights Reserved.
-This file is part of the open source package Coin which is distributed
-under the Common Public License.])
+/*===========================================================================*
+ * This file is part of the Abstract Library for Parallel Search (ALPS).     *
+ *                                                                           *
+ * ALPS is distributed under the Common Public License as part of the        *
+ * COIN-OR repository (http://www.coin-or.org).                              *
+ *                                                                           *
+ * Authors:                                                                  *
+ *                                                                           *
+ *          Yan Xu, Lehigh University                                        *
+ *          Ted Ralphs, Lehigh University                                    *
+ *                                                                           *
+ * Conceptual Design:                                                        *
+ *                                                                           *
+ *          Yan Xu, Lehigh University                                        *
+ *          Ted Ralphs, Lehigh University                                    *
+ *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
+ *          Matthew Saltzman, Clemson University                             *
+ *                                                                           *
+ *                                                                           *
+ * Copyright (C) 2001-2010, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ *===========================================================================*/
+])
 
 # List one file in the package so that the configure script can test
 # whether the package is actually there
@@ -58,7 +76,7 @@ AC_CANONICAL_BUILD
 # the source root directory contains definition of where to find those
 # externals.  The following macro ensures that those externals are
 # retrieved by svn if they are not there yet.
-AC_COIN_PROJECTDIR_INIT
+AC_COIN_PROJECTDIR_INIT(Alps)
 
 # Check if user wants to produce debugging code
 AC_COIN_DEBUG_COMPILE(Alps)
@@ -77,15 +95,20 @@ fi
 # Initialize automake and libtool
 AC_COIN_INIT_AUTO_TOOLS
 
+# Get the EXEXT variable for CYGWIN
+AC_EXEEXT
+
 #############################################################################
 #                              COIN components                              #
 #############################################################################
 
-AC_COIN_HAS_PROJECT(Alps)
-AC_COIN_HAS_PROJECT(CoinUtils)
-AC_COIN_HAS_PROJECT(Clp)
-AC_COIN_HAS_PROJECT(Cgl)
-AC_COIN_HAS_PROJECT(Osi)
+AC_COIN_HAS_MODULE(CoinUtils, [coinutils = trunk], [], [../CoinUtils])
+
+# These are only required for the unit test and the Abc example. 
+# We should change that
+AC_COIN_HAS_MODULE(Osi, [osi = trunk], [], [../Osi])
+AC_COIN_HAS_MODULE(Clp, [clp = trunk], [], [../Clp])
+AC_COIN_HAS_MODULE(Cgl, [cgl = trunk], [], [../Cgl])
 
 #############################################################################
 #                             Other dependencies                            #

@@ -29,13 +29,31 @@
 
 AC_PREREQ(2.59)
 
-AC_INIT([Alps],[1.1],[https://projects.coin-or.org/Alps/newticket])
+AC_INIT([Alps],[trunk],[https://projects.coin-or.org/CHiPPS/newticket])
 
 AC_COPYRIGHT([
-Copyright 2006 International Business Machines and others.
-All Rights Reserved.
-This file is part of the open source package Coin which is distributed
-under the Common Public License.])
+/*===========================================================================*
+ * This file is part of the Abstract Library for Parallel Search (ALPS).     *
+ *                                                                           *
+ * ALPS is distributed under the Common Public License as part of the        *
+ * COIN-OR repository (http://www.coin-or.org).                              *
+ *                                                                           *
+ * Authors:                                                                  *
+ *                                                                           *
+ *          Yan Xu, Lehigh University                                        *
+ *          Ted Ralphs, Lehigh University                                    *
+ *                                                                           *
+ * Conceptual Design:                                                        *
+ *                                                                           *
+ *          Yan Xu, Lehigh University                                        *
+ *          Ted Ralphs, Lehigh University                                    *
+ *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
+ *          Matthew Saltzman, Clemson University                             *
+ *                                                                           *
+ *                                                                           *
+ * Copyright (C) 2001-2010, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ *===========================================================================*/
+])
 
 AC_REVISION(0.9)
 
@@ -60,12 +78,16 @@ AC_COIN_CREATE_LIBTOOL
 #                  Check which subprojects are there                        #
 #############################################################################
 
-AC_COIN_MAIN_SUBDIRS(CoinUtils)
-AC_COIN_MAIN_SUBDIRS(Alps)
+AC_COIN_MAIN_PACKAGEDIR(CoinUtils)
+AC_COIN_MAIN_PACKAGEDIR(Alps)
 # The following are required for Alps examples
-AC_COIN_MAIN_SUBDIRS(Clp)
-AC_COIN_MAIN_SUBDIRS(Osi)
-AC_COIN_MAIN_SUBDIRS(Cgl)
+AC_COIN_MAIN_PACKAGEDIR(Blas,ThirdParty,daxpy.f,coinblas)
+AC_COIN_MAIN_PACKAGEDIR(Lapack,ThirdParty,[LAPACK/SRC/dlarf.f],coinlapack)
+AC_COIN_MAIN_PACKAGEDIR(Glpk, ThirdParty,[glpk/src/glplpx01.c],coinglpk)
+AC_COIN_MAIN_PACKAGEDIR(Sample,Data,,coindatasample)
+AC_COIN_MAIN_PACKAGEDIR(Osi)
+AC_COIN_MAIN_PACKAGEDIR(Clp)
+AC_COIN_MAIN_PACKAGEDIR(Cgl)
 
 ##############################################################################
 #                   Finishing up by writing all the output                   #

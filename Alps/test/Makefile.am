@@ -29,37 +29,21 @@ nodist_unitTest_SOURCES = \
 
 
 # List libraries of COIN projects
-unitTest_LDADD = \
-	../src/libAlps.la \
-	$(CGLOBJDIR)/src/libCgl.la \
-	$(OSIOBJDIR)/src/OsiClp/libOsiClp.la \
-	$(OSIOBJDIR)/src/libOsi.la \
-	$(CLPOBJDIR)/src/libClp.la \
-	$(COINUTILSOBJDIR)/src/libCoinUtils.la
-
-# List additional libraries
-LIBS += $(ADDLIBS) \
-	`cat $(CGLOBJDIR)/cgl_addlibs.txt` \
-	`cat $(OSIOBJDIR)/osi_addlibs.txt` \
-	`cat $(CLPOBJDIR)/clp_addlibs.txt` \
-	`cat $(COINUTILSOBJDIR)/coinutils_addlibs.txt`
+unitTest_LDADD = ../src/libAlps.la \
+	$(CGL_LIBS) \
+	$(OSICLP_LIBS) \
+	$(OSI_LIBS) \
+	$(CLP_LIBS) \
+	$(COINUTILS_LIBS)
 
 # Here list all include flags, relative to this "srcdir" directory.  This
 # "cygpath" stuff is necessary to compile with native compilers on Cygwin
-AM_CPPFLAGS = \
-	-I`$(CYGPATH_W) $(ALPSSRCDIR)/src` \
-	-I`$(CYGPATH_W) $(CGLSRCDIR)/src` \
-	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglFlowCover` \
-	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglGomory` \
-	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglKnapsackCover` \
-	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglOddHole` \
-	-I`$(CYGPATH_W) $(CGLSRCDIR)/src/CglProbing` \
-	-I`$(CYGPATH_W) $(OSISRCDIR)/src` \
-	-I`$(CYGPATH_W) $(OSISRCDIR)/src/OsiClp` \
-	-I`$(CYGPATH_W) $(CLPSRCDIR)/src` \
-	-I`$(CYGPATH_W) $(CLPOBJDIR)/inc` \
-        -I`$(CYGPATH_W) $(COINUTILSSRCDIR)/src` \
-        -I`$(CYGPATH_W) $(COINUTILSOBJDIR)/inc`
+AM_CPPFLAGS = -I`$(CYGPATH_W) $(srcdir)/../src` \
+        $(CGL_CFLAGS) \
+        $(OSICLP_CFLAGS) \
+        $(OSI_CFLAGS) \
+        $(CLP_CFALGS) \
+        $(COINUTILS_CFLAGS)
 
 # This line is necessary to allow VPATH compilation with MS compilers
 # on Cygwin
