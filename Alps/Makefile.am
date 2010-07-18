@@ -102,8 +102,10 @@ distclean-local:
 #                  Installation of the addlibs file                    #
 ########################################################################
 
+#TODO should create _addlibs.txt file from .pc file, once it is created
+
 addlibsfile = alps_addlibs.txt
-addlibsdir = $(prefix)/share/doc/coin/$(PACKAGE_NAME)/
+addlibsdir = $(datadir)/coin/doc/Alps
 
 install-exec-local: install-doc
 	$(install_sh_DATA) $(addlibsfile) $(DESTDIR)$(addlibsdir)/$(addlibsfile)
