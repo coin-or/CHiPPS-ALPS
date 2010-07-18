@@ -20754,7 +20754,7 @@ if test "${with_coinutils_lib+set}" = set; then
   withval="$with_coinutils_lib"
   coin_has_coinutils=yes
        COINUTILS_LIBS="$withval"
-       ADDLIBS="$ADDLIBS $withval"
+       ADDLIBS="$withval $ADDLIBS"
 
 fi;
 
@@ -20868,7 +20868,7 @@ if test $coin_has_coinutils != "skipping" ; then
     fi
     COINUTILS_DATA=`sed -n -e 's/datadir=//gp' ../CoinUtils/coinutils-uninstalled.pc`
 
-    ADDLIBS="$ADDLIBS $COINUTILS_LIBS"
+    ADDLIBS="$COINUTILS_LIBS $ADDLIBS"
        REQUIREDPACKAGES="coinutils $REQUIREDPACKAGES"
 
 
@@ -20986,7 +20986,7 @@ if test "${with_osi_lib+set}" = set; then
   withval="$with_osi_lib"
   coin_has_osi=yes
        OSI_LIBS="$withval"
-       ADDLIBS="$ADDLIBS $withval"
+       ADDLIBS="$withval $ADDLIBS"
 
 fi;
 
@@ -21100,7 +21100,7 @@ if test $coin_has_osi != "skipping" ; then
     fi
     OSI_DATA=`sed -n -e 's/datadir=//gp' ../Osi/osi-uninstalled.pc`
 
-    ADDLIBS="$ADDLIBS $OSI_LIBS"
+    ADDLIBS="$OSI_LIBS $ADDLIBS"
        REQUIREDPACKAGES="osi $REQUIREDPACKAGES"
 
 
@@ -21215,7 +21215,7 @@ if test "${with_clp_lib+set}" = set; then
   withval="$with_clp_lib"
   coin_has_clp=yes
        CLP_LIBS="$withval"
-       ADDLIBS="$ADDLIBS $withval"
+       ADDLIBS="$withval $ADDLIBS"
 
 fi;
 
@@ -21329,7 +21329,7 @@ if test $coin_has_clp != "skipping" ; then
     fi
     CLP_DATA=`sed -n -e 's/datadir=//gp' ../Clp/clp-uninstalled.pc`
 
-    ADDLIBS="$ADDLIBS $CLP_LIBS"
+    ADDLIBS="$CLP_LIBS $ADDLIBS"
        REQUIREDPACKAGES="clp $REQUIREDPACKAGES"
 
 
@@ -21444,7 +21444,7 @@ if test "${with_cgl_lib+set}" = set; then
   withval="$with_cgl_lib"
   coin_has_cgl=yes
        CGL_LIBS="$withval"
-       ADDLIBS="$ADDLIBS $withval"
+       ADDLIBS="$withval $ADDLIBS"
 
 fi;
 
@@ -21558,7 +21558,7 @@ if test $coin_has_cgl != "skipping" ; then
     fi
     CGL_DATA=`sed -n -e 's/datadir=//gp' ../Cgl/cgl-uninstalled.pc`
 
-    ADDLIBS="$ADDLIBS $CGL_LIBS"
+    ADDLIBS="$CGL_LIBS $ADDLIBS"
        REQUIREDPACKAGES="cgl $REQUIREDPACKAGES"
 
 
