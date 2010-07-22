@@ -110,6 +110,9 @@ distclean-local:
 #	@$(mkdir_p) "$(addlibsdir)"
 #	PKG_CONFIG_PATH=@COIN_PKG_CONFIG_PATH@ \
 #	$(PKG_CONFIG) --libs alps > $(addlibsdir)/alps_addlibs.txt
+#
+#uninstall-hook:
+#	rm -f $(addlibsdir)/alps_addlibs.txt
 #endif
 
 addlibsfile = alps_addlibs.txt
