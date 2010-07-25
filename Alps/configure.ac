@@ -102,13 +102,12 @@ AC_EXEEXT
 #                              COIN components                              #
 #############################################################################
 
-AC_COIN_HAS_MODULE(CoinUtils, [coinutils = trunk], [], [../CoinUtils])
+AC_COIN_HAS_MODULE(CoinUtils, [coinutils = trunk])
 
 # These are only required for the unit test and the Abc example. 
-# We should change that
-AC_COIN_HAS_MODULE(Osi, [osi = trunk], [], [../Osi])
-AC_COIN_HAS_MODULE(Clp, [clp = trunk], [], [../Clp])
-AC_COIN_HAS_MODULE(Cgl, [cgl = trunk], [], [../Cgl])
+AC_COIN_HAS_MODULE(Osi, [osi = trunk], [required=0])
+AC_COIN_HAS_MODULE(Clp, [clp = trunk], [required=0])
+AC_COIN_HAS_MODULE(Cgl, [cgl = trunk], [required=0])
 
 #############################################################################
 #                             Other dependencies                            #
