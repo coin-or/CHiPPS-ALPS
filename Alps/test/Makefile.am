@@ -29,12 +29,12 @@ nodist_unitTest_SOURCES = \
 
 
 # List libraries of COIN projects
-unitTest_LDADD = ../src/libAlps.la \
+unitTest_LDADD = ../src/libAlps.la  \
 	$(CGL_LIBS) \
 	$(OSICLP_LIBS) \
 	$(OSI_LIBS) \
 	$(CLP_LIBS) \
-	$(COINUTILS_LIBS)
+	$(ALPSLIB_LIBS)
 
 # Here list all include flags, relative to this "srcdir" directory.  This
 # "cygpath" stuff is necessary to compile with native compilers on Cygwin
