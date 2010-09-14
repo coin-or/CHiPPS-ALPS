@@ -341,6 +341,7 @@ class AlpsTreeNode : public AlpsKnowledge {
      *  \param isRoot  Indicate if this node is a root of a subtree.
      *  \param rampUp  Indicate if it is in ramp up period. Only useful
      *                 for parallel code. 
+     * Currently, the return code of this method is not used. 
      */
     virtual int process(bool isRoot = false, bool rampUp = false) = 0;
     
