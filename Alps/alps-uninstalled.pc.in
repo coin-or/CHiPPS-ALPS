@@ -1,0 +1,10 @@
+prefix=@prefix@
+libdir=@ABSBUILDDIR@/src
+includedir=@abs_source_dir@/src
+
+Name: ALPS
+Description: Abstract Library for Parallel Search
+Version: @PACKAGE_VERSION@
+Libs: -L${libdir} -lAlps @ALPSLIB_PCLIBS@
+Cflags: -I${includedir} -I@ABSBUILDDIR@/inc
+Requires: @ALPSLIB_PCREQUIRES@

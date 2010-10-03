@@ -3,6 +3,8 @@ Alps/MSVisualStudio/v8/libAlps.vcproj -text
 Alps/MSVisualStudio/v9/libAlps.vcproj -text
 Alps/Makefile.am -text
 Alps/Makefile.in -text
+Alps/alps-uninstalled.pc.in -text
+Alps/alps.pc.in -text
 Alps/alps_addlibs.txt.in -text
 Alps/configure -text
 Alps/configure.ac -text
