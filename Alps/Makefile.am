@@ -102,27 +102,20 @@ distclean-local:
 #                  Installation of the addlibs file                    #
 ########################################################################
 
-#TODO should create _addlibs.txt file from .pc file, once it is created
-#if COIN_HAS_PKGCONFIG
-#addlibsdir = $(DESTDIR)$(datadir)/coin/doc/Alps
-	
-#install-data-hook:
-#	@$(mkdir_p) "$(addlibsdir)"
-#	PKG_CONFIG_PATH=@COIN_PKG_CONFIG_PATH@ \
-#	$(PKG_CONFIG) --libs alps > $(addlibsdir)/alps_addlibs.txt
-#
-#uninstall-hook:
-#	rm -f $(addlibsdir)/alps_addlibs.txt
-#endif
+pkgconfiglibdir = $(libdir)/pkgconfig
+pkgconfiglib_DATA = alps.pc
 
-addlibsfile = alps_addlibs.txt
-addlibsdir = $(datadir)/coin/doc/Alps
+if COIN_HAS_PKGCONFIG
+addlibsdir = $(DESTDIR)$(datadir)/coin/doc/Alps
 
-install-exec-local: install-doc
-	$(install_sh_DATA) $(addlibsfile) $(DESTDIR)$(addlibsdir)/$(addlibsfile)
+install-data-hook:
+	@$(mkdir_p) "$(addlibsdir)"
+	PKG_CONFIG_PATH=@COIN_PKG_CONFIG_PATH@ \
+	$(PKG_CONFIG) --libs alps > $(addlibsdir)/alps_addlibs.txt
 
-uninstall-local: uninstall-doc
-	rm -f $(DESTDIR)$(addlibsdir)/$(addlibsfile)
+uninstall-hook:
+	rm -f $(addlibsdir)/alps_addlibs.txt
+endif
 
 ########################################################################
 #                         Maintainer Stuff                             #

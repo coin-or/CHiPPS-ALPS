@@ -103,6 +103,9 @@ AC_EXEEXT
 #############################################################################
 
 AC_COIN_HAS_PACKAGE(CoinUtils, [coinutils = trunk], [AlpsLib])
+if test $coin_has_coinutils != yes ; then
+  AC_MSG_ERROR([Required package CoinUtils not available.])
+fi
 
 # These are only required for the unit test and the Abc example. 
 AC_COIN_HAS_PACKAGE(Osi, [osi = trunk])
@@ -171,7 +174,8 @@ AC_CONFIG_FILES([Makefile
 		 examples/Knap/Makefile
                  src/Makefile
                  test/Makefile
-		 alps_addlibs.txt])
+		 alps.pc
+		 alps-uninstalled.pc])
 
 # Here put the location and name of the configuration header file
 AC_CONFIG_HEADER([inc/config_alps.h])

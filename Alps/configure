@@ -21049,6 +21049,11 @@ fi
 
 
 
+if test $coin_has_coinutils != yes ; then
+  { { echo "$as_me:$LINENO: error: Required package CoinUtils not available." >&5
+echo "$as_me: error: Required package CoinUtils not available." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 
 # These are only required for the unit test and the Abc example.
 
@@ -22159,7 +22164,7 @@ done
 
 # Here list all the files that configure should create (except for the
 # configuration header file)
-                                                                      ac_config_files="$ac_config_files Makefile examples/Abc/Makefile examples/Abc/abc.par examples/Knap/Makefile src/Makefile test/Makefile alps_addlibs.txt"
+                                                                                ac_config_files="$ac_config_files Makefile examples/Abc/Makefile examples/Abc/abc.par examples/Knap/Makefile src/Makefile test/Makefile alps.pc alps-uninstalled.pc"
 
 
 # Here put the location and name of the configuration header file
@@ -22874,7 +22879,8 @@ do
   "examples/Knap/Makefile" ) CONFIG_FILES="$CONFIG_FILES examples/Knap/Makefile" ;;
   "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
   "test/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
-  "alps_addlibs.txt" ) CONFIG_FILES="$CONFIG_FILES alps_addlibs.txt" ;;
+  "alps.pc" ) CONFIG_FILES="$CONFIG_FILES alps.pc" ;;
+  "alps-uninstalled.pc" ) CONFIG_FILES="$CONFIG_FILES alps-uninstalled.pc" ;;
   "test/AbcBranchActual.cpp" ) CONFIG_LINKS="$CONFIG_LINKS test/AbcBranchActual.cpp:examples/Abc/AbcBranchActual.cpp" ;;
   "test/AbcBranchActual.h" ) CONFIG_LINKS="$CONFIG_LINKS test/AbcBranchActual.h:examples/Abc/AbcBranchActual.h" ;;
   "test/AbcBranchBase.cpp" ) CONFIG_LINKS="$CONFIG_LINKS test/AbcBranchBase.cpp:examples/Abc/AbcBranchBase.cpp" ;;
