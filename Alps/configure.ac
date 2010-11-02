@@ -102,21 +102,21 @@ AC_EXEEXT
 #                              COIN components                              #
 #############################################################################
 
-AC_COIN_HAS_PACKAGE(CoinUtils, [coinutils = trunk], [AlpsLib])
+AC_COIN_CHECK_PACKAGE(CoinUtils, [coinutils = trunk], [AlpsLib])
 if test $coin_has_coinutils != yes ; then
   AC_MSG_ERROR([Required package CoinUtils not available.])
 fi
 
 # These are only required for the unit test and the Abc example. 
-AC_COIN_HAS_PACKAGE(Osi, [osi = trunk])
-AC_COIN_HAS_PACKAGE(Clp, [clp = trunk])
-AC_COIN_HAS_PACKAGE(Cgl, [cgl = trunk])
+AC_COIN_CHECK_PACKAGE(Osi, [osi = trunk])
+AC_COIN_CHECK_PACKAGE(Clp, [clp = trunk])
+AC_COIN_CHECK_PACKAGE(Cgl, [cgl = trunk])
 
 #############################################################################
 #                             Other dependencies                            #
 #############################################################################
 
-AC_COIN_HAS_USER_LIBRARY([Mpi], [MPI], [mpi.h], [MPI_Irecv], [], [AlpsLib])
+AC_COIN_CHECK_USER_LIBRARY([Mpi], [MPI], [mpi.h], [MPI_Irecv], [], [AlpsLib])
 # ToDo: Automatically choose MPI compiler
 
 ##############################################################################
