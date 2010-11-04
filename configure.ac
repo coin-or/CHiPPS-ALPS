@@ -79,7 +79,6 @@ AC_COIN_CREATE_LIBTOOL
 #############################################################################
 
 AC_COIN_MAIN_PACKAGEDIR(CoinUtils)
-AC_COIN_MAIN_PACKAGEDIR(Alps)
 # The following are required for Alps examples
 AC_COIN_MAIN_PACKAGEDIR(Blas,ThirdParty,daxpy.f,coinblas)
 AC_COIN_MAIN_PACKAGEDIR(Lapack,ThirdParty,[LAPACK/SRC/dlarf.f],coinlapack)
@@ -88,6 +87,7 @@ AC_COIN_MAIN_PACKAGEDIR(Sample,Data,,coindatasample)
 AC_COIN_MAIN_PACKAGEDIR(Osi)
 AC_COIN_MAIN_PACKAGEDIR(Clp)
 AC_COIN_MAIN_PACKAGEDIR(Cgl)
+AC_COIN_MAIN_PACKAGEDIR(Alps)
 
 ##############################################################################
 #                   Finishing up by writing all the output                   #
