@@ -102,15 +102,14 @@ AC_EXEEXT
 #                              COIN components                              #
 #############################################################################
 
-AC_COIN_CHECK_PACKAGE(CoinUtils, [coinutils = trunk], [AlpsLib])
+AC_COIN_CHECK_PACKAGE(CoinUtils, [coinutils], [AlpsLib])
 if test $coin_has_coinutils != yes ; then
   AC_MSG_ERROR([Required package CoinUtils not available.])
 fi
 
 # These are only required for the unit test and the Abc example. 
-AC_COIN_CHECK_PACKAGE(Osi, [osi = trunk])
-AC_COIN_CHECK_PACKAGE(Clp, [clp = trunk])
-AC_COIN_CHECK_PACKAGE(Cgl, [cgl = trunk])
+AC_COIN_CHECK_PACKAGE(Clp, [osi-clp])
+AC_COIN_CHECK_PACKAGE(Cgl, [cgl])
 
 #############################################################################
 #                             Other dependencies                            #
