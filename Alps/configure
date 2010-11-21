@@ -20833,7 +20833,7 @@ echo "${ECHO_T}yes: $COINUTILS_VERSIONS" >&6
 
 
   else
-    COINUTILS_PKG_ERRORS=`$PKG_CONFIG $pkg_short_errors --errors-to-stdout --print-errors coinutils`
+    COINUTILS_PKG_ERRORS=`$PKG_CONFIG $pkg_short_errors --errors-to-stdout --print-errors "coinutils"`
       coin_has_coinutils=notGiven
         echo "$as_me:$LINENO: result: not given: $COINUTILS_PKG_ERRORS" >&5
 echo "${ECHO_T}not given: $COINUTILS_PKG_ERRORS" >&6
@@ -21146,7 +21146,7 @@ echo "${ECHO_T}yes: $CLP_VERSIONS" >&6
 
 
   else
-    CLP_PKG_ERRORS=`$PKG_CONFIG $pkg_short_errors --errors-to-stdout --print-errors osi-clp`
+    CLP_PKG_ERRORS=`$PKG_CONFIG $pkg_short_errors --errors-to-stdout --print-errors "osi-clp"`
       coin_has_clp=notGiven
         echo "$as_me:$LINENO: result: not given: $CLP_PKG_ERRORS" >&5
 echo "${ECHO_T}not given: $CLP_PKG_ERRORS" >&6
@@ -21435,7 +21435,7 @@ echo "${ECHO_T}yes: $CGL_VERSIONS" >&6
 
 
   else
-    CGL_PKG_ERRORS=`$PKG_CONFIG $pkg_short_errors --errors-to-stdout --print-errors cgl`
+    CGL_PKG_ERRORS=`$PKG_CONFIG $pkg_short_errors --errors-to-stdout --print-errors "cgl"`
       coin_has_cgl=notGiven
         echo "$as_me:$LINENO: result: not given: $CGL_PKG_ERRORS" >&5
 echo "${ECHO_T}not given: $CGL_PKG_ERRORS" >&6
