@@ -30,20 +30,14 @@ nodist_unitTest_SOURCES = \
 
 # List libraries of COIN projects
 unitTest_LDADD = ../src/libAlps.la  \
-	$(CGL_LIBS) \
-	$(OSICLP_LIBS) \
-	$(OSI_LIBS) \
 	$(CLP_LIBS) \
 	$(ALPSLIB_LIBS)
 
 # Here list all include flags, relative to this "srcdir" directory.  This
 # "cygpath" stuff is necessary to compile with native compilers on Cygwin
 AM_CPPFLAGS = -I`$(CYGPATH_W) $(srcdir)/../src` \
-        $(CGL_CFLAGS) \
-        $(OSICLP_CFLAGS) \
-        $(OSI_CFLAGS) \
-        $(CLP_CFALGS) \
-        $(COINUTILS_CFLAGS)
+        $(CLP_CFLAGS) \
+        $(ALPSLIB_CFLAGS)
 
 # This line is necessary to allow VPATH compilation with MS compilers
 # on Cygwin

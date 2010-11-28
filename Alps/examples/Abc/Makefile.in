@@ -65,28 +65,19 @@ VPATH = @srcdir@
 CXX = @CXX@
 
 # C++ Compiler options
-CXXFLAGS = @CXXFLAGS@
+CXXFLAGS = @CXXFLAGS@ -DHAVE_CONFIG_H
 
 # additional C++ Compiler options for linking
 CXXLINKFLAGS = @RPATH_FLAGS@
 
-# Directory with COIN header files
-COININCDIR = @abs_include_dir@/coin
+# Compiler flags (we use the CYGPATH_W variables to allow compilation with Windows compilers)
+@COIN_HAS_PKGCONFIG_TRUE@INCL = `PKG_CONFIG_PATH=@COIN_PKG_CONFIG_PATH@ @PKG_CONFIG@ --cflags alps cgl osi-clp` $(ADDINCFLAGS)
+@COIN_HAS_PKGCONFIG_FALSE@INCL = @ALPSLIB_CFLAGS_INSTALLED@ @COINMIP_CFLAGS_INSTALLED@ $(ADDINCFLAGS)
 
-# Directory with COIN libraries
-COINLIBDIR = @abs_lib_dir@
-
-# Libraries necessary to link with Clp
-LIBS = -L$(COINLIBDIR) -lAlps -lCgl -lOsiClp -lOsi -lClp -lCoinUtils \
-	@ADDLIBS@ \
-	`cat @CGLDOCDIR@/cgl_addlibs.txt` \
-	`cat @OSIDOCDIR@/osi_addlibs.txt` \
-	`cat @CLPDOCDIR@/clp_addlibs.txt` \
-	`cat @COINUTILSDOCDIR@/coinutils_addlibs.txt`
-
-# Necessary Include dirs (we use the CYGPATH_W variables to allow
-# compilation with Windows compilers)
-INCL =  -I`$(CYGPATH_W) $(COININCDIR)` $(ADDINCFLAGS)
+# Linker flags
+@COIN_HAS_PKGCONFIG_TRUE@@COIN_CXX_IS_CL_FALSE@LIBS = `PKG_CONFIG_PATH=@COIN_PKG_CONFIG_PATH@ @PKG_CONFIG@ --libs alps cgl osi-clp`
+@COIN_HAS_PKGCONFIG_TRUE@@COIN_CXX_IS_CL_TRUE@LIBS = /link: `PKG_CONFIG_PATH=@COIN_PKG_CONFIG_PATH@ @PKG_CONFIG@ --msvc-syntax --libs alps cgl osi-clp`
+@COIN_HAS_PKGCONFIG_FALSE@LIBS = -L@abs_lib_dir@ -lAlps @COINMIP_LIBS_INSTALLED@ @ALPSLIB_LIBS_INSTALLED@
 
 # The following is necessary under cygwin, if native compilers are used
 CYGPATH_W = @CYGPATH_W@
@@ -98,7 +89,7 @@ all: $(EXE)
 $(EXE): $(OBJS)
 	bla=;\
 	for file in $(OBJS); do bla="$$bla `$(CYGPATH_W) $$file`"; done; \
-	$(CXX) $(CXXLINKFLAGS) $(CXXFLAGS) -o $@ $$bla $(ADDLIBS) $(LIBS)
+	$(CXX) $(CXXLINKFLAGS) $(CXXFLAGS) -o $@ $$bla $(LIBS) $(ADDLIBS)
 
 clean:
 	rm -rf $(EXE) $(OBJS)
