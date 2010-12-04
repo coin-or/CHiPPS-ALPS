@@ -490,7 +490,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os ADDLIBS PCADDLIBS FADDLIBS ALWAYS_FALSE_TRUE ALWAYS_FALSE_FALSE have_svnversion ALPS_SVN_REV COIN_CC_IS_CL_TRUE COIN_CC_IS_CL_FALSE CDEFS ADD_CFLAGS DBG_CFLAGS OPT_CFLAGS sol_cc_compiler CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT MPICC CXXDEFS ADD_CXXFLAGS DBG_CXXFLAGS OPT_CXXFLAGS CXX CXXFLAGS ac_ct_CXX COIN_CXX_IS_CL_TRUE COIN_CXX_IS_CL_FALSE MPICXX EGREP INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT LIBTOOLM4 have_autoconf have_automake have_svn BUILDTOOLSDIR AUX_DIR abs_source_dir abs_lib_dir abs_include_dir abs_bin_dir HAVE_EXTERNALS_TRUE HAVE_EXTERNALS_FALSE host host_cpu host_vendor host_os LN_S ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB CPP CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL ac_c_preproc_warn_flag ac_cxx_preproc_warn_flag RPATH_FLAGS LT_LDFLAGS PKG_CONFIG ac_pt_PKG_CONFIG COIN_HAS_PKGCONFIG_TRUE COIN_HAS_PKGCONFIG_FALSE COIN_PKG_CONFIG_PATH COIN_PKG_CONFIG_PATH_UNINSTALLED COINUTILS_LIBS COINUTILS_CFLAGS COINUTILS_DATA ALPSLIB_CFLAGS ALPSLIB_LIBS ALPSLIB_PCLIBS ALPSLIB_PCREQUIRES ALPSLIB_CFLAGS_INSTALLED ALPSLIB_LIBS_INSTALLED COINUTILS_DATA_INSTALLED COIN_HAS_COINUTILS_TRUE COIN_HAS_COINUTILS_FALSE CLP_LIBS CLP_CFLAGS CLP_DATA COINMIP_CFLAGS COINMIP_LIBS COINMIP_PCLIBS COINMIP_PCREQUIRES COINMIP_CFLAGS_INSTALLED COINMIP_LIBS_INSTALLED CLP_DATA_INSTALLED COIN_HAS_CLP_TRUE COIN_HAS_CLP_FALSE MPIINCDIR MPILIB COIN_HAS_MPI_TRUE COIN_HAS_MPI_FALSE LIBEXT VPATH_DISTCLEANFILES ABSBUILDDIR LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os ADDLIBS PCADDLIBS FADDLIBS ALWAYS_FALSE_TRUE ALWAYS_FALSE_FALSE have_svnversion ALPS_SVN_REV COIN_CC_IS_CL_TRUE COIN_CC_IS_CL_FALSE CDEFS ADD_CFLAGS DBG_CFLAGS OPT_CFLAGS sol_cc_compiler CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT MPICC CXXDEFS ADD_CXXFLAGS DBG_CXXFLAGS OPT_CXXFLAGS CXX CXXFLAGS ac_ct_CXX COIN_CXX_IS_CL_TRUE COIN_CXX_IS_CL_FALSE MPICXX EGREP INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT LIBTOOLM4 have_autoconf have_automake have_svn BUILDTOOLSDIR AUX_DIR abs_source_dir abs_lib_dir abs_include_dir abs_bin_dir HAVE_EXTERNALS_TRUE HAVE_EXTERNALS_FALSE host host_cpu host_vendor host_os LN_S ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB CPP CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL ac_c_preproc_warn_flag ac_cxx_preproc_warn_flag RPATH_FLAGS LT_LDFLAGS PKG_CONFIG ac_pt_PKG_CONFIG COIN_HAS_PKGCONFIG_TRUE COIN_HAS_PKGCONFIG_FALSE COIN_PKG_CONFIG_PATH COIN_PKG_CONFIG_PATH_UNINSTALLED COINUTILS_LIBS COINUTILS_CFLAGS COINUTILS_DATA COINUTILS_DEPENDENCIES COINUTILS_LIBS_INSTALLED COINUTILS_CFLAGS_INSTALLED COINUTILS_DATA_INSTALLED ALPSLIB_CFLAGS ALPSLIB_LIBS ALPSLIB_PCLIBS ALPSLIB_PCREQUIRES ALPSLIB_DEPENDENCIES ALPSLIB_CFLAGS_INSTALLED ALPSLIB_LIBS_INSTALLED COIN_HAS_COINUTILS_TRUE COIN_HAS_COINUTILS_FALSE CLP_LIBS CLP_CFLAGS CLP_DATA CLP_DEPENDENCIES CLP_LIBS_INSTALLED CLP_CFLAGS_INSTALLED CLP_DATA_INSTALLED COINMIP_CFLAGS COINMIP_LIBS COINMIP_PCLIBS COINMIP_PCREQUIRES COINMIP_DEPENDENCIES COINMIP_CFLAGS_INSTALLED COINMIP_LIBS_INSTALLED COIN_HAS_CLP_TRUE COIN_HAS_CLP_FALSE MPIINCDIR MPILIB COIN_HAS_MPI_TRUE COIN_HAS_MPI_FALSE LIBEXT VPATH_DISTCLEANFILES ABSBUILDDIR LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -20794,6 +20794,13 @@ COINUTILS_DATA=
 
 
 
+
+
+
+
+
+
+
 #check if user provided LIBS, CFLAGS, or DATA for module
 if test $coin_has_coinutils != skipping; then
 
@@ -21085,48 +21092,6 @@ _ACEOF
     ALPSLIB_LIBS_INSTALLED="$COINUTILS_LIBS_INSTALLED $ALPSLIB_LIBS_INSTALLED"
 
 
-
-
-
-  if test 1 = 0 ; then  #change this test to enable a bit of debugging output
-    if test -n "$COINUTILS_CFLAGS" ; then
-      { echo "$as_me:$LINENO: CoinUtils CFLAGS are $COINUTILS_CFLAGS" >&5
-echo "$as_me: CoinUtils CFLAGS are $COINUTILS_CFLAGS" >&6;}
-    fi
-    if test -n "$COINUTILS_LIBS" ; then
-      { echo "$as_me:$LINENO: CoinUtils LIBS   are $COINUTILS_LIBS" >&5
-echo "$as_me: CoinUtils LIBS   are $COINUTILS_LIBS" >&6;}
-    fi
-    if test -n "$COINUTILS_DATA" ; then
-      { echo "$as_me:$LINENO: CoinUtils DATA   is  $COINUTILS_DATA" >&5
-echo "$as_me: CoinUtils DATA   is  $COINUTILS_DATA" >&6;}
-    fi
-    if test -n "$COINUTILS_CFLAGS_INSTALLED" ; then
-      { echo "$as_me:$LINENO: CoinUtils CFLAGS_INSTALLED are $COINUTILS_CFLAGS_INSTALLED" >&5
-echo "$as_me: CoinUtils CFLAGS_INSTALLED are $COINUTILS_CFLAGS_INSTALLED" >&6;}
-    fi
-    if test -n "$COINUTILS_LIBS_INSTALLED" ; then
-      { echo "$as_me:$LINENO: CoinUtils LIBS_INSTALLED   are $COINUTILS_LIBS_INSTALLED" >&5
-echo "$as_me: CoinUtils LIBS_INSTALLED   are $COINUTILS_LIBS_INSTALLED" >&6;}
-    fi
-    if test -n "$COINUTILS_DATA_INSTALLED" ; then
-      { echo "$as_me:$LINENO: CoinUtils DATA_INSTALLED   is  $COINUTILS_DATA_INSTALLED" >&5
-echo "$as_me: CoinUtils DATA_INSTALLED   is  $COINUTILS_DATA_INSTALLED" >&6;}
-    fi
-
-      { echo "$as_me:$LINENO: " >&5
-echo "$as_me: " >&6;}
-      { echo "$as_me:$LINENO: AlpsLib CFLAGS are $ALPSLIB_CFLAGS" >&5
-echo "$as_me: AlpsLib CFLAGS are $ALPSLIB_CFLAGS" >&6;}
-      { echo "$as_me:$LINENO: AlpsLib LIBS   are $ALPSLIB_LIBS" >&5
-echo "$as_me: AlpsLib LIBS   are $ALPSLIB_LIBS" >&6;}
-      { echo "$as_me:$LINENO: AlpsLib CFLAGS_INSTALLED are $ALPSLIB_CFLAGS_INSTALLED" >&5
-echo "$as_me: AlpsLib CFLAGS_INSTALLED are $ALPSLIB_CFLAGS_INSTALLED" >&6;}
-      { echo "$as_me:$LINENO: AlpsLib LIBS_INSTALLED   are $ALPSLIB_LIBS_INSTALLED" >&5
-echo "$as_me: AlpsLib LIBS_INSTALLED   are $ALPSLIB_LIBS_INSTALLED" >&6;}
-
-  fi
-
 fi
 
 
@@ -21157,6 +21122,13 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
 
 
+  # construct dependencies variables from LIBS variables
+  # we add an extra space in LIBS so we can substitute out everything starting with " -"
+  COINUTILS_DEPENDENCIES=`echo " $COINUTILS_LIBS" | sed -e 's/ -[^ ]*//g'`
+
+    ALPSLIB_DEPENDENCIES=`echo " $ALPSLIB_LIBS" | sed -e 's/ -[^ ]*//g'`
+
+
   if test 1 = 0 ; then  #change this test to enable a bit of debugging output
     if test -n "$COINUTILS_CFLAGS" ; then
       { echo "$as_me:$LINENO: CoinUtils CFLAGS are $COINUTILS_CFLAGS" >&5
@@ -21165,6 +21137,10 @@ echo "$as_me: CoinUtils CFLAGS are $COINUTILS_CFLAGS" >&6;}
     if test -n "$COINUTILS_LIBS" ; then
       { echo "$as_me:$LINENO: CoinUtils LIBS   are $COINUTILS_LIBS" >&5
 echo "$as_me: CoinUtils LIBS   are $COINUTILS_LIBS" >&6;}
+    fi
+    if test -n "$COINUTILS_DEPENDENCIES" ; then
+      { echo "$as_me:$LINENO: CoinUtils DEPENDENCIES are $COINUTILS_DEPENDENCIES" >&5
+echo "$as_me: CoinUtils DEPENDENCIES are $COINUTILS_DEPENDENCIES" >&6;}
     fi
     if test -n "$COINUTILS_DATA" ; then
       { echo "$as_me:$LINENO: CoinUtils DATA   is  $COINUTILS_DATA" >&5
@@ -21179,6 +21155,8 @@ echo "$as_me: CoinUtils CFLAGS are $COINUTILS_CFLAGS" >&6;}
 echo "$as_me: AlpsLib CFLAGS are $ALPSLIB_CFLAGS" >&6;}
       { echo "$as_me:$LINENO: AlpsLib LIBS   are $ALPSLIB_LIBS" >&5
 echo "$as_me: AlpsLib LIBS   are $ALPSLIB_LIBS" >&6;}
+      { echo "$as_me:$LINENO: AlpsLib DEPENDENCIES are $ALPSLIB_DEPENDENCIES" >&5
+echo "$as_me: AlpsLib DEPENDENCIES are $ALPSLIB_DEPENDENCIES" >&6;}
 
   fi
 fi
@@ -21223,6 +21201,13 @@ fi
 CLP_LIBS=
 CLP_CFLAGS=
 CLP_DATA=
+
+
+
+
+
+
+
 
 
 
@@ -21524,48 +21509,6 @@ _ACEOF
     COINMIP_LIBS_INSTALLED="$CLP_LIBS_INSTALLED $COINMIP_LIBS_INSTALLED"
 
 
-
-
-
-  if test 1 = 0 ; then  #change this test to enable a bit of debugging output
-    if test -n "$CLP_CFLAGS" ; then
-      { echo "$as_me:$LINENO: Clp CFLAGS are $CLP_CFLAGS" >&5
-echo "$as_me: Clp CFLAGS are $CLP_CFLAGS" >&6;}
-    fi
-    if test -n "$CLP_LIBS" ; then
-      { echo "$as_me:$LINENO: Clp LIBS   are $CLP_LIBS" >&5
-echo "$as_me: Clp LIBS   are $CLP_LIBS" >&6;}
-    fi
-    if test -n "$CLP_DATA" ; then
-      { echo "$as_me:$LINENO: Clp DATA   is  $CLP_DATA" >&5
-echo "$as_me: Clp DATA   is  $CLP_DATA" >&6;}
-    fi
-    if test -n "$CLP_CFLAGS_INSTALLED" ; then
-      { echo "$as_me:$LINENO: Clp CFLAGS_INSTALLED are $CLP_CFLAGS_INSTALLED" >&5
-echo "$as_me: Clp CFLAGS_INSTALLED are $CLP_CFLAGS_INSTALLED" >&6;}
-    fi
-    if test -n "$CLP_LIBS_INSTALLED" ; then
-      { echo "$as_me:$LINENO: Clp LIBS_INSTALLED   are $CLP_LIBS_INSTALLED" >&5
-echo "$as_me: Clp LIBS_INSTALLED   are $CLP_LIBS_INSTALLED" >&6;}
-    fi
-    if test -n "$CLP_DATA_INSTALLED" ; then
-      { echo "$as_me:$LINENO: Clp DATA_INSTALLED   is  $CLP_DATA_INSTALLED" >&5
-echo "$as_me: Clp DATA_INSTALLED   is  $CLP_DATA_INSTALLED" >&6;}
-    fi
-
-      { echo "$as_me:$LINENO: " >&5
-echo "$as_me: " >&6;}
-      { echo "$as_me:$LINENO: CoinMIP CFLAGS are $COINMIP_CFLAGS" >&5
-echo "$as_me: CoinMIP CFLAGS are $COINMIP_CFLAGS" >&6;}
-      { echo "$as_me:$LINENO: CoinMIP LIBS   are $COINMIP_LIBS" >&5
-echo "$as_me: CoinMIP LIBS   are $COINMIP_LIBS" >&6;}
-      { echo "$as_me:$LINENO: CoinMIP CFLAGS_INSTALLED are $COINMIP_CFLAGS_INSTALLED" >&5
-echo "$as_me: CoinMIP CFLAGS_INSTALLED are $COINMIP_CFLAGS_INSTALLED" >&6;}
-      { echo "$as_me:$LINENO: CoinMIP LIBS_INSTALLED   are $COINMIP_LIBS_INSTALLED" >&5
-echo "$as_me: CoinMIP LIBS_INSTALLED   are $COINMIP_LIBS_INSTALLED" >&6;}
-
-  fi
-
 fi
 
 
@@ -21596,6 +21539,13 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
 
 
+  # construct dependencies variables from LIBS variables
+  # we add an extra space in LIBS so we can substitute out everything starting with " -"
+  CLP_DEPENDENCIES=`echo " $CLP_LIBS" | sed -e 's/ -[^ ]*//g'`
+
+    COINMIP_DEPENDENCIES=`echo " $COINMIP_LIBS" | sed -e 's/ -[^ ]*//g'`
+
+
   if test 1 = 0 ; then  #change this test to enable a bit of debugging output
     if test -n "$CLP_CFLAGS" ; then
       { echo "$as_me:$LINENO: Clp CFLAGS are $CLP_CFLAGS" >&5
@@ -21604,6 +21554,10 @@ echo "$as_me: Clp CFLAGS are $CLP_CFLAGS" >&6;}
     if test -n "$CLP_LIBS" ; then
       { echo "$as_me:$LINENO: Clp LIBS   are $CLP_LIBS" >&5
 echo "$as_me: Clp LIBS   are $CLP_LIBS" >&6;}
+    fi
+    if test -n "$CLP_DEPENDENCIES" ; then
+      { echo "$as_me:$LINENO: Clp DEPENDENCIES are $CLP_DEPENDENCIES" >&5
+echo "$as_me: Clp DEPENDENCIES are $CLP_DEPENDENCIES" >&6;}
     fi
     if test -n "$CLP_DATA" ; then
       { echo "$as_me:$LINENO: Clp DATA   is  $CLP_DATA" >&5
@@ -21618,6 +21572,8 @@ echo "$as_me: Clp CFLAGS are $CLP_CFLAGS" >&6;}
 echo "$as_me: CoinMIP CFLAGS are $COINMIP_CFLAGS" >&6;}
       { echo "$as_me:$LINENO: CoinMIP LIBS   are $COINMIP_LIBS" >&5
 echo "$as_me: CoinMIP LIBS   are $COINMIP_LIBS" >&6;}
+      { echo "$as_me:$LINENO: CoinMIP DEPENDENCIES are $COINMIP_DEPENDENCIES" >&5
+echo "$as_me: CoinMIP DEPENDENCIES are $COINMIP_DEPENDENCIES" >&6;}
 
   fi
 fi
@@ -22804,25 +22760,33 @@ s,@COIN_PKG_CONFIG_PATH_UNINSTALLED@,$COIN_PKG_CONFIG_PATH_UNINSTALLED,;t t
 s,@COINUTILS_LIBS@,$COINUTILS_LIBS,;t t
 s,@COINUTILS_CFLAGS@,$COINUTILS_CFLAGS,;t t
 s,@COINUTILS_DATA@,$COINUTILS_DATA,;t t
+s,@COINUTILS_DEPENDENCIES@,$COINUTILS_DEPENDENCIES,;t t
+s,@COINUTILS_LIBS_INSTALLED@,$COINUTILS_LIBS_INSTALLED,;t t
+s,@COINUTILS_CFLAGS_INSTALLED@,$COINUTILS_CFLAGS_INSTALLED,;t t
+s,@COINUTILS_DATA_INSTALLED@,$COINUTILS_DATA_INSTALLED,;t t
 s,@ALPSLIB_CFLAGS@,$ALPSLIB_CFLAGS,;t t
 s,@ALPSLIB_LIBS@,$ALPSLIB_LIBS,;t t
 s,@ALPSLIB_PCLIBS@,$ALPSLIB_PCLIBS,;t t
 s,@ALPSLIB_PCREQUIRES@,$ALPSLIB_PCREQUIRES,;t t
+s,@ALPSLIB_DEPENDENCIES@,$ALPSLIB_DEPENDENCIES,;t t
 s,@ALPSLIB_CFLAGS_INSTALLED@,$ALPSLIB_CFLAGS_INSTALLED,;t t
 s,@ALPSLIB_LIBS_INSTALLED@,$ALPSLIB_LIBS_INSTALLED,;t t
-s,@COINUTILS_DATA_INSTALLED@,$COINUTILS_DATA_INSTALLED,;t t
 s,@COIN_HAS_COINUTILS_TRUE@,$COIN_HAS_COINUTILS_TRUE,;t t
 s,@COIN_HAS_COINUTILS_FALSE@,$COIN_HAS_COINUTILS_FALSE,;t t
 s,@CLP_LIBS@,$CLP_LIBS,;t t
 s,@CLP_CFLAGS@,$CLP_CFLAGS,;t t
 s,@CLP_DATA@,$CLP_DATA,;t t
+s,@CLP_DEPENDENCIES@,$CLP_DEPENDENCIES,;t t
+s,@CLP_LIBS_INSTALLED@,$CLP_LIBS_INSTALLED,;t t
+s,@CLP_CFLAGS_INSTALLED@,$CLP_CFLAGS_INSTALLED,;t t
+s,@CLP_DATA_INSTALLED@,$CLP_DATA_INSTALLED,;t t
 s,@COINMIP_CFLAGS@,$COINMIP_CFLAGS,;t t
 s,@COINMIP_LIBS@,$COINMIP_LIBS,;t t
 s,@COINMIP_PCLIBS@,$COINMIP_PCLIBS,;t t
 s,@COINMIP_PCREQUIRES@,$COINMIP_PCREQUIRES,;t t
+s,@COINMIP_DEPENDENCIES@,$COINMIP_DEPENDENCIES,;t t
 s,@COINMIP_CFLAGS_INSTALLED@,$COINMIP_CFLAGS_INSTALLED,;t t
 s,@COINMIP_LIBS_INSTALLED@,$COINMIP_LIBS_INSTALLED,;t t
-s,@CLP_DATA_INSTALLED@,$CLP_DATA_INSTALLED,;t t
 s,@COIN_HAS_CLP_TRUE@,$COIN_HAS_CLP_TRUE,;t t
 s,@COIN_HAS_CLP_FALSE@,$COIN_HAS_CLP_FALSE,;t t
 s,@MPIINCDIR@,$MPIINCDIR,;t t

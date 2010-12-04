@@ -28,10 +28,9 @@ nodist_unitTest_SOURCES = \
 	AbcTreeNode.cpp AbcTreeNode.h
 
 
-# List libraries of COIN projects
-unitTest_LDADD = ../src/libAlps.la  \
-	$(CLP_LIBS) \
-	$(ALPSLIB_LIBS)
+# List libraries that need to be linked in
+unitTest_LDADD        = ../src/libAlps.la $(CLP_LIBS) $(ALPSLIB_LIBS)
+unitTest_DEPENDENCIES = ../src/libAlps.la $(CLP_DEPENDENCIES) $(ALPSLIB_DEPENDENCIES)
 
 # Here list all include flags, relative to this "srcdir" directory.  This
 # "cygpath" stuff is necessary to compile with native compilers on Cygwin

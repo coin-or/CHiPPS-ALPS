@@ -124,6 +124,7 @@ ADD_CFLAGS = @ADD_CFLAGS@
 ADD_CXXFLAGS = @ADD_CXXFLAGS@
 ALPSLIB_CFLAGS = @ALPSLIB_CFLAGS@
 ALPSLIB_CFLAGS_INSTALLED = @ALPSLIB_CFLAGS_INSTALLED@
+ALPSLIB_DEPENDENCIES = @ALPSLIB_DEPENDENCIES@
 ALPSLIB_LIBS = @ALPSLIB_LIBS@
 ALPSLIB_LIBS_INSTALLED = @ALPSLIB_LIBS_INSTALLED@
 ALPSLIB_PCLIBS = @ALPSLIB_PCLIBS@
@@ -146,19 +147,26 @@ CCDEPMODE = @CCDEPMODE@
 CDEFS = @CDEFS@
 CFLAGS = @CFLAGS@
 CLP_CFLAGS = @CLP_CFLAGS@
+CLP_CFLAGS_INSTALLED = @CLP_CFLAGS_INSTALLED@
 CLP_DATA = @CLP_DATA@
 CLP_DATA_INSTALLED = @CLP_DATA_INSTALLED@
+CLP_DEPENDENCIES = @CLP_DEPENDENCIES@
 CLP_LIBS = @CLP_LIBS@
+CLP_LIBS_INSTALLED = @CLP_LIBS_INSTALLED@
 COINMIP_CFLAGS = @COINMIP_CFLAGS@
 COINMIP_CFLAGS_INSTALLED = @COINMIP_CFLAGS_INSTALLED@
+COINMIP_DEPENDENCIES = @COINMIP_DEPENDENCIES@
 COINMIP_LIBS = @COINMIP_LIBS@
 COINMIP_LIBS_INSTALLED = @COINMIP_LIBS_INSTALLED@
 COINMIP_PCLIBS = @COINMIP_PCLIBS@
 COINMIP_PCREQUIRES = @COINMIP_PCREQUIRES@
 COINUTILS_CFLAGS = @COINUTILS_CFLAGS@
+COINUTILS_CFLAGS_INSTALLED = @COINUTILS_CFLAGS_INSTALLED@
 COINUTILS_DATA = @COINUTILS_DATA@
 COINUTILS_DATA_INSTALLED = @COINUTILS_DATA_INSTALLED@
+COINUTILS_DEPENDENCIES = @COINUTILS_DEPENDENCIES@
 COINUTILS_LIBS = @COINUTILS_LIBS@
+COINUTILS_LIBS_INSTALLED = @COINUTILS_LIBS_INSTALLED@
 COIN_CC_IS_CL_FALSE = @COIN_CC_IS_CL_FALSE@
 COIN_CC_IS_CL_TRUE = @COIN_CC_IS_CL_TRUE@
 COIN_CXX_IS_CL_FALSE = @COIN_CXX_IS_CL_FALSE@
@@ -297,8 +305,7 @@ AUTOMAKE_OPTIONS = foreign
 #                               libAlps                                #
 ########################################################################
 coinlibdir = ${libdir}/coin
-# Name of the library compiled in this directory.  We want it to be installed
-# in the 'lib' directory
+# Name of the library compiled in this directory.
 coinlib_LTLIBRARIES = libAlps.la
 
 # List all source files for this library, including headers
@@ -316,7 +323,7 @@ libAlps_la_SOURCES = AlpsConfig.h AlpsAix43.h AlpsSearchStrategy.cpp \
 	AlpsTime.h AlpsTreeNode.cpp AlpsTreeNode.h $(am__append_1) \
 	$(am__append_2)
 
-# This is for libtool (on Windows)
+# This is for libtool
 libAlps_la_LDFLAGS = $(LT_LDFLAGS)
 
 ########################################################################
@@ -336,7 +343,7 @@ DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` -I$(top_builddir)/inc
 ########################################################################
 
 # Here list all the header files that are required by a user of the library,
-# and that therefore should be installed in 'install/coin'
+# and that therefore should be installed in 'include/coin'
 includecoindir = $(includedir)/coin
 includecoin_HEADERS = \
 	../inc/config_alps.h \
