@@ -13,8 +13,7 @@ AUTOMAKE_OPTIONS = foreign
 ########################################################################
 
 coinlibdir = ${libdir}/coin
-# Name of the library compiled in this directory.  We want it to be installed
-# in the 'lib' directory
+# Name of the library compiled in this directory.
 coinlib_LTLIBRARIES = libAlps.la
 
 # List all source files for this library, including headers
@@ -57,7 +56,7 @@ else
 libAlps_la_SOURCES += AlpsKnowledgeBrokerSerial.cpp AlpsKnowledgeBrokerSerial.h
 endif
 
-# This is for libtool (on Windows)
+# This is for libtool
 libAlps_la_LDFLAGS = $(LT_LDFLAGS)
 
 ########################################################################
@@ -82,7 +81,7 @@ DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` -I$(top_builddir)/inc
 ########################################################################
 
 # Here list all the header files that are required by a user of the library,
-# and that therefore should be installed in 'install/coin'
+# and that therefore should be installed in 'include/coin'
 includecoindir = $(includedir)/coin
 includecoin_HEADERS = \
 	../inc/config_alps.h \

@@ -107,9 +107,9 @@ if test $coin_has_coinutils != yes ; then
   AC_MSG_ERROR([Required package CoinUtils not available.])
 fi
 
-# These are only required for the unit test and the Abc example. 
-AC_COIN_CHECK_PACKAGE(Clp, [osi-clp])
-AC_COIN_CHECK_PACKAGE(Cgl, [cgl])
+# These are only required for the unit test and the Abc example.
+# We name it Clp, because the code checks for COIN_HAS_CLP
+AC_COIN_CHECK_PACKAGE(Clp, [cgl osi-clp], [CoinMIP])
 
 #############################################################################
 #                             Other dependencies                            #

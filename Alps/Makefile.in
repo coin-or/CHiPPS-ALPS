@@ -75,12 +75,9 @@ host_triplet = @host@
 # included in the tarball
 @ALWAYS_FALSE@am__append_1 = test
 DIST_COMMON = README $(am__configure_deps) \
-	$(srcdir)/../BuildTools/Makemain.inc $(srcdir)/../config.guess \
-	$(srcdir)/../config.sub $(srcdir)/../install-sh \
-	$(srcdir)/../ltmain.sh $(srcdir)/../missing \
-	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(srcdir)/alps-uninstalled.pc.in $(srcdir)/alps.pc.in \
-	$(top_srcdir)/configure \
+	$(srcdir)/BuildTools/Makemain.inc $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in $(srcdir)/alps-uninstalled.pc.in \
+	$(srcdir)/alps.pc.in $(top_srcdir)/configure \
 	$(top_srcdir)/examples/Abc/AbcBranchActual.cpp \
 	$(top_srcdir)/examples/Abc/AbcBranchActual.h \
 	$(top_srcdir)/examples/Abc/AbcBranchBase.cpp \
@@ -104,7 +101,8 @@ DIST_COMMON = README $(am__configure_deps) \
 	$(top_srcdir)/examples/Abc/Makefile.in \
 	$(top_srcdir)/examples/Abc/abc.par.in \
 	$(top_srcdir)/examples/Knap/Makefile.in \
-	$(top_srcdir)/inc/config_alps.h.in AUTHORS TODO
+	$(top_srcdir)/inc/config_alps.h.in AUTHORS TODO config.guess \
+	config.sub depcomp install-sh ltmain.sh missing
 @HAVE_EXTERNALS_TRUE@am__append_2 = Externals
 @HAVE_EXTERNALS_TRUE@am__append_3 = .Externals-stamp
 subdir = .
@@ -156,7 +154,10 @@ ADDLIBS = @ADDLIBS@
 ADD_CFLAGS = @ADD_CFLAGS@
 ADD_CXXFLAGS = @ADD_CXXFLAGS@
 ALPSLIB_CFLAGS = @ALPSLIB_CFLAGS@
+ALPSLIB_CFLAGS_INSTALLED = @ALPSLIB_CFLAGS_INSTALLED@
+ALPSLIB_DEPENDENCIES = @ALPSLIB_DEPENDENCIES@
 ALPSLIB_LIBS = @ALPSLIB_LIBS@
+ALPSLIB_LIBS_INSTALLED = @ALPSLIB_LIBS_INSTALLED@
 ALPSLIB_PCLIBS = @ALPSLIB_PCLIBS@
 ALPSLIB_PCREQUIRES = @ALPSLIB_PCREQUIRES@
 ALPS_SVN_REV = @ALPS_SVN_REV@
@@ -176,17 +177,31 @@ CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CDEFS = @CDEFS@
 CFLAGS = @CFLAGS@
-CGL_CFLAGS = @CGL_CFLAGS@
-CGL_DATA = @CGL_DATA@
-CGL_LIBS = @CGL_LIBS@
 CLP_CFLAGS = @CLP_CFLAGS@
+CLP_CFLAGS_INSTALLED = @CLP_CFLAGS_INSTALLED@
 CLP_DATA = @CLP_DATA@
+CLP_DATA_INSTALLED = @CLP_DATA_INSTALLED@
+CLP_DEPENDENCIES = @CLP_DEPENDENCIES@
 CLP_LIBS = @CLP_LIBS@
+CLP_LIBS_INSTALLED = @CLP_LIBS_INSTALLED@
+COINMIP_CFLAGS = @COINMIP_CFLAGS@
+COINMIP_CFLAGS_INSTALLED = @COINMIP_CFLAGS_INSTALLED@
+COINMIP_DEPENDENCIES = @COINMIP_DEPENDENCIES@
+COINMIP_LIBS = @COINMIP_LIBS@
+COINMIP_LIBS_INSTALLED = @COINMIP_LIBS_INSTALLED@
+COINMIP_PCLIBS = @COINMIP_PCLIBS@
+COINMIP_PCREQUIRES = @COINMIP_PCREQUIRES@
 COINUTILS_CFLAGS = @COINUTILS_CFLAGS@
+COINUTILS_CFLAGS_INSTALLED = @COINUTILS_CFLAGS_INSTALLED@
 COINUTILS_DATA = @COINUTILS_DATA@
+COINUTILS_DATA_INSTALLED = @COINUTILS_DATA_INSTALLED@
+COINUTILS_DEPENDENCIES = @COINUTILS_DEPENDENCIES@
 COINUTILS_LIBS = @COINUTILS_LIBS@
-COIN_HAS_CGL_FALSE = @COIN_HAS_CGL_FALSE@
-COIN_HAS_CGL_TRUE = @COIN_HAS_CGL_TRUE@
+COINUTILS_LIBS_INSTALLED = @COINUTILS_LIBS_INSTALLED@
+COIN_CC_IS_CL_FALSE = @COIN_CC_IS_CL_FALSE@
+COIN_CC_IS_CL_TRUE = @COIN_CC_IS_CL_TRUE@
+COIN_CXX_IS_CL_FALSE = @COIN_CXX_IS_CL_FALSE@
+COIN_CXX_IS_CL_TRUE = @COIN_CXX_IS_CL_TRUE@
 COIN_HAS_CLP_FALSE = @COIN_HAS_CLP_FALSE@
 COIN_HAS_CLP_TRUE = @COIN_HAS_CLP_TRUE@
 COIN_HAS_COINUTILS_FALSE = @COIN_HAS_COINUTILS_FALSE@
@@ -351,7 +366,7 @@ EXTRA_DIST = examples/Abc/AbcBranchActual.cpp \
 ########################################################################
 pkgconfiglibdir = $(libdir)/pkgconfig
 pkgconfiglib_DATA = alps.pc
-@COIN_HAS_PKGCONFIG_TRUE@addlibsdir = $(DESTDIR)$(datadir)/coin/doc/Alps
+addlibsdir = $(DESTDIR)$(datadir)/coin/doc/Alps
 
 ########################################################################
 #                         Maintainer Stuff                             #
@@ -366,7 +381,7 @@ all: all-recursive
 .SUFFIXES:
 am--refresh:
 	@:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/../BuildTools/Makemain.inc $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/BuildTools/Makemain.inc $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -587,7 +602,7 @@ distclean-tags:
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkdir_p) $(distdir)/. $(distdir)/.. $(distdir)/../BuildTools $(distdir)/examples/Abc $(distdir)/examples/Abc/data $(distdir)/examples/Knap $(distdir)/inc
+	$(mkdir_p) $(distdir)/. $(distdir)/BuildTools $(distdir)/examples/Abc $(distdir)/examples/Abc/data $(distdir)/examples/Knap $(distdir)/inc
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -759,8 +774,6 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-@COIN_HAS_PKGCONFIG_FALSE@install-data-hook:
-@COIN_HAS_PKGCONFIG_FALSE@uninstall-hook:
 clean: clean-recursive
 
 clean-am: clean-generic clean-libtool clean-local mostlyclean-am
@@ -853,13 +866,14 @@ distclean-local:
 
 .PHONY: test unitTest
 
-@COIN_HAS_PKGCONFIG_TRUE@install-data-hook:
-@COIN_HAS_PKGCONFIG_TRUE@	@$(mkdir_p) "$(addlibsdir)"
+install-data-hook:
+	@$(mkdir_p) "$(addlibsdir)"
 @COIN_HAS_PKGCONFIG_TRUE@	PKG_CONFIG_PATH=@COIN_PKG_CONFIG_PATH@ \
 @COIN_HAS_PKGCONFIG_TRUE@	$(PKG_CONFIG) --libs alps > $(addlibsdir)/alps_addlibs.txt
+@COIN_HAS_PKGCONFIG_FALSE@	echo -L@abs_lib_dir@ -lAlps @ALPSLIB_LIBS_INSTALLED@ > $(addlibsdir)/alps_addlibs.txt
 
-@COIN_HAS_PKGCONFIG_TRUE@uninstall-hook:
-@COIN_HAS_PKGCONFIG_TRUE@	rm -f $(addlibsdir)/alps_addlibs.txt
+uninstall-hook:
+	rm -f $(addlibsdir)/alps_addlibs.txt
 
 install-doc: $(DocFiles)
 	test -z "$(DocInstallDir)" || $(mkdir_p) "$(DESTDIR)$(DocInstallDir)"

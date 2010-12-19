@@ -6,8 +6,11 @@ Alps/Makefile.in -text
 Alps/alps-uninstalled.pc.in -text
 Alps/alps.pc.in -text
 Alps/alps_addlibs.txt.in -text
+Alps/config.guess -text
+Alps/config.sub -text
 Alps/configure -text
 Alps/configure.ac -text
+Alps/depcomp -text
 Alps/examples/Abc/AUTHORS -text
 Alps/examples/Abc/AbcBranchActual.cpp -text
 Alps/examples/Abc/AbcBranchActual.h -text
@@ -174,6 +177,9 @@ Alps/examples/Knap/data/unsolve/stats -text
 Alps/examples/Knap/knap.par -text
 Alps/examples/Knap/knap.pbs -text
 Alps/inc/config_alps.h.in -text
+Alps/install-sh -text
+Alps/ltmain.sh -text
+Alps/missing -text
 Alps/src/AlpsConfig.h -text
 Alps/src/Makefile.am -text
 Alps/src/Makefile.in -text

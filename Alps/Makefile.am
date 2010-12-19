@@ -105,17 +105,19 @@ distclean-local:
 pkgconfiglibdir = $(libdir)/pkgconfig
 pkgconfiglib_DATA = alps.pc
 
-if COIN_HAS_PKGCONFIG
 addlibsdir = $(DESTDIR)$(datadir)/coin/doc/Alps
 
 install-data-hook:
 	@$(mkdir_p) "$(addlibsdir)"
+if COIN_HAS_PKGCONFIG
 	PKG_CONFIG_PATH=@COIN_PKG_CONFIG_PATH@ \
 	$(PKG_CONFIG) --libs alps > $(addlibsdir)/alps_addlibs.txt
+else
+	echo -L@abs_lib_dir@ -lAlps @ALPSLIB_LIBS_INSTALLED@ > $(addlibsdir)/alps_addlibs.txt
+endif
 
 uninstall-hook:
 	rm -f $(addlibsdir)/alps_addlibs.txt
-endif
 
 ########################################################################
 #                         Maintainer Stuff                             #
@@ -124,4 +126,4 @@ endif
 # Files that are generated and should be cleaned with make distclean
 DISTCLEANFILES =
 
-include ../BuildTools/Makemain.inc
+include BuildTools/Makemain.inc

@@ -12,9 +12,6 @@
 /* Define to the debug verbosity level (0 is no output) */
 #undef COIN_ALPS_VERBOSITY
 
-/* Define to 1 if the Cgl package is available */
-#undef COIN_HAS_CGL
-
 /* Define to 1 if the Clp package is available */
 #undef COIN_HAS_CLP
 
