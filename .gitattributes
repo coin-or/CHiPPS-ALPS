@@ -5,7 +5,6 @@ Alps/Makefile.am -text
 Alps/Makefile.in -text
 Alps/alps-uninstalled.pc.in -text
 Alps/alps.pc.in -text
-Alps/alps_addlibs.txt.in -text
 Alps/config.guess -text
 Alps/config.sub -text
 Alps/configure -text

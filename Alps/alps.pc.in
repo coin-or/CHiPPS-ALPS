@@ -5,6 +5,7 @@ includedir=@includedir@/coin
 
 Name: ALPS
 Description: Abstract Library for Parallel Search
+URL: https://projects.coin-or.org/CHiPPS
 Version: @PACKAGE_VERSION@
 Libs: -L${libdir} -lAlps @ALPSLIB_PCLIBS@
 Cflags: -I${includedir}
