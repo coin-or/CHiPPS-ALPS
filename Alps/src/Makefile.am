@@ -12,9 +12,8 @@ AUTOMAKE_OPTIONS = foreign
 #                               libAlps                                #
 ########################################################################
 
-coinlibdir = ${libdir}/coin
 # Name of the library compiled in this directory.
-coinlib_LTLIBRARIES = libAlps.la
+lib_LTLIBRARIES = libAlps.la
 
 # List all source files for this library, including headers
 libAlps_la_SOURCES = \

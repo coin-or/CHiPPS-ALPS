@@ -65,10 +65,9 @@ am__vpath_adj = case $$p in \
     *) f=$$p;; \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(coinlibdir)" \
-	"$(DESTDIR)$(includecoindir)"
-coinlibLTLIBRARIES_INSTALL = $(INSTALL)
-LTLIBRARIES = $(coinlib_LTLIBRARIES)
+am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includecoindir)"
+libLTLIBRARIES_INSTALL = $(INSTALL)
+LTLIBRARIES = $(lib_LTLIBRARIES)
 libAlps_la_LIBADD =
 am__libAlps_la_SOURCES_DIST = AlpsConfig.h AlpsAix43.h \
 	AlpsSearchStrategy.cpp AlpsSearchStrategy.h \
@@ -301,9 +300,9 @@ AUTOMAKE_OPTIONS = foreign
 ########################################################################
 #                               libAlps                                #
 ########################################################################
-coinlibdir = ${libdir}/coin
+
 # Name of the library compiled in this directory.
-coinlib_LTLIBRARIES = libAlps.la
+lib_LTLIBRARIES = libAlps.la
 
 # List all source files for this library, including headers
 libAlps_la_SOURCES = AlpsConfig.h AlpsAix43.h AlpsSearchStrategy.cpp \
@@ -409,35 +408,35 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
-install-coinlibLTLIBRARIES: $(coinlib_LTLIBRARIES)
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
-	test -z "$(coinlibdir)" || $(mkdir_p) "$(DESTDIR)$(coinlibdir)"
-	@list='$(coinlib_LTLIBRARIES)'; for p in $$list; do \
+	test -z "$(libdir)" || $(mkdir_p) "$(DESTDIR)$(libdir)"
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
 	    f=$(am__strip_dir) \
-	    echo " $(LIBTOOL) --mode=install $(coinlibLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) '$$p' '$(DESTDIR)$(coinlibdir)/$$f'"; \
-	    $(LIBTOOL) --mode=install $(coinlibLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) "$$p" "$(DESTDIR)$(coinlibdir)/$$f"; \
+	    echo " $(LIBTOOL) --mode=install $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) '$$p' '$(DESTDIR)$(libdir)/$$f'"; \
+	    $(LIBTOOL) --mode=install $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) "$$p" "$(DESTDIR)$(libdir)/$$f"; \
 	  else :; fi; \
 	done
 
-uninstall-coinlibLTLIBRARIES:
+uninstall-libLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	@set -x; list='$(coinlib_LTLIBRARIES)'; for p in $$list; do \
+	@set -x; list='$(lib_LTLIBRARIES)'; for p in $$list; do \
 	  p=$(am__strip_dir) \
-	  echo " $(LIBTOOL) --mode=uninstall rm -f '$(DESTDIR)$(coinlibdir)/$$p'"; \
-	  $(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(coinlibdir)/$$p"; \
+	  echo " $(LIBTOOL) --mode=uninstall rm -f '$(DESTDIR)$(libdir)/$$p'"; \
+	  $(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(libdir)/$$p"; \
 	done
 
-clean-coinlibLTLIBRARIES:
-	-test -z "$(coinlib_LTLIBRARIES)" || rm -f $(coinlib_LTLIBRARIES)
-	@list='$(coinlib_LTLIBRARIES)'; for p in $$list; do \
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
 	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
 	  test "$$dir" != "$$p" || dir=.; \
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
 libAlps.la: $(libAlps_la_OBJECTS) $(libAlps_la_DEPENDENCIES) 
-	$(CXXLINK) -rpath $(coinlibdir) $(libAlps_la_LDFLAGS) $(libAlps_la_OBJECTS) $(libAlps_la_LIBADD) $(LIBS)
+	$(CXXLINK) -rpath $(libdir) $(libAlps_la_LDFLAGS) $(libAlps_la_OBJECTS) $(libAlps_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -585,7 +584,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(coinlibdir)" "$(DESTDIR)$(includecoindir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includecoindir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-am
@@ -614,7 +613,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-coinlibLTLIBRARIES clean-generic clean-libtool \
+clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
 	mostlyclean-am
 
 distclean: distclean-am
@@ -633,9 +632,9 @@ info: info-am
 
 info-am:
 
-install-data-am: install-coinlibLTLIBRARIES install-includecoinHEADERS
+install-data-am: install-includecoinHEADERS
 
-install-exec-am: install-exec-local
+install-exec-am: install-exec-local install-libLTLIBRARIES
 
 install-info: install-info-am
 
@@ -661,23 +660,22 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-coinlibLTLIBRARIES \
-	uninstall-includecoinHEADERS uninstall-info-am uninstall-local
+uninstall-am: uninstall-includecoinHEADERS uninstall-info-am \
+	uninstall-libLTLIBRARIES uninstall-local
 
-.PHONY: CTAGS GTAGS all all-am check check-am clean \
-	clean-coinlibLTLIBRARIES clean-generic clean-libtool ctags \
-	distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am \
-	install-coinlibLTLIBRARIES install-data install-data-am \
-	install-exec install-exec-am install-exec-local \
-	install-includecoinHEADERS install-info install-info-am \
+.PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
+	clean-libLTLIBRARIES clean-libtool ctags distclean \
+	distclean-compile distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am html html-am info info-am \
+	install install-am install-data install-data-am install-exec \
+	install-exec-am install-exec-local install-includecoinHEADERS \
+	install-info install-info-am install-libLTLIBRARIES \
 	install-man install-strip installcheck installcheck-am \
 	installdirs maintainer-clean maintainer-clean-generic \
 	mostlyclean mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-coinlibLTLIBRARIES \
-	uninstall-includecoinHEADERS uninstall-info-am uninstall-local
+	uninstall-am uninstall-includecoinHEADERS uninstall-info-am \
+	uninstall-libLTLIBRARIES uninstall-local
 
 
 install-exec-local:
