@@ -99,7 +99,7 @@ AC_COIN_INIT_AUTO_TOOLS
 AC_EXEEXT
 
 #############################################################################
-#                              COIN components                              #
+#                           COIN-OR components                              #
 #############################################################################
 
 AC_COIN_CHECK_PACKAGE(CoinUtils, [coinutils], [AlpsLib])
@@ -117,6 +117,14 @@ AC_COIN_CHECK_PACKAGE(Clp, [cgl osi-clp], [CoinMIP])
 
 AC_COIN_CHECK_USER_LIBRARY([Mpi], [MPI], [mpi.h], [MPI_Irecv], [], [AlpsLib])
 # ToDo: Automatically choose MPI compiler
+
+#############################################################################
+#                  System header                                            #
+#############################################################################
+
+AC_COIN_CHECK_CXX_CHEADER(math)
+AC_COIN_CHECK_CXX_CHEADER(float)
+AC_COIN_CHECK_CXX_CHEADER(ieeefp)
 
 ##############################################################################
 #                   VPATH links for example input files                      #

@@ -27,6 +27,7 @@
 #include <cfloat>
 #include <cstdio>
 
+#include "AlpsConfig.h"
 #include "CoinFinite.hpp"
 
 //#############################################################################
