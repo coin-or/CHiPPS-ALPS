@@ -1,4 +1,4 @@
-Alps_instance ../../../../Alps/examples/Knap/data/input100_5.txt
+Alps_instance @srcdir@/data/input100_5.txt
 
 Alps_timeLimit 360
 #Alps_nodeLimit 500000
