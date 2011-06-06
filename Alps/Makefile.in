@@ -101,6 +101,7 @@ DIST_COMMON = README $(am__configure_deps) \
 	$(top_srcdir)/examples/Abc/Makefile.in \
 	$(top_srcdir)/examples/Abc/abc.par.in \
 	$(top_srcdir)/examples/Knap/Makefile.in \
+	$(top_srcdir)/examples/Knap/knap.par.in \
 	$(top_srcdir)/inc/config_alps.h.in AUTHORS TODO config.guess \
 	config.sub depcomp install-sh ltmain.sh missing
 @HAVE_EXTERNALS_TRUE@am__append_2 = Dependencies
@@ -116,7 +117,8 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/inc/config_alps.h
 CONFIG_CLEAN_FILES = examples/Abc/Makefile examples/Abc/abc.par \
-	examples/Knap/Makefile alps.pc alps-uninstalled.pc
+	examples/Knap/Makefile examples/Knap/knap.par alps.pc \
+	alps-uninstalled.pc
 SOURCES =
 DIST_SOURCES =
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
@@ -431,6 +433,8 @@ examples/Abc/Makefile: $(top_builddir)/config.status $(top_srcdir)/examples/Abc/
 examples/Abc/abc.par: $(top_builddir)/config.status $(top_srcdir)/examples/Abc/abc.par.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 examples/Knap/Makefile: $(top_builddir)/config.status $(top_srcdir)/examples/Knap/Makefile.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+examples/Knap/knap.par: $(top_builddir)/config.status $(top_srcdir)/examples/Knap/knap.par.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 alps.pc: $(top_builddir)/config.status $(srcdir)/alps.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@

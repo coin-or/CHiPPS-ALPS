@@ -179,6 +179,7 @@ AC_CONFIG_FILES([Makefile
 		 examples/Abc/Makefile
 		 examples/Abc/abc.par
 		 examples/Knap/Makefile
+		 examples/Knap/knap.par
                  src/Makefile
                  test/Makefile
 		 alps.pc
