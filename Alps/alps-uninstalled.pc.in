@@ -7,5 +7,5 @@ Description: Abstract Library for Parallel Search
 URL: https://projects.coin-or.org/CHiPPS
 Version: @PACKAGE_VERSION@
 Libs: ${libdir}/libAlps.la @ALPSLIB_PCLIBS@
-Cflags: -I@abs_source_dir@/src -I@ABSBUILDDIR@/inc
+Cflags: -I@abs_source_dir@/src -I@ABSBUILDDIR@/src
 Requires: @ALPSLIB_PCREQUIRES@
