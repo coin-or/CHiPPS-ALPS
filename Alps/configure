@@ -490,7 +490,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os ALWAYS_FALSE_TRUE ALWAYS_FALSE_FALSE have_svnversion ALPS_SVN_REV CDEFS ADD_CFLAGS DBG_CFLAGS OPT_CFLAGS sol_cc_compiler CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT COIN_CC_IS_CL_TRUE COIN_CC_IS_CL_FALSE MPICC CXXDEFS ADD_CXXFLAGS DBG_CXXFLAGS OPT_CXXFLAGS CXX CXXFLAGS ac_ct_CXX COIN_CXX_IS_CL_TRUE COIN_CXX_IS_CL_FALSE MPICXX EGREP LN_S INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT LIBTOOLM4 have_autoconf have_automake have_svn BUILDTOOLSDIR AUX_DIR abs_source_dir abs_lib_dir abs_include_dir abs_bin_dir HAVE_EXTERNALS_TRUE HAVE_EXTERNALS_FALSE host host_cpu host_vendor host_os ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB CPP CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL ac_c_preproc_warn_flag ac_cxx_preproc_warn_flag RPATH_FLAGS LT_LDFLAGS PKG_CONFIG ac_pt_PKG_CONFIG COIN_HAS_PKGCONFIG_TRUE COIN_HAS_PKGCONFIG_FALSE COIN_PKG_CONFIG_PATH COIN_PKG_CONFIG_PATH_UNINSTALLED COINUTILS_LIBS COINUTILS_CFLAGS COINUTILS_DATA COINUTILS_DEPENDENCIES COINUTILS_LIBS_INSTALLED COINUTILS_CFLAGS_INSTALLED COINUTILS_DATA_INSTALLED ALPSLIB_CFLAGS ALPSLIB_LIBS ALPSLIB_PCLIBS ALPSLIB_PCREQUIRES ALPSLIB_DEPENDENCIES ALPSLIB_CFLAGS_INSTALLED ALPSLIB_LIBS_INSTALLED COIN_HAS_COINUTILS_TRUE COIN_HAS_COINUTILS_FALSE CLP_LIBS CLP_CFLAGS CLP_DATA CLP_DEPENDENCIES CLP_LIBS_INSTALLED CLP_CFLAGS_INSTALLED CLP_DATA_INSTALLED COINMIP_CFLAGS COINMIP_LIBS COINMIP_PCLIBS COINMIP_PCREQUIRES COINMIP_DEPENDENCIES COINMIP_CFLAGS_INSTALLED COINMIP_LIBS_INSTALLED COIN_HAS_CLP_TRUE COIN_HAS_CLP_FALSE MPIINCDIR MPILIB COIN_HAS_MPI_TRUE COIN_HAS_MPI_FALSE LIBEXT VPATH_DISTCLEANFILES ABSBUILDDIR LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os ALWAYS_FALSE_TRUE ALWAYS_FALSE_FALSE have_svnversion ALPS_SVN_REV CDEFS ADD_CFLAGS DBG_CFLAGS OPT_CFLAGS sol_cc_compiler CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT COIN_CC_IS_CL_TRUE COIN_CC_IS_CL_FALSE MPICC CXXDEFS ADD_CXXFLAGS DBG_CXXFLAGS OPT_CXXFLAGS CXX CXXFLAGS ac_ct_CXX COIN_CXX_IS_CL_TRUE COIN_CXX_IS_CL_FALSE MPICXX EGREP LN_S INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT LIBTOOLM4 have_autoconf have_automake have_svn BUILDTOOLSDIR AUX_DIR abs_source_dir abs_lib_dir abs_include_dir abs_bin_dir HAVE_EXTERNALS_TRUE HAVE_EXTERNALS_FALSE host host_cpu host_vendor host_os ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB CPP CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL ac_c_preproc_warn_flag ac_cxx_preproc_warn_flag RPATH_FLAGS LT_LDFLAGS PKG_CONFIG ac_pt_PKG_CONFIG COIN_HAS_PKGCONFIG_TRUE COIN_HAS_PKGCONFIG_FALSE COIN_PKG_CONFIG_PATH COIN_PKG_CONFIG_PATH_UNINSTALLED COINUTILS_LIBS COINUTILS_CFLAGS COINUTILS_DATA COINUTILS_DEPENDENCIES COINUTILS_LIBS_INSTALLED COINUTILS_CFLAGS_INSTALLED COINUTILS_DATA_INSTALLED ALPSLIB_CFLAGS ALPSLIB_LIBS ALPSLIB_PCLIBS ALPSLIB_PCREQUIRES ALPSLIB_DEPENDENCIES ALPSLIB_CFLAGS_INSTALLED ALPSLIB_LIBS_INSTALLED COIN_HAS_COINUTILS_TRUE COIN_HAS_COINUTILS_FALSE CLP_LIBS CLP_CFLAGS CLP_DATA CLP_DEPENDENCIES CLP_LIBS_INSTALLED CLP_CFLAGS_INSTALLED CLP_DATA_INSTALLED ABC_CFLAGS ABC_LIBS ABC_PCLIBS ABC_PCREQUIRES ABC_DEPENDENCIES ABC_CFLAGS_INSTALLED ABC_LIBS_INSTALLED COIN_HAS_CLP_TRUE COIN_HAS_CLP_FALSE MPIINCDIR MPILIB COIN_HAS_MPI_TRUE COIN_HAS_MPI_FALSE LIBEXT VPATH_DISTCLEANFILES ABSBUILDDIR LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -1097,7 +1097,8 @@ Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-debug          compile all projects with debug options tests
-  --enable-debug-alps compile this project (Alps) with debug options
+                          (implies --disable-shared)
+  --enable-debug-alps compile this project (Alps) with debug compiler flags
   --enable-doscompile     Under Cygwin, compile so that executables run under
                           DOS. Set to mingw to use gcc/g++/ld with
                           -mno-cygwin. Set to msvc to use cl/link (or
@@ -1133,6 +1134,7 @@ Optional Packages:
                           include additional configurations [automatic]
   --with-coin-instdir     prefix of installation directory for precompiled
                           COIN packages
+
   --with-coinutils-lib linker flags for using package CoinUtils
   --with-coinutils-incdir directory with header files for using package
                           CoinUtils
@@ -1870,7 +1872,6 @@ if test "${enable_debug_alps+set}" = set; then
   enableval="$enable_debug_alps"
   case "${enableval}" in
     yes) coin_debug_compile=true
-         enable_shared=no
          ;;
     no)  coin_debug_compile=false
          ;;
@@ -3130,6 +3131,11 @@ case "$CFLAGS" in
     fi ;;
 esac
 
+# add -DPROJECT_BUILD to signal compiler preprocessor which config header file to include
+if test x$COIN_PRJCT != x; then
+  CFLAGS="$CFLAGS -D${COIN_PRJCT}_BUILD"
+fi
+
 # Try if CFLAGS works
 save_CFLAGS="$CFLAGS"
 cat >conftest.$ac_ext <<_ACEOF
@@ -4068,6 +4074,11 @@ case "$CXXFLAGS" in
       esac
     fi ;;
 esac
+
+# add -DPROJECT_BUILD to signal compiler preprocessor which config header file to include
+if test x$COIN_PRJCT != x; then
+  CXXFLAGS="$CXXFLAGS -D${COIN_PRJCT}_BUILD"
+fi
 
 # Try if CXXFLAGS works
 save_CXXFLAGS="$CXXFLAGS"
@@ -5968,7 +5979,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 5971 "configure"' > conftest.$ac_ext
+  echo '#line 5982 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7102,7 +7113,7 @@ fi
 
 
 # Provide some information about the compiler.
-echo "$as_me:7105:" \
+echo "$as_me:7116:" \
      "checking for Fortran 77 compiler version" >&5
 ac_compiler=`set X $ac_compile; echo $2`
 { (eval echo "$as_me:$LINENO: \"$ac_compiler --version </dev/null >&5\"") >&5
@@ -8169,11 +8180,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8172: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8183: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:8176: \$? = $ac_status" >&5
+   echo "$as_me:8187: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -8437,11 +8448,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8440: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8451: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:8444: \$? = $ac_status" >&5
+   echo "$as_me:8455: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -8541,11 +8552,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8544: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8555: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8548: \$? = $ac_status" >&5
+   echo "$as_me:8559: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -10886,7 +10897,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10889 "configure"
+#line 10900 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10986,7 +10997,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10989 "configure"
+#line 11000 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13330,11 +13341,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13333: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13344: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:13337: \$? = $ac_status" >&5
+   echo "$as_me:13348: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -13434,11 +13445,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13437: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13448: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:13441: \$? = $ac_status" >&5
+   echo "$as_me:13452: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15004,11 +15015,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15007: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15018: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:15011: \$? = $ac_status" >&5
+   echo "$as_me:15022: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -15108,11 +15119,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15111: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15122: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:15115: \$? = $ac_status" >&5
+   echo "$as_me:15126: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -17315,11 +17326,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17318: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17329: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:17322: \$? = $ac_status" >&5
+   echo "$as_me:17333: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -17583,11 +17594,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17586: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17597: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:17590: \$? = $ac_status" >&5
+   echo "$as_me:17601: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -17687,11 +17698,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17690: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17701: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:17694: \$? = $ac_status" >&5
+   echo "$as_me:17705: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -20811,6 +20822,18 @@ if test x"$COIN_SKIP_PROJECTS" != x; then
   done
 fi
 
+if test "$coin_has_coinutils" != skipping; then
+
+# Check whether --with-m4_tolower(CoinUtils) or --without-m4_tolower(CoinUtils) was given.
+if test "${with_coinutils+set}" = set; then
+  withval="$with_coinutils"
+  if test "$withval" = no ; then
+       coin_has_coinutils=skipping
+     fi
+
+fi;
+fi
+
 COINUTILS_LIBS=
 COINUTILS_CFLAGS=
 COINUTILS_DATA=
@@ -20976,7 +20999,7 @@ COINUTILS_CFLAGS_INSTALLED=
 COINUTILS_DATA=
 COINUTILS_DATA_INSTALLED=
 
-# initial list of dependencies is "coinutils", but we need to filter out version number specifications (= x, <= x, >= x)
+# initial list of dependencies is "coinutils", but we need to filter out version number specifications (= x, <= x, >= x, != x)
 projtoprocess="coinutils"
 
 # we first expand the list of projects to process by adding all dependencies just behind the project which depends on it
@@ -21299,6 +21322,18 @@ if test x"$COIN_SKIP_PROJECTS" != x; then
   done
 fi
 
+if test "$coin_has_clp" != skipping; then
+
+# Check whether --with-m4_tolower(Clp) or --without-m4_tolower(Clp) was given.
+if test "${with_clp+set}" = set; then
+  withval="$with_clp"
+  if test "$withval" = no ; then
+       coin_has_clp=skipping
+     fi
+
+fi;
+fi
+
 CLP_LIBS=
 CLP_CFLAGS=
 CLP_DATA=
@@ -21331,13 +21366,13 @@ if test "${with_clp_lib+set}" = set; then
        coin_has_clp=yes
        CLP_LIBS="$withval"
 
-         COINMIP_PCLIBS="$withval $COINMIP_PCLIBS"
-         COINMIP_LIBS="$withval $COINMIP_LIBS"
+         ABC_PCLIBS="$withval $ABC_PCLIBS"
+         ABC_LIBS="$withval $ABC_LIBS"
 
        # if project flags are given by user and we build without pkg-config, then we need to setup the _INSTALLED variables
        if test -z "$PKG_CONFIG" ; then
          CLP_LIBS_INSTALLED="$withval"
-         COINMIP_LIBS_INSTALLED="$withval $COINMIP_LIBS_INSTALLED"
+         ABC_LIBS_INSTALLED="$withval $ABC_LIBS_INSTALLED"
        fi
      fi
 
@@ -21354,11 +21389,11 @@ if test "${with_clp_incdir+set}" = set; then
      else
        coin_has_clp=yes
        CLP_CFLAGS="-I`${CYGPATH_W} $withval`"
-       COINMIP_CFLAGS="-I`${CYGPATH_W} $withval` $COINMIP_CFLAGS"
+       ABC_CFLAGS="-I`${CYGPATH_W} $withval` $ABC_CFLAGS"
        # if project flags are given by user and we build without pkg-config, then we need to setup the _INSTALLED variables
        if test -z "$PKG_CONFIG" ; then
          CLP_CFLAGS_INSTALLED="$CLP_CFLAGS"
-         COINMIP_CFLAGS_INSTALLED="$CLP_CFLAGS $COINMIP_CFLAGS_INSTALLED"
+         ABC_CFLAGS_INSTALLED="$CLP_CFLAGS $ABC_CFLAGS_INSTALLED"
        fi
      fi
 
@@ -21421,11 +21456,11 @@ echo "${ECHO_T}yes: $CLP_VERSIONS" >&6
           CLP_LIBS=`echo " $CLP_LIBS " | sed -e 's/ \(\/[^ ]*\/\)\([^ ]*\)\.lib / \`$(CYGPATH_W) \1 | sed -e "s|\\\\\\\\\\\\\\\\\\\\|\/|g"\`\2.lib /g'`
         fi
 
-        # augment X_PCREQUIRES, X_CFLAGS, and X_LIBS for each build target X in CoinMIP
+        # augment X_PCREQUIRES, X_CFLAGS, and X_LIBS for each build target X in Abc
 
-          COINMIP_PCREQUIRES="cgl osi-clp $COINMIP_PCREQUIRES"
-          COINMIP_CFLAGS="$CLP_CFLAGS $COINMIP_CFLAGS"
-          COINMIP_LIBS="$CLP_LIBS $COINMIP_LIBS"
+          ABC_PCREQUIRES="cgl osi-clp $ABC_PCREQUIRES"
+          ABC_CFLAGS="$CLP_CFLAGS $ABC_CFLAGS"
+          ABC_LIBS="$CLP_LIBS $ABC_LIBS"
 
 
 
@@ -21464,7 +21499,7 @@ CLP_CFLAGS_INSTALLED=
 CLP_DATA=
 CLP_DATA_INSTALLED=
 
-# initial list of dependencies is "cgl osi-clp", but we need to filter out version number specifications (= x, <= x, >= x)
+# initial list of dependencies is "cgl osi-clp", but we need to filter out version number specifications (= x, <= x, >= x, != x)
 projtoprocess="cgl osi-clp"
 
 # we first expand the list of projects to process by adding all dependencies just behind the project which depends on it
@@ -21661,11 +21696,11 @@ _ACEOF
   fi
 
 
-    COINMIP_PCREQUIRES="cgl osi-clp $COINMIP_PCREQUIRES"
-    COINMIP_CFLAGS="$CLP_CFLAGS $COINMIP_CFLAGS"
-    COINMIP_LIBS="$CLP_LIBS $COINMIP_LIBS"
-    COINMIP_CFLAGS_INSTALLED="$CLP_CFLAGS_INSTALLED $COINMIP_CFLAGS_INSTALLED"
-    COINMIP_LIBS_INSTALLED="$CLP_LIBS_INSTALLED $COINMIP_LIBS_INSTALLED"
+    ABC_PCREQUIRES="cgl osi-clp $ABC_PCREQUIRES"
+    ABC_CFLAGS="$CLP_CFLAGS $ABC_CFLAGS"
+    ABC_LIBS="$CLP_LIBS $ABC_LIBS"
+    ABC_CFLAGS_INSTALLED="$CLP_CFLAGS_INSTALLED $ABC_CFLAGS_INSTALLED"
+    ABC_LIBS_INSTALLED="$CLP_LIBS_INSTALLED $ABC_LIBS_INSTALLED"
 
 
 fi
@@ -21714,7 +21749,7 @@ fi;
      # also remove everything of the form `xxx`yyy (may have been added for cygwin/cl)
      CLP_DEPENDENCIES=`echo " $CLP_LIBS" | sed -e 's/ mkl[^ ]*//g' -e 's/ -framework  *[^ ]*//g' -e 's/ -[^ ]*//g' -e 's/\`[^\`]*\`[^ ]* //g'`
 
-       COINMIP_DEPENDENCIES=`echo " $COINMIP_LIBS " | sed -e 's/ mkl[^ ]*//g' -e 's/ -framework  *[^ ]*//g' -e 's/ -[^ ]*//g' -e 's/\`[^\`]*\`[^ ]* //g'`
+       ABC_DEPENDENCIES=`echo " $ABC_LIBS " | sed -e 's/ mkl[^ ]*//g' -e 's/ -framework  *[^ ]*//g' -e 's/ -[^ ]*//g' -e 's/\`[^\`]*\`[^ ]* //g'`
 
   fi
 
@@ -21740,12 +21775,12 @@ echo "$as_me: Clp DATA   is  $CLP_DATA" >&6;}
 echo "$as_me: Clp CFLAGS are $CLP_CFLAGS" >&6;}
     fi
 
-      { echo "$as_me:$LINENO: CoinMIP CFLAGS are $COINMIP_CFLAGS" >&5
-echo "$as_me: CoinMIP CFLAGS are $COINMIP_CFLAGS" >&6;}
-      { echo "$as_me:$LINENO: CoinMIP LIBS   are $COINMIP_LIBS" >&5
-echo "$as_me: CoinMIP LIBS   are $COINMIP_LIBS" >&6;}
-      { echo "$as_me:$LINENO: CoinMIP DEPENDENCIES are $COINMIP_DEPENDENCIES" >&5
-echo "$as_me: CoinMIP DEPENDENCIES are $COINMIP_DEPENDENCIES" >&6;}
+      { echo "$as_me:$LINENO: Abc CFLAGS are $ABC_CFLAGS" >&5
+echo "$as_me: Abc CFLAGS are $ABC_CFLAGS" >&6;}
+      { echo "$as_me:$LINENO: Abc LIBS   are $ABC_LIBS" >&5
+echo "$as_me: Abc LIBS   are $ABC_LIBS" >&6;}
+      { echo "$as_me:$LINENO: Abc DEPENDENCIES are $ABC_DEPENDENCIES" >&5
+echo "$as_me: Abc DEPENDENCIES are $ABC_DEPENDENCIES" >&6;}
 
   fi
 fi
@@ -23002,7 +23037,7 @@ done
 
 
 # Here put the location and name of the configuration header file
-          ac_config_headers="$ac_config_headers inc/config_alps.h"
+                    ac_config_headers="$ac_config_headers src/config.h src/config_alps.h"
 
 
 # Finally, we let configure write all the output...
@@ -23717,7 +23752,8 @@ do
   "test/AbcTreeNode.cpp" ) CONFIG_LINKS="$CONFIG_LINKS test/AbcTreeNode.cpp:examples/Abc/AbcTreeNode.cpp" ;;
   "test/AbcTreeNode.h" ) CONFIG_LINKS="$CONFIG_LINKS test/AbcTreeNode.h:examples/Abc/AbcTreeNode.h" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
-  "inc/config_alps.h" ) CONFIG_HEADERS="$CONFIG_HEADERS inc/config_alps.h" ;;
+  "src/config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS src/config.h" ;;
+  "src/config_alps.h" ) CONFIG_HEADERS="$CONFIG_HEADERS src/config_alps.h" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
    { (exit 1); exit 1; }; };;
@@ -23936,13 +23972,13 @@ s,@CLP_DEPENDENCIES@,$CLP_DEPENDENCIES,;t t
 s,@CLP_LIBS_INSTALLED@,$CLP_LIBS_INSTALLED,;t t
 s,@CLP_CFLAGS_INSTALLED@,$CLP_CFLAGS_INSTALLED,;t t
 s,@CLP_DATA_INSTALLED@,$CLP_DATA_INSTALLED,;t t
-s,@COINMIP_CFLAGS@,$COINMIP_CFLAGS,;t t
-s,@COINMIP_LIBS@,$COINMIP_LIBS,;t t
-s,@COINMIP_PCLIBS@,$COINMIP_PCLIBS,;t t
-s,@COINMIP_PCREQUIRES@,$COINMIP_PCREQUIRES,;t t
-s,@COINMIP_DEPENDENCIES@,$COINMIP_DEPENDENCIES,;t t
-s,@COINMIP_CFLAGS_INSTALLED@,$COINMIP_CFLAGS_INSTALLED,;t t
-s,@COINMIP_LIBS_INSTALLED@,$COINMIP_LIBS_INSTALLED,;t t
+s,@ABC_CFLAGS@,$ABC_CFLAGS,;t t
+s,@ABC_LIBS@,$ABC_LIBS,;t t
+s,@ABC_PCLIBS@,$ABC_PCLIBS,;t t
+s,@ABC_PCREQUIRES@,$ABC_PCREQUIRES,;t t
+s,@ABC_DEPENDENCIES@,$ABC_DEPENDENCIES,;t t
+s,@ABC_CFLAGS_INSTALLED@,$ABC_CFLAGS_INSTALLED,;t t
+s,@ABC_LIBS_INSTALLED@,$ABC_LIBS_INSTALLED,;t t
 s,@COIN_HAS_CLP_TRUE@,$COIN_HAS_CLP_TRUE,;t t
 s,@COIN_HAS_CLP_FALSE@,$COIN_HAS_CLP_FALSE,;t t
 s,@MPIINCDIR@,$MPIINCDIR,;t t

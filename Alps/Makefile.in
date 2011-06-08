@@ -17,7 +17,7 @@
 #==========================================================================#
 # This file is part of the Abstract Library for Parallel Search (ALPS).    #
 #                                                                          #
-# ALPS is distributed under the Common Public License as part of the       #
+# ALPS is distributed under the Eclipse Public License as part of the      #
 # COIN-OR repository (http://www.coin-or.org).                             #
 #                                                                          #
 # Authors:                                                                 #
@@ -33,7 +33,7 @@
 #          Matthew Saltzman, Clemson University                            #
 #                                                                          #
 #                                                                          #
-# Copyright (C) 2001-2010, Lehigh University, Yan Xu, and Ted Ralphs.      #
+# Copyright (C) 2001-2011, Lehigh University, Yan Xu, and Ted Ralphs.      #
 # All Rights Reserved.                                                     #
 #==========================================================================#
 
@@ -101,9 +101,8 @@ DIST_COMMON = README $(am__configure_deps) \
 	$(top_srcdir)/examples/Abc/Makefile.in \
 	$(top_srcdir)/examples/Abc/abc.par.in \
 	$(top_srcdir)/examples/Knap/Makefile.in \
-	$(top_srcdir)/examples/Knap/knap.par.in \
-	$(top_srcdir)/inc/config_alps.h.in AUTHORS TODO config.guess \
-	config.sub depcomp install-sh ltmain.sh missing
+	$(top_srcdir)/examples/Knap/knap.par.in AUTHORS TODO \
+	config.guess config.sub depcomp install-sh ltmain.sh missing
 @HAVE_EXTERNALS_TRUE@am__append_2 = Dependencies
 @HAVE_EXTERNALS_TRUE@am__append_3 = .Dependencies-stamp
 subdir = .
@@ -115,7 +114,8 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno configure.status.lineno
 mkinstalldirs = $(install_sh) -d
-CONFIG_HEADER = $(top_builddir)/inc/config_alps.h
+CONFIG_HEADER = $(top_builddir)/src/config.h \
+	$(top_builddir)/src/config_alps.h
 CONFIG_CLEAN_FILES = examples/Abc/Makefile examples/Abc/abc.par \
 	examples/Knap/Makefile examples/Knap/knap.par alps.pc \
 	alps-uninstalled.pc
@@ -150,6 +150,13 @@ DIST_ARCHIVES = $(distdir).tar.gz
 GZIP_ENV = --best
 distuninstallcheck_listfiles = find . -type f -print
 distcleancheck_listfiles = find . -type f -print
+ABC_CFLAGS = @ABC_CFLAGS@
+ABC_CFLAGS_INSTALLED = @ABC_CFLAGS_INSTALLED@
+ABC_DEPENDENCIES = @ABC_DEPENDENCIES@
+ABC_LIBS = @ABC_LIBS@
+ABC_LIBS_INSTALLED = @ABC_LIBS_INSTALLED@
+ABC_PCLIBS = @ABC_PCLIBS@
+ABC_PCREQUIRES = @ABC_PCREQUIRES@
 ABSBUILDDIR = @ABSBUILDDIR@
 ACLOCAL = @ACLOCAL@
 ADD_CFLAGS = @ADD_CFLAGS@
@@ -185,13 +192,6 @@ CLP_DATA_INSTALLED = @CLP_DATA_INSTALLED@
 CLP_DEPENDENCIES = @CLP_DEPENDENCIES@
 CLP_LIBS = @CLP_LIBS@
 CLP_LIBS_INSTALLED = @CLP_LIBS_INSTALLED@
-COINMIP_CFLAGS = @COINMIP_CFLAGS@
-COINMIP_CFLAGS_INSTALLED = @COINMIP_CFLAGS_INSTALLED@
-COINMIP_DEPENDENCIES = @COINMIP_DEPENDENCIES@
-COINMIP_LIBS = @COINMIP_LIBS@
-COINMIP_LIBS_INSTALLED = @COINMIP_LIBS_INSTALLED@
-COINMIP_PCLIBS = @COINMIP_PCLIBS@
-COINMIP_PCREQUIRES = @COINMIP_PCREQUIRES@
 COINUTILS_CFLAGS = @COINUTILS_CFLAGS@
 COINUTILS_CFLAGS_INSTALLED = @COINUTILS_CFLAGS_INSTALLED@
 COINUTILS_DATA = @COINUTILS_DATA@
@@ -411,23 +411,6 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 	cd $(srcdir) && $(AUTOCONF)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
-
-inc/config_alps.h: inc/stamp-h1
-	@if test ! -f $@; then \
-	  rm -f inc/stamp-h1; \
-	  $(MAKE) inc/stamp-h1; \
-	else :; fi
-
-inc/stamp-h1: $(top_srcdir)/inc/config_alps.h.in $(top_builddir)/config.status
-	@rm -f inc/stamp-h1
-	cd $(top_builddir) && $(SHELL) ./config.status inc/config_alps.h
-$(top_srcdir)/inc/config_alps.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps) 
-	cd $(top_srcdir) && $(AUTOHEADER)
-	rm -f inc/stamp-h1
-	touch $@
-
-distclean-hdr:
-	-rm -f inc/config_alps.h inc/stamp-h1
 examples/Abc/Makefile: $(top_builddir)/config.status $(top_srcdir)/examples/Abc/Makefile.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 examples/Abc/abc.par: $(top_builddir)/config.status $(top_srcdir)/examples/Abc/abc.par.in
@@ -603,7 +586,7 @@ distclean-tags:
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkdir_p) $(distdir)/. $(distdir)/BuildTools $(distdir)/examples/Abc $(distdir)/examples/Abc/data $(distdir)/examples/Knap $(distdir)/inc
+	$(mkdir_p) $(distdir)/. $(distdir)/BuildTools $(distdir)/examples/Abc $(distdir)/examples/Abc/data $(distdir)/examples/Knap
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -782,8 +765,8 @@ clean-am: clean-generic clean-libtool clean-local mostlyclean-am
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -f Makefile
-distclean-am: clean-am distclean-generic distclean-hdr \
-	distclean-libtool distclean-local distclean-tags
+distclean-am: clean-am distclean-generic distclean-libtool \
+	distclean-local distclean-tags
 
 dvi: dvi-recursive
 
@@ -835,19 +818,18 @@ uninstall-info: uninstall-info-recursive
 	check-am clean clean-generic clean-libtool clean-local \
 	clean-recursive ctags ctags-recursive dist dist-all dist-bzip2 \
 	dist-gzip dist-shar dist-tarZ dist-zip distcheck distclean \
-	distclean-generic distclean-hdr distclean-libtool \
-	distclean-local distclean-recursive distclean-tags \
-	distcleancheck distdir distuninstallcheck dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-data-hook install-exec install-exec-am \
-	install-info install-info-am install-man \
-	install-pkgconfiglibDATA install-strip installcheck \
-	installcheck-am installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic maintainer-clean-recursive \
-	mostlyclean mostlyclean-generic mostlyclean-libtool \
-	mostlyclean-recursive pdf pdf-am ps ps-am tags tags-recursive \
-	uninstall uninstall-am uninstall-hook uninstall-info-am \
-	uninstall-pkgconfiglibDATA
+	distclean-generic distclean-libtool distclean-local \
+	distclean-recursive distclean-tags distcleancheck distdir \
+	distuninstallcheck dvi dvi-am html html-am info info-am \
+	install install-am install-data install-data-am \
+	install-data-hook install-exec install-exec-am install-info \
+	install-info-am install-man install-pkgconfiglibDATA \
+	install-strip installcheck installcheck-am installdirs \
+	installdirs-am maintainer-clean maintainer-clean-generic \
+	maintainer-clean-recursive mostlyclean mostlyclean-generic \
+	mostlyclean-libtool mostlyclean-recursive pdf pdf-am ps ps-am \
+	tags tags-recursive uninstall uninstall-am uninstall-hook \
+	uninstall-info-am uninstall-pkgconfiglibDATA
 
 
 ########################################################################

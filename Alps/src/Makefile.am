@@ -1,6 +1,25 @@
-# Copyright (C) 2006-2010 Lehigh University, Ted Ralphs, Yan Xu, and others.
-# All Rights Reserved.
-# This file is distributed under the Common Public License.
+#==========================================================================#
+# This file is part of the Abstract Library for Parallel Search (ALPS).    #
+#                                                                          #
+# ALPS is distributed under the Eclipse Public License as part of the      #
+# COIN-OR repository (http://www.coin-or.org).                             #
+#                                                                          #
+# Authors:                                                                 #
+#                                                                          #
+#          Yan Xu, Lehigh University                                       #
+#          Ted Ralphs, Lehigh University                                   #
+#                                                                          #
+# Conceptual Design:                                                       #
+#                                                                          #
+#          Yan Xu, Lehigh University                                       #
+#          Ted Ralphs, Lehigh University                                   #
+#          Laszlo Ladanyi, IBM T.J. Watson Research Center                 #
+#          Matthew Saltzman, Clemson University                            #
+#                                                                          #
+#                                                                          #
+# Copyright (C) 2001-2011, Lehigh University, Yan Xu, and Ted Ralphs.      #
+# All Rights Reserved.                                                     #
+#==========================================================================#
 
 ## $Id: Makefile.am 507 2006-06-03 03:20:16Z andreasw $
 
@@ -83,7 +102,7 @@ DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` -I$(top_builddir)/inc
 # and that therefore should be installed in 'include/coin'
 includecoindir = $(includedir)/coin
 includecoin_HEADERS = \
-	../inc/config_alps.h \
+	config.h \
 	Alps.h \
 	AlpsSearchStrategy.h \
 	AlpsSearchStrategyBase.h \
@@ -113,13 +132,8 @@ includecoin_HEADERS = \
 # Create the Config.h file that always defines HAVE_CONFIG_H and install it #
 #############################################################################
 
-# You only need to adapt the following line
-ConfigHeader = AlpsConfig.h
-
 install-exec-local:
-	cat $(srcdir)/$(ConfigHeader) >> bla
-	$(install_sh_DATA) bla $(DESTDIR)$(includecoindir)/$(ConfigHeader)
-	rm -f bla
+	$(install_sh_DATA) config_alps.h $(DESTDIR)$(includecoindir)/AlpsConfig.h
 
 uninstall-local:
-	rm -f $(DESTDIR)$(includecoindir)/$(ConfigHeader)
+	rm -f $(DESTDIR)$(includecoindir)/AlpsConfig.h

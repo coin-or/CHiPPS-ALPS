@@ -14,9 +14,28 @@
 
 @SET_MAKE@
 
-# Copyright (C) 2006-2010 Lehigh University, Ted Ralphs, Yan Xu, and others.
-# All Rights Reserved.
-# This file is distributed under the Common Public License.
+#==========================================================================#
+# This file is part of the Abstract Library for Parallel Search (ALPS).    #
+#                                                                          #
+# ALPS is distributed under the Eclipse Public License as part of the      #
+# COIN-OR repository (http://www.coin-or.org).                             #
+#                                                                          #
+# Authors:                                                                 #
+#                                                                          #
+#          Yan Xu, Lehigh University                                       #
+#          Ted Ralphs, Lehigh University                                   #
+#                                                                          #
+# Conceptual Design:                                                       #
+#                                                                          #
+#          Yan Xu, Lehigh University                                       #
+#          Ted Ralphs, Lehigh University                                   #
+#          Laszlo Ladanyi, IBM T.J. Watson Research Center                 #
+#          Matthew Saltzman, Clemson University                            #
+#                                                                          #
+#                                                                          #
+# Copyright (C) 2001-2011, Lehigh University, Yan Xu, and Ted Ralphs.      #
+# All Rights Reserved.                                                     #
+#==========================================================================#
 
 # Author:  Yan Xu Lehigh
 
@@ -51,7 +70,8 @@ am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
-CONFIG_HEADER = $(top_builddir)/inc/config_alps.h
+CONFIG_HEADER = $(top_builddir)/src/config.h \
+	$(top_builddir)/src/config_alps.h
 CONFIG_CLEAN_FILES = AbcBranchActual.cpp AbcBranchActual.h \
 	AbcBranchBase.cpp AbcBranchBase.h AbcCutGenerator.cpp \
 	AbcCutGenerator.h AbcHeuristic.cpp AbcHeuristic.h AbcMain.cpp \
@@ -89,6 +109,13 @@ DIST_SOURCES =
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+ABC_CFLAGS = @ABC_CFLAGS@
+ABC_CFLAGS_INSTALLED = @ABC_CFLAGS_INSTALLED@
+ABC_DEPENDENCIES = @ABC_DEPENDENCIES@
+ABC_LIBS = @ABC_LIBS@
+ABC_LIBS_INSTALLED = @ABC_LIBS_INSTALLED@
+ABC_PCLIBS = @ABC_PCLIBS@
+ABC_PCREQUIRES = @ABC_PCREQUIRES@
 ABSBUILDDIR = @ABSBUILDDIR@
 ACLOCAL = @ACLOCAL@
 ADD_CFLAGS = @ADD_CFLAGS@
@@ -124,13 +151,6 @@ CLP_DATA_INSTALLED = @CLP_DATA_INSTALLED@
 CLP_DEPENDENCIES = @CLP_DEPENDENCIES@
 CLP_LIBS = @CLP_LIBS@
 CLP_LIBS_INSTALLED = @CLP_LIBS_INSTALLED@
-COINMIP_CFLAGS = @COINMIP_CFLAGS@
-COINMIP_CFLAGS_INSTALLED = @COINMIP_CFLAGS_INSTALLED@
-COINMIP_DEPENDENCIES = @COINMIP_DEPENDENCIES@
-COINMIP_LIBS = @COINMIP_LIBS@
-COINMIP_LIBS_INSTALLED = @COINMIP_LIBS_INSTALLED@
-COINMIP_PCLIBS = @COINMIP_PCLIBS@
-COINMIP_PCREQUIRES = @COINMIP_PCREQUIRES@
 COINUTILS_CFLAGS = @COINUTILS_CFLAGS@
 COINUTILS_CFLAGS_INSTALLED = @COINUTILS_CFLAGS_INSTALLED@
 COINUTILS_DATA = @COINUTILS_DATA@
@@ -291,12 +311,12 @@ unitTest_DEPENDENCIES = ../src/libAlps.la $(CLP_DEPENDENCIES) $(ALPSLIB_DEPENDEN
 # "cygpath" stuff is necessary to compile with native compilers on Cygwin
 AM_CPPFLAGS = -I`$(CYGPATH_W) $(srcdir)/../src` \
         $(CLP_CFLAGS) \
-        $(ALPSLIB_CFLAGS)
+        $(ALPSLIB_CFLAGS) -DCOIN_HAS_CLP
 
 
 # This line is necessary to allow VPATH compilation with MS compilers
 # on Cygwin
-DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` -I$(top_builddir)/inc
+DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` 
 
 ########################################################################
 #                          Cleaning stuff                              #

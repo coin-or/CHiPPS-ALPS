@@ -1,7 +1,7 @@
 #==========================================================================#
 # This file is part of the Abstract Library for Parallel Search (ALPS).    #
 #                                                                          #
-# ALPS is distributed under the Common Public License as part of the       #
+# ALPS is distributed under the Eclipse Public License as part of the      #
 # COIN-OR repository (http://www.coin-or.org).                             #
 #                                                                          #
 # Authors:                                                                 #
@@ -17,7 +17,7 @@
 #          Matthew Saltzman, Clemson University                            #
 #                                                                          #
 #                                                                          #
-# Copyright (C) 2001-2010, Lehigh University, Yan Xu, and Ted Ralphs.      #
+# Copyright (C) 2001-2011, Lehigh University, Yan Xu, and Ted Ralphs.      #
 # All Rights Reserved.                                                     #
 #==========================================================================#
 

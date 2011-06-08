@@ -27,9 +27,7 @@
 #include "CoinError.hpp"
 #include "CoinTime.hpp"
 #include "OsiSolverInterface.hpp"
-#ifdef COIN_HAS_CLP
 #include "OsiClpSolverInterface.hpp"
-#endif
 
 #include "CglFlowCover.hpp"
 #include "CglGomory.hpp"
@@ -55,12 +53,10 @@ int main(int argc, char* argv[])
 
     try{
 	// Declare application parameter, model and knowledge broker
-#ifdef  COIN_HAS_CLP
         OsiClpSolverInterface solver1;
 	AbcModel model(solver1);
 	solver1.getModelPtr()->setDualBound(1.0e10);
 	//solver1.messageHandler()->setLogLevel(0);
-#endif
 
 #ifdef COIN_HAS_MPI
 	AlpsKnowledgeBrokerMPI broker(argc, argv, model);

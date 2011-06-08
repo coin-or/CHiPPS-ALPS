@@ -175,13 +175,16 @@ Alps/examples/Knap/data/unsolve/input500_2.txt -text
 Alps/examples/Knap/data/unsolve/stats -text
 Alps/examples/Knap/knap.par.in -text
 Alps/examples/Knap/knap.pbs -text
-Alps/inc/config_alps.h.in -text
 Alps/install-sh -text
 Alps/ltmain.sh -text
 Alps/missing -text
 Alps/src/AlpsConfig.h -text
 Alps/src/Makefile.am -text
 Alps/src/Makefile.in -text
+Alps/src/config.h.in -text
+Alps/src/config_alps.h.in -text
+Alps/src/config_alps_default.h -text
+Alps/src/config_default.h -text
 Alps/test/Makefile.am -text
 /Dependencies -text
 /LICENSE -text

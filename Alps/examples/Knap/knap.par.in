@@ -2,31 +2,39 @@ Alps_instance @srcdir@/data/input100_5.txt
 
 Alps_timeLimit 360
 #Alps_nodeLimit 500000
+#Alps_solLimit 10
 
+#Alps_logFileLevel 2
 #Alps_msgLevel 2
 #Alps_hubMsgLevel 1
 #Alps_workerMsgLevel 1
+#Alps_nodeLogInterval 1000
 
-#Alps_hubNum 2
+#Alps_smallSize 1024
+#Alps_mediumSize 4096
+#Alps_largeSize 1048576 #2097152    # 2^22 #1048576
+
+#Alps_eliteSize 1
+
+#Alps_searchStrategy     0   # 0: Best, 1: Best-est, 2: Breath, 3: Depth, 4 hybrid
+#Alps_searchStrategyRampUp  0
+
+Alps_processNum 8
+#Alps_masterInitNodeNum 3000
+#Alps_unitWorkNodes 500
+#Alps_unitWorkTime 0.03
+
+Alps_hubNum 2
+#Alps_hubInitNodeNum 5000
+#Alps_hubWorkClusterSizeLimit 1
 
 #Alps_interClusterBalance 1      # 1: balancing load, 0: don't.
 #Alps_intraClusterBalance 1      # 1: balancing load, 0: don't.
-
-#Alps_searchStrategy     0  # 0: Best, 1: Best-est, 2: Breath, 3: Depth, 4 hybrid
-#Alps_searchStrategyRampUp  0
-
-#Alps_nodeLogInterval 1000
-#Alps_hubWorkClusterSizeLimit 1
-
-#Alps_masterInitNodeNum 3000
-#Alps_hubInitNodeNum 5000
-#Alps_unitWorkNodes 500
-
 #Alps_needWorkThreshold 0.5
 #Alps_changeWorkThreshold 0.10
-
 #Alps_donorThreshold 0.10
 #Alps_receiverThreshold 0.10
-
 #Alps_masterBalancePeriod 0.3
+#Alps_masterReportInterval 50
 #Alps_hubReportPeriod 0.5
+

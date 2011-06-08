@@ -109,7 +109,7 @@ fi
 
 # These are only required for the unit test and the Abc example.
 # We name it Clp, because the code checks for COIN_HAS_CLP
-AC_COIN_CHECK_PACKAGE(Clp, [cgl osi-clp], [CoinMIP])
+AC_COIN_CHECK_PACKAGE(Clp, [cgl osi-clp], [Abc])
 
 #############################################################################
 #                             Other dependencies                            #
@@ -186,7 +186,7 @@ AC_CONFIG_FILES([Makefile
 		 alps-uninstalled.pc])
 
 # Here put the location and name of the configuration header file
-AC_CONFIG_HEADER([inc/config_alps.h])
+AC_CONFIG_HEADER([src/config.h src/config_alps.h])
 
 # Finally, we let configure write all the output...
 AC_COIN_FINALIZE

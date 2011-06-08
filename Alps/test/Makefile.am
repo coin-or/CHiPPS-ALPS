@@ -1,6 +1,25 @@
-# Copyright (C) 2006-2010 Lehigh University, Ted Ralphs, Yan Xu, and others.
-# All Rights Reserved.
-# This file is distributed under the Common Public License.
+#==========================================================================#
+# This file is part of the Abstract Library for Parallel Search (ALPS).    #
+#                                                                          #
+# ALPS is distributed under the Eclipse Public License as part of the      #
+# COIN-OR repository (http://www.coin-or.org).                             #
+#                                                                          #
+# Authors:                                                                 #
+#                                                                          #
+#          Yan Xu, Lehigh University                                       #
+#          Ted Ralphs, Lehigh University                                   #
+#                                                                          #
+# Conceptual Design:                                                       #
+#                                                                          #
+#          Yan Xu, Lehigh University                                       #
+#          Ted Ralphs, Lehigh University                                   #
+#          Laszlo Ladanyi, IBM T.J. Watson Research Center                 #
+#          Matthew Saltzman, Clemson University                            #
+#                                                                          #
+#                                                                          #
+# Copyright (C) 2001-2011, Lehigh University, Yan Xu, and Ted Ralphs.      #
+# All Rights Reserved.                                                     #
+#==========================================================================#
 
 ## $Id: Makefile.am 507 2006-06-03 03:20:16Z andreasw $
 
@@ -36,11 +55,11 @@ unitTest_DEPENDENCIES = ../src/libAlps.la $(CLP_DEPENDENCIES) $(ALPSLIB_DEPENDEN
 # "cygpath" stuff is necessary to compile with native compilers on Cygwin
 AM_CPPFLAGS = -I`$(CYGPATH_W) $(srcdir)/../src` \
         $(CLP_CFLAGS) \
-        $(ALPSLIB_CFLAGS)
+        $(ALPSLIB_CFLAGS) -DCOIN_HAS_CLP
 
 # This line is necessary to allow VPATH compilation with MS compilers
 # on Cygwin
-DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` -I$(top_builddir)/inc
+DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` 
 
 test: unitTest$(EXEEXT)
 	./unitTest$(EXEEXT) -param ../examples/Abc/abc.par
