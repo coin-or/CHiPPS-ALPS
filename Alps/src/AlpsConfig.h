@@ -48,17 +48,6 @@
 #include "config_alps.h"
 #endif
 
-/* undefine macros that could conflict with those in other config.h
-   files. This is a hack that shouldbe removed when other projects
-   are converted to the new system */
-#undef PACKAGE
-#undef PACKAGE_BUGREPORT
-#undef PACKAGE_NAME
-#undef PACKAGE_STRING
-#undef PACKAGE_TARNAME
-#undef PACKAGE_VERSION
-#undef VERSION
-
 #else /* HAVE_CONFIG_H */
 
 #ifdef ALPS_BUILD
