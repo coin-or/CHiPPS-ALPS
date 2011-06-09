@@ -86,10 +86,10 @@ AC_COIN_PROG_CXX
 
 # We filter out the -pedantic-errors flag for C and C++ compiler in
 # case the user wants to use MPI, since otherwise the compilation
-# fails
+# fails. 
 if test "${with_mpi_lib+set}" = set; then
-  CFLAGS=`echo $CFLAGS | sed -e s/-pedantic-errors//g`
-  CXXFLAGS=`echo $CXXFLAGS | sed -e s/-pedantic-errors//g`
+  CFLAGS=`echo $CFLAGS | sed -e s/-pedantic-errors//g` 
+  CXXFLAGS=`echo $CXXFLAGS | sed -e s/-pedantic-errors//g` 
 fi
 
 # Initialize automake and libtool

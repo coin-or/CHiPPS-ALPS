@@ -57,9 +57,6 @@ CXX = @CXX@
 
 # C++ Compiler options
 CXXFLAGS = @CXXFLAGS@ -DHAVE_CONFIG_H
-ifeq ($(COIN_HAS_MPI),TRUE)
-  CXXFLAGS += -DCOIN_HAS_MPI
-endif
 
 # additional C++ Compiler options for linking
 CXXLINKFLAGS = @RPATH_FLAGS@
