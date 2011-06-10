@@ -4194,10 +4194,6 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
     MPI_Comm_rank(MPI_COMM_WORLD, &globalRank_);
     MPI_Comm_size(MPI_COMM_WORLD, &processNum_);
 
-    std::cout << "processNum_ = " << processNum_ << std::endl;
-
-    std::cout << "globalRank_ = " << globalRank_ << std::endl;
-
     // CORRECTME
     // NOTE: masterRank_ is 0 or 1 (debug). Must smaller than cluster size.
     masterRank_ = 0;
