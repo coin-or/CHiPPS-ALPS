@@ -86,7 +86,7 @@ ifeq ($(COIN_HAS_PKGCONFIG), TRUE)
   LIBS = `PKG_CONFIG_PATH=@COIN_PKG_CONFIG_PATH@ @PKG_CONFIG@ --libs alps cgl osi-clp`
 else
   ifeq ($(COIN_CXX_IS_CL), TRUE)
-    LIBS = /link /libpath:`$(CYGPATH_W) @abs_lib_dir@` libAlps.lib @COINMIP_LIBS_INSTALLED@ @ALPSLIB_LIBS_INSTALLED@
+    LIBS = -link -libpath:`$(CYGPATH_W) @abs_lib_dir@` libAlps.lib @COINMIP_LIBS_INSTALLED@ @ALPSLIB_LIBS_INSTALLED@
   else
     LIBS = -L@abs_lib_dir@ -lAlps @COINMIP_LIBS_INSTALLED@ @ALPSLIB_LIBS_INSTALLED@
   endif
