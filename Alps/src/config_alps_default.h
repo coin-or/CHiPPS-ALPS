@@ -26,13 +26,13 @@
 /***************************************************************************/
 
 /* Version number of project */
-#undef ALPS_VERSION "trunk"
+#undef ALPS_VERSION        "1.3"
 
 /* Major Version number of project */
-#undef ALPS_VERSION_MAJOR   9999
+#undef ALPS_VERSION_MAJOR      1
 
 /* Minor Version number of project */
-#undef ALPS_VERSION_MINOR   9999
+#undef ALPS_VERSION_MINOR      3
 
 /* Release Version number of project */
 #undef ALPS_VERSION_RELEASE 9999
