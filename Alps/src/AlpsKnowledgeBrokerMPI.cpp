@@ -4223,10 +4223,20 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
         hubNum_ = model_->AlpsPar()->entry(AlpsParams::hubNum);
 
         if (msgLevel_ > 0) {
-            messageHandler()->message(ALPS_P_VERSION, messages())
-                << CoinMessageEol;
-            messageHandler()->message(ALPS_LAUNCH, messages())
-                << processNum_ << CoinMessageEol;
+	std::cout << "==  Welcome to the Abstract Library for Parallel Search (ALPS) \n";
+	std::cout << "==  Copyright 2000-2011 Lehigh University and others \n";
+	    std::cout << "==  All Rights Reserved. \n";
+	    std::cout << "==  Distributed under the Eclipse Public License 1.0 \n";
+	    if (strcmp(ALPS_VERSION, "trunk")){
+		std::cout << "==  Version: " << ALPS_VERSION << std::endl;
+	    }else{
+		std::cout << "==  Version: Trunk (unstable) \n";
+	    }
+	    std::cout << "==  Build Date: " <<  __DATE__;
+#ifdef ALPS_SVN_REV
+	    std::cout << "\n==  Revision Number: " << ALPS_SVN_REV;
+#endif
+	    std::cout << std::endl;
         }
 
         // 12/20/06, do we need print parameter file name?

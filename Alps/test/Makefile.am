@@ -57,9 +57,8 @@ AM_CPPFLAGS = -I`$(CYGPATH_W) $(srcdir)/../src` \
         $(CLP_CFLAGS) \
         $(ALPSLIB_CFLAGS) -DCOIN_HAS_CLP
 
-# This line is necessary to allow VPATH compilation with MS compilers
-# on Cygwin
-DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` 
+# This line is necessary to allow VPATH compilation
+DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` -I$(top_builddir)/src
 
 test: unitTest$(EXEEXT)
 	./unitTest$(EXEEXT) -param ../examples/Abc/abc.par
