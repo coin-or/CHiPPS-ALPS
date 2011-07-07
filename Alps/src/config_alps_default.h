@@ -37,3 +37,5 @@
 /* Release Version number of project */
 #undef ALPS_VERSION_RELEASE 9999
 
+/* Define to 1 if the Mpi package is used */
+/* #define COIN_HAS_MPI 1 */

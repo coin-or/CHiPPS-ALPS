@@ -46,6 +46,4 @@
 /* Define to 1 if the Clp package is used */
 #define COIN_HAS_CLP 1
 
-/* Define to 1 if the Mpi package is used */
-/* #define COIN_HAS_MPI 1 */
 
