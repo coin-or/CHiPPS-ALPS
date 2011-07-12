@@ -34,6 +34,9 @@ Alps/examples/Abc/AbcTreeNode.cpp -text
 Alps/examples/Abc/AbcTreeNode.h -text
 Alps/examples/Abc/INSTALL -text
 Alps/examples/Abc/LICENSE -text
+Alps/examples/Abc/MSVisualStudio/v10/Abc.sln -text
+Alps/examples/Abc/MSVisualStudio/v10/Abc.suo -text
+Alps/examples/Abc/MSVisualStudio/v10/Abc.vcxproj -text
 Alps/examples/Abc/MSVisualStudio/v8/Abc.sln -text
 Alps/examples/Abc/MSVisualStudio/v8/Abc.suo -text
 Alps/examples/Abc/MSVisualStudio/v8/Abc.vcproj -text
