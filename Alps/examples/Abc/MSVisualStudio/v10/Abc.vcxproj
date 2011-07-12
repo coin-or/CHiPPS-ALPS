@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{90558AB8-2CC1-411A-BF4B-218C7CD92EA6}</ProjectGuid>
+    <RootNamespace>Knap</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\..\..\..\Alps\src;..\..\..\..\..\Osi\src\Osi;..\..\..\..\..\Clp\src\OsiClp;..\..\..\..\..\Clp\src;..\..\..\..\..\CoinUtils\src;..\..\..\..\..\Cgl\src;..\..\..\..\..\Cgl\src\CglLiftAndProject;..\..\..\..\..\Cgl\src\CglLandP;..\..\..\..\..\Cgl\src\CglFlowCover;..\..\..\..\..\Cgl\src\CglMixedIntegerRounding;..\..\..\..\..\Cgl\src\CglClique;..\..\..\..\..\Cgl\src\CglOddHole;..\..\..\..\..\Cgl\src\CglKnapsackCover;..\..\..\..\..\Cgl\src\CglGomory;..\..\..\..\..\Cgl\src\CglSimpleRounding;..\..\..\..\..\Cgl\src\CglProbing;..\..\..\..\..\Cgl\src\CglRedSplit;..\..\..\..\..\Cgl\src\CglTwomir;..\..\..\..\..\BuildTools\headers;..\..\..\..\..\BuildTools\headers;..\..\..\..\..\CoinUtils\src;..\..\..\..\..\Osi\src;..\..\..\..\..\Osi\src\OsiCbc;..\..\..\..\..\Osi\src\OsiSpx;..\..\..\..\..\Osi\src\OsiVol;..\..\..\..\..\Osi\src\OsiOsl;..\..\..\..\..\Osi\src\OsiXpr;..\..\..\..\..\Osi\src\OsiCpx;..\..\..\..\..\Osi\src\OsiClp;..\..\..\..\..\Cgl\src;..\..\..\..\..\Cgl\src\CglTwomir;..\..\..\..\..\Cgl\src\CglMixedIntegerRounding;..\..\..\..\..\Cgl\src\CglMixedIntegerRounding2;..\..\..\..\..\Cgl\src\CglFlowCover;..\..\..\..\..\Cgl\src\CglClique;..\..\..\..\..\Cgl\src\CglOddHole;..\..\..\..\..\Cgl\src\CglKnapsackCover;..\..\..\..\..\Cgl\src\CglGomory;..\..\..\..\..\Cgl\src\CglPreProcess;..\..\..\..\..\Cgl\src\CglProbing;..\..\..\..\..\Clp\src;..\..\..\..\..\Alps\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>ALPS_BUILD;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4996; 4065;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalDependencies>libAlps.lib;libCgl.lib;libClp.lib;libCoinUtils.lib;libOsi.lib;libOsiClp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\..\..\..\Alps\src;..\..\..\..\..\Osi\src\Osi;..\..\..\..\..\Clp\src\OsiClp;..\..\..\..\..\Clp\src;..\..\..\..\..\CoinUtils\src;..\..\..\..\..\Cgl\src;..\..\..\..\..\Cgl\src\CglLiftAndProject;..\..\..\..\..\Cgl\src\CglLandP;..\..\..\..\..\Cgl\src\CglFlowCover;..\..\..\..\..\Cgl\src\CglMixedIntegerRounding;..\..\..\..\..\Cgl\src\CglClique;..\..\..\..\..\Cgl\src\CglOddHole;..\..\..\..\..\Cgl\src\CglKnapsackCover;..\..\..\..\..\Cgl\src\CglGomory;..\..\..\..\..\Cgl\src\CglSimpleRounding;..\..\..\..\..\Cgl\src\CglProbing;..\..\..\..\..\Cgl\src\CglRedSplit;..\..\..\..\..\Cgl\src\CglTwomir;..\..\..\..\..\BuildTools\headers;..\..\..\..\Osi\src\Osi;..\..\..\..\Clp\src\OsiClp;..\..\..\..\Clp\src;..\..\..\..\CoinUtils\src;..\..\..\..\Cgl\src;..\..\..\..\Cgl\src\CglLiftAndProject;..\..\..\..\Cgl\src\CglLandP;..\..\..\..\Cgl\src\CglFlowCover;..\..\..\..\Cgl\src\CglMixedIntegerRounding;..\..\..\..\Cgl\src\CglClique;..\..\..\..\Cgl\src\CglOddHole;..\..\..\..\Cgl\src\CglKnapsackCover;..\..\..\..\Cgl\src\CglGomory;..\..\..\..\Cgl\src\CglSimpleRounding;..\..\..\..\Cgl\src\CglProbing;..\..\..\..\Cgl\src\CglRedSplit;..\..\..\..\Cgl\src\CglTwomir;..\..\..\..\BuildTools\headers;..\..\..\BuildTools\headers;..\..\..\CoinUtils\src;..\..\..\Osi\src;..\..\..\Osi\src\OsiCbc;..\..\..\Osi\src\OsiSpx;..\..\..\Osi\src\OsiVol;..\..\..\Osi\src\OsiOsl;..\..\..\Osi\src\OsiXpr;..\..\..\Osi\src\OsiCpx;..\..\..\Osi\src\OsiClp;..\..\..\Cgl\src;..\..\..\Cgl\src\CglTwomir;..\..\..\Cgl\src\CglMixedIntegerRounding;..\..\..\Cgl\src\CglMixedIntegerRounding2;..\..\..\Cgl\src\CglFlowCover;..\..\..\Cgl\src\CglClique;..\..\..\Cgl\src\CglOddHole;..\..\..\Cgl\src\CglKnapsackCover;..\..\..\Cgl\src\CglGomory;..\..\..\Cgl\src\CglPreProcess;..\..\..\Cgl\src\CglProbing;..\..\..\Clp\src;..\..\..\Alps\src;..\..\..\..\..\BuildTools\headers;..\..\..\..\..\CoinUtils\src;..\..\..\..\..\Osi\src;..\..\..\..\..\Osi\src\OsiCbc;..\..\..\..\..\Osi\src\OsiSpx;..\..\..\..\..\Osi\src\OsiVol;..\..\..\..\..\Osi\src\OsiOsl;..\..\..\..\..\Osi\src\OsiXpr;..\..\..\..\..\Osi\src\OsiCpx;..\..\..\..\..\Osi\src\OsiClp;..\..\..\..\..\Cgl\src;..\..\..\..\..\Cgl\src\CglTwomir;..\..\..\..\..\Cgl\src\CglMixedIntegerRounding;..\..\..\..\..\Cgl\src\CglMixedIntegerRounding2;..\..\..\..\..\Cgl\src\CglFlowCover;..\..\..\..\..\Cgl\src\CglClique;..\..\..\..\..\Cgl\src\CglOddHole;..\..\..\..\..\Cgl\src\CglKnapsackCover;..\..\..\..\..\Cgl\src\CglGomory;..\..\..\..\..\Cgl\src\CglPreProcess;..\..\..\..\..\Cgl\src\CglProbing;..\..\..\..\..\Clp\src;..\..\..\..\..\Alps\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>ALPS_BUILD;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4996; 4065;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <AdditionalDependencies>libAlps.lib;libCgl.lib;libClp.lib;libCoinUtils.lib;libOsi.lib;libOsiClp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>ALPS_BUILD;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>..\..\..\..\..\Alps\src;..\..\..\..\..\Osi\src\Osi;..\..\..\..\..\Clp\src\OsiClp;..\..\..\..\..\Clp\src;..\..\..\..\..\CoinUtils\src;..\..\..\..\..\Cgl\src;..\..\..\..\..\Cgl\src\CglLiftAndProject;..\..\..\..\..\Cgl\src\CglLandP;..\..\..\..\..\Cgl\src\CglFlowCover;..\..\..\..\..\Cgl\src\CglMixedIntegerRounding;..\..\..\..\..\Cgl\src\CglClique;..\..\..\..\..\Cgl\src\CglOddHole;..\..\..\..\..\Cgl\src\CglKnapsackCover;..\..\..\..\..\Cgl\src\CglGomory;..\..\..\..\..\Cgl\src\CglSimpleRounding;..\..\..\..\..\Cgl\src\CglProbing;..\..\..\..\..\Cgl\src\CglRedSplit;..\..\..\..\..\Cgl\src\CglTwomir;..\..\..\..\..\BuildTools\headers;</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalDependencies>libAlps.lib;libCgl.lib;libClp.lib;libCoinUtils.lib;libOsi.lib;libOsiClp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>ALPS_BUILD;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>..\..\..\..\..\Alps\src;..\..\..\..\..\Osi\src\Osi;..\..\..\..\..\Clp\src\OsiClp;..\..\..\..\..\Clp\src;..\..\..\..\..\CoinUtils\src;..\..\..\..\..\Cgl\src;..\..\..\..\..\Cgl\src\CglLiftAndProject;..\..\..\..\..\Cgl\src\CglLandP;..\..\..\..\..\Cgl\src\CglFlowCover;..\..\..\..\..\Cgl\src\CglMixedIntegerRounding;..\..\..\..\..\Cgl\src\CglClique;..\..\..\..\..\Cgl\src\CglOddHole;..\..\..\..\..\Cgl\src\CglKnapsackCover;..\..\..\..\..\Cgl\src\CglGomory;..\..\..\..\..\Cgl\src\CglSimpleRounding;..\..\..\..\..\Cgl\src\CglProbing;..\..\..\..\..\Cgl\src\CglRedSplit;..\..\..\..\..\Cgl\src\CglTwomir;..\..\..\..\..\BuildTools\headers;</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <AdditionalDependencies>libAlps.lib;libCgl.lib;libClp.lib;libCoinUtils.lib;libOsi.lib;libOsiClp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\AbcBranchActual.cpp" />
+    <ClCompile Include="..\..\AbcBranchBase.cpp" />
+    <ClCompile Include="..\..\AbcCutGenerator.cpp" />
+    <ClCompile Include="..\..\AbcHeuristic.cpp" />
+    <ClCompile Include="..\..\AbcMain.cpp" />
+    <ClCompile Include="..\..\AbcMessage.cpp" />
+    <ClCompile Include="..\..\AbcModel.cpp" />
+    <ClCompile Include="..\..\AbcParams.cpp" />
+    <ClCompile Include="..\..\AbcSolution.cpp" />
+    <ClCompile Include="..\..\AbcTreeNode.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\AbcBranchActual.h" />
+    <ClInclude Include="..\..\AbcBranchBase.h" />
+    <ClInclude Include="..\..\AbcCutGenerator.h" />
+    <ClInclude Include="..\..\AbcHeuristic.h" />
+    <ClInclude Include="..\..\AbcMessage.h" />
+    <ClInclude Include="..\..\AbcModel.h" />
+    <ClInclude Include="..\..\AbcNodeDesc.h" />
+    <ClInclude Include="..\..\AbcParams.h" />
+    <ClInclude Include="..\..\AbcSolution.h" />
+    <ClInclude Include="..\..\AbcTreeNode.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
