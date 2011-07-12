@@ -65,6 +65,9 @@ Alps/examples/Knap/KnapSolution.h -text
 Alps/examples/Knap/KnapTreeNode.cpp -text
 Alps/examples/Knap/KnapTreeNode.h -text
 Alps/examples/Knap/LICENSE -text
+Alps/examples/Knap/MSVisualStudio/v10/Knap.sln -text
+Alps/examples/Knap/MSVisualStudio/v10/Knap.suo -text
+Alps/examples/Knap/MSVisualStudio/v10/Knap.vcxproj -text
 Alps/examples/Knap/MSVisualStudio/v8/Knap.sln -text
 Alps/examples/Knap/MSVisualStudio/v8/Knap.suo -text
 Alps/examples/Knap/MSVisualStudio/v8/Knap.vcproj -text
