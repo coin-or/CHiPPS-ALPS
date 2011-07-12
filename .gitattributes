@@ -1,4 +1,5 @@
 * text=auto !eol
+Alps/MSVisualStudio/v10/libAlps.vcxproj -text
 Alps/MSVisualStudio/v8/libAlps.vcproj -text
 Alps/MSVisualStudio/v9/libAlps.vcproj -text
 Alps/Makefile.am -text
