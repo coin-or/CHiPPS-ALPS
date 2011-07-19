@@ -1,21 +1,37 @@
+These are quick install instructions mainly intended for UNIX-like systems
+(including Linux, OS X, AIX, Cygwin and MSys). Additional details for building
+this and other COIN projects are available at
+
+  https://projects.coin-or.org/BuildTools
+
+You can find instructions for building with Microsoft Visual Studio under
+Windows at
+
+  https://projects.coin-or.org/MSVisualStudio
 
 **********************************************************************
 ***                         DOWNLOAD                               ***
 **********************************************************************
 
-You can obtain the source code for the Alps package in two ways:
+Pre-built binaries are available for some versions of ALPS on some platforms.
+They can be downloaded at
+
+  http://www.coin-or.org/download/binary/Alps
+
+If you would like to build from source, you can obtain the source code for
+ALPS in two ways:
 
 1. Obtain the source directly from the COIN-OR subversion repository
    (recommended). For this, you need a subversion client installed. For a
    command-line client, check out the code with
 
-   svn co https://projects.coin-or.org/svn/CHiPPS/Alps/stable/1.0 Alps-1.0
+   svn co https://projects.coin-or.org/svn/CHiPPS/Alps/stable/1.3 Alps-1.3
 
 2. Download the source in a compressed file from from
-   http://www.coin-or.org/download/source/CHiPPS and
+   http://www.coin-or.org/download/source/Alps and
    extract it, for example, with
 
-   tar -xzvf Alps-1.0.0.tgz
+   tar -xzvf Alps-1.3.0.tgz
 
    More detailed download instructions can be found at
 

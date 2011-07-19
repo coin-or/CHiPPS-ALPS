@@ -1,10 +1,10 @@
-ALPS Version 1.1 README
+ALPS Version 1.3 README
 =======================
 
-Welcome to Alps. Alps is distributed under the Common Public License
-Version 1.0 and is freely redistributable. All source code and documentation 
-is Copyright 2001-2009 by Lehigh University, Yan Xu, and Ted Ralphs.
-This README may be distributed freely.
+Welcome to ALPS. Alps is distributed under the Eclipse Public License and is
+freely redistributable. All source code and documentation is Copyright
+2001-2011 by Lehigh University, Yan Xu, and Ted Ralphs. This README may be
+distributed freely.
 
 WHAT IS ALPS
 ============
@@ -55,18 +55,18 @@ SUPPORT
 Source Code:
 
 Yan Xu (yax2@lehigh.edu)
-Ted Ralphs (tkralphs@lehigh.edu), Project Manager
+Ted Ralphs (ted@lehigh.edu), Project Manager
 
 Original Conceptual Design:
 
 Yan Xu (yax2@lehigh.edu)
-Ted Ralphs (tkralphs@lehigh.edu), Project Manager
+Ted Ralphs (ted@lehigh.edu), Project Manager
 Laci Ladanyi (ladanyi@us.ibm.com)
 Matt Saltzman (mjs@clemson.edu)
 
 2. List Serve
 
-Alps users should use the Coin-Discuss mailing list. To subscribe, go to 
+Alps users should use the CHiPPS mailing list. To subscribe, go to 
 http://list.coin-or.org/mailman/listinfo/chipps
 
 3. Bug Reports
