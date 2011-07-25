@@ -280,8 +280,17 @@ AlpsKnowledgeBrokerSerial::searchLog()
 	}
 
 	if (hasKnowledge(AlpsKnowledgeTypeSolution)) {
-	    messageHandler()->message(ALPS_S_FINAL_SOL, messages())
-		<< getBestQuality() << bestSolDepth_ << CoinMessageEol;
+	    AlpsSolution *solution = dynamic_cast<AlpsSolution *>
+	       (getBestKnowledge(AlpsKnowledgeTypeSolution).first);
+	    if (solution->getDepth() >= 0){
+	       messageHandler()->message(ALPS_S_FINAL_SOL_WD, messages())
+		  << getBestKnowledge(AlpsKnowledgeTypeSolution).second << 
+		  solution->getDepth() << CoinMessageEol;
+	    }else{
+	       messageHandler()->message(ALPS_S_FINAL_SOL, messages())
+		  << getBestKnowledge(AlpsKnowledgeTypeSolution).second << 
+		  CoinMessageEol;
+	    }
 	}
 	else {
 	    messageHandler()->message(ALPS_S_FINAL_NO_SOL, messages())
