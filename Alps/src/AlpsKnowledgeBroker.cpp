@@ -44,7 +44,6 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     systemNodeProcessed_(0),
     nodeLeftNum_(0),
     treeDepth_(0),
-    bestSolDepth_(INT_MAX),
     bestSolNode_(-1),
     peakMemory_(0.0),
     exitStatus_(AlpsExitStatusUnknown),

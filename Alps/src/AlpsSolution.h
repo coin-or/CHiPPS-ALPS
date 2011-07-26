@@ -37,14 +37,45 @@ class AlpsSolution : public AlpsKnowledge {
     /** Diable copy constructor and assignment. */
     AlpsSolution(const AlpsSolution&);
     AlpsSolution& operator=(const AlpsSolution&);
+
+    /** The index of the node where the solution was found. */ 
+    int index_;
     
+    /** The depth of the node where the solution was found. */ 
+    int depth_;
+
  public:
     
     /** Default constructor. */
-    AlpsSolution() { setType(AlpsKnowledgeTypeSolution); }
+    AlpsSolution() :
+       index_(-1),
+       depth_(-1)
+    {
+       setType(AlpsKnowledgeTypeSolution);
+    }
+
+    /** Constructor to set index and depth. */
+    AlpsSolution(const AlpsNodeIndex_t i, const int d) :
+       index_(i),
+       depth_(d)
+    {
+       setType(AlpsKnowledgeTypeSolution);
+    }
 
     /** Destructor. */
     virtual ~AlpsSolution() {}
+
+    /** Get index where solution was found */
+    AlpsNodeIndex_t getIndex() { return index_; }
+    
+    /** Set index where solution was found */
+    void setIndex(const AlpsNodeIndex_t i) { index_ = i; }
+    
+    /** Get depth where solution was found */
+    int getDepth() { return depth_; }
+    
+    /** Set depth where solution was found */
+    void setDepth(const int d) { depth_ = d; }
     
     /** Print out the solution.*/
     virtual void print(std::ostream& os) const{
