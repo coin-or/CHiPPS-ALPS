@@ -28,6 +28,7 @@
 #include <vector>
 
 #include "AlpsKnowledge.h"
+#include "AlpsTreeNode.h" // to get AlpsNodeIndex_t
 
 //#############################################################################
 
