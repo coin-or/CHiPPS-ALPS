@@ -235,6 +235,7 @@ AlpsKnowledgeBrokerSerial::rootSearch(AlpsTreeNode* root)
 					     nodeProcessedNum_, 
 					     nodeBranchedNum_,
 					     nodeDiscardedNum_,
+					     nodePartialNum_,
 					     treeDepth_);
     
     updateNumNodesLeft();
@@ -259,8 +260,8 @@ AlpsKnowledgeBrokerSerial::searchLog()
     if (msgLevel_ > 0) {
 	std::cout << std::endl;
 	if (getSolStatus() == AlpsExitStatusOptimal) {
-	    messageHandler()->message(ALPS_T_OPTIMAL, messages())
-		<< nodeProcessedNum_ << nodeLeftNum_ << CoinMessageEol;
+	    messageHandler()->message(ALPS_T_COMPLETE, messages()) 
+	       << CoinMessageEol;
 	}
 	else if (getSolStatus() == AlpsExitStatusNodeLimit) {
 	    messageHandler()->message(ALPS_T_NODE_LIMIT, messages())
@@ -298,6 +299,8 @@ AlpsKnowledgeBrokerSerial::searchLog()
 	}
 	messageHandler()->message(ALPS_S_FINAL_NODE_PROCESSED, messages())
 	    << nodeProcessedNum_ << CoinMessageEol;
+	messageHandler()->message(ALPS_S_FINAL_NODE_PARTIAL, messages())
+	    << nodePartialNum_ << CoinMessageEol;
 	messageHandler()->message(ALPS_S_FINAL_NODE_BRANCHED, messages())
 	    << nodeBranchedNum_ << CoinMessageEol;
 	messageHandler()->message(ALPS_S_FINAL_NODE_DISCARDED, messages())
@@ -334,6 +337,7 @@ AlpsKnowledgeBrokerSerial::searchLog()
 	    fout << "No solution was found." << std::endl;
 	}
 	fout << "Number of nodes processed = "<<nodeProcessedNum_ << std::endl;
+	fout << "Number of nodes partially processed = "<<nodePartialNum_<<std::endl;
 	fout << "Number of nodes branched = "<<nodeBranchedNum_ << std::endl;
 	fout << "Number of nodes left in queue= " << nodeLeftNum_ << std::endl;
 	fout << "Tree depth = " << treeDepth_ << std::endl;

@@ -41,6 +41,7 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
     nodeProcessedNum_(0),
     nodeBranchedNum_(0),
     nodeDiscardedNum_(0),
+    nodePartialNum_(0),
     systemNodeProcessed_(0),
     nodeLeftNum_(0),
     treeDepth_(0),

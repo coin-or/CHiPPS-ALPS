@@ -74,6 +74,7 @@ AlpsModel::readParameters(const int argnum, const char * const * arglist)
 
 //##############################################################################
 
+//Shouldn't this method be a member of either the broker or subtree classes?
 void 
 AlpsModel::nodeLog(AlpsTreeNode *node, bool force) 
 {
@@ -81,6 +82,7 @@ AlpsModel::nodeLog(AlpsTreeNode *node, bool force)
 	broker_->getModel()->AlpsPar()->entry(AlpsParams::nodeLogInterval);
 
     int numNodesProcessed = broker_->getNumNodesProcessed();
+    int numNodesPartial  = broker_->getNumNodesPartial();
 
     AlpsTreeNode *bestNode = NULL;
     
@@ -105,10 +107,12 @@ AlpsModel::nodeLog(AlpsTreeNode *node, bool force)
             relBound = bestNode->getQuality();
         }
 
+	//Take into account pregnant nodes (processed but not branched)
         getKnowledgeBroker()->messageHandler()->
-            message(ALPS_S_NODE_COUNT,getKnowledgeBroker()->messages())
-            << numNodesProcessed 
-            << broker_->updateNumNodesLeft()
+            message(ALPS_S_NODE_COUNT, getKnowledgeBroker()->messages())
+            << numNodesProcessed
+	    << numNodesPartial
+            << broker_->updateNumNodesLeft() - numNodesPartial
             << relBound
             << feasBound
             << CoinMessageEol;

@@ -5061,8 +5061,9 @@ AlpsKnowledgeBrokerMPI::searchLog()
 
         if (msgLevel_ > 0) {
             if (getSolStatus() == AlpsExitStatusOptimal) {
-                messageHandler()->message(ALPS_T_OPTIMAL, messages())
+                messageHandler()->message(ALPS_T_COMPLETE, messages())
                     << systemNodeProcessed_
+		    << nodePartialNum_
 		    << static_cast<int>(systemWorkQuantity_) 
                     << CoinMessageEol;
             }
@@ -5296,6 +5297,7 @@ AlpsKnowledgeBrokerMPI::doOneUnitWork(int unitWork,
 
     int numNodesBranched = 0;  /* Output */
     int numNodesDiscarded = 0; /* Output */
+    int numNodesPartial = 0;  /* Output */
         
     numNodesProcessed = 0; 
     
@@ -5322,6 +5324,7 @@ AlpsKnowledgeBrokerMPI::doOneUnitWork(int unitWork,
                                                  numNodesProcessed,
                                                  numNodesBranched,  /* Output */
                                                  numNodesDiscarded, /* Output */
+                                                 numNodesPartial,   /* Output */
                                                  treeDepth_,
                                                  betterSolution);
         

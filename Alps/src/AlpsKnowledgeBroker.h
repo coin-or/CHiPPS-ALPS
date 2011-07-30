@@ -124,6 +124,9 @@ class AlpsKnowledgeBroker {
     /** The number of nodes that have been discarded before processing. */
     int nodeDiscardedNum_;
 
+    /** The number of nodes that are pregnant. */
+    int nodePartialNum_;
+
     /** To record how many nodes processed by the system
         (used in parallel code). */
     int systemNodeProcessed_;
@@ -435,6 +438,11 @@ class AlpsKnowledgeBroker {
     /** Query the number of node processed by this process. */
     int getNumNodesDiscarded() const {
 	return nodeDiscardedNum_;
+    }
+
+    /** Query the number of node in the queue that are pregnant. */
+    int getNumNodesPartial() const {
+	return nodePartialNum_;
     }
 
     /** Query the number of node processed by the system. */

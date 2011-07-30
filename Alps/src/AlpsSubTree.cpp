@@ -466,6 +466,7 @@ AlpsSubTree::exploreSubTree(AlpsTreeNode* root,
 			    int & numNodesProcessed, /* Output */
 			    int & numNodesBranched,  /* Output */
 			    int & numNodesDiscarded, /* Output */
+			    int & numNodesPartial,  /* Output */
 			    int & depth)             /* Output */
 {
     AlpsReturnStatus status = AlpsReturnStatusOk;
@@ -491,6 +492,7 @@ AlpsSubTree::exploreSubTree(AlpsTreeNode* root,
                              numNodesProcessed, /* Output */
 			     numNodesBranched,  /* Output */
 			     numNodesDiscarded, /* Output */
+			     numNodesPartial,  /* Output */
                              depth,             /* Output */
                              betterSolution);   /* Output */
 
@@ -1170,6 +1172,7 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
                              int & numNodesProcessed,       /* Output */
                              int & numNodesBranched,        /* Output */
                              int & numNodesDiscarded,       /* Output */
+                             int & numNodesPartial,        /* Output */
                              int & depth,                   /* Output */
                              bool & betterSolution)         /* Output */
 {
@@ -1177,6 +1180,8 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
     broker_->subTreeTimer().start();
 
     AlpsReturnStatus status = AlpsReturnStatusOk;
+    AlpsNodeStatus oldStatus = AlpsNodeStatusCandidate;
+    int numNodesFathomed(0), numNodesCandidate(1), oldNumNodesCandidate(1);
     
     bool forceLog = false;
     bool exitIfBetter = false;
@@ -1201,11 +1206,11 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
 #endif
     
     //------------------------------------------------------
-    // Check if required to exit when find a solution.
+    // Check if required to exit when a solution is found.
     //------------------------------------------------------
     
     if (betterSolution) {
-        // Need exit when find better a solution.
+        // Need to exit when a better solution is found.
         exitIfBetter = true;
         betterSolution = false;
     }
@@ -1216,7 +1221,7 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
     }    
     
     //------------------------------------------------------
-    // Process nodes until reach unit limits, or better solution if check.
+    // Process nodes until limits are reached or a better solution found.
     //------------------------------------------------------    
 
     if (!leaveAsIt) {
@@ -1237,7 +1242,7 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
                   << std::endl;
 #endif
    
-	if (numNodesProcessed > unitWork) {
+	if (numNodesProcessed + numNodesPartial > unitWork) {
             exploreStatus = AlpsExitStatusNodeLimit;
 	    break;
 	}
@@ -1245,7 +1250,11 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
             exploreStatus = AlpsExitStatusTimeLimit;
 	    break;
 	}
-        
+
+	assert(numNodesProcessed == numNodesBranched + numNodesFathomed);
+	assert(nodePool_->getNumKnowledges() == 
+	       numNodesCandidate + numNodesPartial); 
+
 	// Get the next node to be processed.
         activeNode_ = nodeSel->selectNextNode(this);
         
@@ -1254,36 +1263,39 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
             if (depth < activeNode_->getDepth() + 1) {
                 depth = activeNode_->getDepth() + 1;
             }
+	    oldNumNodesCandidate = nodePool_->getNumKnowledges();
             nodeSel->createNewNodes(this, activeNode_);
+	    numNodesCandidate += nodePool_->getNumKnowledges() - 
+	       oldNumNodesCandidate;
+	    --numNodesPartial;
+	    ++numNodesProcessed;
             switch (activeNode_->getStatus()) {
-            case AlpsNodeStatusPregnant :
-            case AlpsNodeStatusCandidate :
-            case AlpsNodeStatusEvaluated :
-                /* Has to go back in the queue for further consideration */
-                nodePool_->addKnowledge(activeNode_, activeNode_->getQuality());
-                break;
             case AlpsNodeStatusBranched :
                 ++numNodesBranched;
                 break;
             case AlpsNodeStatusFathomed :
-                ++numNodesBranched;
+	        ++numNodesFathomed;
                 if (deleteNode) {
                     removeDeadNodes(activeNode_);
                 }
                 break;
             case AlpsNodeStatusDiscarded :
-                if (deleteNode) {
-                    removeDeadNodes(activeNode_);
-                }
-                break;
+            case AlpsNodeStatusPregnant :
+            case AlpsNodeStatusCandidate :
+            case AlpsNodeStatusEvaluated :
             default : 
-                throw CoinError("Unknown status", 
+                throw CoinError("Unexpected node status", 
                                 "exploreSubTree", "AlpsSubTree"); 
             }
             break;
 	case AlpsNodeStatusCandidate:
 	case AlpsNodeStatusEvaluated:
             activeNode_->setActive(true);
+	    if ((oldStatus = activeNode_->getStatus()) == AlpsNodeStatusEvaluated){
+	       --numNodesPartial;
+	    }else{
+	       --numNodesCandidate;
+	    }
             if (activeNode_ == root_) {
                 activeNode_->process(true);
             }
@@ -1291,7 +1303,7 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
                 activeNode_->process();
             }           
             activeNode_->setActive(false); 
-	  
+
             // Record the new sol quality if have.
             if( broker_->hasKnowledge(AlpsKnowledgeTypeSolution) ) {
                 newSolQuality = 
@@ -1308,9 +1320,6 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
                 }
             }
 	  
-            // Print node log for serial code.
-            broker_->getModel()->nodeLog(activeNode_, forceLog);
-            forceLog = false;
 	  
             // Check memory usage
 #ifdef ALPS_MEMORY_USAGE
@@ -1328,28 +1337,34 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
 #endif
             switch (activeNode_->getStatus()) {
             case AlpsNodeStatusPregnant :
-                ++numNodesProcessed;
-            case AlpsNodeStatusCandidate :
             case AlpsNodeStatusEvaluated :
+	        ++numNodesPartial;
                 /* Has to go back in the queue for further consideration */
                 nodePool_->addKnowledge(activeNode_, activeNode_->getQuality());
                 break;
             case AlpsNodeStatusFathomed :
                 ++numNodesProcessed;
+		++numNodesFathomed;
                 if (deleteNode) {
                     removeDeadNodes(activeNode_);
                 }
                 break;
             case AlpsNodeStatusDiscarded :
-                ++numNodesDiscarded;
-                if (deleteNode) {
-                    removeDeadNodes(activeNode_);
-                }
-                break;
+	        // Node cannot be marked discarded if already partially processed
+	        if (oldStatus == AlpsNodeStatusCandidate){
+		   ++numNodesDiscarded;
+		   if (deleteNode) {
+		      removeDeadNodes(activeNode_);
+		   }
+		   break;
+		}
+            case AlpsNodeStatusCandidate :
+	        // Status cannot be left as or changed back to candidate
             default : 
-                throw CoinError("Unknown status", 
+                throw CoinError("Status is unknown or not allowed", 
                                 "exploreSubTree", "AlpsSubTree"); 
             }
+
             break;
         default : // branched or fathomed
             throw CoinError("Impossible status: branched or fathomed", 
@@ -1358,14 +1373,20 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
         
 	activeNode_ = NULL;
 
+	// Print node log for serial code.
+	broker_->getModel()->nodeLog(activeNode_, forceLog);
+	forceLog = false;
+
         /* Delete all nodes if required. */
         if (broker_->getModel()->fathomAllNodes()) {
             /* Delete all nodes on this subtree. */
+	    numNodesDiscarded += nodePool_->getNumKnowledges() 
+	                         - numNodesPartial;
             fathomAllNodes();
         }
     }
     
-    if (numNodesProcessed) {
+    if (numNodesProcessed + numNodesPartial) {
         double oldNP = broker_->getNodeProcessingTime();
         double nodeProcessingTime = (broker_->subTreeTimer().getCpuTime()) / 
             numNodesProcessed;
