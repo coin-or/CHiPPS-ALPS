@@ -297,10 +297,15 @@ AlpsKnowledgeBrokerSerial::searchLog()
 	    messageHandler()->message(ALPS_S_FINAL_NO_SOL, messages())
 		<< CoinMessageEol;
 	}
-	messageHandler()->message(ALPS_S_FINAL_NODE_PROCESSED, messages())
-	    << nodeProcessedNum_ << CoinMessageEol;
-	messageHandler()->message(ALPS_S_FINAL_NODE_PARTIAL, messages())
-	    << nodePartialNum_ << CoinMessageEol;
+	if (nodePartialNum_){
+	   messageHandler()->message(ALPS_S_FINAL_NODE_FULL, messages())
+	      << nodeProcessedNum_ << CoinMessageEol;
+	   messageHandler()->message(ALPS_S_FINAL_NODE_PARTIAL, messages())
+	      << nodePartialNum_ << CoinMessageEol;
+	}else{
+	   messageHandler()->message(ALPS_S_FINAL_NODE_PROCESSED, messages())
+	      << nodeProcessedNum_ << CoinMessageEol;
+	}
 	messageHandler()->message(ALPS_S_FINAL_NODE_BRANCHED, messages())
 	    << nodeBranchedNum_ << CoinMessageEol;
 	messageHandler()->message(ALPS_S_FINAL_NODE_DISCARDED, messages())
