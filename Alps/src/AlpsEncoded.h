@@ -49,7 +49,7 @@ class AlpsEncoded {
     int type_;
 
     /** The size of the packed representation. */
-    int size_;
+    size_t size_;
 
     /** The encoded/compressed representation of the object. */
     // const char* representation_;   //why const ??? XY
@@ -103,11 +103,11 @@ class AlpsEncoded {
     /**@name Query methods */
     ///@{
     int type() const { return type_; }
-    int size() const { return size_; }
+    size_t size() const { return size_; }
     const char* representation() const { return representation_; }
     ///@}
 
-    inline void setPosition(const int pos) {
+    inline void setPosition(const size_t pos) {
 	if (pos < 0 || pos >= size()) {
 	    //     const char msg [100] = "Incorrest position setting.";
 	    //throw AlpsException(__FILE__, __LINE__, msg);
@@ -127,12 +127,11 @@ class AlpsEncoded {
   /** Reallocate the size of encoded if necessary so that at least
       <code>addsize_</code> number of additional bytes will fit into the
       encoded. */
-    inline void make_fit(const int addSize){
+    inline void make_fit(size_t addSize){
 	assert(addSize > 0);
-	size_t addSize1 = static_cast<size_t>(addSize);
 	
-	if (maxSize_ < size_ + addSize1){
-	    maxSize_ = 4 * (size_ + addSize1 + 0x1000/*4K*/);
+	if (maxSize_ < size_ + addSize){
+	    maxSize_ = 4 * (size_ + addSize + 0x1000/*4K*/);
 	    char* newRep = new char[maxSize_];
 	    if (size_)
 		memcpy(newRep, representation_, size_);
@@ -187,7 +186,7 @@ class AlpsEncoded {
 	<code>repsentation_</code>. First write the length, 
 	then write the content of the array */
     template <class T> AlpsEncoded& writeRep(const T* const values,
-					     const int length){
+					     const size_t length){
 	make_fit( sizeof(int) + sizeof(T) * length );
 	memcpy(representation_ + size_, &length, sizeof(int));
 	size_ += sizeof(int);

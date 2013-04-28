@@ -451,7 +451,7 @@ AlpsSubTree::calculateQuality()
         for (posEnd = eliteList.begin(); posEnd != eliteList.end(); ++posEnd){
             quality_ += posEnd->first;
         }
-        quality_ /= eliteList.size();
+        quality_ /= (double) eliteList.size();
     }
     
     return quality_;
