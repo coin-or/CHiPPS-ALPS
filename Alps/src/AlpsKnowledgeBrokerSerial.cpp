@@ -17,7 +17,7 @@
  *          Matthew Saltzman, Clemson University                             *
  *                                                                           * 
  *                                                                           *
- * Copyright (C) 2001-2011, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ * Copyright (C) 2001-2013, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
 #include "iomanip"
@@ -56,7 +56,7 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
     
     if (msgLevel_ > 0) {
 	std::cout << "==  Welcome to the Abstract Library for Parallel Search (ALPS) \n";
-	std::cout << "==  Copyright 2000-2011 Lehigh University and others \n";
+	std::cout << "==  Copyright 2000-2013 Lehigh University and others \n";
 	    std::cout << "==  All Rights Reserved. \n";
 	    std::cout << "==  Distributed under the Eclipse Public License 1.0 \n";
 	    if (strcmp(ALPS_VERSION, "trunk")){
