@@ -49,7 +49,7 @@ class AlpsEncoded {
     int type_;
 
     /** The size of the packed representation. */
-    size_t size_;
+    int size_;
 
     /** The encoded/compressed representation of the object. */
     // const char* representation_;   //why const ??? XY
@@ -103,11 +103,11 @@ class AlpsEncoded {
     /**@name Query methods */
     ///@{
     int type() const { return type_; }
-    size_t size() const { return size_; }
+    int size() const { return size_; }
     const char* representation() const { return representation_; }
     ///@}
 
-    inline void setPosition(const size_t pos) {
+    inline void setPosition(const int pos) {
 	if (pos < 0 || pos >= size()) {
 	    //     const char msg [100] = "Incorrest position setting.";
 	    //throw AlpsException(__FILE__, __LINE__, msg);
@@ -127,11 +127,12 @@ class AlpsEncoded {
   /** Reallocate the size of encoded if necessary so that at least
       <code>addsize_</code> number of additional bytes will fit into the
       encoded. */
-    inline void make_fit(size_t addSize){
+    inline void make_fit(const int addSize){
 	assert(addSize > 0);
+	size_t addSize1 = static_cast<size_t>(addSize);
 	
-	if (maxSize_ < size_ + addSize){
-	    maxSize_ = 4 * (size_ + addSize + 0x1000/*4K*/);
+	if (maxSize_ < size_ + addSize1){
+	    maxSize_ = 4 * (size_ + addSize1 + 0x1000/*4K*/);
 	    char* newRep = new char[maxSize_];
 	    if (size_)
 		memcpy(newRep, representation_, size_);
@@ -162,7 +163,7 @@ class AlpsEncoded {
     template <class T> AlpsEncoded& writeRep(const T& value) {
 	make_fit( sizeof(T) );
 	memcpy(representation_ + size_, &value, sizeof(T));
-	size_ += sizeof(T);
+	size_ += static_cast<int>(sizeof(T));
 	return *this;
     }
 
@@ -186,13 +187,15 @@ class AlpsEncoded {
 	<code>repsentation_</code>. First write the length, 
 	then write the content of the array */
     template <class T> AlpsEncoded& writeRep(const T* const values,
-					     const size_t length){
-	make_fit( sizeof(int) + sizeof(T) * length );
+					     const int length){
+       make_fit( static_cast<int>(sizeof(int)) +
+		 static_cast<int>(sizeof(T)) * length );
 	memcpy(representation_ + size_, &length, sizeof(int));
-	size_ += sizeof(int);
+	size_ += static_cast<int>(sizeof(int));
 	if (length > 0){
-	    memcpy(representation_ + size_, values, sizeof(T) * length);
-	    size_ += sizeof(T) * length;
+	    memcpy(representation_ + size_, values,
+		   static_cast<int>(sizeof(T)) * length);
+	    size_ += static_cast<int>(sizeof(T)) * length;
 	}
 	return *this;
     }
@@ -278,9 +281,9 @@ class AlpsEncoded {
     AlpsEncoded& writeRep(std::string& value){
 	// must define here, 'cos in *_message.C we have only templated members
 	const int len = static_cast<const int> (value.length());
-	make_fit( sizeof(int) + len );
-	memcpy(representation_ + size_, &len, sizeof(int));
-	size_ += sizeof(int);
+	make_fit( static_cast<int>(sizeof(int)) + len );
+	memcpy(representation_ + size_, &len, static_cast<int>(sizeof(int)));
+	size_ += static_cast<int>(sizeof(int));
 	if (len > 0){
 	    memcpy(representation_ + size_, value.c_str(), len);
 	    size_ += len;
