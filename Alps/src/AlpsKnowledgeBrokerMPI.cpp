@@ -2374,8 +2374,8 @@ AlpsKnowledgeBrokerMPI::hubBalanceWorkers()
     }
   
     // Instruct donor workers to send nodes to receiver workers 
-    const int numDonor    = donors.size();
-    const int numReceiver = receivers.size();
+    const int numDonor    = (int) donors.size();
+    const int numReceiver = (int) receivers.size();
     const int numPair     = CoinMin(numDonor, numReceiver);
 
 #ifdef NF_DEBUG
@@ -2892,8 +2892,8 @@ AlpsKnowledgeBrokerMPI::masterBalanceHubs()
     // Tell the donor hubs to send subtree to receiver hubs.
     //------------------------------------------------------
 
-    const int numDonor    = donors.size();
-    const int numReceiver = receivers.size();
+    const int numDonor    = (int) donors.size();
+    const int numReceiver = (int) receivers.size();
     const int numPair     = CoinMin(numDonor, numReceiver);
 
 #if 0
@@ -3724,8 +3724,8 @@ AlpsKnowledgeBrokerMPI::packEncoded(AlpsEncoded* enc,
 {
     const int bufSpare = model_->AlpsPar()->entry(AlpsParams::bufSpare);
     
-    int type = enc->type();
-    int repSize = enc->size();
+    size_t type = enc->type();
+    size_t repSize = enc->size();
 
     if(!packBuffer) {
         size = repSize + 2*sizeof(int) + bufSpare;
@@ -5353,6 +5353,7 @@ AlpsKnowledgeBrokerMPI::doOneUnitWork(int unitWork,
                                                  numNodesProcessed,
                                                  numNodesBranched,  /* Output */
                                                  numNodesDiscarded, /* Output */
+                                                 numNodesPartial,   /* Output */
                                                  treeDepth_,
                                                  betterSolution);
         
