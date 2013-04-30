@@ -315,7 +315,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     //------------------------------------------------------
     
     AlpsEncoded* encSize = root->encode();
-    setNodeMemSize(static_cast<int>(encSize->size() * 4.0));
+    setNodeMemSize(static_cast<int>(encSize->size() * 4));
     delete encSize;
     
     // Adjust largeSize to avoid extreme cases.
@@ -2374,8 +2374,8 @@ AlpsKnowledgeBrokerMPI::hubBalanceWorkers()
     }
   
     // Instruct donor workers to send nodes to receiver workers 
-    const int numDonor    = donors.size();
-    const int numReceiver = receivers.size();
+    const int numDonor    = (int) donors.size();
+    const int numReceiver = (int) receivers.size();
     const int numPair     = CoinMin(numDonor, numReceiver);
 
 #ifdef NF_DEBUG
@@ -2892,8 +2892,8 @@ AlpsKnowledgeBrokerMPI::masterBalanceHubs()
     // Tell the donor hubs to send subtree to receiver hubs.
     //------------------------------------------------------
 
-    const int numDonor    = donors.size();
-    const int numReceiver = receivers.size();
+    const int numDonor    = (int) donors.size();
+    const int numReceiver = (int) receivers.size();
     const int numPair     = CoinMin(numDonor, numReceiver);
 
 #if 0
@@ -3724,11 +3724,11 @@ AlpsKnowledgeBrokerMPI::packEncoded(AlpsEncoded* enc,
 {
     const int bufSpare = model_->AlpsPar()->entry(AlpsParams::bufSpare);
     
-    int type = enc->type();
-    int repSize = enc->size();
+    int type = static_cast<int>(enc->type());
+    int repSize = static_cast<int>(enc->size());
 
     if(!packBuffer) {
-        size = repSize + 2*sizeof(int) + bufSpare;
+        size = static_cast<int>(repSize + 2*sizeof(int) + bufSpare);
         packBuffer = new char[size];
     }
     
@@ -4306,7 +4306,7 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
 		}
 		
 		// Sub-string from pos1 to pos2(not included)
-		int length = pos2 - pos1;
+		int length = static_cast<int>(pos2 - pos1);
 		// std::cout << "pos1=" << pos1 <<", pos2="<< pos2
 		//        << ", lenght=" << length << std::endl;
 
@@ -5353,6 +5353,7 @@ AlpsKnowledgeBrokerMPI::doOneUnitWork(int unitWork,
                                                  numNodesProcessed,
                                                  numNodesBranched,  /* Output */
                                                  numNodesDiscarded, /* Output */
+                                                 numNodesPartial,   /* Output */
                                                  treeDepth_,
                                                  betterSolution);
         

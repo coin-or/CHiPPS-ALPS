@@ -125,15 +125,13 @@ KnapTreeNode::process(bool isRoot, bool rampUp)
 	    foundSolution = true;
 	    KnapSolution* ksol = new KnapSolution(n, sol, val,
                             dynamic_cast<KnapModel*>(desc->getModel()));
-	    getKnowledgeBroker()->addKnowledge(AlpsKnowledgeTypeSolution, ksol, -val);
+	    getKnowledgeBroker()->addKnowledge(AlpsKnowledgeTypeSolution, ksol, 
+					       -val);
 	    getKnowledgeBroker()->messageHandler()->
 		message(ALPS_S_SEARCH_SOL, getKnowledgeBroker()->messages())
 		    << (getKnowledgeBroker()->getProcRank()) 
 		    << valRelax << CoinMessageEol;
 
-	    if (depth_ < getKnowledgeBroker()->getBestSolDepth()){
-		getKnowledgeBroker()->setBestSolDepth(depth_);
-	    }
 	}    
 	setStatus(AlpsNodeStatusFathomed);   // set the status to fathomed
     }
