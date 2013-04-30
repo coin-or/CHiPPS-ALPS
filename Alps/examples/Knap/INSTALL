@@ -1,12 +1,12 @@
 TO BUILD AND RUN SERIAL KNAP (UNIX-LIKE ENVIRONMENTS)
 =====================================================
 
-1. Download and build ALPS-1.0 serial library. Please refer to the INSTALL
+1. Download and build ALPS-1.4 serial library. Please refer to the INSTALL
 file in the installation directory.
 
 2. In BUILDDIR/Alps/examples/Knap, type 'make' to build the executable.
 
-3. Modify parameters if desired. ALPS-1.0/Alps/include/AlpsParams.h has
+3. Modify parameters if desired. ALPS-1.4/Alps/include/AlpsParams.h has
 explanations of each parameter. There are two ways to specify parameters:
    - parameter file: knap.par
    - command line
@@ -29,12 +29,12 @@ The users can specify:
 TO BUILD AND RUN PARALLEL KNAP (UNIX_LIKE ENVIRONMENTS)
 ======================================================
 
-1. Download and build ALPS-1.0 serial library. Please refer to the INSTALL
+1. Download and build ALPS-1.4 serial library. Please refer to the INSTALL
 file in the installation directory.
 
 2. In BUILDDIR/Alps/examples/Knap, type 'make' to build the executable.
 
-3. Modify parameters if desired. ALPS-1.0/Alps/include/AlpsParams.h has
+3. Modify parameters if desired. ALPS-1.4/Alps/include/AlpsParams.h has
 explanations of each parameter. There are two ways to specify parameters:
    - parameter file: knap.par
    - command line
