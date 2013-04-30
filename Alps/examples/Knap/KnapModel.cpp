@@ -168,9 +168,9 @@ KnapModel::decodeToSelf(AlpsEncoded& encoded)
 { 
     int size, cap, i;
     std::vector<std::pair<int, int> > items;
-    int* weight;  // By default of readRep, don't need allocate memory
-    int* profit;
-    int* seq;
+    int* weight = NULL;  // By default of readRep, don't need allocate memory
+    int* profit = NULL;
+    int* seq = NULL;
     
     AlpsReturnStatus status = AlpsReturnStatusOk;
 

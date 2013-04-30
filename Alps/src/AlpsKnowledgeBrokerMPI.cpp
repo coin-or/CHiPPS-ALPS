@@ -1151,7 +1151,10 @@ AlpsKnowledgeBrokerMPI::hubMain()
             
 	    // NOTE: will stop when there is a better solution.
 	    bool betterSolution = true;
-            int thisNumNodes = 0;
+            int thisNumProcessed = 0;
+            int thisNumBranched = 0;
+            int thisNumDiscarded = 0;
+            int thisNumPartial = 0;
             
             // Compute unit work based on node processing time
             if (comUnitWork) {
@@ -1164,10 +1167,16 @@ AlpsKnowledgeBrokerMPI::hubMain()
                 rCode = doOneUnitWork(unitWorkNodes_, 
                                       unitTime, 
                                       exitStatus,
-                                      thisNumNodes,
+                                      thisNumProcessed,
+				      thisNumBranched,
+				      thisNumDiscarded,
+				      thisNumPartial,
                                       treeDepth_, 
                                       betterSolution);
-                nodeProcessedNum_ += thisNumNodes;
+                nodeProcessedNum_ += thisNumProcessed;
+                nodeBranchedNum_ += thisNumBranched;
+                nodeDiscardedNum_ += thisNumDiscarded;
+                nodePartialNum_ += thisNumPartial;
             }
             catch (std::bad_alloc&) {
                 errorCode = 1;
@@ -1424,7 +1433,10 @@ void
 AlpsKnowledgeBrokerMPI::workerMain()
 {
     bool isIdle = false;
-    int thisNumNodes = 0;
+    int thisNumProcessed = 0;
+    int thisNumBranched = 0;
+    int thisNumDiscarded = 0;
+    int thisNumPartial = 0;
     int errorCode = 0;
     
     char reply = 'C';
@@ -1615,13 +1627,20 @@ AlpsKnowledgeBrokerMPI::workerMain()
                 }
                 
                 try {
-                    rCode = doOneUnitWork(unitWorkNodes_, 
-                                          unitTime,
-                                          exitStatus,
-                                          thisNumNodes,
-                                          treeDepth_, 
-                                          betterSolution);
-                    nodeProcessedNum_ += thisNumNodes;
+		   rCode = doOneUnitWork(unitWorkNodes_, 
+					 unitTime, 
+					 exitStatus,
+					 thisNumProcessed,
+					 thisNumBranched,
+					 thisNumDiscarded,
+					 thisNumPartial,
+					 treeDepth_, 
+					 betterSolution);
+		   nodeProcessedNum_ += thisNumProcessed;
+		   nodeBranchedNum_ += thisNumBranched;
+		   nodeDiscardedNum_ += thisNumDiscarded;
+		   nodePartialNum_ += thisNumPartial;
+		   std::cout << "Nodes branched" << thisNumBranched << std::endl;
                 }
                 catch (std::bad_alloc&) {
                     errorCode = 1;   
@@ -4696,9 +4715,12 @@ void
 AlpsKnowledgeBrokerMPI::searchLog()
 {
     int i, j;
-    int* tSizes = 0;
-    int* tLefts = 0;
-    int* tDepths = 0;
+    int* numProcessed = 0;
+    int* numPartial = 0;
+    int* numBranched = 0;
+    int* numDiscarded = 0;
+    int* numLeft = 0;
+    int* depths = 0;
     double* idles = 0;
     double* msgTimes = 0;
     double* rampUps = 0;
@@ -4718,9 +4740,12 @@ AlpsKnowledgeBrokerMPI::searchLog()
     int *subtreeChange = 0;
     
     if (globalRank_ == masterRank_) {
-	tSizes = new int [processNum_];
-	tLefts = new int [processNum_];
-	tDepths = new int [processNum_];
+	numProcessed = new int [processNum_];
+	numPartial = new int [processNum_];
+	numBranched = new int [processNum_];
+	numDiscarded = new int [processNum_];
+	numLeft = new int [processNum_];
+	depths = new int [processNum_];
 	idles = new double [processNum_];
 	msgTimes = new double [processNum_];
 	rampUps = new double [processNum_];
@@ -4739,11 +4764,17 @@ AlpsKnowledgeBrokerMPI::searchLog()
         subtreeChange = new int [processNum_];
     }  
 
-    MPI_Gather(&nodeProcessedNum_, 1, MPI_INT, tSizes, 1, MPI_INT, 
+    MPI_Gather(&nodeProcessedNum_, 1, MPI_INT, numProcessed, 1, MPI_INT, 
 	       masterRank_, MPI_COMM_WORLD);
-    MPI_Gather(&nodeLeftNum_, 1, MPI_INT, tLefts, 1, MPI_INT, 
+    MPI_Gather(&nodePartialNum_, 1, MPI_INT, numPartial, 1, MPI_INT, 
 	       masterRank_, MPI_COMM_WORLD);
-    MPI_Gather(&treeDepth_, 1, MPI_INT, tDepths, 1, MPI_INT, masterRank_, 
+    MPI_Gather(&nodeBranchedNum_, 1, MPI_INT, numBranched, 1, MPI_INT, 
+	       masterRank_, MPI_COMM_WORLD);
+    MPI_Gather(&nodeDiscardedNum_, 1, MPI_INT, numDiscarded, 1, MPI_INT, 
+	       masterRank_, MPI_COMM_WORLD);
+    MPI_Gather(&nodeLeftNum_, 1, MPI_INT, numLeft, 1, MPI_INT, 
+	       masterRank_, MPI_COMM_WORLD);
+    MPI_Gather(&treeDepth_, 1, MPI_INT, depths, 1, MPI_INT, masterRank_, 
 	       MPI_COMM_WORLD);
     MPI_Gather(&idleTime_, 1, MPI_DOUBLE, idles, 1, MPI_DOUBLE, masterRank_,
 	       MPI_COMM_WORLD);
@@ -4809,8 +4840,11 @@ AlpsKnowledgeBrokerMPI::searchLog()
 	double varRampUp = 0.0, stdRampUp = 0.0;
 	double varRampDown = 0.0, stdRampDown = 0.0;
 	
-	int totalTreeSize = 0;
-	int totalNodeLeft = 0;
+	int totalProcessed = 0;
+	int totalPartial = 0;
+	int totalBranched = 0;
+	int totalDiscarded = 0;
+	int totalLeft = 0;
 
         int sumQualityBalance = 0;
         int sumQuantityBalance = 0;
@@ -4825,8 +4859,11 @@ AlpsKnowledgeBrokerMPI::searchLog()
     
 	if(logFileLevel_ > 0 || msgLevel_ > 0) {
 	    for(i = 0; i < processNum_; ++i) {
-		totalTreeSize += tSizes[i];
-		totalNodeLeft += tLefts[i];
+		totalProcessed += numProcessed[i];
+		totalPartial += numPartial[i];
+		totalBranched += numBranched[i];
+		totalDiscarded += numDiscarded[i];
+		totalLeft += numLeft[i];
 		
 		sumRampUp += rampUps[i];
 		sumCpuTime += cpuTimes[i];
@@ -4847,17 +4884,17 @@ AlpsKnowledgeBrokerMPI::searchLog()
 		if (processTypeList_[i] == AlpsProcessTypeWorker) {
 		    ++numWorkers;
 		    
-		    sumSize += tSizes[i];
-		    sumDep += tDepths[i];
+		    sumSize += numProcessed[i];
+		    sumDep += depths[i];
 		    sumIdle += idles[i];
 		    sumMsgTime += msgTimes[i];
 		    sumRampDown += rampDowns[i];
 		    
-		    if (tSizes[i] > maxSize) maxSize = tSizes[i];
-		    if (tSizes[i] < minSize) minSize = tSizes[i];
+		    if (numProcessed[i] > maxSize) maxSize = numProcessed[i];
+		    if (numProcessed[i] < minSize) minSize = numProcessed[i];
                     
-		    if (tDepths[i] > maxDep) maxDep = tDepths[i];
-		    if (tDepths[i] < minDep) minDep = tDepths[i];
+		    if (depths[i] > maxDep) maxDep = depths[i];
+		    if (depths[i] < minDep) minDep = depths[i];
 
 		    if (idles[i] > maxIdle) maxIdle = idles[i];
 		    if (idles[i] < minIdle) minIdle = idles[i];
@@ -4882,7 +4919,7 @@ AlpsKnowledgeBrokerMPI::searchLog()
 #if 0
             // Does not make sense, 2/24/07
 	    for(i = 0; i < processNum_; ++i) { // Adjust idle and rampDown 
-		if (tSizes[i] > 0) {           // due to periodically checking.
+		if (numProcessed[i] > 0) {           // due to periodically checking.
 		    //idles[i] -= minIdle;
 		    //rampDowns[i] -= minRampDown;
 		}
@@ -4906,8 +4943,8 @@ AlpsKnowledgeBrokerMPI::searchLog()
             
 	    for (i = 0; i < processNum_; ++i) {
 		if (processTypeList_[i] == AlpsProcessTypeWorker) {
-		    varSize += pow(tSizes[i] - aveSize, 2);
-		    varDep += pow(tDepths[i] - aveDep, 2);
+		    varSize += pow(numProcessed[i] - aveSize, 2);
+		    varDep += pow(depths[i] - aveDep, 2);
 		    varIdle = pow(idles[i] - aveIdle, 2);
 		    varMsgTime = pow(msgTimes[i] - aveMsgTime, 2);
 		    varRampDown = pow(rampDowns[i] - aveRampDown, 2);
@@ -4943,9 +4980,17 @@ AlpsKnowledgeBrokerMPI::searchLog()
 	    //----------------------------------------------
 
 	    logFout << "Number of nodes processed = " 
-		    << totalTreeSize << std::endl;
+		    << totalProcessed << std::endl;
+	    if (totalPartial > 0){
+	       logFout << "Number of nodes partially processed = " 
+		       << totalPartial << std::endl;
+	    }
+	    logFout << "Number of nodes branched = " 
+		    << totalBranched << std::endl;
+	    logFout << "Number of nodes pruned before processing = " 
+		    << totalDiscarded << std::endl;
             logFout << "Number of nodes left = " 
-		    << totalNodeLeft << std::endl;
+		    << totalLeft << std::endl;
 	    logFout << "Max number of nodes processed by a worker = "
 		    << maxSize << std::endl;
 	    logFout << "Min number of nodes processed by a worker = "
@@ -4967,7 +5012,7 @@ AlpsKnowledgeBrokerMPI::searchLog()
 		for (i = 0; i < processNum_; ++i) { 
 		    ++j;
 		    if (j % 5 == 0) logFout << std::endl;
-		    logFout << tSizes[i] << "\t";
+		    logFout << numProcessed[i] << "\t";
 		}
 
 		j = 0;
@@ -4977,7 +5022,7 @@ AlpsKnowledgeBrokerMPI::searchLog()
 		for (i = 0; i < processNum_; ++i) {
 		    ++j;
 		    if (j % 5 == 0) logFout << std::endl;
-		    logFout << tDepths[i] << "\t";
+		    logFout << depths[i] << "\t";
 		}
 		logFout << std::endl << std::endl;
 	    } // Log if logFileLevel_ > 0
@@ -5149,9 +5194,17 @@ AlpsKnowledgeBrokerMPI::searchLog()
 	    //----------------------------------------------
 
 	    std::cout << "Number of nodes processed = " 
-                      << totalTreeSize << std::endl;
+                      << totalProcessed << std::endl;
+	    if (totalPartial >0){
+	       std::cout << "Number of nodes partially processed = " 
+			 << totalPartial << std::endl;
+	    }
+	    std::cout << "Number of nodes branched = " 
+                      << totalBranched << std::endl;
+	    std::cout << "Number of nodes pruned before processing = " 
+                      << totalDiscarded << std::endl;
             std::cout << "Number of nodes left = " 
-                      << totalNodeLeft << std::endl;
+                      << totalLeft << std::endl;
 	    std::cout << "Max number of nodes processed by a worker = "
                       << maxSize << std::endl;
 	    std::cout << "Min number of nodes processed by a worker = "
@@ -5258,12 +5311,15 @@ AlpsKnowledgeBrokerMPI::searchLog()
     }  // EOF master log
 
     if (globalRank_ == masterRank_) {
-	delete [] tSizes;     tSizes = 0;
-	delete [] tLefts;     tLefts = 0;
-	delete [] tDepths;    tDepths = 0;
-	delete [] idles;      idles = 0;
-	delete [] rampUps;    rampUps = 0;
-	delete [] rampDowns;  rampDowns = 0;
+	delete [] numProcessed;     numProcessed = 0;
+	delete [] numPartial;       numPartial = 0;
+	delete [] numBranched;      numBranched = 0;
+	delete [] numDiscarded;     numDiscarded = 0;
+	delete [] numLeft;          numLeft = 0;
+	delete [] depths;           depths = 0;
+	delete [] idles;            idles = 0;
+	delete [] rampUps;          rampUps = 0;
+	delete [] rampDowns;        rampDowns = 0;
         delete [] cpuTimes;
         delete [] wallClocks;
         delete [] qualityBalance;
@@ -5289,17 +5345,19 @@ AlpsKnowledgeBrokerMPI::doOneUnitWork(int unitWork,
                                       double unitTime,
                                       AlpsExitStatus & exitStatus,
                                       int & numNodesProcessed,
+                                      int & numNodesBranched,
+                                      int & numNodesDiscarded,
+                                      int & numNodesPartial,
                                       int & depth,
                                       bool & betterSolution)
 {
     
     AlpsReturnStatus rCode = AlpsReturnStatusOk;
 
-    int numNodesBranched = 0;  /* Output */
-    int numNodesDiscarded = 0; /* Output */
-    int numNodesPartial = 0;  /* Output */
-        
-    numNodesProcessed = 0; 
+    numNodesProcessed = 0; /* Output */
+    numNodesBranched = 0;  /* Output */
+    numNodesDiscarded = 0; /* Output */
+    numNodesPartial = 0;   /* Output */        
     
     if( !workingSubTree_ && !(subTreePool_->hasKnowledge()) ) {
         return rCode;

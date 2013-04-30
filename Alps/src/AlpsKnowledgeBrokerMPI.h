@@ -331,6 +331,9 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 				   double unitTime, 
 				   AlpsExitStatus & exitStatus,
 				   int & numNodesProcessed,
+				   int & numNodesBranched,
+				   int & numNodesDiscarded,
+				   int & numNodesPartial,
 				   int & depth,
 				   bool & betterSolution);
     

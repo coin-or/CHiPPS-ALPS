@@ -344,6 +344,7 @@ AlpsKnowledgeBrokerSerial::searchLog()
 	fout << "Number of nodes processed = "<<nodeProcessedNum_ << std::endl;
 	fout << "Number of nodes partially processed = "<<nodePartialNum_<<std::endl;
 	fout << "Number of nodes branched = "<<nodeBranchedNum_ << std::endl;
+	fout << "Number of nodes discarded = "<<nodeDiscardedNum_ << std::endl;
 	fout << "Number of nodes left in queue= " << nodeLeftNum_ << std::endl;
 	fout << "Tree depth = " << treeDepth_ << std::endl;
 	
