@@ -25,13 +25,13 @@ ALPS in two ways:
    (recommended). For this, you need a subversion client installed. For a
    command-line client, check out the code with
 
-   svn co https://projects.coin-or.org/svn/CHiPPS/Alps/stable/1.3 Alps-1.3
+   svn co https://projects.coin-or.org/svn/CHiPPS/Alps/stable/1.4 Alps-1.4
 
 2. Download the source in a compressed file from from
    http://www.coin-or.org/download/source/Alps and
    extract it, for example, with
 
-   tar -xzvf Alps-1.3.0.tgz
+   tar -xzvf Alps-1.4.0.tgz
 
    More detailed download instructions can be found at
 
@@ -45,7 +45,7 @@ ALPS in two ways:
 -----------------
 
 Switch to the directory in which you just downloaded or extracted the source
-(e.g., Alps-1.0) and execute the following commands:
+(e.g., Alps-1.4) and execute the following commands:
 
   1) ./configure
   2) make
@@ -70,7 +70,7 @@ for more information.
 For configuration and and compilation of the MPI parallel solver, the user has
 to specify the location of MPI with options --with-mpi-incdir, --with-mpi-lib,
 MPICC, and MPICXX. Switch to the directory that you just downloaded or
-extracted (e.g. Alps-1.3) and execute the following commands (substituting the
+extracted (e.g. Alps-1.4) and execute the following commands (substituting the
 correct paths and command names).
 
   1) ./configure --enable-static --disable-shared --with-mpi-incdir=/usr/local/mpich/include --with-mpi-lib='-L/usr/local/mpich/lib  -lmpich' MPICC=mpicc MPICXX=mpiCC
