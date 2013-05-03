@@ -279,28 +279,54 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     masterTimer_.setClockType(AlpsClockTypeWallClock);
 
     hubNodeProcesseds_ = new int [hubNum_];
+    hubNodeBrancheds_ = new int [hubNum_];
+    hubNodeDiscardeds_ = new int [hubNum_]; 
+    hubNodePartials_ = new int [hubNum_]; 
+
+
+
     hubWorkQualities_ = new double [hubNum_];
     hubWorkQuantities_ = new double [hubNum_];
     hubReported_ = new bool [hubNum_];
+
     workerNodeProcesseds_ = new int [clusterSize_];
+    workerNodeBrancheds_ = new int [clusterSize_]; 
+    workerNodeDiscardeds_ = new int [clusterSize_];
+    workerNodePartials_ = new int [clusterSize_]; 
+
+
     workerWorkQualities_ = new double [clusterSize_];
     workerWorkQuantities_ = new double [clusterSize_];
     workerReported_ = new bool [clusterSize_];
   
     for (i = 0; i < hubNum_; ++i) {
 	hubNodeProcesseds_[i] = 0;
+	hubNodeBrancheds_[i] = 0; 
+	hubNodeDiscardeds_[i] = 0; 
+	hubNodePartials_[i] = 0;
+
 	hubWorkQualities_[i] = 0.0;
 	hubWorkQuantities_[i] = 0.0;
 	hubReported_[i] = false;
     }
     for (i = 0; i < clusterSize_; ++i) {
 	workerNodeProcesseds_[i] = 0;
+	workerNodeBrancheds_[i] = 0 ; 
+	workerNodeDiscardeds_[i] = 0; 
+	workerNodePartials_[i] = 0; 
+
 	workerWorkQualities_[i] = ALPS_OBJ_MAX;
 	workerWorkQuantities_[i] = 0.0;
 	workerReported_[i] = false;
     }
 
     workerNodeProcesseds_[0] = nodeProcessedNum_;
+    workerNodeBrancheds_[0] = nodeBranchedNum_; 
+    workerNodeDiscardeds_[0] = nodeDiscardedNum_;
+    workerNodePartials_[0] = nodePartialNum_;
+
+
+
     workerWorkQualities_[0] = workQuality_;
     workerWorkQuantities_[0] = workQuantity_;
 
@@ -994,17 +1020,29 @@ AlpsKnowledgeBrokerMPI::hubMain()
     hubTimer_.setClockType(AlpsClockTypeWallClock);
 
     workerNodeProcesseds_ = new int [clusterSize_];
+    workerNodeBrancheds_ = new int [clusterSize_]; 
+    workerNodeDiscardeds_ = new int [clusterSize_]; 
+    workerNodePartials_ = new int [clusterSize_]; 
+
     workerWorkQualities_ = new double [clusterSize_];
     workerWorkQuantities_ = new double [clusterSize_];
     workerReported_ = new bool [clusterSize_];
 
     for (i = 0; i < clusterSize_; ++i) {
 	workerNodeProcesseds_[i] = 0;
+	workerNodeBrancheds_[i] = 0; 
+	workerNodeDiscardeds_[i] = 0; 
+	workerNodePartials_[i] = 0; 
 	workerWorkQualities_[i] = ALPS_OBJ_MAX;
 	workerWorkQuantities_[i] = 0.0;
     }
     
     workerNodeProcesseds_[0] = nodeProcessedNum_;
+    workerNodeBrancheds_[0] = nodeBranchedNum_;
+    workerNodeDiscardeds_[0] = nodeDiscardedNum_;
+    workerNodePartials_[0] = nodePartialNum_;
+    
+
     workerWorkQualities_[0] = workQuality_;
     workerWorkQuantities_[0] = workQuantity_ = 0.0;
 
@@ -1640,7 +1678,10 @@ AlpsKnowledgeBrokerMPI::workerMain()
 		   nodeBranchedNum_ += thisNumBranched;
 		   nodeDiscardedNum_ += thisNumDiscarded;
 		   nodePartialNum_ += thisNumPartial;
+
 		   std::cout << "Nodes branched" << thisNumBranched << std::endl;
+		   
+
                 }
                 catch (std::bad_alloc&) {
                     errorCode = 1;   
@@ -2083,7 +2124,7 @@ AlpsKnowledgeBrokerMPI::donateWork(char*& anyBuffer,
 				   double recvWL)
 {
     int size       = 
-	model_->AlpsPar()->entry(AlpsParams::smallSize);
+       model_->AlpsPar()->entry(AlpsParams::smallSize);
     int pos        = 0;
     int receiverID = 0;
     int treeSize;
@@ -2361,7 +2402,7 @@ AlpsKnowledgeBrokerMPI::hubBalanceWorkers()
 	    if ( i == clusterRank_ ) continue;
 
 	    if (workerWorkQuantities_[i] > needWorkThreshold) {
-		donors.insert(std::pair<double, int>(workerWorkQualities_[i], 
+	       donors.insert(std::pair<double, int>(workerWorkQualities_[i], 
 						     globalRank_-masterRank_ + i));
 	    }
 	}
@@ -2560,6 +2601,10 @@ AlpsKnowledgeBrokerMPI::hubReportStatus(int tag, MPI_Comm comm)
 #endif
 
     MPI_Pack(&clusterNodeProcessed_, 1, MPI_INT, smallBuffer_,size,&pos, comm);
+    MPI_Pack(&clusterNodeBranched_, 1, MPI_INT, smallBuffer_,size,&pos, comm);
+    MPI_Pack(&clusterNodeDiscarded_, 1, MPI_INT, smallBuffer_,size,&pos, comm);
+    MPI_Pack(&clusterNodePartial_, 1, MPI_INT, smallBuffer_,size,&pos, comm);
+
     MPI_Pack(&clusterWorkQuality_, 1, MPI_DOUBLE, smallBuffer_,size,&pos,comm);
     MPI_Pack(&clusterWorkQuantity_, 1, MPI_DOUBLE,smallBuffer_,size,&pos,comm);
     MPI_Pack(&clusterSendCount_, 1, MPI_INT, smallBuffer_, size, &pos, comm);
@@ -2600,7 +2645,15 @@ AlpsKnowledgeBrokerMPI::hubUpdateCluStatus(char*& bufLarge,
     workerReported_[sender] = true;
     
     int preNodeProcessed = workerNodeProcesseds_[sender];
+    int preNodeBranched = workerNodeBrancheds_[sender]; 
+    int preNodeDiscarded = workerNodeDiscardeds_[sender];
+    int preNodePartial = workerNodePartials_[sender]; 
+
     int curNodeProcessed;
+    int curNodeBranched; 
+    int curNodeDiscarded; 
+    int curNodePartial; 
+
     //double preQuality = workerWorkQualities_[sender];
     double curQuality;
     double preQuantity = workerWorkQuantities_[sender];
@@ -2608,6 +2661,11 @@ AlpsKnowledgeBrokerMPI::hubUpdateCluStatus(char*& bufLarge,
     double npTime;
 
     MPI_Unpack(bufLarge, size, &position, &curNodeProcessed, 1, MPI_INT, comm);
+    MPI_Unpack(bufLarge, size, &position, &curNodeBranched, 1, MPI_INT, comm); 
+    MPI_Unpack(bufLarge, size, &position, &curNodeDiscarded, 1, MPI_INT, comm);
+    MPI_Unpack(bufLarge, size, &position, &curNodePartial, 1, MPI_INT, comm); 
+
+
     MPI_Unpack(bufLarge, size, &position, &curQuality, 1, MPI_DOUBLE, comm);
     MPI_Unpack(bufLarge, size, &position, &curQuantity, 1, MPI_DOUBLE, comm);
     MPI_Unpack(bufLarge, size, &position, &msgSendNum, 1, MPI_INT, comm);
@@ -2616,11 +2674,29 @@ AlpsKnowledgeBrokerMPI::hubUpdateCluStatus(char*& bufLarge,
     MPI_Unpack(bufLarge, size, &position, &unitWorkNodes_, 1, MPI_INT, comm);
     
     workerNodeProcesseds_[sender] = curNodeProcessed;
+    workerNodeBrancheds_[sender] = curNodeBranched; 
+    workerNodeDiscardeds_[sender] = curNodeDiscarded; 
+    workerNodePartials_[sender] = curNodePartial; 
+
+
+
     workerWorkQualities_[sender] = curQuality;
     workerWorkQuantities_[sender] = curQuantity;
     
+
+
     clusterNodeProcessed_ -= preNodeProcessed;
     clusterNodeProcessed_ += curNodeProcessed;
+
+    clusterNodeBranched_ -= preNodeBranched; 
+    clusterNodeBranched_ += curNodeBranched; 
+    
+    clusterNodeDiscarded_ -= preNodeDiscarded; 
+    clusterNodeDiscarded_ += curNodeDiscarded; 
+
+    clusterNodePartial_ -= preNodePartial; 
+    clusterNodePartial_ += curNodePartial; 
+
 
     clusterWorkQuantity_ -= preQuantity;
     clusterWorkQuantity_ += curQuantity;
@@ -3023,6 +3099,18 @@ AlpsKnowledgeBrokerMPI::masterUpdateSysStatus(char*& bufLarge,
 
     int preNodeProcessed = hubNodeProcesseds_[sender];
     int curNodeProcessed = 0;
+
+    int preNodeBranched = hubNodeBrancheds_[sender]; 
+    int curNodeBranched = 0 ; 
+    
+    int preNodeDiscarded = hubNodeDiscardeds_[sender]; 
+    int curNodeDiscarded = 0 ; 
+
+    int preNodePartial = hubNodePartials_[sender]; 
+    int curNodePartial = 0; 
+
+
+
     //double preQuality = hubWorkQualities_[sender];
     double curQuality;
     double preQuantity = hubWorkQuantities_[sender];
@@ -3030,6 +3118,12 @@ AlpsKnowledgeBrokerMPI::masterUpdateSysStatus(char*& bufLarge,
     double npTime;
 
     MPI_Unpack(bufLarge, size, &position, &curNodeProcessed, 1, MPI_INT, comm);
+    MPI_Unpack(bufLarge, size, &position, &curNodeBranched, 1, MPI_INT, comm);
+    MPI_Unpack(bufLarge, size, &position, &curNodeDiscarded, 1, MPI_INT, comm);
+    MPI_Unpack(bufLarge, size, &position, &curNodePartial, 1, MPI_INT, comm);
+
+
+
     MPI_Unpack(bufLarge, size, &position, &curQuality, 1, MPI_DOUBLE, comm);
     MPI_Unpack(bufLarge, size, &position, &curQuantity, 1, MPI_DOUBLE, comm);
     MPI_Unpack(bufLarge, size, &position, &msgSendNum, 1, MPI_INT, comm);
@@ -3039,6 +3133,14 @@ AlpsKnowledgeBrokerMPI::masterUpdateSysStatus(char*& bufLarge,
 
     // Update the hub's status
     hubNodeProcesseds_[sender] = curNodeProcessed;
+    hubNodeBrancheds_[sender] = curNodeBranched; 
+    hubNodeDiscardeds_[sender] = curNodeDiscarded;
+    hubNodePartials_[sender] = curNodePartial;
+
+    
+    
+
+
     hubWorkQualities_[sender] = curQuality;
     hubWorkQuantities_[sender] = curQuantity;
 
@@ -3124,6 +3226,22 @@ AlpsKnowledgeBrokerMPI::refreshSysStatus()
     clusterNodeProcessed_ += workerNodeProcesseds_[masterRank_];
     clusterNodeProcessed_ -= preMasterNodeP;
 
+    int preMasterNodeB = workerNodeBrancheds_[masterRank_]; 
+    workerNodeBrancheds_[masterRank_] = nodeBranchedNum_;
+    clusterNodeBranched_ += workerNodeBrancheds_[masterRank_]; 
+    clusterNodeBranched_ -= preMasterNodeB; 
+
+    int preMasterNodeD = workerNodeDiscardeds_[masterRank_]; 
+    workerNodeDiscardeds_[masterRank_] = nodeDiscardedNum_; 
+    clusterNodeDiscarded_ += workerNodeDiscardeds_[masterRank_]; 
+    clusterNodeDiscarded_ -= preMasterNodeD; 
+
+    int preMasterNodePa = workerNodePartials_[masterRank_]; 
+    workerNodePartials_[masterRank_] = nodePartialNum_; 
+    clusterNodePartial_ += workerNodePartials_[masterRank_]; 
+    clusterNodePartial_ -= preMasterNodePa; 
+
+
     // Note: Nothing need to do about master's quality. 
 
     //------------------------------------------------------
@@ -3141,6 +3259,7 @@ AlpsKnowledgeBrokerMPI::refreshSysStatus()
 
     int preHub1NodeP = hubNodeProcesseds_[0];
     hubNodeProcesseds_[0] = clusterNodeProcessed_;
+
     systemNodeProcessed_ += hubNodeProcesseds_[0];
     systemNodeProcessed_ -= preHub1NodeP;
 
@@ -3219,11 +3338,33 @@ AlpsKnowledgeBrokerMPI::refreshClusterStatus()
     workerWorkQualities_[masterRank_] = workQuality_;
     clusterWorkQuality_ = std::min(clusterWorkQuality_, workQuality_);
 
-    // Add hub's node processed num into cluster
+    // Add hub's node processed, num into cluster
     int PreNodeP = workerNodeProcesseds_[masterRank_];
     workerNodeProcesseds_[masterRank_] = nodeProcessedNum_;
     clusterNodeProcessed_ += workerNodeProcesseds_[masterRank_];
     clusterNodeProcessed_ -= PreNodeP;
+
+    // add hubs's node branched num into cluster
+    int PreNodeB = workerNodeBrancheds_[masterRank_];
+    workerNodeBrancheds_[masterRank_] = nodeBranchedNum_;
+    clusterNodeBranched_ += workerNodeBrancheds_[masterRank_];
+    clusterNodeBranched_ -= PreNodeB;
+
+    // add hubs's node discarded num into cluster
+    int PreNodeD = workerNodeDiscardeds_[masterRank_];
+    workerNodeDiscardeds_[masterRank_] = nodeDiscardedNum_;
+    clusterNodeDiscarded_ += workerNodeDiscardeds_[masterRank_];
+    clusterNodeDiscarded_ -= PreNodeD;
+
+    // add hubs's node partial num into cluster
+    int PreNodePa = workerNodePartials_[masterRank_];
+    workerNodePartials_[masterRank_] = nodePartialNum_;
+    clusterNodePartial_ += workerNodePartials_[masterRank_];
+    clusterNodePartial_ -= PreNodePa;
+
+
+
+
 
 #ifdef NF_DEBUG_MORE
     std::cout << "Hub[" << globalRank_ << "]: clusterWorkQuality = " 
@@ -3342,6 +3483,10 @@ AlpsKnowledgeBrokerMPI::workerReportStatus(int tag,
     }
 
     MPI_Pack(&nodeProcessedNum_, 1, MPI_INT, smallBuffer_, size, &pos, comm);
+    MPI_Pack(&nodeBranchedNum_, 1, MPI_INT, smallBuffer_, size, &pos, comm);
+    MPI_Pack(&nodeDiscardedNum_, 1, MPI_INT, smallBuffer_, size, &pos, comm);
+    MPI_Pack(&nodePartialNum_, 1, MPI_INT, smallBuffer_, size, &pos, comm);
+
     MPI_Pack(&workQuality_, 1, MPI_DOUBLE, smallBuffer_, size, &pos, comm);
     MPI_Pack(&workQuantity_, 1, MPI_DOUBLE, smallBuffer_, size, &pos, comm);
     MPI_Pack(&sendCount_, 1, MPI_INT, smallBuffer_, size, &pos, comm);
@@ -4485,7 +4630,7 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
 	setNextNodeIndex(workerDown);
 	setMaxNodeIndex(workerUp);
     }
-
+    
     // Determine if hubs process nodes.
     int hubWorkClusterSizeLimit = 
         model_->AlpsPar()->entry(AlpsParams::hubWorkClusterSizeLimit);
@@ -5411,8 +5556,8 @@ AlpsKnowledgeBrokerMPI::doOneUnitWork(int unitWork,
                                                  numNodesProcessed,
                                                  numNodesBranched,  /* Output */
                                                  numNodesDiscarded, /* Output */
-                                                 numNodesPartial,   /* Output */
-                                                 treeDepth_,
+						 numNodesPartial,   /* Output */
+						 treeDepth_,
                                                  betterSolution);
         
         if ( !( workingSubTree_->getNumNodes()) ) {
@@ -5478,8 +5623,20 @@ AlpsKnowledgeBrokerMPI::init()
     masterDoBalance_ = 0;
     hubDoBalance_ = 0;
     workerNodeProcesseds_ = 0;
+    workerNodeBrancheds_ = 0; 
+    workerNodeDiscardeds_ = 0; 
+    workerNodePartials_ = 0; 
+
     clusterNodeProcessed_ = 0;
+    clusterNodeBranched_ = 0;
+    clusterNodeDiscarded_ = 0;
+    clusterNodePartial_ = 0; 
+
     hubNodeProcesseds_ = 0;
+    hubNodeBrancheds_ = 0;
+    hubNodeDiscardeds_ = 0; 
+    hubNodePartials_ = 0; 
+
     sendCount_ = 0;
     recvCount_ = 0;
     clusterSendCount_ = 0;
@@ -5568,10 +5725,44 @@ AlpsKnowledgeBrokerMPI::~AlpsKnowledgeBrokerMPI()
 	delete [] workerNodeProcesseds_; 
 	workerNodeProcesseds_ = 0;
     }
+    if (workerNodeBrancheds_) {
+	delete [] workerNodeBrancheds_; 
+	workerNodeBrancheds_ = 0;
+    }
+    if (workerNodeDiscardeds_) {
+	delete [] workerNodeDiscardeds_; 
+	workerNodeDiscardeds_ = 0;
+    }
+    if (workerNodePartials_) {
+	delete [] workerNodePartials_; 
+	workerNodePartials_ = 0;
+    }
+
+
     if (hubNodeProcesseds_) {
 	delete [] hubNodeProcesseds_;
 	hubNodeProcesseds_ = 0;
     }
+
+    if (hubNodeBrancheds_) {
+	delete [] hubNodeBrancheds_;
+	hubNodeBrancheds_ = 0;
+    }
+
+    if (hubNodeDiscardeds_) {
+	delete [] hubNodeDiscardeds_;
+	hubNodeDiscardeds_ = 0;
+    }
+
+
+    if (hubNodePartials_) {
+	delete [] hubNodePartials_;
+	hubNodePartials_ = 0;
+    }
+
+
+
+
 #if 0
     if (attachBuffer_) {
         delete [] attachBuffer_;

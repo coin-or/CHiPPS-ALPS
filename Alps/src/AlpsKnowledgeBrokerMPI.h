@@ -184,12 +184,42 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** To record how many nodes processed for each worker in a cluster. */
     int* workerNodeProcesseds_;
 
+    /** To record how many nodes branched for each worker in a cluster. */
+    int* workerNodeBrancheds_;
+
+    /** To record how many nodes discarded for each worker in a cluster. */
+    int* workerNodeDiscardeds_;
+
+    /** To record how many nodes pregnant for each worker in a cluster. */
+    int* workerNodePartials_;
+
+
     /** To record how many nodes by a cluster. */
     int clusterNodeProcessed_;
+
+    int clusterNodeBranched_; 
+
+    int clusterNodeDiscarded_;
+
+    int clusterNodePartial_;
+
 
     /** To record how many nodes processed for each hub */
     int* hubNodeProcesseds_;
     //@}
+    
+    /** To record how many nodes branched for each hub */
+    int* hubNodeBrancheds_;
+
+    /** To record how many nodes discarded for each hub */
+    int* hubNodeDiscardeds_;
+
+    /** To record how many nodes pregnant for each hub */
+    int* hubNodePartials_;
+
+
+
+
 
     /** @name Message counts
      *
