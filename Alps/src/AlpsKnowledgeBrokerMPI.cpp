@@ -1679,7 +1679,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
 		   nodeDiscardedNum_ += thisNumDiscarded;
 		   nodePartialNum_ += thisNumPartial;
 
-		   std::cout << "Nodes branched" << thisNumBranched << std::endl;
+
 		   
 
                 }
