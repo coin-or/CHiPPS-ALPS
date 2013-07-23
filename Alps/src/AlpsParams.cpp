@@ -233,6 +233,7 @@ void AlpsParams::setDefaultEntries() {
   setEntry(solLimit, ALPS_INT_MAX);
   setEntry(unitWorkNodes, ALPS_NOT_SET);
   setEntry(workerMsgLevel, 0);
+  setEntry(threadIndex, 0); 
 
   // DoublePar
   setEntry(changeWorkThreshold, 0.05);
