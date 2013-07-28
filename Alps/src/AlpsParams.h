@@ -152,6 +152,7 @@ class AlpsParams : public AlpsParameterSet {
       workerMsgLevel,
 
       threadIndex, 
+
       ///
       endOfIntParams
   };
