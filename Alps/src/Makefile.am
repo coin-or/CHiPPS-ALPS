@@ -74,6 +74,11 @@ else
 libAlps_la_SOURCES += AlpsKnowledgeBrokerSerial.cpp AlpsKnowledgeBrokerSerial.h
 endif
 
+# List all additionally required libraries
+if DEPENDENCY_LINKING
+libAlps_la_LIBADD = $(ALPSLIB_LIBS)
+endif
+
 # This is for libtool
 libAlps_la_LDFLAGS = $(LT_LDFLAGS)
 
