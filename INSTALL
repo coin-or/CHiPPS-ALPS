@@ -73,7 +73,7 @@ MPICC, and MPICXX. Switch to the directory that you just downloaded or
 extracted (e.g. Alps-1.4) and execute the following commands (substituting the
 correct paths and command names).
 
-  1) ./configure --enable-static --disable-shared --with-mpi-incdir=/usr/local/mpich/include --with-mpi-lib='-L/usr/local/mpich/lib  -lmpich' MPICC=mpicc MPICXX=mpiCC
+  1) ./configure --enable-static --disable-shared --with-mpi-incdir=/usr/local/mpich/include --with-mpi-lib='-L/usr/local/mpich/lib  -lmpich' MPICC=mpicc MPICXX=mpicxx
   2) make 
   3) make install
 
