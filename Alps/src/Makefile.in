@@ -88,7 +88,9 @@ am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includecoindir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libAlps_la_LIBADD =
+am__DEPENDENCIES_1 =
+@DEPENDENCY_LINKING_TRUE@libAlps_la_DEPENDENCIES =  \
+@DEPENDENCY_LINKING_TRUE@	$(am__DEPENDENCIES_1)
 am__libAlps_la_SOURCES_DIST = AlpsConfig.h AlpsAix43.h \
 	AlpsSearchStrategy.cpp AlpsSearchStrategy.h \
 	AlpsSearchStrategyBase.h AlpsCygwin.h AlpsEncoded.h \
@@ -340,6 +342,9 @@ libAlps_la_SOURCES = AlpsConfig.h AlpsAix43.h AlpsSearchStrategy.cpp \
 	AlpsSubTree.cpp AlpsSubTree.h AlpsSubTreePool.h AlpsSunos.h \
 	AlpsTime.h AlpsTreeNode.cpp AlpsTreeNode.h $(am__append_1) \
 	$(am__append_2)
+
+# List all additionally required libraries
+@DEPENDENCY_LINKING_TRUE@libAlps_la_LIBADD = $(ALPSLIB_LIBS)
 
 # This is for libtool
 libAlps_la_LDFLAGS = $(LT_LDFLAGS)

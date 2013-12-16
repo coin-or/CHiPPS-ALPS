@@ -35,6 +35,9 @@
 /* Release Version number of project */
 #undef ALPS_VERSION_RELEASE
 
+/* SVN revision of project */
+#undef ALPS_SVN_REV
+
 /* Define to 1 if the Mpi package is available */
 #undef COIN_HAS_MPI
 

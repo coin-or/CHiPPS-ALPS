@@ -243,7 +243,7 @@ class AlpsSubTree : public AlpsKnowledge {
                                             int & numNodesProcessed, /* Output */
                                             int & numNodesBranched,  /* Output */
                                             int & numNodesDiscarded, /* Output */
-                                            int & numNodesPregnant,  /* Output */
+                                            int & numNodesPartial,  /* Output */
                                             int & depth);            /* Output */
     
     /** Explore the subtree for certain amount of work/time. 
@@ -258,7 +258,7 @@ class AlpsSubTree : public AlpsKnowledge {
                                      int & numNodesProcessed, /* Output */
                                      int & numNodesBranched,  /* Output */
                                      int & numNodesDiscarded, /* Output */
-                                     int & numNodesPregnant,  /* Output */
+                                     int & numNodesPartial,  /* Output */
                                      int & depth,             /* Output */
                                      bool & betterSolution);  /* Output */
     
