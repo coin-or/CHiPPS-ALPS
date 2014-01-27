@@ -784,7 +784,7 @@ install-data-am: install-pkgconfiglibDATA
 	@$(NORMAL_INSTALL)
 	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
 
-install-exec-am:
+install-exec-am: install-exec-local
 
 install-info: install-info-recursive
 
@@ -810,7 +810,8 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-info-am uninstall-pkgconfiglibDATA
+uninstall-am: uninstall-info-am uninstall-local \
+	uninstall-pkgconfiglibDATA
 	@$(NORMAL_INSTALL)
 	$(MAKE) $(AM_MAKEFLAGS) uninstall-hook
 
@@ -824,14 +825,15 @@ uninstall-info: uninstall-info-recursive
 	distclean-recursive distclean-tags distcleancheck distdir \
 	distuninstallcheck dvi dvi-am html html-am info info-am \
 	install install-am install-data install-data-am \
-	install-data-hook install-exec install-exec-am install-info \
-	install-info-am install-man install-pkgconfiglibDATA \
-	install-strip installcheck installcheck-am installdirs \
-	installdirs-am maintainer-clean maintainer-clean-generic \
-	maintainer-clean-recursive mostlyclean mostlyclean-generic \
-	mostlyclean-libtool mostlyclean-recursive pdf pdf-am ps ps-am \
-	tags tags-recursive uninstall uninstall-am uninstall-hook \
-	uninstall-info-am uninstall-pkgconfiglibDATA
+	install-data-hook install-exec install-exec-am \
+	install-exec-local install-info install-info-am install-man \
+	install-pkgconfiglibDATA install-strip installcheck \
+	installcheck-am installdirs installdirs-am maintainer-clean \
+	maintainer-clean-generic maintainer-clean-recursive \
+	mostlyclean mostlyclean-generic mostlyclean-libtool \
+	mostlyclean-recursive pdf pdf-am ps ps-am tags tags-recursive \
+	uninstall uninstall-am uninstall-hook uninstall-info-am \
+	uninstall-local uninstall-pkgconfiglibDATA
 
 
 ########################################################################
@@ -843,13 +845,23 @@ test: all
 
 unitTest: test
 
-clean-local:
+doxydoc:
+	doxygen doxydoc/doxygen.conf
+
+clean-doxydoc:
+	( cd doxydoc ; rm -rf html *.log *.tag )
+
+clean-local: clean-doxydoc
 	if test -r test/Makefile; then cd test; $(MAKE) clean; fi
 
 distclean-local:
 	if test -r test/Makefile; then cd test; $(MAKE) distclean; fi
 
-.PHONY: test unitTest
+install-exec-local: install-doc
+
+uninstall-local: uninstall-doc
+
+.PHONY: test unitTest doxydoc
 
 install-data-hook:
 	@$(mkdir_p) "$(addlibsdir)"
