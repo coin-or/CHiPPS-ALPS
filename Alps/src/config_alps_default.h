@@ -26,16 +26,16 @@
 /***************************************************************************/
 
 /* Version number of project */
-#define ALPS_VERSION "trunk"
+#define ALPS_VERSION "1.4.9"
 
 /* Major Version number of project */
-#define ALPS_VERSION_MAJOR   9999
+#define ALPS_VERSION_MAJOR 1
 
 /* Minor Version number of project */
-#define ALPS_VERSION_MINOR   9999
+#define ALPS_VERSION_MINOR 4
 
 /* Release Version number of project */
-#define ALPS_VERSION_RELEASE 9999
+#define ALPS_VERSION_RELEASE 9
 
 /* Define to 1 if the Mpi package is used */
 /* #define COIN_HAS_MPI 1 */
