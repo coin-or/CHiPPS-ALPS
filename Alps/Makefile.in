@@ -78,6 +78,7 @@ DIST_COMMON = README $(am__configure_deps) \
 	$(srcdir)/BuildTools/Makemain.inc $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/alps-uninstalled.pc.in \
 	$(srcdir)/alps.pc.in $(top_srcdir)/configure \
+	$(top_srcdir)/doxydoc/doxygen.conf.in \
 	$(top_srcdir)/examples/Abc/AbcBranchActual.cpp \
 	$(top_srcdir)/examples/Abc/AbcBranchActual.h \
 	$(top_srcdir)/examples/Abc/AbcBranchBase.cpp \
@@ -118,7 +119,7 @@ CONFIG_HEADER = $(top_builddir)/src/config.h \
 	$(top_builddir)/src/config_alps.h
 CONFIG_CLEAN_FILES = examples/Abc/Makefile examples/Abc/abc.par \
 	examples/Knap/Makefile examples/Knap/knap.par alps.pc \
-	alps-uninstalled.pc
+	alps-uninstalled.pc doxydoc/doxygen.conf
 SOURCES =
 DIST_SOURCES =
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
@@ -425,6 +426,8 @@ alps.pc: $(top_builddir)/config.status $(srcdir)/alps.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 alps-uninstalled.pc: $(top_builddir)/config.status $(srcdir)/alps-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
+doxydoc/doxygen.conf: $(top_builddir)/config.status $(top_srcdir)/doxydoc/doxygen.conf.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -588,7 +591,7 @@ distclean-tags:
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkdir_p) $(distdir)/. $(distdir)/BuildTools $(distdir)/examples/Abc $(distdir)/examples/Abc/data $(distdir)/examples/Knap
+	$(mkdir_p) $(distdir)/. $(distdir)/BuildTools $(distdir)/doxydoc $(distdir)/examples/Abc $(distdir)/examples/Abc/data $(distdir)/examples/Knap
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
