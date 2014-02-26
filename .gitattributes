@@ -10,6 +10,7 @@ Alps/config.sub -text
 Alps/configure -text
 Alps/configure.ac -text
 Alps/depcomp -text
+Alps/doxydoc/doxygen.conf.in -text
 Alps/examples/Abc/AUTHORS -text
 Alps/examples/Abc/AbcBranchActual.cpp -text
 Alps/examples/Abc/AbcBranchActual.h -text

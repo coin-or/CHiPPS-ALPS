@@ -23019,6 +23019,9 @@ done
                                                                                           ac_config_files="$ac_config_files Makefile examples/Abc/Makefile examples/Abc/abc.par examples/Knap/Makefile examples/Knap/knap.par src/Makefile test/Makefile alps.pc alps-uninstalled.pc"
 
 
+          ac_config_files="$ac_config_files doxydoc/doxygen.conf"
+
+
 # Here put the location and name of the configuration header file
                     ac_config_headers="$ac_config_headers src/config.h src/config_alps.h"
 
@@ -23723,6 +23726,7 @@ do
   "test/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
   "alps.pc" ) CONFIG_FILES="$CONFIG_FILES alps.pc" ;;
   "alps-uninstalled.pc" ) CONFIG_FILES="$CONFIG_FILES alps-uninstalled.pc" ;;
+  "doxydoc/doxygen.conf" ) CONFIG_FILES="$CONFIG_FILES doxydoc/doxygen.conf" ;;
   "test/AbcBranchActual.cpp" ) CONFIG_LINKS="$CONFIG_LINKS test/AbcBranchActual.cpp:examples/Abc/AbcBranchActual.cpp" ;;
   "test/AbcBranchActual.h" ) CONFIG_LINKS="$CONFIG_LINKS test/AbcBranchActual.h:examples/Abc/AbcBranchActual.h" ;;
   "test/AbcBranchBase.cpp" ) CONFIG_LINKS="$CONFIG_LINKS test/AbcBranchBase.cpp:examples/Abc/AbcBranchBase.cpp" ;;
