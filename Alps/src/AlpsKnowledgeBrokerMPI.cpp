@@ -4358,6 +4358,14 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
     MPI_Comm_rank(MPI_COMM_WORLD, &globalRank_);
     MPI_Comm_size(MPI_COMM_WORLD, &processNum_);
 
+    if(globalRank_ == 0 ){
+      std::cout << "===========================" << std::endl;
+      std::cout << "The number of processes is " << processNum_ << std::endl; 
+      std::cout << "===========================" << std::endl;      
+    }
+
+
+
     // CORRECTME
     // NOTE: masterRank_ is 0 or 1 (debug). Must smaller than cluster size.
     masterRank_ = 0;
