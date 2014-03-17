@@ -4546,7 +4546,7 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
 	}
 
         // more than 1 proc in the last cluser
-	if (processNum_- userClusterSize_ * (hubNum_ - 1) > 1) {
+	if (processNum_- userClusterSize_ * (hubNum_ - 1) >= 1) {
 	    break;
 	}
 	else {
