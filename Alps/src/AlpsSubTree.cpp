@@ -1252,8 +1252,8 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
 	}
 
 	assert(numNodesProcessed == numNodesBranched + numNodesFathomed);
-	assert(nodePool_->getNumKnowledges() == 
-	       numNodesCandidate + numNodesPartial); 
+	//	assert(nodePool_->getNumKnowledges() == 
+	//       numNodesCandidate + numNodesPartial); 
 
 	// Get the next node to be processed.
         activeNode_ = nodeSel->selectNextNode(this);
