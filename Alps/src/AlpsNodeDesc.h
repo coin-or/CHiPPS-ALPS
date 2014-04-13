@@ -42,7 +42,7 @@ class AlpsNodeDesc {
      
  public:
 
-    AlpsNodeDesc() {}
+    AlpsNodeDesc() {model_ = NULL; } 
     AlpsNodeDesc(AlpsModel* m)
 	{ model_ = m; }
 
