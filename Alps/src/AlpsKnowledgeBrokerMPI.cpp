@@ -1640,7 +1640,7 @@ AlpsKnowledgeBrokerMPI::workerMain()
 		   nodeBranchedNum_ += thisNumBranched;
 		   nodeDiscardedNum_ += thisNumDiscarded;
 		   nodePartialNum_ += thisNumPartial;
-		   std::cout << "Nodes branched" << thisNumBranched << std::endl;
+		   //std::cout << "Nodes branched" << thisNumBranched << std::endl;
                 }
                 catch (std::bad_alloc&) {
                     errorCode = 1;   
