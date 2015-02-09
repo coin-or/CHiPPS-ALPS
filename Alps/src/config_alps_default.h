@@ -26,7 +26,7 @@
 /***************************************************************************/
 
 /* Version number of project */
-#define ALPS_VERSION "1.5.1"
+#define ALPS_VERSION "1.5"
 
 /* Major Version number of project */
 #define ALPS_VERSION_MAJOR 1
@@ -35,7 +35,7 @@
 #define ALPS_VERSION_MINOR 5
 
 /* Release Version number of project */
-#define ALPS_VERSION_RELEASE 1
+#define ALPS_VERSION_RELEASE 9999
 
 /* Define to 1 if the Mpi package is used */
 /* #define COIN_HAS_MPI 1 */
