@@ -1183,6 +1183,8 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
     int numNodesFathomed(0), numNodesCandidate(1), oldNumNodesCandidate(1);
     
     bool forceLog = false;
+    // call logNode only when numNodesProcessed is updated.
+    bool logFlag = false;
     bool exitIfBetter = false;
         
     double oldSolQuality = ALPS_OBJ_MAX;
@@ -1290,6 +1292,7 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
                 throw CoinError("Unexpected node status", 
                                 "exploreSubTree", "AlpsSubTree"); 
             }
+	    logFlag = true;
             break;
 	case AlpsNodeStatusCandidate:
 	case AlpsNodeStatusEvaluated:
@@ -1352,6 +1355,7 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
                 if (deleteNode) {
                     removeDeadNodes(activeNode_);
                 }
+		logFlag = true;
                 break;
             case AlpsNodeStatusDiscarded :
 	        // Node cannot be marked discarded if already partially processed
@@ -1368,7 +1372,6 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
                 throw CoinError("Status is unknown or not allowed", 
                                 "exploreSubTree", "AlpsSubTree"); 
             }
-
             break;
         default : // branched or fathomed
             throw CoinError("Impossible status: branched or fathomed", 
@@ -1376,10 +1379,12 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
 	}
         
 	activeNode_ = NULL;
-
 	// Print node log for serial code.
-	broker_->getModel()->nodeLog(activeNode_, forceLog);
-	forceLog = false;
+	if (logFlag || forceLog) {
+	  broker_->getModel()->nodeLog(activeNode_, forceLog);
+	  logFlag = false;
+	  forceLog = false;
+	}
 
         /* Delete all nodes if required. */
         if (broker_->getModel()->fathomAllNodes()) {
