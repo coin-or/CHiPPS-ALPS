@@ -1,4 +1,5 @@
 * text=auto !eol
+/.travis.yml -text
 Alps/MSVisualStudio/v10/libAlps.vcxproj -text
 Alps/MSVisualStudio/v9/libAlps.vcproj -text
 Alps/Makefile.am -text
@@ -198,6 +199,7 @@ Alps/test/Makefile.am -text
 /Makefile.am -text
 /Makefile.in -text
 /README -text
+/appveyor.yml -text
 /config.guess -text
 /config.sub -text
 /configure -text
