@@ -15,7 +15,7 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
+ *                                                                           *
  *                                                                           *
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
@@ -41,19 +41,19 @@ class TotalWorkload : public std::unary_function<AlpsTreeNode*, void> {
     double totalLoad_;
     double incVal_;
     double rho_;
-    
+
  public:
-    TotalWorkload(const double incVal, const double rho) 
-	: 
-	totalLoad_(0.0), 
-	incVal_(incVal),
-	rho_(rho)
-	{}
-    
+    TotalWorkload(const double incVal, const double rho)
+        :
+        totalLoad_(0.0),
+        incVal_(incVal),
+        rho_(rho)
+        {}
+
     void operator()(AlpsTreeNode*& node) {
-	totalLoad_ += pow(fabs(incVal_ - node->getQuality()), rho_);
+        totalLoad_ += pow(fabs(incVal_ - node->getQuality()), rho_);
     }
-    
+
     double result() const { return totalLoad_; }
 };
 
@@ -62,10 +62,10 @@ class TotalWorkload : public std::unary_function<AlpsTreeNode*, void> {
 struct DeletePtrObject
 {
     template<class T>
-    void operator()(const T* ptr) const 
-	{
-	    delete ptr;
-	}
+    void operator()(const T* ptr) const
+        {
+            delete ptr;
+        }
 };
 
 //#############################################################################
@@ -73,6 +73,6 @@ struct DeletePtrObject
 inline void AlpsSleep(double sec)
 {
     double start = CoinCpuTime();
-    while ( (CoinCpuTime() - start) < sec) { };  
+    while ( (CoinCpuTime() - start) < sec) { };
 }
 #endif

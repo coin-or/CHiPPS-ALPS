@@ -15,7 +15,7 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
+ *                                                                           *
  *                                                                           *
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
@@ -122,8 +122,8 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** The process id that store the incumbent. */
     int incumbentID_;
 
-    /** Indicate whether the incumbent value is updated between two 
-	checking point. */
+    /** Indicate whether the incumbent value is updated between two
+        checking point. */
     bool updateIncumbent_;
     //@}
 
@@ -144,7 +144,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     double* hubWorkQualities_;
 
     /** The workload qualities of workers in the cluster to which this proces
-	belongs. Number of nodes is used as the quantities criteria. */
+        belongs. Number of nodes is used as the quantities criteria. */
     double* workerWorkQualities_;
 
     /** The workload quantity of the workload on the process. */
@@ -155,7 +155,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** The workload quantity of the whole system. */
     double systemWorkQuantity_;
-    
+
     /** The workload quantity of the whole system before forcing termination. */
     double systemWorkQuantityForce_;
 
@@ -163,7 +163,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     double* hubWorkQuantities_;
 
     /** The workload quantities of workers in the cluster to which this proces
-	belongs. */
+        belongs. */
     double* workerWorkQuantities_;
 
     /** Indicate which worker has been reported its work. */
@@ -201,18 +201,18 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** The number of new messages received by the process after last survey.*/
     int recvCount_;
 
-    /** The number of new messages sent by the processes in clusterComm_ 
-	after last survey.*/
+    /** The number of new messages sent by the processes in clusterComm_
+        after last survey.*/
     int clusterSendCount_;
 
-    /** The number of new messages received by the processes in clusterComm_ 
-	after last survey.*/
+    /** The number of new messages received by the processes in clusterComm_
+        after last survey.*/
     int clusterRecvCount_;
 
     /** The total number of messages sent by the all processes. */
     int systemSendCount_;
 
-    /** The total number of messages sent by the all processes. */ 
+    /** The total number of messages sent by the all processes. */
     int systemRecvCount_;
     //@}
 
@@ -235,7 +235,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** Worker timer */
     AlpsTimer workerTimer_;
-    
+
     /** The time spent in ramp up. */
     double rampUpTime_;
 
@@ -269,7 +269,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** Buffer attached to MPI when sharing generated knowledge. */
     char *attachBuffer_;
-    
+
     /** Large message buffer. */
     char *largeBuffer_;
 
@@ -278,12 +278,12 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** Small message buffer. */
     char *smallBuffer_;
-    
-    /** The period that master do load balancing. It changes 
+
+    /** The period that master do load balancing. It changes
         as search progresses. */
     double masterBalancePeriod_;
-    
-    /** The period that a hub load balancing and report cluster status. 
+
+    /** The period that a hub load balancing and report cluster status.
         It changes as search progresses. */
     double hubReportPeriod_;
 
@@ -292,7 +292,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** Size of the shared knowledge. */
     int modelGenPos_;
-    
+
     /** A subtree used in during up. */
     AlpsSubTree* rampUpSubTree_;
 
@@ -306,40 +306,40 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** Initialize member data. */
     void init();
-    
+
     /** @name Core member functions for master, hubs and workers.
      */
     //@{
     /** Master generates subtrees and sends them to hubs in Round-Robin way.
-	Master periodically do inter-cluster load balancing, 
-	and termination check. */
+        Master periodically do inter-cluster load balancing,
+        and termination check. */
     void masterMain(AlpsTreeNode* root);
 
     /** Hub generates subtrees and sends them to workers in Round-Robin way.
-	Hub do intra-cluster load balancing. */
+        Hub do intra-cluster load balancing. */
     void hubMain();
 
     /** Worker first receive subtrees, then start to explore them. Worker also
-	peroidically check message and process message. */
+        peroidically check message and process message. */
     void workerMain();
     //@}
 
     /** Explore a subtree from subtree pool for certain units of work/time.*/
-    // The same subtree will be explored next time if it still have 
-    // unexplored nodes. 
+    // The same subtree will be explored next time if it still have
+    // unexplored nodes.
     AlpsReturnStatus doOneUnitWork(int unitWork,
-				   double unitTime, 
-				   AlpsExitStatus & exitStatus,
-				   int & numNodesProcessed,
-				   int & numNodesBranched,
-				   int & numNodesDiscarded,
-				   int & numNodesPartial,
-				   int & depth,
-				   bool & betterSolution);
-    
+                                   double unitTime,
+                                   AlpsExitStatus & exitStatus,
+                                   int & numNodesProcessed,
+                                   int & numNodesBranched,
+                                   int & numNodesDiscarded,
+                                   int & numNodesPartial,
+                                   int & depth,
+                                   bool & betterSolution);
+
     /** Processing messages. */
     void processMessages(char *&buffer,
-                         MPI_Status &status, 
+                         MPI_Status &status,
                          MPI_Request &request);
 
     /** Static load balancing: Root Initialization */
@@ -351,52 +351,52 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     void spiralMaster(AlpsTreeNode* root);
     void spiralHub();
     void spiralWorker();
-    
+
     //------------------------------------------------------
 
     /** @name Load balancing member functions
      */
     //@{
     /** Master asks a hub to donate its workload to another hub. */
-    void masterAskHubDonate(int donorID, 
-                            int receiverID, 
+    void masterAskHubDonate(int donorID,
+                            int receiverID,
                             double receiverWorkload);
-    
+
     /** Hub asks a worker to donate its workload to another worker. */
-    void hubAskWorkerDonate(int donorID, 
-                            int receiverID, 
+    void hubAskWorkerDonate(int donorID,
+                            int receiverID,
                             double receiverWorkload);
-    
+
     /** Calculate the work quality and quantity on this process. */
     void updateWorkloadInfo();
 
     virtual int getNumNodeLeftSystem()
     { return static_cast<int>(systemWorkQuantity_); }
-    
+
     /** A worker donate its workload to the specified worker. */
-    void donateWork(char*& buf, 
-		    int tag,
-		    MPI_Status* status,  
-		    int recvID = -1,
-		    double recvWL = 0.0);
-    
+    void donateWork(char*& buf,
+                    int tag,
+                    MPI_Status* status,
+                    int recvID = -1,
+                    double recvWL = 0.0);
+
     /** Hub allocates the donated workload to its workers. */
     void hubAllocateDonation(char*& buf, MPI_Status* status);
-    
+
     /** Hub balances the workloads of its workers. */
     void hubBalanceWorkers();
-    
+
     /** Hub satisfies the workload rquest from a worker. */
     void hubSatisfyWorkerRequest(char*& buf, MPI_Status* status);
-    
+
     /** A hub reports its status (workload and msg counts) to the master. */
     // NOTE: comm is hubComm_ or MPI_COMM_WORLD.
     void hubReportStatus(int tag, MPI_Comm comm);
-    
+
     /** A hub unpacks the status of a worker from buffer. */
-    // NOTE: comm is clusterComm_ or MPI_COMM_WORLD. 
+    // NOTE: comm is clusterComm_ or MPI_COMM_WORLD.
     void hubUpdateCluStatus(char*& buf, MPI_Status* status, MPI_Comm comm);
-    
+
     /** Two hubs share their workload. */
     void hubsShareWork(char*& buf, MPI_Status* status);
 
@@ -404,7 +404,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     void masterBalanceHubs();
 
     /** Master unpack the status of a hub from buf and update system status.*/
-    // NOTE: comm is hubComm or MPI_COMM_WORLD. 
+    // NOTE: comm is hubComm or MPI_COMM_WORLD.
     void masterUpdateSysStatus(char*& buf, MPI_Status* status, MPI_Comm comm);
 
     /** The master re-calculate the system status. */
@@ -412,9 +412,9 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** A hub adds its status to the cluster's status. */
     void refreshClusterStatus();
-    
+
     /** A worker report its status (workload and msg counts) to its hub. */
-    // NOTE: comm is clusterComm_ or MPI_COMM_WORLD. 
+    // NOTE: comm is clusterComm_ or MPI_COMM_WORLD.
     void workerReportStatus(int tag, MPI_Comm comm);
     //@}
 
@@ -446,76 +446,76 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** Sent the incumbent value and rank to its two child if eixt */
     void sendIncumbent();
 
-    /** unpack the incumbent value, then store it and the id of the process 
-	having the incumbent in AlpsDataPool. */
+    /** unpack the incumbent value, then store it and the id of the process
+        having the incumbent in AlpsDataPool. */
     bool unpackSetIncumbent(char*& buf, MPI_Status* status);
 
     /** Send the best solution from the process having it to destination. */
     void collectBestSolution(int destination);
 
-    /** Inform master that a proc has received workload during a load 
-	balance initialized by master. */
+    /** Inform master that a proc has received workload during a load
+        balance initialized by master. */
     void tellMasterRecv();
- 
-    /** Inform hub that a proc has received workload during a load 
-	balance initialized by a hub. */
+
+    /** Inform hub that a proc has received workload during a load
+        balance initialized by a hub. */
     // Not used
     void tellHubRecv();
 
-    /** Pack an AlpsEncoded instance into buf. Return filled buf and size of 
-	packed message.
+    /** Pack an AlpsEncoded instance into buf. Return filled buf and size of
+        packed message.
         position: where to start if buf is allocated.
     */
-    void packEncoded(AlpsEncoded* enc, 
-                     char*& buf, 
+    void packEncoded(AlpsEncoded* enc,
+                     char*& buf,
                      int& size,
                      int& position,
                      MPI_Comm comm);
- 
+
     /** Unpack the given buffer into an AlpsEncoded instance. */
-    AlpsEncoded* unpackEncoded(char*& buf, 
-                               int& position, 
+    AlpsEncoded* unpackEncoded(char*& buf,
+                               int& position,
                                MPI_Comm comm,
                                int size = -1);
 
-    /** Receive the size of buffer, allocate memory for buffer, then 
-	receive the message and put it in buffer. */
+    /** Receive the size of buffer, allocate memory for buffer, then
+        receive the message and put it in buffer. */
     // NOTE: comm is hubComm_ or clusterComm_
-    void receiveSizeBuf(char*& buf, 
-			int sender, 
-			int tag, 
-			MPI_Comm comm, 
-			MPI_Status* status);
+    void receiveSizeBuf(char*& buf,
+                        int sender,
+                        int tag,
+                        MPI_Comm comm,
+                        MPI_Status* status);
 
-    /** First receive the size and the contend of a node, then construct 
-	a subtree with this received node. */
+    /** First receive the size and the contend of a node, then construct
+        a subtree with this received node. */
     // NOTE: comm is hubComm_ or clusterComm_
     void receiveRampUpNode(int sender,
-			   MPI_Comm comm, 
-			   MPI_Status* status);
+                           MPI_Comm comm,
+                           MPI_Status* status);
 
     /** Receive a subtree from the sender process and add it into
-	the subtree pool.*/
+        the subtree pool.*/
     void receiveSubTree(char*& buf, int sender, MPI_Status* status);
 
     /** Send the size and content of a buffer to the target process. */
     // NOTE: comm is hubComm_ or clusterComm_.
-    void sendSizeBuf(char*& buf, 
-		     int size, 
-		     int position,
-		     const int target, 
-		     const int tag, 
-		     MPI_Comm comm);
+    void sendSizeBuf(char*& buf,
+                     int size,
+                     int position,
+                     const int target,
+                     const int tag,
+                     MPI_Comm comm);
 
-    /** Send the size and the content of the best node of a given subtree 
-	to the target process. */
+    /** Send the size and the content of the best node of a given subtree
+        to the target process. */
     // NOTE: comm is hubComm_ or clusterComm_.
     void sendRampUpNode(const int target, MPI_Comm comm);
 
-    /** Send a node from rampUpSubTree's node pool and generated model 
+    /** Send a node from rampUpSubTree's node pool and generated model
         knowledge */
     void sendNodeModelGen(int receiver, int doUnitWork);
-    
+
     /** Send a given subtree to the target process. */
     bool sendSubTree(const int target, AlpsSubTree*& st, int tag);
 
@@ -527,9 +527,9 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     /** Delete subTrees in pools and the active subtree. */
     void deleteSubTrees();
 
-    
+
     void forwardModelKnowledge();
-    
+
     /** Set generated knowlege (related to model) to receiver. */
     // NOTE: comm is hubComm_ or MPI_COMM_WORLD.
     void sendModelKnowledge(MPI_Comm comm, int receiver=-1);
@@ -562,38 +562,38 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** Send error code to master. */
     void sendErrorCodeToMaster(int errorCode);
-    
+
     /** Receive error code and set solution status. */
     void recvErrorCode(char *& bufLarge);
-    
+
     /** Unpack the node, explore it and send load info to master. */
     void spiralRecvProcessNode();
-    
+
     /** Unpack msg and donate a node. */
     void spiralDonateNode();
-    
+
  public:
-    
-    /** Default construtor. 
+
+    /** Default construtor.
         NOTE: must call initializeSearch() later. */
     AlpsKnowledgeBrokerMPI()
-	:
-	AlpsKnowledgeBroker()
-	{ 
-	    init(); 
-	}
- 
+        :
+        AlpsKnowledgeBroker()
+        {
+            init();
+        }
+
     /** Useful construtor. */
-    AlpsKnowledgeBrokerMPI(int argc, 
-			   char* argv[], 
-			   AlpsModel& model)
-	:
-	AlpsKnowledgeBroker() 
-	{    
-	    init();
-	    initializeSearch(argc, argv, model);
-	}
-    
+    AlpsKnowledgeBrokerMPI(int argc,
+                           char* argv[],
+                           AlpsModel& model)
+        :
+        AlpsKnowledgeBroker()
+        {
+            init();
+            initializeSearch(argc, argv, model);
+        }
+
     /** Destructor. */
     ~AlpsKnowledgeBrokerMPI();
 
@@ -602,14 +602,14 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** Query the global rank of the Master. */
     virtual int getMasterRank() const { return masterRank_; }
-    
+
     /** Query the type (master, hub, or worker) of the process. */
     virtual AlpsProcessType getProcType() const { return processType_; }
-    
+
     /** This function
      * <ul>
      *  <li> initializes the message environment;
-     *  <li> the master reads in ALPS and user's parameter sets. If the model 
+     *  <li> the master reads in ALPS and user's parameter sets. If the model
      *  data is input from file, then it reads in the model data.
      *  <li> sets up user params and model;
      *  <li> broadcast parameters from the master to all other processes;
@@ -622,7 +622,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
     /** Search best solution for a given model. */
     void search(AlpsModel *model);
-    
+
     /** This function
      * <ul>
      * <li> broadcasts model data from the master to all other processes;
@@ -638,24 +638,24 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     virtual double getIncumbentValue() const {
         double bestObj = ALPS_OBJ_MAX;
         if (AlpsKnowledgeBroker::hasKnowledge(AlpsKnowledgeTypeSolution)) {
-	    bestObj = getBestKnowledge(AlpsKnowledgeTypeSolution).second;
+            bestObj = getBestKnowledge(AlpsKnowledgeTypeSolution).second;
             if (incumbentValue_ > bestObj) {
                 return bestObj;
             }
         }
-	return incumbentValue_;
+        return incumbentValue_;
     }
- 
+
     /** The master queries the quality of the best solution it knowns. */
     virtual double getBestQuality() const {
-	if (globalRank_ == masterRank_) {
+        if (globalRank_ == masterRank_) {
             if (getNumKnowledges(AlpsKnowledgeTypeSolution) > 0) {
-                return getBestKnowledge(AlpsKnowledgeTypeSolution).second;   
+                return getBestKnowledge(AlpsKnowledgeTypeSolution).second;
             }
             else {
                 return ALPS_OBJ_MAX;
             }
-	}
+        }
         else {
             return ALPS_OBJ_MAX;
         }
@@ -677,7 +677,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
      */
     //@{
     /** Set knowlege. */
-    void sendKnowledge(AlpsKnowledgeType type, 
+    void sendKnowledge(AlpsKnowledgeType type,
                        int sender,
                        int receiver,
                        char *& msgBuffer,
@@ -687,7 +687,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
                        bool blocking);
 
     /** Receive knowlege. */
-    void receiveKnowledge(AlpsKnowledgeType type, 
+    void receiveKnowledge(AlpsKnowledgeType type,
                           int sender,
                           int receiver,
                           char *& msgBuffer,
@@ -696,9 +696,9 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
                           MPI_Comm comm,
                           MPI_Status* status,
                           bool blocking);
-    
+
     /** Request knowlege. */
-    void requestKnowledge(AlpsKnowledgeType type, 
+    void requestKnowledge(AlpsKnowledgeType type,
                           int sender,
                           int receiver,
                           char *& msgBuffer,

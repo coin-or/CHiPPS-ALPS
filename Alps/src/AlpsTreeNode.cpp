@@ -15,7 +15,7 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
+ *                                                                           *
  *                                                                           *
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
@@ -34,7 +34,7 @@ AlpsTreeNode::removeChild(AlpsTreeNode*& child)
 {
 
 #if 0
-    std::cout << "removeChild: Begin: numChildren_=" << numChildren_ 
+    std::cout << "removeChild: Begin: numChildren_=" << numChildren_
               << ", index_=" << index_
               << ", depth_=" << depth_ << std::endl;
 #endif
@@ -43,7 +43,7 @@ AlpsTreeNode::removeChild(AlpsTreeNode*& child)
 
 #if 0
     // child_p is a pointer to AlpsTreeNode*
-    AlpsTreeNode** child_p =  
+    AlpsTreeNode** child_p =
         std::find(children_, children_ + numChildren_, child);
 
     if ( child_p == children_ + numChildren_ ) {
@@ -53,7 +53,7 @@ AlpsTreeNode::removeChild(AlpsTreeNode*& child)
                         "The argument is not a child of this node.");
     }
 
-    // Put the last child in the slot to be deleted, 
+    // Put the last child in the slot to be deleted,
     // so that can safely delete child and reduce num of children by 1.
     --numChildren_;
 
@@ -80,24 +80,24 @@ AlpsTreeNode::removeChild(AlpsTreeNode*& child)
     childToDel->removeDescendants();
 
 #if 0
-    std::cout << "removeChild: End: numChildren_="<<numChildren_ 
+    std::cout << "removeChild: End: numChildren_="<<numChildren_
               << ", index_=" << index_
-              << ", depth_=" << depth_ 
-	      << ", children_[i] index = "<< children_[i]->getIndex() 
-	      << std::endl;
+              << ", depth_=" << depth_
+              << ", children_[i] index = "<< children_[i]->getIndex()
+              << std::endl;
 #endif
-    
+
     // Delete child node.
     delete children_[i];
-    
-    // Put the last child in the slot to be deleted, 
+
+    // Put the last child in the slot to be deleted,
     // so that can safely delete child and reduce num of children by 1.
     --numChildren_;
     if (i != numChildren_) {
         children_[i] = children_[numChildren_];
-        assert(children_[i]); 
+        assert(children_[i]);
     }
-    
+
 }
 
 //#############################################################################
@@ -120,8 +120,8 @@ AlpsTreeNode::removeDescendants()
     // status on a node that is a candidate by accident. */
 
 #ifdef NF_DEBUG_MORE
-    std::cout << "removeDescendants: numChildren_="<<numChildren_ 
-              << ", index_=" << index_ 
+    std::cout << "removeDescendants: numChildren_="<<numChildren_
+              << ", index_=" << index_
               << ", depth_=" << depth_ << std::endl;
 #endif
 
@@ -135,11 +135,11 @@ AlpsTreeNode::removeDescendants()
 //#############################################################################
 
 /** Pack Alps portion of node into an encoded object. */
-AlpsReturnStatus 
-AlpsTreeNode::encodeAlps(AlpsEncoded *encoded) const 
+AlpsReturnStatus
+AlpsTreeNode::encodeAlps(AlpsEncoded *encoded) const
 {
     AlpsReturnStatus status = AlpsReturnStatusOk;
-    
+
     encoded->writeRep(explicit_);
     encoded->writeRep(index_);
     encoded->writeRep(depth_);
@@ -149,7 +149,7 @@ AlpsTreeNode::encodeAlps(AlpsEncoded *encoded) const
     encoded->writeRep(numChildren_);
     encoded->writeRep(status_);
     encoded->writeRep(sentMark_);
-    
+
 #ifdef NF_DEBUG
     std::cout << std::endl;
     std::cout << "index_ = " << index_ << "; ";
@@ -159,18 +159,18 @@ AlpsTreeNode::encodeAlps(AlpsEncoded *encoded) const
     std::cout << "numChildren_ = " << numChildren_ << std::endl;
     std::cout << "status_ = " << status_ << std::endl;
 #endif
-    
+
     return status;
 }
 
 //#############################################################################
 
 /** Unpack Alps portion of node from an encoded object. */
-AlpsReturnStatus 
-AlpsTreeNode::decodeAlps(AlpsEncoded &encoded) 
+AlpsReturnStatus
+AlpsTreeNode::decodeAlps(AlpsEncoded &encoded)
 {
     AlpsReturnStatus status = AlpsReturnStatusOk;
-    
+
     encoded.readRep(explicit_);
     encoded.readRep(index_);
     encoded.readRep(depth_);
@@ -180,7 +180,7 @@ AlpsTreeNode::decodeAlps(AlpsEncoded &encoded)
     encoded.readRep(numChildren_);
     encoded.readRep(status_);
     encoded.readRep(sentMark_);
-    
+
 #ifdef NF_DEBUG
     std::cout << std::endl;
     std::cout << "index_ = " << index_ << "; ";
@@ -192,6 +192,6 @@ AlpsTreeNode::decodeAlps(AlpsEncoded &encoded)
 #endif
 
     return status;
-}    
+}
 
 //#############################################################################

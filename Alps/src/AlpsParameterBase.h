@@ -15,7 +15,7 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
+ *                                                                           *
  *                                                                           *
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
@@ -55,7 +55,7 @@ class AlpsEncoded;
 /** This enumerative constant describes the possible parameter types. */
 enum AlpsParameterT{
     /** The type is not yet specified. Used only in the default constructor of
-	a Alps parameter. */
+        a Alps parameter. */
     AlpsNoPar,
     /** Bool parameter. */
     AlpsBoolPar,
@@ -66,7 +66,7 @@ enum AlpsParameterT{
     /** String parameter (E.g., data file name.). */
     AlpsStringPar,
     /** The parameter is an array of strings. N
-	Cause possible memory leak. Not used any more (10/24/06, Yan).*/
+        Cause possible memory leak. Not used any more (10/24/06, Yan).*/
     AlpsStringArrayPar
 };
 
@@ -84,16 +84,16 @@ class AlpsParameter {
     /** The index of this parameter within all parameters of the same type. */
     int index_;
     /*@}*/
-    
+
  public:
-    // default copy constructor and assignment operator are fine 
+    // default copy constructor and assignment operator are fine
     /**@name Constructors / Destructor */
     /*@{*/
     /** The default constructor creates a phony parameter. */
     AlpsParameter() : type_(AlpsNoPar), index_(0) {}
     /** Constructor where members are specified. */
     AlpsParameter(const AlpsParameterT t, const int i) :
-	type_(t), index_(i) {}
+        type_(t), index_(i) {}
     /** The destructor. */
     ~AlpsParameter() {}
     /*@}*/
@@ -103,17 +103,17 @@ class AlpsParameter {
     /** Return the type of the parameter. */
     AlpsParameterT type() const { return type_; }
     /** Return the index of the parameter within all parameters of the same
-	type. */
+        type. */
     int index() const            { return index_; }
     /*@}*/
 };
 
 //##############################################################################
 
-/** This is the class serves as a holder for a set of parameters. 
+/** This is the class serves as a holder for a set of parameters.
     For example, Alps stores has a parameter set for each process. Of course,
     the user can use this class for her own parameters. To use this class the
-    user must 
+    user must
     <ul>
     <li> first derive a subclass with the names of the parameters (see,
     e.g., AlpsParams.)
@@ -127,7 +127,7 @@ class AlpsParameter {
     corresponding value; the other method specifies the default values
     for each parameter.
     </ul>
-    
+
     After this the user can read in the parameters from a file, she can
     set/access the parameters in the parameter set.
 */
@@ -138,27 +138,27 @@ class AlpsParameterSet {
     /** The keyword, parameter pairs. Used when the parameter file is read in.
      */
     std::vector< std::pair<std::string, AlpsParameter> > keys_;
-    
+
     /** list of obsolete keywords. If any of these is encountered a warning is
-	printed. */
+        printed. */
     std::vector<std::string> obsoleteKeys_;
-    
+
     /** The bool parameters. */
     bool*                bpar_;
-    
+
     /** The integer parameters. */
     int*                 ipar_;
 
     /** The double parameters. */
     double*              dpar_;
-    
+
     /** The string (actually, std::string) parameters. */
     std::string*          spar_;
 
     /** The "vector of string" parameters. */
     int numSa_;
     std::vector<std::string>* sapar_;
-  
+
   /*@}*/
   //---------------------------------------------------------------------------
 
@@ -168,29 +168,29 @@ class AlpsParameterSet {
        methods for the class. */
     /*@{*/
     /** Method for creating the list of keyword looked for in the parameter
-	file. */
+        file. */
     virtual void createKeywordList() = 0;
-    
+
     /** Method for setting the default values for the parameters. */
     virtual void setDefaultEntries() = 0;
     /*@}*/
 
-    /**@name Pack and unpack 
+    /**@name Pack and unpack
      */
     //@{
     /** Pack the parameter set into the buffer. */
     virtual void pack(AlpsEncoded& buf) {
-	throw CoinError("can't call pack()", "pack", " AlpsParameterSet");
+        throw CoinError("can't call pack()", "pack", " AlpsParameterSet");
     }
 
     /** Unpack the parameter set from the buffer. */
     virtual void unpack(AlpsEncoded& buf){
-	throw CoinError("can't call unpack()", "unpack", " AlpsParameterSet");
+        throw CoinError("can't call unpack()", "unpack", " AlpsParameterSet");
     }
     //@}
 
     //---------------------------------------------------------------------------
-    
+
  public:
 
     /**First, there is the assignment operator that sets the whole parameter
@@ -200,31 +200,31 @@ class AlpsParameterSet {
        class documentation the user can set a parameter with the
        "<code>param.setEntry(USER_par::parameter_name, param_value)</code>"
        expression. */
-  
+
     // This the one used in readFromStream()
     void setEntry(const AlpsParameter key, const char * val) {
-	switch (key.type()){
-	case AlpsNoPar: break;
-	case AlpsBoolPar:        bpar_ [key.index()] = atoi(val) ? true : false;    break;
-	case AlpsIntPar:         ipar_ [key.index()] = atoi(val);    break;
-	case AlpsDoublePar:      dpar_ [key.index()] = atof(val);    break;
-	case AlpsStringPar:      spar_ [key.index()] = val;          break;
-	case AlpsStringArrayPar: sapar_[key.index()].push_back(val); break;
-	}
+        switch (key.type()){
+        case AlpsNoPar: break;
+        case AlpsBoolPar:        bpar_ [key.index()] = atoi(val) ? true : false;    break;
+        case AlpsIntPar:         ipar_ [key.index()] = atoi(val);    break;
+        case AlpsDoublePar:      dpar_ [key.index()] = atof(val);    break;
+        case AlpsStringPar:      spar_ [key.index()] = val;          break;
+        case AlpsStringArrayPar: sapar_[key.index()].push_back(val); break;
+        }
     }
-    
+
     /** Read the parameters from the stream specified in the argument.
-	The stream is interpreted as a lines separated by newline characters.
-	The first word on each line is tested for match with the keywords
-	specified in the createKeywordList() method. If there is
-	a match then the second word will be interpreted as the value for the
-	corresponding parameter. Any further words on the line are discarded.
-	Every non-matching line is discarded. 
-	
-	If the keyword corresponds to a non-array parameter then the new value
-	simply overwrites the old one. Otherwise, i.e., if it is a
-	StringArrayPar, the value is appended to the list of strings in that
-	array. 
+        The stream is interpreted as a lines separated by newline characters.
+        The first word on each line is tested for match with the keywords
+        specified in the createKeywordList() method. If there is
+        a match then the second word will be interpreted as the value for the
+        corresponding parameter. Any further words on the line are discarded.
+        Every non-matching line is discarded.
+
+        If the keyword corresponds to a non-array parameter then the new value
+        simply overwrites the old one. Otherwise, i.e., if it is a
+        StringArrayPar, the value is appended to the list of strings in that
+        array.
     */
     void readFromStream(std::istream& parstream);
 
@@ -233,31 +233,31 @@ class AlpsParameterSet {
 
     /**  Read parameters from the command line */
     void readFromArglist(const int argnum, const char * const * arglist);
-    
+
     /** Write keyword-value pairs to the stream specified in the argument.
-	Each keyword-value pair is separated by a newline character. 
+        Each keyword-value pair is separated by a newline character.
     */
     void writeToStream(std::ostream& outstream) const;
-  
+
     /** The constructor allocate memory for parameters. */
     AlpsParameterSet(int c, int i, int d, int s, int sa) :
-	keys_(),
-	bpar_(new bool[c]),
-	ipar_(new int[i]),
-	dpar_(new double[d]),
-	spar_(new std::string[s]),
-	sapar_(new std::vector<std::string>[sa]) 
-	{}
-    
+        keys_(),
+        bpar_(new bool[c]),
+        ipar_(new int[i]),
+        dpar_(new double[d]),
+        spar_(new std::string[s]),
+        sapar_(new std::vector<std::string>[sa])
+        {}
+
     /** The destructor deletes all data members. */
     virtual ~AlpsParameterSet() {
-	keys_.clear();
-	obsoleteKeys_.clear();
-	delete[] bpar_; bpar_ = 0;
-	delete[] ipar_; ipar_ = 0;
-	delete[] dpar_; dpar_ = 0;
-	delete[] spar_; spar_ = 0;
-	delete[] sapar_; sapar_ = 0;
+        keys_.clear();
+        obsoleteKeys_.clear();
+        delete[] bpar_; bpar_ = 0;
+        delete[] ipar_; ipar_ = 0;
+        delete[] dpar_; dpar_ = 0;
+        delete[] spar_; spar_ = 0;
+        delete[] sapar_; sapar_ = 0;
     }
 };
 

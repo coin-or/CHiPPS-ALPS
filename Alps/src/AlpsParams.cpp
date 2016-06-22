@@ -15,7 +15,7 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
+ *                                                                           *
  *                                                                           *
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
@@ -38,11 +38,11 @@ void AlpsParams::createKeywordList() {
    keys_.push_back(make_pair(std::string("Alps_checkMemory"),
                               AlpsParameter(AlpsBoolPar, checkMemory)));
    keys_.push_back(make_pair(std::string("Alps_deleteDeadNode"),
-			     AlpsParameter(AlpsBoolPar, deleteDeadNode)));
+                             AlpsParameter(AlpsBoolPar, deleteDeadNode)));
    keys_.push_back(make_pair(std::string("Alps_interClusterBalance"),
-			    AlpsParameter(AlpsBoolPar, interClusterBalance)));
+                            AlpsParameter(AlpsBoolPar, interClusterBalance)));
    keys_.push_back(make_pair(std::string("Alps_intraClusterBalance"),
-			    AlpsParameter(AlpsBoolPar, intraClusterBalance)));
+                            AlpsParameter(AlpsBoolPar, intraClusterBalance)));
    keys_.push_back(make_pair(std::string("Alps_printSolution"),
                              AlpsParameter(AlpsBoolPar, printSolution)));
 
@@ -51,150 +51,150 @@ void AlpsParams::createKeywordList() {
    //-------------------------------------------------------
 
    keys_.push_back(make_pair(std::string("Alps_bufSpare"),
-			     AlpsParameter(AlpsIntPar, 
-					   bufSpare)));
+                             AlpsParameter(AlpsIntPar,
+                                           bufSpare)));
 
    keys_.push_back(make_pair(std::string("Alps_clockType"),
-			     AlpsParameter(AlpsIntPar, 
-					   clockType)));
+                             AlpsParameter(AlpsIntPar,
+                                           clockType)));
    //
    keys_.push_back(make_pair(std::string("Alps_eliteSize"),
-			     AlpsParameter(AlpsIntPar, 
-					   eliteSize)));
+                             AlpsParameter(AlpsIntPar,
+                                           eliteSize)));
    //
    keys_.push_back(make_pair(std::string("Alps_hubInitNodeNum"),
-			     AlpsParameter(AlpsIntPar, 
-					   hubInitNodeNum)));
+                             AlpsParameter(AlpsIntPar,
+                                           hubInitNodeNum)));
    //
    keys_.push_back(make_pair(std::string("Alps_hubMsgLevel"),
-			     AlpsParameter(AlpsIntPar, 
-					   hubMsgLevel)));
+                             AlpsParameter(AlpsIntPar,
+                                           hubMsgLevel)));
    //
    keys_.push_back(make_pair(std::string("Alps_hubNum"),
-			     AlpsParameter(AlpsIntPar, 
-					   hubNum)));
+                             AlpsParameter(AlpsIntPar,
+                                           hubNum)));
    //
    keys_.push_back(make_pair(std::string("Alps_largeSize"),
-			     AlpsParameter(AlpsIntPar, 
-					   largeSize)));
+                             AlpsParameter(AlpsIntPar,
+                                           largeSize)));
    //
    keys_.push_back(make_pair(std::string("Alps_logFileLevel"),
-			     AlpsParameter(AlpsIntPar, 
-					   logFileLevel)));
+                             AlpsParameter(AlpsIntPar,
+                                           logFileLevel)));
    //
    keys_.push_back(make_pair(std::string("Alps_masterInitNodeNum"),
-			     AlpsParameter(AlpsIntPar, 
-					   masterInitNodeNum)));
+                             AlpsParameter(AlpsIntPar,
+                                           masterInitNodeNum)));
    //
    keys_.push_back(make_pair(std::string("Alps_hubWorkClusterSizeLimit"),
-			     AlpsParameter(AlpsIntPar,
-					   hubWorkClusterSizeLimit)));
+                             AlpsParameter(AlpsIntPar,
+                                           hubWorkClusterSizeLimit)));
    //
    keys_.push_back(make_pair(std::string("Alps_masterReportInterval"),
-			     AlpsParameter(AlpsIntPar, 
-					   masterReportInterval)));
+                             AlpsParameter(AlpsIntPar,
+                                           masterReportInterval)));
    //
    keys_.push_back(make_pair(std::string("Alps_mediumSize"),
-			     AlpsParameter(AlpsIntPar, 
-					   mediumSize)));
+                             AlpsParameter(AlpsIntPar,
+                                           mediumSize)));
    //
    keys_.push_back(make_pair(std::string("Alps_msgLevel"),
-			     AlpsParameter(AlpsIntPar, 
-					   msgLevel)));
+                             AlpsParameter(AlpsIntPar,
+                                           msgLevel)));
    //
    keys_.push_back(make_pair(std::string("Alps_nodeLimit"),
-			     AlpsParameter(AlpsIntPar, 
-					   nodeLimit)));
+                             AlpsParameter(AlpsIntPar,
+                                           nodeLimit)));
    //
    keys_.push_back(make_pair(std::string("Alps_nodeLogInterval"),
-			     AlpsParameter(AlpsIntPar, 
-					   nodeLogInterval)));
+                             AlpsParameter(AlpsIntPar,
+                                           nodeLogInterval)));
    //
    keys_.push_back(make_pair(std::string("Alps_printSystemStatus"),
-			     AlpsParameter(AlpsIntPar, 
-					   printSystemStatus)));
+                             AlpsParameter(AlpsIntPar,
+                                           printSystemStatus)));
    //
    keys_.push_back(make_pair(std::string("Alps_processNum"),
-			     AlpsParameter(AlpsIntPar, 
-					   processNum)));
+                             AlpsParameter(AlpsIntPar,
+                                           processNum)));
    //
    keys_.push_back(make_pair(std::string("Alps_staticBalanceScheme"),
-			     AlpsParameter(AlpsIntPar,
-					   staticBalanceScheme)));
+                             AlpsParameter(AlpsIntPar,
+                                           staticBalanceScheme)));
    //
    keys_.push_back(make_pair(std::string("Alps_searchStrategy"),
-			     AlpsParameter(AlpsIntPar, 
-					   searchStrategy)));
+                             AlpsParameter(AlpsIntPar,
+                                           searchStrategy)));
    //
    keys_.push_back(make_pair(std::string("Alps_searchStrategyRampUp"),
-			     AlpsParameter(AlpsIntPar, 
-					   searchStrategyRampUp)));
+                             AlpsParameter(AlpsIntPar,
+                                           searchStrategyRampUp)));
    //
    keys_.push_back(make_pair(std::string("Alps_smallSize"),
-			     AlpsParameter(AlpsIntPar, 
-					   smallSize)));
+                             AlpsParameter(AlpsIntPar,
+                                           smallSize)));
    //
    keys_.push_back(make_pair(std::string("Alps_solLimit"),
-			     AlpsParameter(AlpsIntPar, 
-					   solLimit)));
+                             AlpsParameter(AlpsIntPar,
+                                           solLimit)));
    //
    keys_.push_back(make_pair(std::string("Alps_unitWorkNodes"),
-			     AlpsParameter(AlpsIntPar, 
-					   unitWorkNodes)));
+                             AlpsParameter(AlpsIntPar,
+                                           unitWorkNodes)));
    //
    keys_.push_back(make_pair(std::string("Alps_workerMsgLevel"),
-			     AlpsParameter(AlpsIntPar, 
-					   workerMsgLevel)));
+                             AlpsParameter(AlpsIntPar,
+                                           workerMsgLevel)));
 
    //-------------------------------------------------------
    // DoublePar
    //-------------------------------------------------------
 
    keys_.push_back(make_pair(std::string("Alps_tolerance"),
-			     AlpsParameter(AlpsDoublePar, 
-					   tolerance)));
+                             AlpsParameter(AlpsDoublePar,
+                                           tolerance)));
    //
    keys_.push_back(make_pair(std::string("Alps_unitWorkTime"),
-			     AlpsParameter(AlpsDoublePar, 
-					   unitWorkTime)));
+                             AlpsParameter(AlpsDoublePar,
+                                           unitWorkTime)));
    //
    keys_.push_back(make_pair(std::string("Alps_masterBalancePeriod"),
-			     AlpsParameter(AlpsDoublePar, 
-					   masterBalancePeriod)));
+                             AlpsParameter(AlpsDoublePar,
+                                           masterBalancePeriod)));
 
    //
    keys_.push_back(make_pair(std::string("Alps_hubReportPeriod"),
-			     AlpsParameter(AlpsDoublePar, 
-					   hubReportPeriod)));
+                             AlpsParameter(AlpsDoublePar,
+                                           hubReportPeriod)));
    //
    keys_.push_back(make_pair(std::string("Alps_zeroLoad"),
-			     AlpsParameter(AlpsDoublePar, zeroLoad)));
+                             AlpsParameter(AlpsDoublePar, zeroLoad)));
    //
    keys_.push_back(make_pair(std::string("Alps_needWorkThreshold"),
-			     AlpsParameter(AlpsDoublePar, needWorkThreshold)));
+                             AlpsParameter(AlpsDoublePar, needWorkThreshold)));
    //
    keys_.push_back(make_pair(std::string("Alps_changeWorkThreshold"),
-			     AlpsParameter(AlpsDoublePar, 
-					   changeWorkThreshold)));
+                             AlpsParameter(AlpsDoublePar,
+                                           changeWorkThreshold)));
    //
    keys_.push_back(make_pair(std::string("Alps_donorThreshold"),
-			     AlpsParameter(AlpsDoublePar, donorThreshold)));
+                             AlpsParameter(AlpsDoublePar, donorThreshold)));
    //
    keys_.push_back(make_pair(std::string("Alps_receiverThreshold"),
-			     AlpsParameter(AlpsDoublePar, receiverThreshold)));
+                             AlpsParameter(AlpsDoublePar, receiverThreshold)));
    //
    keys_.push_back(make_pair(std::string("Alps_timeLimit"),
-			     AlpsParameter(AlpsDoublePar, timeLimit)));
+                             AlpsParameter(AlpsDoublePar, timeLimit)));
 
    //-------------------------------------------------------
    // StringPar
    //-------------------------------------------------------
 
    keys_.push_back(make_pair(std::string("Alps_instance"),
-			     AlpsParameter(AlpsStringPar, instance)));
+                             AlpsParameter(AlpsStringPar, instance)));
    ///
    keys_.push_back(make_pair(std::string("Alps_logFile"),
-			     AlpsParameter(AlpsStringPar, logFile)));
+                             AlpsParameter(AlpsStringPar, logFile)));
 }
 
 //#############################################################################
@@ -227,8 +227,8 @@ void AlpsParams::setDefaultEntries() {
   setEntry(printSystemStatus, 1);
   setEntry(processNum, 2);
   setEntry(staticBalanceScheme, 1);  // Spiral
-  setEntry(searchStrategy, AlpsSearchTypeBestFirst);  
-  setEntry(searchStrategyRampUp, AlpsSearchTypeBestFirst);  
+  setEntry(searchStrategy, AlpsSearchTypeBestFirst);
+  setEntry(searchStrategyRampUp, AlpsSearchTypeBestFirst);
   setEntry(smallSize, 1024);      // 2^10
   setEntry(solLimit, ALPS_INT_MAX);
   setEntry(unitWorkNodes, ALPS_NOT_SET);

@@ -15,7 +15,7 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
+ *                                                                           *
  *                                                                           *
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
@@ -39,12 +39,12 @@ class AlpsKnowledgePool {
   AlpsKnowledgePool& operator=(const AlpsKnowledgePool&);
 
  public:
-  AlpsKnowledgePool() {}                     // Need: otherwise 
+  AlpsKnowledgePool() {}                     // Need: otherwise
   virtual ~AlpsKnowledgePool() {}            // won't compile.
 
   /** Add a knowledge to pool */
   virtual void addKnowledge(AlpsKnowledge * nk, double priority) = 0;
- 
+
   /** Query how many knowledges are in the pool.*/
   virtual int getNumKnowledges() const = 0;
 
@@ -54,47 +54,46 @@ class AlpsKnowledgePool {
   /** Remove the queried knowledge from the pool*/
   virtual void popKnowledge() {
     throw CoinError("Can not call popKnowledge()",
-		    "popKnowledge()", "AlpsKnowledgePool");
+                    "popKnowledge()", "AlpsKnowledgePool");
   }
 
   /** Check whether the pool has knowledge. */
   virtual bool hasKnowledge() const{
     throw CoinError("Can not call hasKnowledge()",
-		    "hasKnowledge()", "AlpsKnowledgePool");
+                    "hasKnowledge()", "AlpsKnowledgePool");
   }
 
   /** Set the quantity limit of knowledges that can be stored in the pool. */
   virtual void setMaxNumKnowledges(int num) {
     std::cout << "Can not call setMaxNumKnowledges without overriding"
-	      << std::endl;
+              << std::endl;
     throw CoinError("Can not call  setMaxNumKnowledges()",
-    		    "setMaxNumKnowledges()", "AlpsKnowledgePool");
+                    "setMaxNumKnowledges()", "AlpsKnowledgePool");
   }
 
   /** Query the quantity limit of knowledges. */
   virtual int getMaxNumKnowledges() const {
     // throw CoinError("Can not call getMaxNumKnowledges()",
-    //		    "getMaxNumKnowledges()", "AlpsKnowledgePool");
+    //              "getMaxNumKnowledges()", "AlpsKnowledgePool");
     return INT_MAX;
   }
- 
+
   /** Query the best knowledge in the pool.*/
-  virtual std::pair<AlpsKnowledge*, double> 
+  virtual std::pair<AlpsKnowledge*, double>
     getBestKnowledge() const {
     throw CoinError("Can not call  getBestKnowledge()",
-		    "getBestKnowledge()", "AlpsKnowledgePool");
+                    "getBestKnowledge()", "AlpsKnowledgePool");
   }
- 
+
   /** Get a reference to all the knowledges in the pool.*/
-  virtual void getAllKnowledges (std::vector<std::pair<AlpsKnowledge*, 
-				 double> >& kls) const {
+  virtual void getAllKnowledges (std::vector<std::pair<AlpsKnowledge*,
+                                 double> >& kls) const {
     std::cout << "Can not call  getAllKnowledge() without overriding"
-	      << std::endl;
+              << std::endl;
     throw CoinError("Can not call  getAllKnowledge()",
-		    "getAllKnowledge()", "AlpsKnowledgePool");
+                    "getAllKnowledge()", "AlpsKnowledgePool");
   }
 
 };
 
 #endif
- 

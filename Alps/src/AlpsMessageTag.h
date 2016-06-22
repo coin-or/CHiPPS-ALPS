@@ -15,7 +15,7 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
+ *                                                                           *
  *                                                                           *
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
@@ -77,7 +77,7 @@ enum AlpsMessageTag{
   // 10
   AlpsMsgIncumbent,
 
-  /** The message tag indicating that cluster and system workloads are in 
+  /** The message tag indicating that cluster and system workloads are in
       the message buf. */
   // 11
   AlpsMsgLoadInfo,
@@ -105,7 +105,7 @@ enum AlpsMessageTag{
   /** Hub check the status of its workers. */
   // 17
   AlpsMsgHubCheckCluster,
-  
+
   /** Hub periodically check the status of its workers.*/
   // 18
   AlpsMsgHubPeriodCheck,
@@ -113,7 +113,7 @@ enum AlpsMessageTag{
   /** Hub periodically report its status to master.*/
   // 19
   AlpsMsgHubPeriodReport,
-  
+
   /** Hub's status is in buf. */
   // 20
   AlpsMsgHubStatus,
@@ -173,13 +173,13 @@ enum AlpsMessageTag{
   /** Ask the receiver worker to donor workload to the specified worker. */
   // 36
   AlpsMsgAskDonateToWorker,
-  
+
   // 37
   AlpsMsgSubTreeByWorker,
 
   // 38
   AlpsMsgIncumbentTwo,
-  
+
   /** The message tag indicating that knowledge generated during rampup about
       model is being sent or received. */
   // 39
@@ -190,7 +190,7 @@ enum AlpsMessageTag{
   // 40
   AlpsMsgModelGenSearch,
 
-  /** When requested by master during inter balance, hub failed to identify 
+  /** When requested by master during inter balance, hub failed to identify
       a donor worker. */
   // 41
   AlpsMsgHubFailFindDonor,

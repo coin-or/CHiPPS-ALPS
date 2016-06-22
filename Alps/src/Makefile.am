@@ -88,7 +88,7 @@ libAlps_la_LDFLAGS = $(LT_LDFLAGS)
 
 # Here list all include flags, relative to this "srcdir" directory.  This
 # "cygpath" stuff is necessary to compile with native compilers on Windows.
-AM_CPPFLAGS = $(ALPSLIB_CFLAGS) 
+AM_CPPFLAGS = $(ALPSLIB_CFLAGS)
 
 # Include MPI header directory if MPI is used
 if COIN_HAS_MPI
@@ -97,7 +97,7 @@ endif
 
 # This line is necessary to allow VPATH compilation with MS compilers
 # on Cygwin
-DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` 
+DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)`
 
 ########################################################################
 #                Headers that need to be installed                     #

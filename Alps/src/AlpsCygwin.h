@@ -15,7 +15,7 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
+ *                                                                           *
  *                                                                           *
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
@@ -32,7 +32,7 @@ typedef int AlpsIndexType;
 
 #  include <sys/time.h>     // for gettimeofday()
 // # include <sys/resource.h> // for setpriority()
-#  define setpriority(x,y,z) 
+#  define setpriority(x,y,z)
 #  define ALPS_USE_RUSAGE 0
 #  ifndef __USE_BSD
 #    define __USE_BSD  // to get gethostname() from unistd.h

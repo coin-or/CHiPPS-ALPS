@@ -15,7 +15,7 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
+ *                                                                           *
  *                                                                           *
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
@@ -27,7 +27,7 @@
 
 /* Default constructor. */
 AlpsKnowledgeBroker::AlpsKnowledgeBroker()
-    : 
+    :
     model_(NULL),
     phase_(AlpsPhaseSearch),
     subTreePool_ (new AlpsSubTreePool),
@@ -68,7 +68,7 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
 
 //#############################################################################
 
-AlpsKnowledgeBroker:: ~AlpsKnowledgeBroker() 
+AlpsKnowledgeBroker:: ~AlpsKnowledgeBroker()
 {
     std::map<int, AlpsKnowledge*>::iterator pos, pos1;
     pos = decodeMap_.begin();
@@ -80,53 +80,53 @@ AlpsKnowledgeBroker:: ~AlpsKnowledgeBroker()
     }
 
     if (subTreePool_) {
-	//std::cout << "* delete subtree pool" << std::endl;
-	delete subTreePool_;
-	subTreePool_ = 0;
+        //std::cout << "* delete subtree pool" << std::endl;
+        delete subTreePool_;
+        subTreePool_ = 0;
     }
     if (solPool_) {
-	delete solPool_; 
-	solPool_ = 0;
+        delete solPool_;
+        solPool_ = 0;
     }
     if (pools_) {
-	delete pools_; 
-	pools_ = 0;
+        delete pools_;
+        pools_ = 0;
     }
     if (workingSubTree_) {
-	//std::cout << "* delete working subtree" << std::endl;
-	delete workingSubTree_; 
-	workingSubTree_ = 0;
+        //std::cout << "* delete working subtree" << std::endl;
+        delete workingSubTree_;
+        workingSubTree_ = 0;
     }
     if (nodeSelection_){
-	delete nodeSelection_;
-	nodeSelection_ = 0;
+        delete nodeSelection_;
+        nodeSelection_ = 0;
     }
     if (rampUpNodeSelection_){
-	delete rampUpNodeSelection_;
-	rampUpNodeSelection_ = 0;
+        delete rampUpNodeSelection_;
+        rampUpNodeSelection_ = 0;
     }
     if (treeSelection_){
-	delete treeSelection_;
-	treeSelection_ = 0;
+        delete treeSelection_;
+        treeSelection_ = 0;
     }
     if (handler_) {
-	delete  handler_;
-	handler_ = 0;
+        delete  handler_;
+        handler_ = 0;
     }
 }
 
 //#############################################################################
- 
-int 
+
+int
 AlpsKnowledgeBroker::updateNumNodesLeft()
 {
     nodeLeftNum_ = 0;
-    
+
     if (workingSubTree_ != 0) {
         nodeLeftNum_ += workingSubTree_->getNumNodes();
     }
-    
-    std::vector<AlpsSubTree*> subTreeVec = 
+
+    std::vector<AlpsSubTree*> subTreeVec =
         subTreePool_->getSubTreeList().getContainer();
 
     std::vector<AlpsSubTree*>::iterator pos1 = subTreeVec.begin();
@@ -135,28 +135,28 @@ AlpsKnowledgeBroker::updateNumNodesLeft()
     for ( ; pos1 != pos2; ++pos1) {
         nodeLeftNum_ += (*pos1)->getNumNodes();
     }
-    
+
     return nodeLeftNum_;
 }
 
 //#############################################################################
 
-AlpsTreeNode* 
-AlpsKnowledgeBroker::getBestNode() const 
+AlpsTreeNode*
+AlpsKnowledgeBroker::getBestNode() const
 {
     AlpsTreeNode *bestNode = NULL;
     AlpsTreeNode *node = NULL;
-    
+
     if (workingSubTree_ ) {
         bestNode = workingSubTree_->getBestNode();
     }
-    
-    std::vector<AlpsSubTree*> subTreeVec = 
+
+    std::vector<AlpsSubTree*> subTreeVec =
         subTreePool_->getSubTreeList().getContainer();
-    
+
     std::vector<AlpsSubTree*>::iterator pos1 = subTreeVec.begin();
     std::vector<AlpsSubTree*>::iterator pos2 = subTreeVec.end();
-    
+
     for ( ; pos1 != pos2; ++pos1) {
         node = (*pos1)->getBestNode();
         if (node) {
@@ -170,14 +170,14 @@ AlpsKnowledgeBroker::getBestNode() const
             }
         }
     }
-    
+
     return bestNode;
 }
 
 //#############################################################################
 
-int 
-AlpsKnowledgeBroker::getNumKnowledges(AlpsKnowledgeType kt) const 
+int
+AlpsKnowledgeBroker::getNumKnowledges(AlpsKnowledgeType kt) const
 {
     if ((kt == AlpsKnowledgeTypeSolution) || (kt == AlpsKnowledgeTypeSubTree)){
         return getKnowledgePool(kt)->getNumKnowledges();
@@ -186,16 +186,16 @@ AlpsKnowledgeBroker::getNumKnowledges(AlpsKnowledgeType kt) const
         return nodeLeftNum_;
     }
     else {
-        throw CoinError("Broker doesn't manage this type of knowledge", 
-                        "getNumKnowledgePool()", "AlpsKnowledgeBroker"); 
+        throw CoinError("Broker doesn't manage this type of knowledge",
+                        "getNumKnowledgePool()", "AlpsKnowledgeBroker");
     }
 }
 
 //#############################################################################
 
-std::pair<AlpsKnowledge*, double> 
-AlpsKnowledgeBroker::getBestKnowledge(AlpsKnowledgeType kt) const 
-{ 
+std::pair<AlpsKnowledge*, double>
+AlpsKnowledgeBroker::getBestKnowledge(AlpsKnowledgeType kt) const
+{
     if(kt == AlpsKnowledgeTypeSolution || kt == AlpsKnowledgeTypeSubTree) {
         return getKnowledgePool(kt)->getBestKnowledge();
     }
@@ -207,24 +207,24 @@ AlpsKnowledgeBroker::getBestKnowledge(AlpsKnowledgeType kt) const
         else {
             return std::pair<AlpsKnowledge *, double>(bn, ALPS_OBJ_MAX);
         }
-    }	
+    }
     else {
-        throw CoinError("Broker doesn't manage this type of knowledge", 
-                        "getBestKnowledge()", "AlpsKnowledgeBroker"); 
+        throw CoinError("Broker doesn't manage this type of knowledge",
+                        "getBestKnowledge()", "AlpsKnowledgeBroker");
     }
 }
 
 //#############################################################################
 
-void 
-AlpsKnowledgeBroker::setupKnowledgePools() 
+void
+AlpsKnowledgeBroker::setupKnowledgePools()
 {
 
     //--------------------------------------------------
     // Setup search strategy.
     //--------------------------------------------------
     int strategy = model_->AlpsPar()->entry(AlpsParams::searchStrategy);
-    
+
     if (strategy == AlpsSearchTypeBestFirst) {
         treeSelection_ = new AlpsTreeSelectionBest;
         nodeSelection_ = new AlpsNodeSelectionBest;
@@ -247,12 +247,12 @@ AlpsKnowledgeBroker::setupKnowledgePools()
     }
     else {
         assert(0);
-        throw CoinError("Unknown search strategy", 
-			"setupKnowledgePools()", "AlpsKnowledgeBroker"); 
+        throw CoinError("Unknown search strategy",
+                        "setupKnowledgePools()", "AlpsKnowledgeBroker");
     }
 
     strategy = model_->AlpsPar()->entry(AlpsParams::searchStrategyRampUp);
-    
+
     if (strategy == AlpsSearchTypeBestFirst) {
         rampUpNodeSelection_ = new AlpsNodeSelectionBest;
     }
@@ -270,8 +270,8 @@ AlpsKnowledgeBroker::setupKnowledgePools()
     }
     else {
         assert(0);
-        throw CoinError("Unknown ramp up search strategy", 
-			"setupKnowledgePools()", "AlpsKnowledgeBroker"); 
+        throw CoinError("Unknown ramp up search strategy",
+                        "setupKnowledgePools()", "AlpsKnowledgeBroker");
     }
 
     //--------------------------------------------------
@@ -285,8 +285,8 @@ AlpsKnowledgeBroker::setupKnowledgePools()
 
     pools_->insert( std::pair<AlpsKnowledgeType, AlpsKnowledgePool*>
                     ( AlpsKnowledgeTypeSubTree, subTreePool_ ) );
-    
-    subTreePool_->setComparison(*treeSelection_);    
+
+    subTreePool_->setComparison(*treeSelection_);
 }
 
 //#############################################################################

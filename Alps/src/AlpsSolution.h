@@ -15,7 +15,7 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
+ *                                                                           *
  *                                                                           *
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
@@ -32,21 +32,21 @@
 
 //#############################################################################
 
-class AlpsSolution : public AlpsKnowledge { 
+class AlpsSolution : public AlpsKnowledge {
 
  private:
     /** Diable copy constructor and assignment. */
     AlpsSolution(const AlpsSolution&);
     AlpsSolution& operator=(const AlpsSolution&);
 
-    /** The index of the node where the solution was found. */ 
+    /** The index of the node where the solution was found. */
     int index_;
-    
-    /** The depth of the node where the solution was found. */ 
+
+    /** The depth of the node where the solution was found. */
     int depth_;
 
  public:
-    
+
     /** Default constructor. */
     AlpsSolution() :
        index_(-1),
@@ -68,19 +68,19 @@ class AlpsSolution : public AlpsKnowledge {
 
     /** Get index where solution was found */
     AlpsNodeIndex_t getIndex() { return index_; }
-    
+
     /** Set index where solution was found */
     void setIndex(const AlpsNodeIndex_t i) { index_ = i; }
-    
+
     /** Get depth where solution was found */
     int getDepth() { return depth_; }
-    
+
     /** Set depth where solution was found */
     void setDepth(const int d) { depth_ = d; }
-    
+
     /** Print out the solution.*/
     virtual void print(std::ostream& os) const{
-	os << "WARNING: No solution print function is defined." << std::endl;
+        os << "WARNING: No solution print function is defined." << std::endl;
     }
 };
 

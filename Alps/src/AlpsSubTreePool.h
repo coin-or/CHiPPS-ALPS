@@ -15,7 +15,7 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
+ *                                                                           *
  *                                                                           *
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
@@ -40,48 +40,48 @@ class AlpsSubTreePool : public AlpsKnowledgePool {
  public:
     AlpsSubTreePool() {}
     virtual ~AlpsSubTreePool() {
-	if (!subTreeList_.empty()) {
-	    deleteGuts();
-	}
+        if (!subTreeList_.empty()) {
+            deleteGuts();
+        }
     }
-   
+
     /** Query the number of subtrees in the pool. */
     inline int getNumKnowledges() const { return static_cast<int> (subTreeList_.size()); }
-  
+
     /** Check whether there is a subtree in the subtree pool. */
     inline bool hasKnowledge() const{ return ! (subTreeList_.empty()); }
-    
+
     /** Get a subtree from subtree pool, doesn't remove it from the pool*/
     inline std::pair<AlpsKnowledge*, double> getKnowledge() const {
-	return std::make_pair( static_cast<AlpsKnowledge *>
-			       (subTreeList_.top()), 
-			       subTreeList_.top()->getQuality() );
+        return std::make_pair( static_cast<AlpsKnowledge *>
+                               (subTreeList_.top()),
+                               subTreeList_.top()->getQuality() );
     }
 
     /** Remove a subtree from the pool*/
     inline void popKnowledge() {
-	subTreeList_.pop();
-    }
-  
-    /** Add a subtree to the subtree pool. */
-    inline void addKnowledge(AlpsKnowledge* subTree, double priority) {
-	AlpsSubTree * st = dynamic_cast<AlpsSubTree* >(subTree);
-	subTreeList_.push(st);
+        subTreeList_.pop();
     }
 
-    /** Return the container of subtrees. */  
-    inline const AlpsPriorityQueue< AlpsSubTree*>&  
-	getSubTreeList() const { return subTreeList_; }
+    /** Add a subtree to the subtree pool. */
+    inline void addKnowledge(AlpsKnowledge* subTree, double priority) {
+        AlpsSubTree * st = dynamic_cast<AlpsSubTree* >(subTree);
+        subTreeList_.push(st);
+    }
+
+    /** Return the container of subtrees. */
+    inline const AlpsPriorityQueue< AlpsSubTree*>&
+        getSubTreeList() const { return subTreeList_; }
 
     /** Set comparison function and resort heap. */
     void setComparison(AlpsSearchStrategy<AlpsSubTree*>& compare) {
-	subTreeList_.setComparison(compare);
+        subTreeList_.setComparison(compare);
     }
 
     /** Delete the subtrees in the pool. */
     void deleteGuts() {
-	std::vector<AlpsSubTree* > treeVec = subTreeList_.getContainer();
-	std::for_each(treeVec.begin(), treeVec.end(), DeletePtrObject());
+        std::vector<AlpsSubTree* > treeVec = subTreeList_.getContainer();
+        std::for_each(treeVec.begin(), treeVec.end(), DeletePtrObject());
         subTreeList_.clear();
         assert(subTreeList_.size() == 0);
     }
@@ -89,7 +89,7 @@ class AlpsSubTreePool : public AlpsKnowledgePool {
     /** Get the quality of the best subtree. */
     double getBestQuality() {
         double quality = ALPS_OBJ_MAX;
-        
+
         std::vector<AlpsSubTree* > subTreeVec = subTreeList_.getContainer();
 
         std::vector<AlpsSubTree* >::iterator pos1, pos2;

@@ -15,7 +15,7 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
+ *                                                                           *
  *                                                                           *
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
@@ -60,7 +60,7 @@ static inline double AlpsWallClock()
     cpu_temp = (double) usage.ru_utime.tv_sec;
     cpu_temp += 1.0e-6*((double) usage.ru_utime.tv_usec);
     sys_temp = (double) usage.ru_stime.tv_sec
-	+ 1.e-6 * (double) usage.ru_stime.tv_usec;
+        + 1.e-6 * (double) usage.ru_stime.tv_usec;
 #endif
     return cpu_temp + sys_temp;
 #else
@@ -72,7 +72,7 @@ static inline double AlpsWallClock()
 //#############################################################################
 
 /* A timer used to record cpu and wallclock time. */
-class AlpsTimer 
+class AlpsTimer
 {
  public:  /* Public for parallecl gather. */
 
@@ -80,18 +80,18 @@ class AlpsTimer
 
     /** Time limit. */
     double limit_;
-    
+
     double startCpu_;
     double startWall_;
     double finishCpu_;
     double finishWall_;
-    
+
     /** Cpu time. */
     double cpu_;
 
     /** Wall clock time. */
     double wall_;
-    
+
  public:
     AlpsTimer() : clockType_(AlpsClockTypeWallClock), limit_(ALPS_DBL_MAX) { reset(); }
     AlpsTimer(double lt) : limit_(lt) { reset(); }
@@ -99,60 +99,60 @@ class AlpsTimer
 
     /** Reset. */
     void reset() {
-	startCpu_ = 0.0;
-	startWall_ = 0.0;
-	finishCpu_ = 0.0;
-	finishWall_ = 0.0;
-	cpu_ = 0.0;
-	wall_ = 0.0;
+        startCpu_ = 0.0;
+        startWall_ = 0.0;
+        finishCpu_ = 0.0;
+        finishWall_ = 0.0;
+        cpu_ = 0.0;
+        wall_ = 0.0;
     }
-    
+
     /** Start to count times. */
     void start() {
-	startCpu_ = AlpsCpuTime();
-	startWall_ = AlpsWallClock();
+        startCpu_ = AlpsCpuTime();
+        startWall_ = AlpsWallClock();
     }
-    
+
     /** Stop timer and computing times. */
     void stop() {
-	finishCpu_ = AlpsCpuTime();
-	finishWall_ = AlpsWallClock();
-	cpu_ = finishCpu_ - startCpu_;
-	wall_ = finishWall_ - startWall_;
+        finishCpu_ = AlpsCpuTime();
+        finishWall_ = AlpsWallClock();
+        cpu_ = finishCpu_ - startCpu_;
+        wall_ = finishWall_ - startWall_;
     }
-    
+
     //{@
     void setLimit(double lm) { limit_ = lm; }
     double getLimit() const { return limit_; }
     //@}
 
     /** Get cpu timee. */
-    double getCpuTime() { 
-	finishCpu_ = AlpsCpuTime();
+    double getCpuTime() {
+        finishCpu_ = AlpsCpuTime();
         cpu_ = finishCpu_ - startCpu_;
-        return cpu_; 
+        return cpu_;
     }
 
     /** Get cpu timee. */
-    double getWallClock() { 
+    double getWallClock() {
         finishWall_ = AlpsWallClock();
         wall_ = finishWall_ - startWall_;
-        return wall_; 
+        return wall_;
     }
-    
+
     /** Get time depends on clock type. */
     double getTime() {
       assert( (clockType_ == AlpsClockTypeCpu) ||
-	      (clockType_ == AlpsClockTypeWallClock) );
+              (clockType_ == AlpsClockTypeWallClock) );
       if (clockType_ == AlpsClockTypeCpu) {
-	finishCpu_ = AlpsCpuTime();
-	cpu_ = finishCpu_ - startCpu_;
-	return cpu_;
+        finishCpu_ = AlpsCpuTime();
+        cpu_ = finishCpu_ - startCpu_;
+        return cpu_;
       }
       else {
         finishWall_ = AlpsWallClock();
         wall_ = finishWall_ - startWall_;
-        return wall_; 
+        return wall_;
       }
     }
 
@@ -162,26 +162,26 @@ class AlpsTimer
 
     /** Check if cpu time reach limit. */
     bool reachCpuLimit() {
-	finishCpu_ = AlpsCpuTime();
-	finishWall_ = AlpsWallClock();
-	if (finishCpu_ - startCpu_ > limit_) {
-	    return true;
-	}
-	else {
-	    return false;
-	}
+        finishCpu_ = AlpsCpuTime();
+        finishWall_ = AlpsWallClock();
+        if (finishCpu_ - startCpu_ > limit_) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
-    
+
     /** Check if wallclock time reach limit. */
     bool reachWallLimit() {
-	finishCpu_ = AlpsCpuTime();
-	finishWall_ = AlpsWallClock();
-	if (finishWall_ - startWall_ > limit_) {
-	    return true;
-	}
-	else {
-	    return false;
-	}
+        finishCpu_ = AlpsCpuTime();
+        finishWall_ = AlpsWallClock();
+        if (finishWall_ - startWall_ > limit_) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 };
 

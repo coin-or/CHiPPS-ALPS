@@ -15,7 +15,7 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
+ *                                                                           *
  *                                                                           *
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
@@ -68,7 +68,7 @@ static Alps_message us_english[] =
     {ALPS_RAMPUP_HUB_NODES, 132, 1, "Hub[%d] will generate %d nodes during rampup. Node processing time %g"},
     {ALPS_RAMPUP_HUB_NODES_AUTO, 134, 1, "Hub[%d] required %d nodes during rampup. Node processing time %g"},
     {ALPS_RAMPUP_HUB_RECV, 135, 3, "Hub[%d] received all subtrees (nodes) sent by the master(%d)"},
-    {ALPS_RAMPUP_HUB_SOL, 136, 3, "Hub[%d] found a better solution %g during rampup"}, 
+    {ALPS_RAMPUP_HUB_SOL, 136, 3, "Hub[%d] found a better solution %g during rampup"},
     {ALPS_RAMPUP_HUB_START, 138, 1, "Hub[%d] is creating nodes (%d) for its workers during rampup"},
     {ALPS_RAMPUP_MASTER, 140, 1, "Master[%d]'s rampup took %g seconds to process %d nodes. Node pool has %d nodes"},
     {ALPS_RAMPUP_MASTER_FAIL, 142, 1, "Master[%d] failed to generate enought subtrees (nodes) and finish search by itself"},
@@ -80,7 +80,7 @@ static Alps_message us_english[] =
     {ALPS_RAMPUP_WORKER_SOL, 153, 2, "Worker[%d] found a better solution %g during rampup"},
     {ALPS_SEARCH_WORKER_START, 155, 3, "Worker[%d] is searching solutions ..." },
     {ALPS_SOLUTION_COUNT, 160, 3, "Process[%d] has %d solutions"},
-    {ALPS_SOLUTION_SEARCH, 162, 3, "Worker[%d] found a better solution %g during search"}, 
+    {ALPS_SOLUTION_SEARCH, 162, 3, "Worker[%d] found a better solution %g during search"},
     {ALPS_STATIC_BALANCE_BEG, 165, 1, "Starting %s"},
     {ALPS_STATIC_BALANCE_END, 166, 1, "Completed %s"},
     {ALPS_TERM_FORCE_NODE, 170, 1, "Master asked other processes to stop searching due to reaching node limt %d"},
@@ -104,17 +104,17 @@ static Alps_message us_english[] =
     {ALPS_S_FINAL_SOL, 260, 1, "Best solution found had quality %g"},
     {ALPS_S_FINAL_SOL_WD, 261, 1, "Best solution found had quality %g and was found at depth %d"},
     {ALPS_S_FINAL_NO_SOL, 262, 1, "No solution found"},
-    {ALPS_S_FINAL_NODE_PROCESSED, 264, 1, 
+    {ALPS_S_FINAL_NODE_PROCESSED, 264, 1,
      "Number of nodes processed:                %d"},
-    {ALPS_S_FINAL_NODE_FULL, 265, 1, 
+    {ALPS_S_FINAL_NODE_FULL, 265, 1,
      "Number of nodes fully processed:          %d"},
-    {ALPS_S_FINAL_NODE_PARTIAL, 266, 1, 
+    {ALPS_S_FINAL_NODE_PARTIAL, 266, 1,
      "Number of nodes partially processed:      %d"},
-    {ALPS_S_FINAL_NODE_BRANCHED, 267, 1, 
+    {ALPS_S_FINAL_NODE_BRANCHED, 267, 1,
      "Number of nodes branched:                 %d"},
-    {ALPS_S_FINAL_NODE_DISCARDED, 268, 1, 
+    {ALPS_S_FINAL_NODE_DISCARDED, 268, 1,
      "Number of nodes pruned before processing: %d"},
-    {ALPS_S_FINAL_NODE_LEFT, 270, 1, 
+    {ALPS_S_FINAL_NODE_LEFT, 270, 1,
      "Number of nodes left:                     %d"},
     {ALPS_S_FINAL_DEPTH, 272, 1, "Tree depth: %d"},
     {ALPS_S_FINAL_CPU, 274, 1, "Search CPU time: %.2f seconds"},
@@ -124,35 +124,35 @@ static Alps_message us_english[] =
 
 //#############################################################################
 // Constructor
-AlpsMessage::AlpsMessage(Language language) 
+AlpsMessage::AlpsMessage(Language language)
     :
     CoinMessages(sizeof(us_english)/sizeof(Alps_message))
 {
     language_ = language;
     strcpy(source_, "Alps");
     Alps_message * message = us_english;
-    
+
     while (message->internalNumber != ALPS_DUMMY_END) {
-	CoinOneMessage oneMessage(message->externalNumber, 
-				  message->detail,
-				  message->message);
-	addMessage(message->internalNumber, oneMessage);
-	message++;
+        CoinOneMessage oneMessage(message->externalNumber,
+                                  message->detail,
+                                  message->message);
+        addMessage(message->internalNumber, oneMessage);
+        message++;
     }
 
     // now override any language ones
     switch (language) {
-	
+
     default:
-	message = NULL;
-	break;
+        message = NULL;
+        break;
     }
-    
+
     // replace if any found
     if (message) {
-	while (message->internalNumber != ALPS_DUMMY_END) {
-	    replaceMessage(message->internalNumber, message->message);
-	    message++;
-	}
+        while (message->internalNumber != ALPS_DUMMY_END) {
+            replaceMessage(message->internalNumber, message->message);
+            message++;
+        }
     }
 }

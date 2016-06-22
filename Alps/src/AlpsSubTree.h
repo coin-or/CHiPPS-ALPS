@@ -15,7 +15,7 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
+ *                                                                           *
  *                                                                           *
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
@@ -50,57 +50,60 @@ class AlpsSubTree : public AlpsKnowledge {
 
     /** The root of the sub tree. */
     AlpsTreeNode* root_;
-   
+
     /** A node pool containing the leaf nodes awaiting processing. */
     AlpsNodePool* nodePool_;
 
     /** A node pool used when diving. */
     AlpsNodePool* diveNodePool_;
-    
+
     /** Diving node comparing rule. */
     AlpsSearchStrategy<AlpsTreeNode*> * diveNodeRule_;
+
+    /** Diving depth */
+    int diveDepth_;
 
     //   /** The next index to be assigned to a new search tree node */
     //   AlpsNodeIndex_t nextIndex_;
 
     /** This is the node that is currently being processed. Note that since
-	this is the worker, there is only one. */
+        this is the worker, there is only one. */
     AlpsTreeNode* activeNode_;
 
     /** A quantity indicating how good this subtree is. */
     double quality_;
 
     /** A pointer to the knowledge broker of the process where this subtree is
-	processed. */
+        processed. */
     // Need broker to query model && parameters.
     AlpsKnowledgeBroker*  broker_;
-    
+
  protected:
 
     /** The purpose of this method is to remove nodes that are not needed in
-	the description of the subtree. The argument node must have status
-	<code>fathomed</code>. First, the argument node is removed, and then
-	the parent is examined to determine whether it has any children
-	left. If it has none, then this function is called recursively on the
-	parent. This removes all nodes that are no longer needed. */
+        the description of the subtree. The argument node must have status
+        <code>fathomed</code>. First, the argument node is removed, and then
+        the parent is examined to determine whether it has any children
+        left. If it has none, then this function is called recursively on the
+        parent. This removes all nodes that are no longer needed. */
     void removeDeadNodes(AlpsTreeNode*& node);
 
     /** This function replaces \c oldNode with \c newNode in the tree. */
     void replaceNode(AlpsTreeNode* oldNode, AlpsTreeNode* newNode);
 
-    /** Fathom all nodes on this subtree. 
+    /** Fathom all nodes on this subtree.
      *  Set activeNode_ and root_ to NULL.
      */
     void fathomAllNodes();
 
  public:
-    
+
     /** Default constructor. */
     AlpsSubTree();
-    
+
     /** Useful constructor. */
     AlpsSubTree(AlpsKnowledgeBroker* kb);
-        
+
     /** Destructor. */
     virtual ~AlpsSubTree();
 
@@ -115,10 +118,10 @@ class AlpsSubTree : public AlpsKnowledge {
 
     /** Create children nodes from the given parent node. */
     void createChildren(AlpsTreeNode* parent,
-			std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, 
-			double> >& children,
+                        std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus,
+                        double> >& children,
                         AlpsNodePool *kidNodePool = NULL);
-    
+
     /** @name query and set member functions
      */
     //@{
@@ -135,25 +138,25 @@ class AlpsSubTree : public AlpsKnowledge {
     inline AlpsNodePool* diveNodePool() { return diveNodePool_; }
 
     /** Set node pool. Delete previous node pool and nodes in pool if exit.*/
-    inline void setNodePool(AlpsNodePool* np) { 
+    inline void setNodePool(AlpsNodePool* np) {
         if (nodePool_ != NULL) {
-            delete nodePool_; 
+            delete nodePool_;
             nodePool_ = NULL;
         }
         nodePool_ = np;
     }
 
     /** Set node pool. Delete previous node pool, but not the nodes in pool.*/
-    inline void changeNodePool(AlpsNodePool* np) { 
-	if (nodePool_ != NULL) {
-	    // Remove all elements first.
-	    nodePool_->clear();
-	    // Delete an empty pool.
-	    assert(nodePool_->hasKnowledge() == false);
-	    delete nodePool_;
-	    nodePool_ = NULL;
-	}
-	nodePool_ = np;
+    inline void changeNodePool(AlpsNodePool* np) {
+        if (nodePool_ != NULL) {
+            // Remove all elements first.
+            nodePool_->clear();
+            // Delete an empty pool.
+            assert(nodePool_->hasKnowledge() == false);
+            delete nodePool_;
+            nodePool_ = NULL;
+        }
+        nodePool_ = np;
     }
 
     /** Get the quality of the best node in the subtree. */
@@ -164,18 +167,18 @@ class AlpsSubTree : public AlpsKnowledge {
 
     /** Get the knowledge broker. */
     inline AlpsKnowledgeBroker*  getKnowledgeBroker() const { return broker_; }
-    
+
     /** Set a pointer to the knowledge broker. */
     inline void setKnowledgeBroker(AlpsKnowledgeBroker* kb) {
         assert(kb);
         broker_ = kb;
     }
-    
+
     /** Get the quality of this subtree. */
     inline double getQuality() const { return quality_; }
 
     /** Get the emtimated quality of this subtree. */
-    inline double getSolEstimate() const { 
+    inline double getSolEstimate() const {
         if (root_) {
             return root_->getSolEstimate();
         }
@@ -184,60 +187,72 @@ class AlpsSubTree : public AlpsKnowledge {
         };
     }
 
+<<<<<<< HEAD
+=======
+    /** Increment dive depth */
+    void incDiveDepth(int num=1) {  diveDepth_ += num; }
+
+    /** Get dive depth */
+    int getDiveDepth() { return diveDepth_; }
+
+    /** Set dive depth */
+    void setDiveDepth(int num) { diveDepth_ = num; }
+
+>>>>>>> trailing whitespace removed.
     /** Calcuate  and return the quality of this subtree, which is measured
-	by the quality of the specified number of nodes.*/
+        by the quality of the specified number of nodes.*/
     double calculateQuality();
- 
+
     /* Get the index of the next generated node and increment next index
-       by one.*/ 
+       by one.*/
     int nextIndex();
 
     /** Get the index of the next generated node.*/
     int getNextIndex() const;
-    
+
     /** Set the index of the next generated node. */
     void setNextIndex(int next);
 
     /** Return the number of nodes on this subtree. */
     int getNumNodes() const {
-	assert(nodePool_ && diveNodePool_);
+        assert(nodePool_ && diveNodePool_);
         int nn = 0;
         if (activeNode_) {
             if ( (activeNode_->getStatus() != AlpsNodeStatusFathomed) &&
-		 (activeNode_->getStatus() != AlpsNodeStatusBranched) ) {
+                 (activeNode_->getStatus() != AlpsNodeStatusBranched) ) {
                 ++nn;
             }
         }
-	return (nn + nodePool_->getNumKnowledges() + 
+        return (nn + nodePool_->getNumKnowledges() +
                 diveNodePool_->getNumKnowledges());
     }
 
     /** Set the node comparision rule. */
     void setNodeSelection(AlpsSearchStrategy<AlpsTreeNode*>* nc) {
-	nodePool_->setNodeSelection(*nc);
+        nodePool_->setNodeSelection(*nc);
     }
     //@}
 
-    /** The function split the subtree and return a subtree of the 
-	specified size or available size. */
+    /** The function split the subtree and return a subtree of the
+        specified size or available size. */
     AlpsSubTree* splitSubTree(int& returnSize, int size = 10);
-    
+
     /** Explore the subtree from \c root as the root of the subtree for given
-	number of nodes or time, depending on which one reach first. 
-	Only for serial code. */
+        number of nodes or time, depending on which one reach first.
+        Only for serial code. */
     virtual AlpsReturnStatus exploreSubTree(AlpsTreeNode* root,
-                                            int nodeLimit,  
+                                            int nodeLimit,
                                             double timeLimit,
                                             int & numNodesProcessed, /* Output */
                                             int & numNodesBranched,  /* Output */
                                             int & numNodesDiscarded, /* Output */
                                             int & numNodesPartial,  /* Output */
                                             int & depth);            /* Output */
-    
-    /** Explore the subtree for certain amount of work/time. 
-	leaveAsIt means exit immediately after reseach limits:
-	do not put activeNode_ in pool, do not move nodes in 
-	divePool_ in regular pool.
+
+    /** Explore the subtree for certain amount of work/time.
+        leaveAsIt means exit immediately after reseach limits:
+        do not put activeNode_ in pool, do not move nodes in
+        divePool_ in regular pool.
     */
     AlpsReturnStatus exploreUnitWork(bool leaveAsIt,
                                      int unitWork,
@@ -249,9 +264,9 @@ class AlpsSubTree : public AlpsKnowledge {
                                      int & numNodesPartial,  /* Output */
                                      int & depth,             /* Output */
                                      bool & betterSolution);  /* Output */
-    
-    /** Generate required number (specified by a parameter) of nodes. 
-	This function is used by master and hubs. */
+
+    /** Generate required number (specified by a parameter) of nodes.
+        This function is used by master and hubs. */
     virtual int rampUp(int minNumNodes,
                        int requiredNumNodes,
                        int& depth,
@@ -259,19 +274,19 @@ class AlpsSubTree : public AlpsKnowledge {
 
     using  AlpsKnowledge::encode ;
     /** This method should encode the content of the subtree and return a
-	pointer to the encoded form. Only parallel code need this function. */
+        pointer to the encoded form. Only parallel code need this function. */
     virtual AlpsEncoded* encode() const;
-    
+
     /** This method should decode and return a pointer to a \em brand \em new
-	\em object, i.e., the method must create a new object on the heap from
-	the decoded data instead of filling up the object for which the method
-	was invoked. Only parallel code need this function.*/
+        \em object, i.e., the method must create a new object on the heap from
+        the decoded data instead of filling up the object for which the method
+        was invoked. Only parallel code need this function.*/
     virtual AlpsKnowledge* decode(AlpsEncoded& encoded) const;
 
-    /** Create a AlpsSubtree object dynamically. Only parallel code need 
-	this function.*/    
+    /** Create a AlpsSubtree object dynamically. Only parallel code need
+        this function.*/
     virtual AlpsSubTree* newSubTree() const {
-	return new AlpsSubTree;
+        return new AlpsSubTree;
     }
 
     /** Remove nodes in pools in the subtree. Do not free memory. */
@@ -305,12 +320,12 @@ class AlpsSubTree : public AlpsKnowledge {
             diveNodePool_->popKnowledge();
             nodePool_->addKnowledge(tempNode, tempNode->getQuality());
         }
-        if (activeNode_) {   
+        if (activeNode_) {
             nodePool_->addKnowledge(activeNode_, activeNode_->getQuality());
             activeNode_ = NULL;
         }
     }
-    
+
 };
 #endif
 
@@ -318,11 +333,11 @@ class AlpsSubTree : public AlpsKnowledge {
 // The way to create children:
 //-----------------------------------------------------------------------------
 // In AlpsSubTree::exploreSubTree(root)
-// If (pregnant) 
-// => KnapTreeNode::branch() 
+// If (pregnant)
+// => KnapTreeNode::branch()
 // => AlpsSubTree::createChildren(...)  {
 //   AlpsTreeNode::setNumChildren(...) (allocate memory if not);
-//   KnapTreeNode:: createNewTreeNode(...); 
+//   KnapTreeNode:: createNewTreeNode(...);
 //   AlpsSubTree::setChildren;
 //   AlspSubTree::setStatus }
 //#############################################################################
@@ -336,6 +351,6 @@ class AlpsSubTree : public AlpsKnowledge {
 //      AlpsTreeNode::removeChild(node) {
 //        AlpsTreeNode::removeDescendants();
 //      }
-//    Check whether parent has children; 
-//      if (yes), recursively removeDeadNode(parent) 
+//    Check whether parent has children;
+//      if (yes), recursively removeDeadNode(parent)
 //#############################################################################

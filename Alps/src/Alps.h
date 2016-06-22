@@ -15,7 +15,7 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
+ *                                                                           *
  *                                                                           *
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  * All Rights Reserved.                                                      *
@@ -87,7 +87,7 @@ typedef int KnowledgeType;
 
 enum AlpsKnowledgeType{
    AlpsKnowledgeTypeModel = 0,
-   AlpsKnowledgeTypeModelGen, 
+   AlpsKnowledgeTypeModelGen,
    AlpsKnowledgeTypeNode,
    AlpsKnowledgeTypeSolution,
    AlpsKnowledgeTypeSubTree,
@@ -101,7 +101,7 @@ enum AlpsKnowledgeType{
 enum AlpsExitStatus {
     AlpsExitStatusUnknown = -1,
     AlpsExitStatusOptimal,
-    AlpsExitStatusTimeLimit, 
+    AlpsExitStatusTimeLimit,
     AlpsExitStatusNodeLimit,
     AlpsExitStatusSolLimit,
     AlpsExitStatusFeasible,
@@ -176,7 +176,7 @@ enum AlpsPhase {
 
 //#############################################################################
 
-typedef struct ALPS_PS_STATS 
+typedef struct ALPS_PS_STATS
 {
     int qualityBalance_;
     int quantityBalance_;
@@ -189,7 +189,7 @@ typedef struct ALPS_PS_STATS
     int subtreeWhole_;
     int subtreeChange_;
 } AlpsPsStats;
-    
+
 //#############################################################################
 
 

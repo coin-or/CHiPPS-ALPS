@@ -15,7 +15,7 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
+ *                                                                           *
  *                                                                           *
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
@@ -47,7 +47,7 @@ class AlpsSubTree;
     operation of the search tree.*/
 //#############################################################################
 
-class AlpsTreeNode : public AlpsKnowledge { 
+class AlpsTreeNode : public AlpsKnowledge {
  private:
     AlpsTreeNode(const AlpsTreeNode&);
     AlpsTreeNode& operator=(const AlpsTreeNode&);
@@ -55,7 +55,7 @@ class AlpsTreeNode : public AlpsKnowledge {
  protected:
     /** The subtree own this node. */
     //AlpsSubTree*       subTree_;
-    
+
     /** Whether the node is being worked on at the moment */
     bool               active_;
 
@@ -70,7 +70,7 @@ class AlpsTreeNode : public AlpsKnowledge {
 
     /** The quality of this node. The smaller the better. */
     double             quality_;
-    
+
     /** The parent of the tree node. */
     AlpsTreeNode*      parent_;
 
@@ -79,7 +79,7 @@ class AlpsTreeNode : public AlpsKnowledge {
 
     /** The number of children. */
     int                numChildren_;
-   
+
 #if defined(ALPS_MAX_CHILD_NUM) // *FIXME* : Do we want ifdefs?
     /** The array of pointers to the children. */
     AlpsTreeNode*      children_[ALPS_MAX_CHILD_NUM];
@@ -87,10 +87,10 @@ class AlpsTreeNode : public AlpsKnowledge {
     AlpsTreeNode**     children_;
 #endif
 
-    /** Indicate whether the node description is explicit(1) or relative(0). 
-	Default is relative. */
+    /** Indicate whether the node description is explicit(1) or relative(0).
+        Default is relative. */
     int                explicit_;
-    
+
     /** The actual description of the tree node. */
     AlpsNodeDesc*      desc_;
 
@@ -98,29 +98,29 @@ class AlpsTreeNode : public AlpsKnowledge {
     AlpsNodeStatus     status_;
 
     /** A pointer to the knowledge broker of the process where this node is
-	processed. */
+        processed. */
     // Need broker to get incumbent value and add solution when process().
     AlpsKnowledgeBroker*  knowledgeBroker_;
-    
+
     /** Various mark used in splitting and passing subtrees. */
     // 0: default; 1: in subtree to be sent: 2: in subtree's node pool 
     int sentMark_;   
     
  public:
-    AlpsTreeNode() 
-	:
-	active_(false),
-	index_(-1),
-	depth_(-1),
+    AlpsTreeNode()
+        :
+        active_(false),
+        index_(-1),
+        depth_(-1),
         solEstimate_(ALPS_OBJ_MAX),
-	quality_(ALPS_OBJ_MAX),   // Smaller than default incumbentValue
-	parent_(0),
-	parentIndex_(-1),
-	numChildren_(0),
+        quality_(ALPS_OBJ_MAX),   // Smaller than default incumbentValue
+        parent_(0),
+        parentIndex_(-1),
+        numChildren_(0),
 #if defined(ALPS_MAX_CHILD_NUM) // *FIXME* : Do we want ifdefs?
-	// AlpsTreeNode*     children_[ALPS_MAX_CHILD_NUM];
+        // AlpsTreeNode*     children_[ALPS_MAX_CHILD_NUM];
 #else
-	children_(0),
+        children_(0),
 #endif
         explicit_(0),
 	desc_(0),
@@ -131,35 +131,35 @@ class AlpsTreeNode : public AlpsKnowledge {
     
     virtual ~AlpsTreeNode() {
         assert(numChildren_ == 0);
-	//std::cout << "---- delete Alps part of node " << index_ << std::endl;
+        //std::cout << "---- delete Alps part of node " << index_ << std::endl;
 #if ! defined(ALPS_MAX_CHILD_NUM)
-	if (children_ != 0) {
-	    delete [] children_;
-	    children_ = 0;
-	}
+        if (children_ != 0) {
+            delete [] children_;
+            children_ = 0;
+        }
 #endif
-	if (desc_ != 0) {
-	    delete desc_;  
-	    desc_ = 0;
-	}
+        if (desc_ != 0) {
+            delete desc_;
+            desc_ = 0;
+        }
     }
-    
+
     bool operator<(const AlpsTreeNode& compNode)
-	{ return quality_ < compNode.getQuality(); }
-    
+        { return quality_ < compNode.getQuality(); }
+
     /** Access the desc so that can modify it. */
     AlpsNodeDesc* modifyDesc() { return desc_; }
     AlpsNodeDesc* getDesc() const { return desc_; }
-    void setDesc(AlpsNodeDesc* desc) { desc_ = desc; }    
+    void setDesc(AlpsNodeDesc* desc) { desc_ = desc; }
 
     /** Functions to access/set the knwoledge broker */
-    inline AlpsKnowledgeBroker*  getKnowledgeBroker() const 
-	{ return knowledgeBroker_; }
-    inline void setKnowledgeBroker(AlpsKnowledgeBroker* kb) 
-	{ knowledgeBroker_ = kb; }
+    inline AlpsKnowledgeBroker*  getKnowledgeBroker() const
+        { return knowledgeBroker_; }
+    inline void setKnowledgeBroker(AlpsKnowledgeBroker* kb)
+        { knowledgeBroker_ = kb; }
 
-    /** The purpose of this function is be able to create the children of 
-	a node after branching. */
+    /** The purpose of this function is be able to create the children of
+        a node after branching. */
     /* FIXME: I think that we probably want the argument to be a diff'd
        description, but this is open to debate. Maybe we should
        overload this method and have a version that creates a diff'd
@@ -172,23 +172,23 @@ class AlpsTreeNode : public AlpsKnowledge {
     inline AlpsNodeStatus getStatus() const { return status_; }
     inline void setStatus(const AlpsNodeStatus stat) { status_ = stat; }
     ///@}
-    
+
     /** Query functions about specific stati. */
     ///@{
     inline bool isCandidate() const {
-	return status_ == AlpsNodeStatusCandidate; }
+        return status_ == AlpsNodeStatusCandidate; }
     inline bool isEvaluated() const {
-	return status_ == AlpsNodeStatusEvaluated; }
+        return status_ == AlpsNodeStatusEvaluated; }
     inline bool isPregnant() const  {
-	return status_ == AlpsNodeStatusPregnant; }
+        return status_ == AlpsNodeStatusPregnant; }
     inline bool isBranched() const  {
-	return status_ == AlpsNodeStatusBranched; }
+        return status_ == AlpsNodeStatusBranched; }
     inline bool isFathomed() const  {
-	return status_ == AlpsNodeStatusFathomed; }
+        return status_ == AlpsNodeStatusFathomed; }
     inline bool isDiscarded() const  {
-	return status_ == AlpsNodeStatusDiscarded; }
+        return status_ == AlpsNodeStatusDiscarded; }
     ///@}
-    
+
     /** Query/set node in-process indicator. */
     ///@{
     inline bool isActive() const { return active_; }
@@ -200,7 +200,7 @@ class AlpsTreeNode : public AlpsKnowledge {
     inline AlpsNodeIndex_t getIndex() const { return index_; }
     inline void setIndex(const AlpsNodeIndex_t index) { index_ = index; }
     ///@}
-   
+
     /** Query/set what depth the search tree node is at. */
     ///@{
     inline int getDepth() const { return depth_; }
@@ -223,13 +223,13 @@ class AlpsTreeNode : public AlpsKnowledge {
     ///@{
     inline int getNumChildren() const { return numChildren_; }
     inline void setNumChildren(const int numChildren) {
-	numChildren_ = numChildren;
+        numChildren_ = numChildren;
 #if ! defined(ALPS_MAX_CHILD_NUM)
-	if (children_ != 0) {
-	    delete [] children_;
-	    children_ = 0;
-	}
-	children_ = new AlpsTreeNode*[numChildren_];
+        if (children_ != 0) {
+            delete [] children_;
+            children_ = 0;
+        }
+        children_ = new AlpsTreeNode*[numChildren_];
 #endif
     }
     // Change by s
@@ -245,33 +245,33 @@ class AlpsTreeNode : public AlpsKnowledge {
     /** Query/set pointer to the ith child. */
     ///@{
     inline AlpsTreeNode* getChild(const int i) const { return children_[i]; }
- 
+
     //FIXME: Compiler complains about this second declaration. Not sure how to
     //declare a const and a non-const version of a function with the same
     //arguments...
     // /** Returns a const pointer to the ith child. */
     // const AlpsTreeNode* getChild(const int i) const { return children_[i]; }
     inline void setChild(const int i, AlpsTreeNode* node)
-	{ children_[i] = node; }
+        { children_[i] = node; }
     ///@}
 
     /** Remove the pointer to given child from the list of children. This
-	method deletes the child as well. An error is thrown if the argument is
-	not a pointer to a child. */
+        method deletes the child as well. An error is thrown if the argument is
+        not a pointer to a child. */
     void removeChild(AlpsTreeNode*& child);
 
     /** Add a child to the list of children for this node. */
     void addChild(AlpsTreeNode*& child);
 
     /** Removes all the descendants of the node. We might want to do this in
-	some cases where we are cutting out a subtree and replacing it with
-	another one. */
+        some cases where we are cutting out a subtree and replacing it with
+        another one. */
     void removeDescendants();
 
     /** Get/set subtree. */
     //inline AlpsSubTree* getSubTree() const { return subTree_; }
     //inline void setSubTree(AlpsSubTree* tree) { subTree_ = tree; }
-    
+
     /** Get/set the parent of the node */
     ///@{
     inline AlpsTreeNode* getParent() const { return parent_; }
@@ -281,12 +281,12 @@ class AlpsTreeNode : public AlpsKnowledge {
     /** Get/set the index of the parent of the node. Used in decode subtree. */
     ///@{
     inline AlpsNodeIndex_t getParentIndex() const { return parentIndex_; }
-    inline void setParentIndex(AlpsNodeIndex_t index) 
-	{ parentIndex_ = index; }
+    inline void setParentIndex(AlpsNodeIndex_t index)
+        { parentIndex_ = index; }
     ///@}
 
-    /** Get/set the indication of whether the node has full or differencing 
-	description. */
+    /** Get/set the indication of whether the node has full or differencing
+        description. */
     ///@{
     inline int getExplicit() const { return explicit_; }
     inline void setExplicit(int fp) { explicit_ = fp; }
@@ -304,7 +304,7 @@ class AlpsTreeNode : public AlpsKnowledge {
     inline void setSentMark(const int tf) { sentMark_ = tf; }
     ///@}
 
-    /** 
+    /**
      *  Perform the processing of the node. For branch and bound, this would
      *  mean performing the bounding operation. The minimum requirement for
      *  this method is that it set the status of the node.
@@ -313,7 +313,7 @@ class AlpsTreeNode : public AlpsKnowledge {
      *  <li> the description is explicit
      *  <li> status_ is not pregnant nor fathomed
      *  </ul>
-     *  
+     *
      *  The status of the node is set to one of the following (and children may
      *  be internally stored, etc.):
      *  <ul>
@@ -330,28 +330,28 @@ class AlpsTreeNode : public AlpsKnowledge {
      *  </ul>
      *  \param isRoot  Indicate if this node is a root of a subtree.
      *  \param rampUp  Indicate if it is in ramp up period. Only useful
-     *                 for parallel code. 
-     * Currently, the return code of this method is not used. 
+     *                 for parallel code.
+     * Currently, the return code of this method is not used.
      */
     virtual int process(bool isRoot = false, bool rampUp = false) = 0;
-    
-    /** This method must be invoked on a \c pregnant node (which has all the
-	information needed to create the children) and should create the
-	children in the data structure of the node. The stati of the children
-	can be any of the ones \c process() can return.  The third component 
-	is the \c priority.
 
-	NOTE: This method may be almost empty if the descriptions of the
-	children were created when the node became pregnant. In that case this
-	routine is pretty much just copying data. */
-    virtual std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
-	branch() = 0;
+    /** This method must be invoked on a \c pregnant node (which has all the
+        information needed to create the children) and should create the
+        children in the data structure of the node. The stati of the children
+        can be any of the ones \c process() can return.  The third component
+        is the \c priority.
+
+        NOTE: This method may be almost empty if the descriptions of the
+        children were created when the node became pregnant. In that case this
+        routine is pretty much just copying data. */
+    virtual std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> >
+        branch() = 0;
 
  protected:
-    
+
     /** Pack Alps portion of node into an encoded object. */
     AlpsReturnStatus encodeAlps(AlpsEncoded *encoded) const;
-    
+
     /** Unpack Alps portion of node from an encoded object. */
     AlpsReturnStatus decodeAlps(AlpsEncoded &encoded);
 
