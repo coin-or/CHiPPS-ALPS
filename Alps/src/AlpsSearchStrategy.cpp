@@ -15,7 +15,7 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
+ *                                                                           *
  *                                                                           *
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
@@ -25,25 +25,25 @@
 //#############################################################################
 //#############################################################################
 
-AlpsTreeNode* 
+AlpsTreeNode*
 AlpsNodeSelection::selectNextNode(AlpsSubTree *subTree)
 {
     AlpsTreeNode *node = subTree->activeNode();
     if (node == NULL) {
-	node = dynamic_cast<AlpsTreeNode*>
-	    (const_cast<AlpsKnowledge*>(subTree->nodePool()->getKnowledge().first) ); 
-	subTree->nodePool()->popKnowledge();
-        }           
+        node = dynamic_cast<AlpsTreeNode*>
+            (const_cast<AlpsKnowledge*>(subTree->nodePool()->getKnowledge().first) );
+        subTree->nodePool()->popKnowledge();
+        }
     return node;
 }
 
 //#############################################################################
 
 void
-AlpsNodeSelection::createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node) 
+AlpsNodeSelection::createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node)
 {
-    std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
-	children = node->branch();
+    std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> >
+        children = node->branch();
     subTree->createChildren(node, children);
     //subTree->setActiveNode(0);
 }
@@ -51,15 +51,15 @@ AlpsNodeSelection::createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node)
 //#############################################################################
 //#############################################################################
 
-bool 
-AlpsTreeSelectionBest::compare(AlpsSubTree * x, AlpsSubTree * y) 
+bool
+AlpsTreeSelectionBest::compare(AlpsSubTree * x, AlpsSubTree * y)
 {
     return (x->getQuality() < y->getQuality());
 }
 
 //#############################################################################
 
-bool 
+bool
 AlpsTreeSelectionBreadth::compare(AlpsSubTree * x, AlpsSubTree * y)
 {
     return (x->getRoot()->getDepth() > y->getRoot()->getDepth());
@@ -67,15 +67,15 @@ AlpsTreeSelectionBreadth::compare(AlpsSubTree * x, AlpsSubTree * y)
 
 //#############################################################################
 
-bool 
-AlpsTreeSelectionDepth::compare(AlpsSubTree * x, AlpsSubTree * y) 
+bool
+AlpsTreeSelectionDepth::compare(AlpsSubTree * x, AlpsSubTree * y)
 {
     return (x->getRoot()->getDepth() < y->getRoot()->getDepth());
 }
 
 //#############################################################################
 
-bool 
+bool
 AlpsTreeSelectionEstimate::compare(AlpsSubTree * x, AlpsSubTree * y)
 {
     return (x->getSolEstimate() > y->getSolEstimate());
@@ -109,13 +109,13 @@ AlpsNodeSelectionHybrid::selectNextNode(AlpsSubTree *subTree)
     }
     
 #if 0
-        std::cout << "======= NOTE[" << node->getIndex() 
-                  << "]: JUMP : depth = " << node->getDepth() 
+        std::cout << "======= NOTE[" << node->getIndex()
+                  << "]: JUMP : depth = " << node->getDepth()
                   << ", quality = " << node->getQuality()
                   << ", estimate = " << node->getSolEstimate()
                   << std::endl;
 #endif
-    
+
     return node;
 }
 
@@ -134,10 +134,10 @@ AlpsNodeSelectionHybrid::createNewNodes(AlpsSubTree *subTree,
         subTree->diveNodePool()->popKnowledge();
         subTree->nodePool()->addKnowledge(tempNode, tempNode->getQuality());
     }
-    
-    std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
+
+    std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> >
         children = node->branch();
-    
+
     subTree->createChildren(node, children, subTree->diveNodePool());
     numChildren = subTree->diveNodePool()->getNumKnowledges();
 
