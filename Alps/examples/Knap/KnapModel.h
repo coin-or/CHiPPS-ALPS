@@ -8,7 +8,7 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
+ *                                                                           *
  *                                                                           *
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
@@ -29,7 +29,7 @@ class KnapModel : public AlpsModel {
 
   /** Capacity of the knapsack */
   int capacity_;
-   
+
   /** List of sizes and profits of the items */
   std::vector< std::pair<int, int> > items_;
 
@@ -39,20 +39,20 @@ class KnapModel : public AlpsModel {
   /** Knap parameters. */
   KnapParams *KnapPar_;
 
- public: 
+ public:
 
   KnapModel() : capacity_(0), sequence_(0), KnapPar_(new KnapParams) {}
   KnapModel(int cap, std::vector<std::pair<int, int> > items, int* seq)
       :
       capacity_(cap),
       sequence_(seq),
-      KnapPar_(new KnapParams) 
+      KnapPar_(new KnapParams)
       { items_.insert(items_.begin(), items.begin(), items.end()); }
-  
-  ~KnapModel() { 
-      if (sequence_ != 0) { 
-	  delete [] sequence_; 
-	  sequence_ = 0; 
+
+  ~KnapModel() {
+      if (sequence_ != 0) {
+          delete [] sequence_;
+          sequence_ = 0;
       }
       delete KnapPar_;
   }
@@ -64,31 +64,31 @@ class KnapModel : public AlpsModel {
   inline int getNumItems() const { return static_cast<int> (items_.size()); }
 
   /** Get the sequence of items in the knapsack */
-  inline int* getSequence() const { return sequence_; }   
+  inline int* getSequence() const { return sequence_; }
 
-//############################################################################ 
+//############################################################################
 
   /** Read in Alps and Knap parameters. */
   virtual void readParameters(const int argnum, const char * const * arglist){
       AlpsPar_->readFromArglist(argnum, arglist);
       int msgLevel = AlpsPar_->entry(AlpsParams::msgLevel);
       if (msgLevel > 0) {
-	  std::cout << "Reading in KNAP parameters ..." << std::endl;
-	  std::cout << "Reading in ALPS parameters ..." << std::endl;
+          std::cout << "Reading in KNAP parameters ..." << std::endl;
+          std::cout << "Reading in ALPS parameters ..." << std::endl;
       }
       KnapPar_->readFromArglist(argnum, arglist);
   }
-   
+
   /** Get the size of item i */
-  inline std::pair<int, int> getItem(int i) const { 
-    return(items_[sequence_[i]]); 
+  inline std::pair<int, int> getItem(int i) const {
+    return(items_[sequence_[i]]);
   }
-   
+
   /** Set the capacity of the knapsack */
   inline void setCapacity(int capacity) { capacity_ = capacity; }
 
   /** Set the sequence of items in the knapsack */
-  void setSequence(const int * seq);  
+  void setSequence(const int * seq);
 
   /** Set the size of item i */
   inline void addItem(int size, int cost)
@@ -99,13 +99,13 @@ class KnapModel : public AlpsModel {
 
   /** Order the items based on their cost/size */
   void orderItems();
-
-  /** The method that encodes the solution into a buffer. */
-  virtual AlpsEncoded* encode() const;
-
-  /** The method that decodes model data from the encoded form and 
-      fill member data. */
-  virtual void decodeToSelf(AlpsEncoded&);
+  /// Get encode from AlpsModel.
+  using AlpsModel::encode;
+  /// Encode this into the given AlpsEncoded object.
+  virtual AlpsReturnStatus encode(AlpsEncoded * encoded) const;
+  /// Decode the given AlpsEncoded object into this.
+  virtual AlpsReturnStatus decodeToSelf(AlpsEncoded & encoded);
+  virtual AlpsKnowledge * decode(AlpsEncoded & encoded) const;
 };
 
 //#############################################################################

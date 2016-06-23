@@ -8,7 +8,7 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
+ *                                                                           *
  *                                                                           *
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
@@ -31,9 +31,9 @@ static double*  ratio;
 // Compare function used in Quick Sort
 int ratioGreater (const void * a, const void * b) {
     if(ratio[*((int*)a)] < ratio[*((int*)b)])
-	return 1;
+        return 1;
     else if (ratio[*((int*)a)] > ratio[*((int*)b)])
-	return -1;
+        return -1;
     return 0;
 }
 
@@ -43,13 +43,13 @@ int ratioGreater (const void * a, const void * b) {
 void KnapModel::setSequence(const int * seq) {
     int num = getNumItems();
     if (num > 0) {
-	sequence_ = new int [num];
-	for(int i = 0; i < num; ++i) {
-	    sequence_[i] = *(seq+i);
-	}
+        sequence_ = new int [num];
+        for(int i = 0; i < num; ++i) {
+            sequence_[i] = *(seq+i);
+        }
     }
 }
-    
+
 //#############################################################################
 
 void KnapModel::readInstance(const char* dataFile)
@@ -58,23 +58,23 @@ void KnapModel::readInstance(const char* dataFile)
     std::ifstream data_stream(getDataFile().c_str());
 
     if (!data_stream){
-	std::cout << "Error opening input data file. Aborting.\n";
-	abort();
+        std::cout << "Error opening input data file. Aborting.\n";
+        abort();
     }
 
     std::string key;
     int value1, value2;
 
-    // FIXME: There should be error checking on the file format. 
+    // FIXME: There should be error checking on the file format.
     while (data_stream >> key){
-	if (key == "CAPACITY") {
-	    data_stream >> value1;
-	    setCapacity(value1);
-	} else if  (key == "ITEM") {
-	    data_stream >> value1;
-	    data_stream >> value2;
-	    addItem(value1, value2);
-	}
+        if (key == "CAPACITY") {
+            data_stream >> value1;
+            setCapacity(value1);
+        } else if  (key == "ITEM") {
+            data_stream >> value1;
+            data_stream >> value2;
+            addItem(value1, value2);
+        }
     }
 
     //    std::cout << "Knapsack Capacity: " << getCapacity() << "\n";
@@ -86,16 +86,16 @@ void KnapModel::readInstance(const char* dataFile)
 
 //#############################################################################
 
-// Quick Sort items nondescently based on ratio, return the sequence. 
+// Quick Sort items nondescently based on ratio, return the sequence.
 void sortRatio(int * sequence, double * ratio, int num) {
-    for(int j = 0; j < num; j++) 
-	sequence[j] = j;
+    for(int j = 0; j < num; j++)
+        sequence[j] = j;
     qsort(sequence, num, sizeof(*sequence), ratioGreater);
 }
 
 //#############################################################################
 
-void 
+void
 KnapModel::orderItems()
 {
     const int n     = static_cast<int> (items_.size());
@@ -103,10 +103,10 @@ KnapModel::orderItems()
     sequence_       = new int [n];
 
     for (int i = 0; i < n; ++i) {  // cost/size
-	ratio[i] = static_cast<double>(items_[i].second) / static_cast<double>
-	    (items_[i].first); 
-    }  
- 
+        ratio[i] = static_cast<double>(items_[i].second) / static_cast<double>
+            (items_[i].first);
+    }
+
     // CoinSort_2(ratio.begin(), ratio.end(), items_.begin());
     // CoinSort_2(&ratio[0], &ratio[0]+n, &items_[0]);
 
@@ -117,105 +117,105 @@ KnapModel::orderItems()
 
 //#############################################################################
 
-AlpsEncoded* 
-KnapModel::encode() const 
-{ 
-    AlpsReturnStatus status = AlpsReturnStatusOk;
-    //  AlpsEncoded* encoded = new AlpsEncoded(typeid(*this).name());
-    AlpsEncoded* encoded = new AlpsEncoded(AlpsKnowledgeTypeModel);
+AlpsReturnStatus KnapModel::encode(AlpsEncoded * encoded) const {
+  AlpsReturnStatus status = AlpsReturnStatusOk;
 
-    //------------------------------------------------------
-    // Encode Alps part. 
-    //------------------------------------------------------
+  //------------------------------------------------------
+  // Encode Alps part.
+  //------------------------------------------------------
 
-    status = encodeAlps(encoded);
-    
-    //------------------------------------------------------
-    // Encode Knap part. 
-    //------------------------------------------------------
+  status = AlpsModel::encode(encoded);
 
-    const int size = static_cast<int> (items_.size());
-    int* weight; 
-    int* profit;
-    int i;
+  //------------------------------------------------------
+  // Encode Knap part.
+  //------------------------------------------------------
 
-    if (size > 0) {
-	weight = new int[size];
-	profit = new int[size];
-	for(i = 0; i < size; ++i) {
-	    weight[i] = items_[i].first;
-	    profit[i] = items_[i].second;
-	}
+  const int size = static_cast<int> (items_.size());
+  int* weight;
+  int* profit;
+  int i;
+
+  if (size > 0) {
+    weight = new int[size];
+    profit = new int[size];
+    for(i = 0; i < size; ++i) {
+      weight[i] = items_[i].first;
+      profit[i] = items_[i].second;
     }
-    else { // size == 0
-	weight = 0; profit = 0;
-    }
+  }
+  else { // size == 0
+    weight = 0; profit = 0;
+  }
 
-    // Write the model data into representation_
-    encoded->writeRep(size);
-    encoded->writeRep(capacity_);
-    encoded->writeRep(weight, size);
-    encoded->writeRep(profit, size);
-    encoded->writeRep(sequence_, size);
+  // Write the model data into representation_
+  encoded->writeRep(size);
+  encoded->writeRep(capacity_);
+  encoded->writeRep(weight, size);
+  encoded->writeRep(profit, size);
+  encoded->writeRep(sequence_, size);
 
-    return encoded;
+  return AlpsReturnStatusOk;
 }
 
 //#############################################################################
 
-void
-KnapModel::decodeToSelf(AlpsEncoded& encoded)
-{ 
-    int size, cap, i;
-    std::vector<std::pair<int, int> > items;
-    int* weight = NULL;  // By default of readRep, don't need allocate memory
-    int* profit = NULL;
-    int* seq = NULL;
-    
-    AlpsReturnStatus status = AlpsReturnStatusOk;
+AlpsReturnStatus KnapModel::decodeToSelf(AlpsEncoded & encoded) {
+  int size, cap, i;
+  std::vector<std::pair<int, int> > items;
+  int* weight = NULL;  // By default of readRep, don't need allocate memory
+  int* profit = NULL;
+  int* seq = NULL;
 
-    //------------------------------------------------------
-    // Decode Alps part. 
-    // NOTE: Nothing to do for Bcps part.
-    //------------------------------------------------------
+  AlpsReturnStatus status = AlpsReturnStatusOk;
 
-    status = decodeAlps(encoded);
+  //------------------------------------------------------
+  // Decode Alps part.
+  // NOTE: Nothing to do for Bcps part.
+  //------------------------------------------------------
 
-    //------------------------------------------------------
-    // Decode Blis part. 
-    //------------------------------------------------------
+  status = AlpsModel::decodeToSelf(encoded);
 
-    encoded.readRep(size).readRep(cap);
-    encoded.readRep(weight, size).readRep(profit, size).readRep(seq, size);
-    items.reserve(size);
-    for(i = 0; i < size; ++i)
-	items.push_back(std::make_pair(weight[i], profit[i]));
+  //------------------------------------------------------
+  // Decode Knap part.
+  //------------------------------------------------------
+
+  encoded.readRep(size).readRep(cap);
+  encoded.readRep(weight, size).readRep(profit, size).readRep(seq, size);
+  items.reserve(size);
+  for(i = 0; i < size; ++i)
+    items.push_back(std::make_pair(weight[i], profit[i]));
 
 #if defined NF_DEBUG_MORE
-    std::cout << "\nMODEL: decode: Knapsack Capacity: " << cap << "\n";
-    std::cout << "decode: Number of Items:   " << size << "\n";
-    std::cout <<"Weight: " <<std::endl;
-    for (i = 0; i < size; ++i) {
-	std::cout << weight[i] << " ";
-    }
-    std::cout <<"\nProfit: " <<std::endl;
-    for (i = 0; i < size; ++i) {
-	std::cout << profit[i] << " ";
-    }
-    std::cout << "\nEND OF DECODE"<<  std::endl <<  std::endl;;
+  std::cout << "\nMODEL: decode: Knapsack Capacity: " << cap << "\n";
+  std::cout << "decode: Number of Items:   " << size << "\n";
+  std::cout <<"Weight: " <<std::endl;
+  for (i = 0; i < size; ++i) {
+    std::cout << weight[i] << " ";
+  }
+  std::cout <<"\nProfit: " <<std::endl;
+  for (i = 0; i < size; ++i) {
+    std::cout << profit[i] << " ";
+  }
+  std::cout << "\nEND OF DECODE"<<  std::endl <<  std::endl;;
 #endif
 
-    capacity_ = cap;
-    items_.insert(items_.begin(), items.begin(), items.end());
-    sequence_ = seq;
-    seq = NULL;    
+  capacity_ = cap;
+  items_.insert(items_.begin(), items.begin(), items.end());
+  sequence_ = seq;
+  seq = NULL;
+  return status;
+}
+
+AlpsKnowledge * KnapModel::decode(AlpsEncoded & encoded) const {
+  std::cerr << "Not implemented!" << std::endl;
+  throw std::exception();
 }
 
 //#############################################################################
 #if 0
 AlpsKnowledge*
-KnapModel::decode(AlpsEncoded& encoded) const 
-{ 
+KnapModel::decode(AlpsEncoded& encoded) const
+{
     int size, cap, i;
     std::vector<std::pair<int, int> > items;
     int* weight;  // By default of readRep, don't need allocate memory
@@ -226,23 +226,23 @@ KnapModel::decode(AlpsEncoded& encoded) const
     encoded.readRep(weight, size).readRep(profit, size).readRep(seq, size);
     items.reserve(size);
     for(i = 0; i < size; ++i)
-	items.push_back(std::make_pair(weight[i], profit[i]));
+        items.push_back(std::make_pair(weight[i], profit[i]));
 
 #if defined NF_DEBUG_MORE
     std::cout << "\nMODEL: decode: Knapsack Capacity: " << cap << "\n";
     std::cout << "decode: Number of Items:   " << size << "\n";
     std::cout <<"Weight: " <<std::endl;
     for (i = 0; i < size; ++i) {
-	std::cout << weight[i] << " ";
+        std::cout << weight[i] << " ";
     }
     std::cout <<"\nProfit: " <<std::endl;
     for (i = 0; i < size; ++i) {
-	std::cout << profit[i] << " ";
+        std::cout << profit[i] << " ";
     }
     std::cout << "\nEND OF DECODE"<<  std::endl <<  std::endl;;
 #endif
 
-    return new KnapModel(cap, items, seq); 
+    return new KnapModel(cap, items, seq);
 }
 #endif
 //#############################################################################
