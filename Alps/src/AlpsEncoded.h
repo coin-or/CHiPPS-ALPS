@@ -24,7 +24,7 @@
   ## Relationship to #AlpsKnowledge
 
   AlpsKnowledge is a base class for the types that are needed to get
-  comminated. You can consider AlpsEncoded as the same information in another
+  comminucated. You can consider AlpsEncoded as the same information in another
   shape that is suitable to sent/receive over the network.
 
  This data structure is to contain the packed form of an encodable
