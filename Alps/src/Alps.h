@@ -30,6 +30,81 @@
 #include "AlpsConfig.h"
 #include "CoinFinite.hpp"
 
+
+//! \page handle MyPage
+
+/*! \mainpage
+
+  Description here is a brief introduction to Abstract Library for Parallel
+  tree Search (Alps). For theoretical details of parallel tree search see <a
+  href="http://coral.ie.lehigh.edu/~ted/files/papers/YanXuDissertation07.pdf">Yan
+  Xu's dissertation</a>.
+
+  ## Alps Design
+
+  Alps is designed to conduct parallel tree search. It is an abstract library
+  for this purpose, i.e., it does not assume much (hence flexible) on the tree
+  search problem of its user. Any tree search problem can be implemented as an
+  application on top of the Alps, ie. DFS, BFS, Dijkstra's algorithm or Branch
+  and Bound search for discrete optimization problems.
+
+  A tree search can be abstracted as defining the following,
+
+  <ul>
+    <li> representing problem in a form of data (#AlpsModel),
+    <li> representing nodes in some of data (#AlpsNodeDesc),
+    <li> processing a node (AlpsTreeNode::process),
+    <li> which node to process next,
+    <li> creating of new nodes from a given one (AlpsTreeNode::branch,
+         AlpsTreeNode::createNewTreeNode),
+    <li> a solution and its quality (#AlpsSolution).
+  </ul>
+
+  To define these, user need to inherit corresponding Alps classes and implement
+  related virtual functions, given in the paranthesis. Once these are
+  defined Alps has different strategies to cary the search related tasks, which
+  node to process next, which node to branch, etc.
+
+  Alps comes with two examples, Abc and Knap. Abc is a branch and cut solver,
+  Knap is a knapsack solver. Both of them are implemented on top of Alps, where
+  Alps carries a classical branch and bound/cut type of search to find optimal
+  solutions.
+
+  ## How does parallel search work?
+
+  For parallel search to work, user should implement encode/decode virtual
+  functions in the corresponding user types,
+
+  <ul>
+    <li> model inherited from #AlpsModel,
+    <li> node, inherited from #AlpsTreeNode,
+    <li> node description, inherited from #AlpsNodeDesc,
+    <li> solution, inherited from #AlpsSolution.
+  </ul>
+
+  #AlpsNodeDesc holds subproblem data specific to the node, tree node has other
+  infromation related to tree search (index, depth, branching
+  info). AlpsTreeNode::desc_ is of type  #AlpsNodeDesc and keeps the problem
+  data of the node. This design is intended to keep problem data separated from
+  the node data related to tree search. It is for convenience.
+
+  #AlpsModel, #AlpsTreeNode and #AlpsSolution all have #AlpsKnowledge as a base
+  class. Instances of these classes are considered as knowledges generated
+  during a search for the optimal solution and they are traded between
+  different processors.
+
+  All #AlpsModel, #AlpsTreeNode, #AlpsNodeDesc and #AlpsSolution have virtual
+  encode() and decode() funtions. Corresponding sub-classes of user app should
+  implement these virtual functions. encode() function encodes the object into
+  an #AlpsEncoded object. decode() function decodes information from a given
+  #AlpsEncoded object. Alps knowledge brokers sends/receives these #AlpsEncoded
+  instances.
+
+  Each processor has an AlpsKnowledgeBroker instance responsible with
+  coordinating search with other processors' brokers.
+
+*/
+
 //#############################################################################
 
 #if defined(__linux__)
@@ -82,8 +157,6 @@ enum AlpsSearchType {
 //#############################################################################
 /** Type of knowledge like solution, node, cut...*/
 //#############################################################################
-
-typedef int KnowledgeType;
 
 enum AlpsKnowledgeType{
    AlpsKnowledgeTypeModel = 0,

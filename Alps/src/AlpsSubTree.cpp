@@ -47,109 +47,109 @@ static int computeRampUpNumNodes(int minNumNodes,
                                  int requiredNumNodes,
                                  double nodeProcessingTime)
 {
-    // TODO: Should related to unit work.
-    int newNumNodes;
-    if (nodeProcessingTime < 1.0e-14) {
-        nodeProcessingTime = 1.0e-5;
-    }
+  // TODO: Should related to unit work.
+  int newNumNodes;
+  if (nodeProcessingTime < 1.0e-14) {
+    nodeProcessingTime = 1.0e-5;
+  }
 
-    if (nodeProcessingTime > 5.0) {
-        newNumNodes = minNumNodes;
-    }
-    else if (nodeProcessingTime > 1.0) {
-        newNumNodes = minNumNodes;
-    }
-    else if (nodeProcessingTime > 0.5) {
-        newNumNodes = minNumNodes;
-    }
-    else if (nodeProcessingTime > 0.1) {
-        newNumNodes = minNumNodes;
-    }
-    else if (nodeProcessingTime > 0.05) {
-        newNumNodes = minNumNodes;
-    }
-    else if (nodeProcessingTime > 0.01) {
-        newNumNodes = minNumNodes;
-    }
-    else if (nodeProcessingTime > 0.005) {
-        newNumNodes = minNumNodes * 2;
-    }
-    else if (nodeProcessingTime > 0.001) {
-        newNumNodes = minNumNodes *2;
-    }
-    else if (nodeProcessingTime > 0.0005){
-        newNumNodes = minNumNodes * 5;
-    }
-    else if (nodeProcessingTime > 0.0001){
-        newNumNodes = minNumNodes * 30;
-    }
-    else if (nodeProcessingTime > 0.00005){
-        newNumNodes = minNumNodes * 60;
-    }
-    else {
-        newNumNodes = minNumNodes * 80;
-    }
+  if (nodeProcessingTime > 5.0) {
+    newNumNodes = minNumNodes;
+  }
+  else if (nodeProcessingTime > 1.0) {
+    newNumNodes = minNumNodes;
+  }
+  else if (nodeProcessingTime > 0.5) {
+    newNumNodes = minNumNodes;
+  }
+  else if (nodeProcessingTime > 0.1) {
+    newNumNodes = minNumNodes;
+  }
+  else if (nodeProcessingTime > 0.05) {
+    newNumNodes = minNumNodes;
+  }
+  else if (nodeProcessingTime > 0.01) {
+    newNumNodes = minNumNodes;
+  }
+  else if (nodeProcessingTime > 0.005) {
+    newNumNodes = minNumNodes * 2;
+  }
+  else if (nodeProcessingTime > 0.001) {
+    newNumNodes = minNumNodes *2;
+  }
+  else if (nodeProcessingTime > 0.0005){
+    newNumNodes = minNumNodes * 5;
+  }
+  else if (nodeProcessingTime > 0.0001){
+    newNumNodes = minNumNodes * 30;
+  }
+  else if (nodeProcessingTime > 0.00005){
+    newNumNodes = minNumNodes * 60;
+  }
+  else {
+    newNumNodes = minNumNodes * 80;
+  }
 
-    if (requiredNumNodes > 0) {
-        newNumNodes = (int) (0.5 *(requiredNumNodes + newNumNodes));
-    }
+  if (requiredNumNodes > 0) {
+    newNumNodes = (int) (0.5 *(requiredNumNodes + newNumNodes));
+  }
 
-    newNumNodes = CoinMax(newNumNodes, minNumNodes);
+  newNumNodes = CoinMax(newNumNodes, minNumNodes);
 
-    if (newNumNodes > 20000) {
-        // at most 50 nodes.
-        newNumNodes = CoinMin(20000, minNumNodes * 50);
-        // at least 10 nodes.
-        newNumNodes = CoinMax(newNumNodes, minNumNodes * 10);
-    }
+  if (newNumNodes > 20000) {
+    // at most 50 nodes.
+    newNumNodes = CoinMin(20000, minNumNodes * 50);
+    // at least 10 nodes.
+    newNumNodes = CoinMax(newNumNodes, minNumNodes * 10);
+  }
 
 #if 0
-    std::cout << "+++++ newNumNodes = " << newNumNodes
-              << ", nodeProcessingTime = " << nodeProcessingTime << std::endl;
+  std::cout << "+++++ newNumNodes = " << newNumNodes
+            << ", nodeProcessingTime = " << nodeProcessingTime << std::endl;
 #endif
-    return newNumNodes;
+  return newNumNodes;
 }
 
 //#############################################################################
 
 /** Default constructor. */
 AlpsSubTree::AlpsSubTree()
-    :
-    root_(0),
-    //nextIndex_(0),
-    nodePool_(new AlpsNodePool),
-    diveNodePool_(new AlpsNodePool),
-    diveNodeRule_(new AlpsNodeSelectionBest),
-    activeNode_(0),
-    quality_(ALPS_OBJ_MAX),
-    broker_(0)
-                        //eliteSize_(-1)
+  :
+  root_(0),
+  //nextIndex_(0),
+  nodePool_(new AlpsNodePool),
+  diveNodePool_(new AlpsNodePool),
+  diveNodeRule_(new AlpsNodeSelectionBest),
+  activeNode_(0),
+  quality_(ALPS_OBJ_MAX),
+  broker_(0)
+  //eliteSize_(-1)
 {
-    setType(AlpsKnowledgeTypeSubTree);
-    diveNodePool_->setNodeSelection(*diveNodeRule_);
+  setType(AlpsKnowledgeTypeSubTree);
+  diveNodePool_->setNodeSelection(*diveNodeRule_);
 }
 
 //#############################################################################
 
 /** Useful constructor. */
 AlpsSubTree::AlpsSubTree(AlpsKnowledgeBroker* kb)
-    :
-    root_(0),
-    // nextIndex_(0),
-    nodePool_(new AlpsNodePool),
-    diveNodePool_(new AlpsNodePool),
-    diveNodeRule_(new AlpsNodeSelectionBest),
-    activeNode_(0),
-    quality_(ALPS_OBJ_MAX)
+  :
+  root_(0),
+  // nextIndex_(0),
+  nodePool_(new AlpsNodePool),
+  diveNodePool_(new AlpsNodePool),
+  diveNodeRule_(new AlpsNodeSelectionBest),
+  activeNode_(0),
+  quality_(ALPS_OBJ_MAX)
 {
-    assert(kb);
-    broker_ = kb;
-    setType(AlpsKnowledgeTypeSubTree);
+  assert(kb);
+  broker_ = kb;
+  setType(AlpsKnowledgeTypeSubTree);
 
-    //eliteSize_ = kb->getDataPool()->
-    //getOwnParams()->entry(AlpsParams::eliteSize);
+  //eliteSize_ = kb->getDataPool()->
+  //getOwnParams()->entry(AlpsParams::eliteSize);
 
-    diveNodePool_->setNodeSelection(*diveNodeRule_);
+  diveNodePool_->setNodeSelection(*diveNodeRule_);
 }
 
 //#############################################################################
@@ -157,28 +157,28 @@ AlpsSubTree::AlpsSubTree(AlpsKnowledgeBroker* kb)
 /** Destructor. */
 AlpsSubTree::~AlpsSubTree()
 {
-    //std::cout << "- delete subtree" << std::endl;
-    if (nodePool_ != NULL) {
-        nodePool_->clear(); // Nodes will be freed by deleting root
-        delete nodePool_;
-        nodePool_ = NULL;
-    }
+  //std::cout << "- delete subtree" << std::endl;
+  if (nodePool_ != NULL) {
+    nodePool_->clear(); // Nodes will be freed by deleting root
+    delete nodePool_;
+    nodePool_ = NULL;
+  }
 
-    if (diveNodePool_ != NULL) {
-        diveNodePool_->clear(); // Nodes will be freed by deleting root
-        delete diveNodePool_;
-        diveNodePool_ = NULL;
-    }
+  if (diveNodePool_ != NULL) {
+    diveNodePool_->clear(); // Nodes will be freed by deleting root
+    delete diveNodePool_;
+    diveNodePool_ = NULL;
+  }
 
-    if (root_ != NULL) {
-        //std::cout << "- delete root" << std::endl;
+  if (root_ != NULL) {
+    //std::cout << "- delete root" << std::endl;
 
-        root_->removeDescendants();
-        delete root_;
-        root_ = NULL;
-    }
+    root_->removeDescendants();
+    delete root_;
+    root_ = NULL;
+  }
 
-    delete diveNodeRule_;
+  delete diveNodeRule_;
 }
 
 //#############################################################################
@@ -189,22 +189,22 @@ AlpsSubTree::~AlpsSubTree()
 void
 AlpsSubTree::fathomAllNodes()
 {
-    if (nodePool_ != NULL) {
-        nodePool_->clear(); // Nodes will be freed by deleting root
-    }
+  if (nodePool_ != NULL) {
+    nodePool_->clear(); // Nodes will be freed by deleting root
+  }
 
-    if (diveNodePool_ != NULL) {
-        diveNodePool_->clear(); // Nodes will be freed by deleting root
-    }
+  if (diveNodePool_ != NULL) {
+    diveNodePool_->clear(); // Nodes will be freed by deleting root
+  }
 
-    if (root_ != NULL) {
-        //std::cout << "- delete root" << std::endl;
-        root_->removeDescendants();
-        delete root_;
-        root_ = NULL;
-    }
+  if (root_ != NULL) {
+    //std::cout << "- delete root" << std::endl;
+    root_->removeDescendants();
+    delete root_;
+    root_ = NULL;
+  }
 
-    activeNode_ = NULL;
+  activeNode_ = NULL;
 }
 
 //#############################################################################
@@ -212,27 +212,27 @@ AlpsSubTree::fathomAllNodes()
 void
 AlpsSubTree::removeDeadNodes(AlpsTreeNode*& node)
 {
-    if (!node->isFathomed() && !node->isDiscarded()) {
-        throw CoinError("node->isFathomed()","removeDeadNodes","AlpsSubTree");
-    }
+  if (!node->isFathomed() && !node->isDiscarded()) {
+    throw CoinError("node->isFathomed()","removeDeadNodes","AlpsSubTree");
+  }
 
-    AlpsTreeNode* parent = node->getParent();
-    if (parent) {
-        /* Free memory of node. */
-        parent->removeChild(node);
+  AlpsTreeNode* parent = node->getParent();
+  if (parent) {
+    /* Free memory of node. */
+    parent->removeChild(node);
 
-        if (parent->getNumChildren() == 0) {
-            /* If parent has no child, fathom it. This repeats recursively. */
-            parent->setStatus(AlpsNodeStatusFathomed);
-            removeDeadNodes(parent);
-        }
+    if (parent->getNumChildren() == 0) {
+      /* If parent has no child, fathom it. This repeats recursively. */
+      parent->setStatus(AlpsNodeStatusFathomed);
+      removeDeadNodes(parent);
     }
-    else {
-        // We are in the root
-        node->setStatus(AlpsNodeStatusFathomed);
-        //delete node;
-        //node = NULL;
-    }
+  }
+  else {
+    // We are in the root
+    node->setStatus(AlpsNodeStatusFathomed);
+    //delete node;
+    //node = NULL;
+  }
 }
 
 //#############################################################################
@@ -240,99 +240,99 @@ AlpsSubTree::removeDeadNodes(AlpsTreeNode*& node)
 void
 AlpsSubTree::replaceNode(AlpsTreeNode* oldNode, AlpsTreeNode* newNode)
 {
-    AlpsTreeNode* parent = oldNode->getParent();
+  AlpsTreeNode* parent = oldNode->getParent();
 
-    oldNode->removeDescendants();
+  oldNode->removeDescendants();
 
-    if (parent) {
-        parent->removeChild(oldNode);
-        parent->addChild(newNode);
-        newNode->setParent(parent);
-        newNode->setParentIndex(parent->getIndex());
-    }
-    else {
-        delete root_;
-        root_ = newNode;
-    }
+  if (parent) {
+    parent->removeChild(oldNode);
+    parent->addChild(newNode);
+    newNode->setParent(parent);
+    newNode->setParentIndex(parent->getIndex());
+  }
+  else {
+    delete root_;
+    root_ = newNode;
+  }
 }
 
 //#############################################################################
 
 void
 AlpsSubTree::createChildren(
-    AlpsTreeNode* parent,
-    std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> >& children,
-    AlpsNodePool *diveNodePool
-    )
+                            AlpsTreeNode* parent,
+                            std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> >& children,
+                            AlpsNodePool *diveNodePool
+                            )
 {
-    int i;
-    const bool deleteNode =
-        broker_->getModel()->AlpsPar()->entry(AlpsParams::deleteDeadNode);
-    const int msgLevel =
-        broker_->getModel()->AlpsPar()->entry(AlpsParams::msgLevel);
-    const int numChildren = static_cast<int> (children.size());
+  int i;
+  const bool deleteNode =
+    broker_->getModel()->AlpsPar()->entry(AlpsParams::deleteDeadNode);
+  const int msgLevel =
+    broker_->getModel()->AlpsPar()->entry(AlpsParams::msgLevel);
+  const int numChildren = static_cast<int> (children.size());
 
-    parent->setNumChildren(numChildren);
+  parent->setNumChildren(numChildren);
 
-    if (!numChildren){
-        return;
-    }
+  if (!numChildren){
+    return;
+  }
 
-    parent->setStatus(AlpsNodeStatusFathomed);
-    
+  parent->setStatus(AlpsNodeStatusFathomed);
+
+  if (msgLevel >= 100){
+    std::cout << std::endl;
+    std::cout << "Creating children of node " << parent->getIndex();
+    std::cout << " with indices: ";
+  }
+
+  for (i = 0; i < numChildren; ++i) {
+    AlpsTreeNode* child = parent->createNewTreeNode(children[i].first);
+    parent->setChild(i, child);
+    child->setStatus(children[i].second);
+    child->setQuality(children[i].third);
+    child->setParent(parent);
+    child->setParentIndex(parent->getIndex());
+    child->setKnowledgeBroker(parent->getKnowledgeBroker());
+    child->setActive(false);
+    child->setDepth(parent->getDepth() + 1);
+    child->setIndex(nextIndex());
     if (msgLevel >= 100){
-        std::cout << std::endl;
-        std::cout << "Creating children of node " << parent->getIndex();
-        std::cout << " with indices: ";
+      std::cout << child->getIndex() << " ";
     }
+  }
 
-    for (i = 0; i < numChildren; ++i) {
-        AlpsTreeNode* child = parent->createNewTreeNode(children[i].first);
-        parent->setChild(i, child);
-        child->setStatus(children[i].second);
-        child->setQuality(children[i].third);
-        child->setParent(parent);
-        child->setParentIndex(parent->getIndex());
-        child->setKnowledgeBroker(parent->getKnowledgeBroker());
-        child->setActive(false);
-        child->setDepth(parent->getDepth() + 1);
-        child->setIndex(nextIndex());
-        if (msgLevel >= 100){
-            std::cout << child->getIndex() << " ";
-        }
-    }
+  if (msgLevel >= 100){
+    std::cout << std::endl;
+  }
 
-    if (msgLevel >= 100){
-        std::cout << std::endl;
+  for (i = 0; i < numChildren; ++i) {
+    AlpsTreeNode* child = parent->getChild(i);
+    switch (child->getStatus()) {
+    case AlpsNodeStatusCandidate:
+    case AlpsNodeStatusEvaluated:
+    case AlpsNodeStatusPregnant:
+      parent->setStatus(AlpsNodeStatusBranched);
+      if (diveNodePool) {
+        diveNodePool->addKnowledge(child, child->getSolEstimate());
+      }
+      else {
+        nodePool_->addKnowledge(child, child->getQuality());
+      }
+      break;
+    case AlpsNodeStatusFathomed:
+    case AlpsNodeStatusDiscarded:
+      // Based on a parameter deleteNode, we decide whether to
+      // clean up the tree or preserve it for posterity
+      if (deleteNode) {
+        removeDeadNodes(child);
+      }
+      break;
+    default: // AlpsNodeStatus::branched ==> this is impossible
+      throw CoinError("impossible status: branched",
+                      "createChildren", "AlpsSubTree");
     }
-
-    for (i = 0; i < numChildren; ++i) {
-	AlpsTreeNode* child = parent->getChild(i);
-	switch (child->getStatus()) {
-        case AlpsNodeStatusCandidate:
-        case AlpsNodeStatusEvaluated:
-        case AlpsNodeStatusPregnant:
-            parent->setStatus(AlpsNodeStatusBranched);
-	    if (diveNodePool) {
-		diveNodePool->addKnowledge(child, child->getSolEstimate());
-	    }
-	    else {
-		nodePool_->addKnowledge(child, child->getQuality());
-	    }
-	    break;
-	case AlpsNodeStatusFathomed:
-	case AlpsNodeStatusDiscarded:
-	    // Based on a parameter deleteNode, we decide whether to
-	    // clean up the tree or preserve it for posterity
-	    if (deleteNode) {
-		removeDeadNodes(child);
-	    }
-	    break;
-	default: // AlpsNodeStatus::branched ==> this is impossible
-	    throw CoinError("impossible status: branched",
-			    "createChildren", "AlpsSubTree");
-	}
-    }
+  }
 }
 
 //#############################################################################
@@ -340,7 +340,7 @@ AlpsSubTree::createChildren(
 int
 AlpsSubTree::nextIndex()
 {
-    return getKnowledgeBroker()->nextNodeIndex();
+  return getKnowledgeBroker()->nextNodeIndex();
 }
 
 //#############################################################################
@@ -348,7 +348,7 @@ AlpsSubTree::nextIndex()
 int
 AlpsSubTree::getNextIndex() const
 {
-    return getKnowledgeBroker()->getNextNodeIndex();
+  return getKnowledgeBroker()->getNextNodeIndex();
 }
 
 //#############################################################################
@@ -356,7 +356,7 @@ AlpsSubTree::getNextIndex() const
 void
 AlpsSubTree::setNextIndex(int next)
 {
-    getKnowledgeBroker()->setNextNodeIndex(next);
+  getKnowledgeBroker()->setNextNodeIndex(next);
 }
 
 //#############################################################################
@@ -364,96 +364,96 @@ AlpsSubTree::setNextIndex(int next)
 double
 AlpsSubTree::calculateQuality()
 {
-    quality_ = ALPS_OBJ_MAX;
+  quality_ = ALPS_OBJ_MAX;
 
-    const int eliteSize =
-        broker_->getModel()->AlpsPar()->entry(AlpsParams::eliteSize);
-    assert(eliteSize > 0);
+  const int eliteSize =
+    broker_->getModel()->AlpsPar()->entry(AlpsParams::eliteSize);
+  assert(eliteSize > 0);
 
-    int nodeSelectionType = broker_->getNodeSelection()->getType();
-    const int nodeNum = nodePool_->getNumKnowledges();
-    const int diveNum = diveNodePool_->getNumKnowledges();
+  int nodeSelectionType = broker_->getNodeSelection()->getType();
+  const int nodeNum = nodePool_->getNumKnowledges();
+  const int diveNum = diveNodePool_->getNumKnowledges();
 
-    // Check if no node.
-    if ( (nodeNum + diveNum <= 0) && (activeNode_ == NULL) ) {
-        std::cout << "PROC[" << getKnowledgeBroker()->getProcRank()
-                  << "] has a subtree with no node" << std::endl;
-        assert(0);
+  // Check if no node.
+  if ( (nodeNum + diveNum <= 0) && (activeNode_ == NULL) ) {
+    std::cout << "PROC[" << getKnowledgeBroker()->getProcRank()
+              << "] has a subtree with no node" << std::endl;
+    assert(0);
+  }
+
+  if ( ((nodeSelectionType == AlpsSearchTypeBestFirst) ||
+        (nodeSelectionType == AlpsSearchTypeHybrid)) &&
+       (eliteSize == 1) ) {
+    if (nodeNum) {
+      quality_ = nodePool_->getKnowledge().second;
     }
-
-    if ( ((nodeSelectionType == AlpsSearchTypeBestFirst) ||
-          (nodeSelectionType == AlpsSearchTypeHybrid)) &&
-         (eliteSize == 1) ) {
-        if (nodeNum) {
-            quality_ = nodePool_->getKnowledge().second;
-        }
-        if (diveNum) {
-            quality_ = CoinMin(quality_, diveNodePool_->getKnowledge().second);
-        }
-        if (activeNode_) {
-            quality_ = CoinMin(quality_, activeNode_->getQuality());
-        }
-        //std::cout << "quality_ = " << quality_ << std::endl;
-        return quality_;
+    if (diveNum) {
+      quality_ = CoinMin(quality_, diveNodePool_->getKnowledge().second);
     }
-
-    // Diving pool has no nodes if not using hybrid search.
-    assert(diveNum == 0);
-
     if (activeNode_) {
-        if ( (activeNode_->getStatus() != AlpsNodeStatusFathomed) &&
-             (activeNode_->getStatus() != AlpsNodeStatusDiscarded) &&
-             (activeNode_->getStatus() != AlpsNodeStatusBranched) ) {
-            quality_ = activeNode_->getQuality();
-        }
+      quality_ = CoinMin(quality_, activeNode_->getQuality());
     }
-
-    // Get best quality values of nodes in node pool.
-    std::vector<AlpsTreeNode* > nodeVector =
-        nodePool_->getCandidateList().getContainer();
-    std::vector<AlpsTreeNode* >::iterator pos = nodeVector.begin();
-
-    std::multimap<double, AlpsTreeNode*> eliteList;
-    std::multimap<double, AlpsTreeNode*>::iterator posEnd;
-
-    for (int i = 0; i < nodeNum; ++i) {
-        AlpsTreeNode* node = (*pos);
-        double quality = (*pos)->getQuality();
-        ++pos;
-        if (eliteSize == 1) {
-            if (quality_ > quality) {
-                quality_ = quality;
-            }
-        }
-        else {
-            if (static_cast<int>(eliteList.size()) < eliteSize) {
-                std::pair<const double,AlpsTreeNode*> sa(quality,node);
-                eliteList.insert(sa);
-
-            }
-            else {  // ==
-                posEnd = eliteList.end();
-                --posEnd;
-                if (quality < posEnd->first) {
-                    std::pair<const double, AlpsTreeNode*> sa(quality, node);
-                    eliteList.insert(sa);
-                    posEnd = eliteList.end();
-                    --posEnd;
-                    eliteList.erase(posEnd);
-                }
-            }
-        }
-    }
-
-    if (eliteSize > 1) {
-        quality_ = 0.0;
-        for (posEnd = eliteList.begin(); posEnd != eliteList.end(); ++posEnd){
-            quality_ += posEnd->first;
-        }
-        quality_ /= static_cast<int>(eliteList.size());
-    }
-
+    //std::cout << "quality_ = " << quality_ << std::endl;
     return quality_;
+  }
+
+  // Diving pool has no nodes if not using hybrid search.
+  assert(diveNum == 0);
+
+  if (activeNode_) {
+    if ( (activeNode_->getStatus() != AlpsNodeStatusFathomed) &&
+         (activeNode_->getStatus() != AlpsNodeStatusDiscarded) &&
+         (activeNode_->getStatus() != AlpsNodeStatusBranched) ) {
+      quality_ = activeNode_->getQuality();
+    }
+  }
+
+  // Get best quality values of nodes in node pool.
+  std::vector<AlpsTreeNode* > nodeVector =
+    nodePool_->getCandidateList().getContainer();
+  std::vector<AlpsTreeNode* >::iterator pos = nodeVector.begin();
+
+  std::multimap<double, AlpsTreeNode*> eliteList;
+  std::multimap<double, AlpsTreeNode*>::iterator posEnd;
+
+  for (int i = 0; i < nodeNum; ++i) {
+    AlpsTreeNode* node = (*pos);
+    double quality = (*pos)->getQuality();
+    ++pos;
+    if (eliteSize == 1) {
+      if (quality_ > quality) {
+        quality_ = quality;
+      }
+    }
+    else {
+      if (static_cast<int>(eliteList.size()) < eliteSize) {
+        std::pair<const double,AlpsTreeNode*> sa(quality,node);
+        eliteList.insert(sa);
+
+      }
+      else {  // ==
+        posEnd = eliteList.end();
+        --posEnd;
+        if (quality < posEnd->first) {
+          std::pair<const double, AlpsTreeNode*> sa(quality, node);
+          eliteList.insert(sa);
+          posEnd = eliteList.end();
+          --posEnd;
+          eliteList.erase(posEnd);
+        }
+      }
+    }
+  }
+
+  if (eliteSize > 1) {
+    quality_ = 0.0;
+    for (posEnd = eliteList.begin(); posEnd != eliteList.end(); ++posEnd){
+      quality_ += posEnd->first;
+    }
+    quality_ /= static_cast<int>(eliteList.size());
+  }
+
+  return quality_;
 }
 
 //#############################################################################
@@ -468,53 +468,53 @@ AlpsSubTree::exploreSubTree(AlpsTreeNode* root,
                             int & numNodesPartial,  /* Output */
                             int & depth)             /* Output */
 {
-    AlpsReturnStatus status = AlpsReturnStatusOk;
-    AlpsExitStatus exploreStatus = AlpsExitStatusInfeasible;
+  AlpsReturnStatus status = AlpsReturnStatusOk;
+  AlpsExitStatus exploreStatus = AlpsExitStatusInfeasible;
 
-    bool betterSolution = false;
+  bool betterSolution = false;
 
-    //------------------------------------------------------
-    // Set the root node and put it into the queue.
-    //------------------------------------------------------
+  //------------------------------------------------------
+  // Set the root node and put it into the queue.
+  //------------------------------------------------------
 
-    root_ = root;
-    nodePool_->addKnowledge(root_, root->getQuality());
+  root_ = root;
+  nodePool_->addKnowledge(root_, root->getQuality());
 
-    //------------------------------------------------------
-    // Explore the tree.
-    //------------------------------------------------------
+  //------------------------------------------------------
+  // Explore the tree.
+  //------------------------------------------------------
 
-    status = exploreUnitWork(false,
-                             nodeLimit,
-                             timeLimit,
-                             exploreStatus,
-                             numNodesProcessed, /* Output */
-                             numNodesBranched,  /* Output */
-                             numNodesDiscarded, /* Output */
-                             numNodesPartial,  /* Output */
-                             depth,             /* Output */
-                             betterSolution);   /* Output */
+  status = exploreUnitWork(false,
+                           nodeLimit,
+                           timeLimit,
+                           exploreStatus,
+                           numNodesProcessed, /* Output */
+                           numNodesBranched,  /* Output */
+                           numNodesDiscarded, /* Output */
+                           numNodesPartial,  /* Output */
+                           depth,             /* Output */
+                           betterSolution);   /* Output */
 
-    if (exploreStatus == AlpsExitStatusNodeLimit) {
-        broker_->setExitStatus(AlpsExitStatusNodeLimit);
-    }
-    else if (exploreStatus == AlpsExitStatusTimeLimit) {
-        broker_->setExitStatus(AlpsExitStatusTimeLimit);
-    }
-    else if (exploreStatus == AlpsExitStatusUnbounded) {
-        broker_->setExitStatus(AlpsExitStatusUnbounded);
+  if (exploreStatus == AlpsExitStatusNodeLimit) {
+    broker_->setExitStatus(AlpsExitStatusNodeLimit);
+  }
+  else if (exploreStatus == AlpsExitStatusTimeLimit) {
+    broker_->setExitStatus(AlpsExitStatusTimeLimit);
+  }
+  else if (exploreStatus == AlpsExitStatusUnbounded) {
+    broker_->setExitStatus(AlpsExitStatusUnbounded);
+  }
+  else {
+    // Search to end.
+    if (broker_->hasKnowledge(AlpsKnowledgeTypeSolution)) {
+      broker_->setExitStatus(AlpsExitStatusOptimal);
     }
     else {
-        // Search to end.
-        if (broker_->hasKnowledge(AlpsKnowledgeTypeSolution)) {
-            broker_->setExitStatus(AlpsExitStatusOptimal);
-        }
-        else {
-            broker_->setExitStatus(AlpsExitStatusInfeasible);
-        }
+      broker_->setExitStatus(AlpsExitStatusInfeasible);
     }
+  }
 
-    return status;
+  return status;
 }
 
 //#############################################################################
@@ -530,99 +530,99 @@ AlpsSubTree::rampUp(int minNumNodes,
                     int& depth,
                     AlpsTreeNode* root)
 {
-    int numNodesProcessed = 0;
-    int npCount = 0;
-    double npTime = 0.0;
+  int numNodesProcessed = 0;
+  int npCount = 0;
+  double npTime = 0.0;
 
-    bool firstCall = true;
-    bool comRampUpNodes = true;
+  bool firstCall = true;
+  bool comRampUpNodes = true;
 
-    const bool deleteNode =
-        broker_->getModel()->AlpsPar()->entry(AlpsParams::deleteDeadNode);
+  const bool deleteNode =
+    broker_->getModel()->AlpsPar()->entry(AlpsParams::deleteDeadNode);
 
-    AlpsTreeNode* node = NULL;
+  AlpsTreeNode* node = NULL;
 
-    if (requiredNumNodes > 0) {
-        // User set
-        comRampUpNodes = false;
-    }
+  if (requiredNumNodes > 0) {
+    // User set
+    comRampUpNodes = false;
+  }
 
-    if (root != NULL) {
-        /* Master: set the root node and put it into the queue*/
-        root_ = root;
-        nodePool_->addKnowledge(root_, ALPS_OBJ_MAX);
-    }
-    else {
-        /* Hub. Do nothing. */
-    }
+  if (root != NULL) {
+    /* Master: set the root node and put it into the queue*/
+    root_ = root;
+    nodePool_->addKnowledge(root_, ALPS_OBJ_MAX);
+  }
+  else {
+    /* Hub. Do nothing. */
+  }
 
-    while( nodePool_->hasKnowledge() &&
-           ((nodePool_->getNumKnowledges() < requiredNumNodes) || firstCall) ) {
+  while( nodePool_->hasKnowledge() &&
+         ((nodePool_->getNumKnowledges() < requiredNumNodes) || firstCall) ) {
 
-        node = dynamic_cast<AlpsTreeNode*>
-            (const_cast<AlpsKnowledge*>(nodePool_->getKnowledge().first) );
+    node = dynamic_cast<AlpsTreeNode*>
+      (const_cast<AlpsKnowledge*>(nodePool_->getKnowledge().first) );
 
-        nodePool_->popKnowledge();
+    nodePool_->popKnowledge();
 
-        switch (node->getStatus()) {
-        case AlpsNodeStatusPregnant : {
-            std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> >
-                children = node->branch();
-            if (static_cast<int> (children.size()) > 0){
-                createChildren(node, children);
-                if (depth < node->getDepth() + 1) {    // Record the depth of tree
-                    depth = node->getDepth() + 1;
-                }
-            }
-            break;
+    switch (node->getStatus()) {
+    case AlpsNodeStatusPregnant : {
+      std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> >
+        children = node->branch();
+      if (static_cast<int> (children.size()) > 0){
+        createChildren(node, children);
+        if (depth < node->getDepth() + 1) {    // Record the depth of tree
+          depth = node->getDepth() + 1;
         }
-        case AlpsNodeStatusCandidate :
-        case AlpsNodeStatusEvaluated :
-            ++numNodesProcessed;
-            //activeNode_ = node; // Don't set, getNumNodes wrong.
-            broker_->subTreeTimer().start();
-            node->setActive(true);
-            if (node == root_) {
-                node->process(true, true);
-            }
-            else {
-                node->process(false, true);
-            }
+      }
+      break;
+    }
+    case AlpsNodeStatusCandidate :
+    case AlpsNodeStatusEvaluated :
+      ++numNodesProcessed;
+      //activeNode_ = node; // Don't set, getNumNodes wrong.
+      broker_->subTreeTimer().start();
+      node->setActive(true);
+      if (node == root_) {
+        node->process(true, true);
+      }
+      else {
+        node->process(false, true);
+      }
 
-            node->setActive(false);
-            npTime = broker_->subTreeTimer().getWallClock();
-            if (comRampUpNodes && (npCount < 50)) {
-                requiredNumNodes = computeRampUpNumNodes(minNumNodes,
-                                                         requiredNumNodes,
-                                                         npTime);
-                ++npCount;
-                firstCall = false; // set to false
-            }
-            else {
-                firstCall = false;
-            }
+      node->setActive(false);
+      npTime = broker_->subTreeTimer().getWallClock();
+      if (comRampUpNodes && (npCount < 50)) {
+        requiredNumNodes = computeRampUpNumNodes(minNumNodes,
+                                                 requiredNumNodes,
+                                                 npTime);
+        ++npCount;
+        firstCall = false; // set to false
+      }
+      else {
+        firstCall = false;
+      }
 
-            switch (node->getStatus()) {
-            case AlpsNodeStatusCandidate :
-            case AlpsNodeStatusEvaluated :
-            case AlpsNodeStatusPregnant :
-                nodePool_->addKnowledge(node, node->getQuality());
-                break;
-            case AlpsNodeStatusFathomed :
-            case AlpsNodeStatusDiscarded :
-                // Based on the parameter deleteNode, we decide whether to
-                // clean up the tree or preserve it for posterity
-                if (deleteNode) {
-                    removeDeadNodes(node);
-                }
-                break;
-            default :
-                throw CoinError("Impossible Status: branched",
-                                "rampUp",
-                                "AlpsSubTreeMaster");
-            }
-            break;
-        default :
+      switch (node->getStatus()) {
+      case AlpsNodeStatusCandidate :
+      case AlpsNodeStatusEvaluated :
+      case AlpsNodeStatusPregnant :
+        nodePool_->addKnowledge(node, node->getQuality());
+        break;
+      case AlpsNodeStatusFathomed :
+      case AlpsNodeStatusDiscarded :
+        // Based on the parameter deleteNode, we decide whether to
+        // clean up the tree or preserve it for posterity
+        if (deleteNode) {
+          removeDeadNodes(node);
+        }
+        break;
+      default :
+        throw CoinError("Impossible Status: branched",
+                        "rampUp",
+                        "AlpsSubTreeMaster");
+      }
+      break;
+    default :
             throw CoinError("Impossible Status: branched or fathomed",
                             "rampUp",
                             "AlpsSubTreeMaster");
@@ -942,223 +942,225 @@ AlpsSubTree::splitSubTree(int& returnSize, int size)
 
 //#############################################################################
 
-AlpsEncoded*
-AlpsSubTree::encode() const
-{
-    std::vector<AlpsTreeNode* > nodesInPool =
-        nodePool_->getCandidateList().getContainer();
+// Encode this into the given AlpsEncoded object.
+AlpsReturnStatus AlpsSubTree::encode(AlpsEncoded * encoded) const {
+  std::vector<AlpsTreeNode* > nodesInPool =
+    nodePool_->getCandidateList().getContainer();
 
-    std::vector<AlpsTreeNode* >::iterator pos1, pos2;
-    pos2 = nodesInPool.end();
+  std::vector<AlpsTreeNode* >::iterator pos1, pos2;
+  pos2 = nodesInPool.end();
 
-    for(pos1 = nodesInPool.begin(); pos1 != pos2; ++pos1) {
-        (*pos1)->setSentMark(2);
+  for(pos1 = nodesInPool.begin(); pos1 != pos2; ++pos1) {
+    (*pos1)->setSentMark(2);
+  }
+
+  //------------------------------------------------------
+  // Identify all the nodes(those in node pool and
+  // those popped out) by doing depth first search from the
+  // root of the subtree.
+  //------------------------------------------------------
+
+  std::vector<AlpsTreeNode* > nodeVector;
+  std::stack<AlpsTreeNode* > nodeStack;
+
+  int i = -1, nodeNum = 0;
+  int numChildren = 0;
+
+  AlpsTreeNode* curNode = NULL;
+
+  nodeStack.push(root_);
+
+  while( !nodeStack.empty() ) {
+    curNode = nodeStack.top();
+    nodeStack.pop();
+    nodeVector.push_back(curNode);         // The first is root_
+
+    numChildren = curNode->getNumChildren();
+    for (i = 0; i < numChildren; ++i) {
+      nodeStack.push(curNode->getChild(i));
     }
+  }
 
-    //------------------------------------------------------
-    // Identify all the nodes(those in node pool and
-    // those popped out) by doing depth first search from the
-    // root of the subtree.
-    //------------------------------------------------------
+  nodeNum = static_cast<int> (nodeVector.size());
 
-    std::vector<AlpsTreeNode* > nodeVector;
-    std::stack<AlpsTreeNode* > nodeStack;
+  encoded->writeRep(nodeNum);              // First write number of nodes
 
-    int i = -1, nodeNum = 0;
-    int numChildren = 0;
+  AlpsTreeNode* node = NULL;
 
-    AlpsTreeNode* curNode = NULL;
-
-    nodeStack.push(root_);
-
-    while( !nodeStack.empty() ) {
-        curNode = nodeStack.top();
-        nodeStack.pop();
-        nodeVector.push_back(curNode);         // The first is root_
-
-        numChildren = curNode->getNumChildren();
-        for (i = 0; i < numChildren; ++i) {
-            nodeStack.push(curNode->getChild(i));
-        }
+  for (i = 0; i < nodeNum; ++i) {          // Write all nodes to rep of enc
+    node = nodeVector[i];
+    encoded->writeRep(node->getExplicit());
+    AlpsEncoded* enc = node->encode();
+    encoded->writeRep(enc->size());
+    encoded->writeRep(enc->representation(), enc->size());
+    if (enc != NULL) {
+      delete enc;
+      enc = NULL;
     }
+  }
 
-    nodeNum = static_cast<int> (nodeVector.size());
-
-    AlpsEncoded* encoded = new AlpsEncoded(AlpsKnowledgeTypeSubTree);
-
-    encoded->writeRep(nodeNum);              // First write number of nodes
-
-    AlpsTreeNode* node = NULL;
-
-    for (i = 0; i < nodeNum; ++i) {          // Write all nodes to rep of enc
-        node = nodeVector[i];
-        encoded->writeRep(node->getExplicit());
-        AlpsEncoded* enc = node->encode();
-        encoded->writeRep(enc->size());
-        encoded->writeRep(enc->representation(), enc->size());
-        if (enc != NULL) {
-            delete enc;
-            enc = NULL;
-        }
-    }
-
-    node = NULL;
+  node = NULL;
 
 #ifdef NF_DEBUG
-    std::cout << "encode: nodeNum = " << nodeNum << std::endl;
+  std::cout << "encode: nodeNum = " << nodeNum << std::endl;
 #endif
 
-    return encoded;
+  return AlpsReturnStatusOk;
 }
 
-//#############################################################################
 
-AlpsKnowledge*
-AlpsSubTree::decode(AlpsEncoded& encoded) const
-{
-    int i = -1, j = -1;
-    int nodeNum = 0;
-    int fullOrPartial = -1;
-    char* buf = 0;
-    int size = 0;
-    int* numAddedChildren = 0;
+// Decode the given AlpsEncoded object into a new object and return a
+// pointer to it.
+AlpsKnowledge * AlpsSubTree::decode(AlpsEncoded & encoded) const {
+  int i = -1, j = -1;
+  int nodeNum = 0;
+  int fullOrPartial = -1;
+  char* buf = 0;
+  int size = 0;
+  int* numAddedChildren = 0;
 
-    AlpsSubTree* st = new AlpsSubTree;
+  AlpsSubTree* st = new AlpsSubTree;
 
-    AlpsEncoded* encodedNode = 0;
-    AlpsTreeNode* node = 0;
-    AlpsNodePool* nodePool = new AlpsNodePool;
+  AlpsEncoded* encodedNode = 0;
+  AlpsTreeNode* node = 0;
+  AlpsNodePool* nodePool = new AlpsNodePool;
 
-    nodePool->setNodeSelection(*(broker_->getNodeSelection()));
+  nodePool->setNodeSelection(*(broker_->getNodeSelection()));
 
-    std::vector<AlpsTreeNode* > nodeVector;
+  std::vector<AlpsTreeNode* > nodeVector;
 
-    encoded.readRep(nodeNum);
-
-#ifdef NF_DEBUG
-    std::cout << "AlpsSubTree : decode: nodeNum = " << nodeNum << std::endl;
-#endif
-
-    nodeVector.reserve(nodeNum);
-
-    if (nodeNum < 0) {
-        throw CoinError("Num of nodes < 0", "decode", "AlpsSubTree");
-    }
-
-    //------------------------------------------------------
-    // Decode each node.
-    //------------------------------------------------------
-
-    for (i = 0; i < nodeNum; ++i) {
-        encoded.readRep(fullOrPartial);
-        encoded.readRep(size);
+  encoded.readRep(nodeNum);
 
 #ifdef NF_DEBUG
-        std::cout << "decode: fullOrPartial = " << fullOrPartial
-                  << "; size = " << size << std::endl;
+  std::cout << "AlpsSubTree : decode: nodeNum = " << nodeNum << std::endl;
 #endif
 
-        // readRep allocate memory for buf.
-        encoded.readRep(buf, size);
+  nodeVector.reserve(nodeNum);
 
-        // take over ownership of buf
-        encodedNode = new AlpsEncoded(AlpsKnowledgeTypeNode, size, buf);
+  if (nodeNum < 0) {
+    throw CoinError("Num of nodes < 0", "decode", "AlpsSubTree");
+  }
 
-        node = dynamic_cast<AlpsTreeNode* >
-            ( (broker_->decoderObject(encodedNode->type()))->decode(*encodedNode) );
+  //------------------------------------------------------
+  // Decode each node.
+  //------------------------------------------------------
 
-        //node->setSubTree(st);
-        node->setKnowledgeBroker(getKnowledgeBroker());
-        AlpsModel* mod = getKnowledgeBroker()->getModel();
-        node->modifyDesc()->setModel(mod);
+  for (i = 0; i < nodeNum; ++i) {
+    encoded.readRep(fullOrPartial);
+    encoded.readRep(size);
 
-        // Add the node to a temporary vector
-        nodeVector.push_back(node);
+#ifdef NF_DEBUG
+    std::cout << "decode: fullOrPartial = " << fullOrPartial
+              << "; size = " << size << std::endl;
+#endif
 
-        if (i == 0) {
-            // First node is root
-            st->setRoot(node);
-            node->setParent(NULL);
+    // readRep allocate memory for buf.
+    encoded.readRep(buf, size);
 
-            // FIXME: need set to -1?
-            node->setParentIndex(-1);
-        }
+    // take over ownership of buf
+    encodedNode = new AlpsEncoded(AlpsKnowledgeTypeNode, size, buf);
 
-        delete encodedNode;  // Free memory. Found by Totalview.
+    node = dynamic_cast<AlpsTreeNode* >
+      ( (broker_->decoderObject(encodedNode->type()))->decode(*encodedNode) );
+
+    //node->setSubTree(st);
+    node->setKnowledgeBroker(getKnowledgeBroker());
+    AlpsModel* mod = getKnowledgeBroker()->getModel();
+    node->modifyDesc()->setModel(mod);
+
+    // Add the node to a temporary vector
+    nodeVector.push_back(node);
+
+    if (i == 0) {
+      // First node is root
+      st->setRoot(node);
+      node->setParent(NULL);
+
+      // FIXME: need set to -1?
+      node->setParentIndex(-1);
     }
 
-    //------------------------------------------------------
-    // Indentify parent-children relationship.
-    //------------------------------------------------------
+    delete encodedNode;  // Free memory. Found by Totalview.
+  }
 
-    numAddedChildren = new int [nodeNum];
-    for (i = 0; i < nodeNum; ++i) {
-        // Allocate memory for children
-        nodeVector[i]->setNumChildren(nodeVector[i]->getNumChildren());
-        numAddedChildren[i] = 0;
-        for (j = 0; j < nodeNum; ++j) {
-            if (j != i) {
-                if (nodeVector[j]->getParentIndex() ==
-                    nodeVector[i]->getIndex()) {
-                    // Set node i as the parent of node j
-                    nodeVector[j]->setParent(nodeVector[i]);
+  //------------------------------------------------------
+  // Indentify parent-children relationship.
+  //------------------------------------------------------
 
-                    // Set node j as a child of node i.
-                    nodeVector[i]->setChild(numAddedChildren[i]++,
-                                            nodeVector[j]);
-                }
-            }
+  numAddedChildren = new int [nodeNum];
+  for (i = 0; i < nodeNum; ++i) {
+    // Allocate memory for children
+    nodeVector[i]->setNumChildren(nodeVector[i]->getNumChildren());
+    numAddedChildren[i] = 0;
+    for (j = 0; j < nodeNum; ++j) {
+      if (j != i) {
+        if (nodeVector[j]->getParentIndex() ==
+            nodeVector[i]->getIndex()) {
+          // Set node i as the parent of node j
+          nodeVector[j]->setParent(nodeVector[i]);
+
+          // Set node j as a child of node i.
+          nodeVector[i]->setChild(numAddedChildren[i]++,
+                                  nodeVector[j]);
         }
+      }
     }
+  }
 
-    //------------------------------------------------------
-    // Reconstruct the subtree.
-    //------------------------------------------------------
+  //------------------------------------------------------
+  // Reconstruct the subtree.
+  //------------------------------------------------------
 
-    int nodeAdded = 0;
-    int nodeReceived = 0;
-    nodeReceived = static_cast<int> (nodeVector.size());
+  int nodeAdded = 0;
+  int nodeReceived = 0;
+  nodeReceived = static_cast<int> (nodeVector.size());
 
-    for (i = 0; i < nodeNum; ++i) {
-        node = nodeVector.back();
-        if (node->getSentMark() == 2) {
-            ++nodeAdded;
-            nodePool->addKnowledge(node, node->getQuality());
-        }
-        nodeVector.pop_back();
-        node->setSentMark(0);   // clean up Marks
-        node = 0;
+  for (i = 0; i < nodeNum; ++i) {
+    node = nodeVector.back();
+    if (node->getSentMark() == 2) {
+      ++nodeAdded;
+      nodePool->addKnowledge(node, node->getQuality());
     }
-
-    st->setNodePool(nodePool);
-    st->setKnowledgeBroker(getKnowledgeBroker());
-    st->setNodeSelection(getKnowledgeBroker()->getNodeSelection());
-
-    //------------------------------------------------------
-    // Clean up.
-    //------------------------------------------------------
-
-    encodedNode = 0;
+    nodeVector.pop_back();
+    node->setSentMark(0);   // clean up Marks
     node = 0;
-    nodePool = 0;
+  }
 
-    if (buf != 0) {
-        delete buf;
-        buf = 0;
-    }
-    if (numAddedChildren != 0) {
-        delete [] numAddedChildren;
-        numAddedChildren = 0;
-    }
+  st->setNodePool(nodePool);
+  st->setKnowledgeBroker(getKnowledgeBroker());
+  st->setNodeSelection(getKnowledgeBroker()->getNodeSelection());
+
+  //------------------------------------------------------
+  // Clean up.
+  //------------------------------------------------------
+
+  encodedNode = 0;
+  node = 0;
+  nodePool = 0;
+
+  if (buf != 0) {
+    delete buf;
+    buf = 0;
+  }
+  if (numAddedChildren != 0) {
+    delete [] numAddedChildren;
+    numAddedChildren = 0;
+  }
 
 #ifdef NF_DEBUG
-    std::cout << "decode: finished decoding a subtree, #nodes in pool is "
-              << st->nodePool()->getNumKnowledges()
-              << "; nodeAdded = " << nodeAdded
-              << "; node received  = " << nodeReceived << std::endl;
+  std::cout << "decode: finished decoding a subtree, #nodes in pool is "
+            << st->nodePool()->getNumKnowledges()
+            << "; nodeAdded = " << nodeAdded
+            << "; node received  = " << nodeReceived << std::endl;
 #endif
 
-    return st;
+  return st;
+}
+
+/// Decode the given AlpsEncoded object into this.
+AlpsReturnStatus AlpsSubTree::decodeToSelf(AlpsEncoded & encoded)  {
+  std::cerr << "Not implemented!"  << std::endl;
+  throw std::exception();
 }
 
 //#############################################################################

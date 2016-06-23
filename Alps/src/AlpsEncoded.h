@@ -12,15 +12,28 @@
 
 // AlpsEncoded is modified from BCP_buffer and CoinEncoded
 
-//#############################################################################
-/** This data structure is to contain the packed form of an encodable
- *    knowledge. It servers two purposes:
- *  <ul>
- *  <li> used as a buffer when passing messages
- *  <li> allow Alps to manipulate the user derived knowledge
- *  </ul>
- */
-//#############################################################################
+/*!
+
+  ## AlpsEncoded
+
+  AlpsEncoded is a class for any kind object that is needed to get
+  communicated over the network, ie. (#AlpsSolution, #AlpsTreeNode,
+  #AlpsSubTree, #AlpsModel). Objects of this type will be sent/received over
+  the network.
+
+  ## Relationship to #AlpsKnowledge
+
+  AlpsKnowledge is a base class for the types that are needed to get
+  comminated. You can consider AlpsEncoded as the same information in another
+  shape that is suitable to sent/receive over the network.
+
+ This data structure is to contain the packed form of an encodable
+   knowledge. It servers two purposes:
+  <ul>
+  <li> used as a buffer when passing messages
+  <li> allow Alps to manipulate the user derived knowledge
+  </ul>
+*/
 
 class AlpsEncoded {
 

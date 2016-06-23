@@ -26,35 +26,6 @@
 
 //##############################################################################
 
-/** Pack Alps portion of node into an encoded object. */
-AlpsReturnStatus
-AlpsModel::encodeAlps(AlpsEncoded *encoded) const
-{
-    AlpsReturnStatus status = AlpsReturnStatusOk;
-
-    //assert(encode);
-    AlpsPar_->pack(*encoded);
-
-    return status;
-}
-
-//##############################################################################
-
-/** Unpack Alps portion of node from an encoded object. */
-AlpsReturnStatus
-AlpsModel::decodeAlps(AlpsEncoded &encoded)
-{
-    AlpsReturnStatus status = AlpsReturnStatusOk;
-
-    //assert(encode);
-    AlpsPar_->unpack(encoded);
-
-    //AlpsPar_->writeToStream(std::cout);
-
-    return status;
-}
-
-//##############################################################################
 
 /** Write out parameters. */
 void
@@ -119,4 +90,14 @@ AlpsModel::nodeLog(AlpsTreeNode *node, bool force)
     }
 }
 
-//##############################################################################
+/// Pack AlpsPar_ into a given encode object.
+AlpsReturnStatus AlpsModel::encode(AlpsEncoded * encoded) const {
+  AlpsPar_->pack(*encoded);
+  return AlpsReturnStatusOk;
+}
+
+/// Decode the given AlpsEncoded object into this.
+AlpsReturnStatus AlpsModel::decodeToSelf(AlpsEncoded & encoded) {
+  AlpsPar_->unpack(encoded);
+  return AlpsReturnStatusOk;
+}

@@ -37,66 +37,76 @@
 
 struct AlpsStrLess
 {
-    inline bool operator()(const char* s1, const char* s2) const {
-        return strcmp(s1, s2) < 0;
-    }
+  inline bool operator()(const char* s1, const char* s2) const {
+    return strcmp(s1, s2) < 0;
+  }
 };
 
-//#############################################################################
-/** The abstract base class of any user-defined class that Alps has to know
-    about in order to encode/decode. These classes must all be registered so
-    that the proper decode method can be called. */
-//#############################################################################
+
+/*!
+
+  The abstract base class of Alps knowledges generated during the search. It is
+  inherited by #AlpsModel, #AlpsTreeNode, #AlpsSolution.
+
+  It provides the API for encode and decode functions. encode/decode functions
+  implemented here will work on simple classes (stored in contigious memory),
+  that does not have pointers or STL containers. Complicated classes are
+  required to implement their versions of encode/decode functions.
+
+*/
+
 
 class AlpsKnowledge {
 
 private:
-    AlpsKnowledge(const AlpsKnowledge&);
-    AlpsKnowledge& operator=(const AlpsKnowledge&);
-
-    /** The encoded object in an encoded form (could be compressed!) */
-    //FIXME: For now, we just use a regular pointer here to get it to compile.
-    //CoinPtr<AlpsEncoded> encoded_;
-    AlpsEncoded* encoded_;
+  AlpsKnowledge(const AlpsKnowledge&);
+  AlpsKnowledge& operator=(const AlpsKnowledge&);
 
 protected:
 
-    KnowledgeType type_;
+  AlpsKnowledgeType type_;
 
 public:
 
-    AlpsKnowledge()	: encoded_(0), type_(AlpsKnowledgeTypeUndefined) {}
-    virtual ~AlpsKnowledge() {}
+  ///@name Constructor and Destructor
+  //@{
+  /// Default constructor
+  AlpsKnowledge(): type_(AlpsKnowledgeTypeUndefined) {}
+  /// Destructor
+  virtual ~AlpsKnowledge() {}
+  //@}
 
-    KnowledgeType getType() { return type_; }
-    void setType(KnowledgeType t) { type_ = t; }
+  ///@name Get type and set type functions
+  //@{
+  /// Get knowledge type.
+  AlpsKnowledgeType getType() { return type_; }
+  /// Set knowledge type.
+  void setType(AlpsKnowledgeType t) { type_ = t; }
+  //@}
 
-    /** This method should encode the content of the object and return a
-        pointer to the encoded form.
+  ///@name Encoding and Decoding functions
+  //@{
+  /// Encode the content of this into an AlpsEncoded object and return a
+  /// pointer to it.
+  AlpsEncoded * encode() const;
+  /// Encode the content of this into the given AlpsEncoded object.
+  /// Implementation given in this class can not be used when the memory of
+  /// data members is not contiguous, i.e., some data members are pointers to
+  /// heap locations, STL set, map, etc. These type of user application
+  /// sub-classes should implement their own version of this.
+  virtual AlpsReturnStatus encode(AlpsEncoded * encoded) const;
 
-        NOTE: This default implementation can not be
-        used when the memory of data members is not continously allocated,
-        for example, some data members are pointers, STL set, map, etc. */
-    virtual AlpsEncoded* encode() const;
+  /// Decode the given AlpsEncoded object into a new AlpsKnowledge object and
+  /// return a pointer to it. User application sub-classes should implement this
+  /// since the returned pointer will point to user sub-class instances.
+  virtual AlpsKnowledge * decode(AlpsEncoded & encoded) const = 0;
 
-    /** Pack into a encode object. */
-    virtual AlpsReturnStatus encode(AlpsEncoded *encoded)
-        { return AlpsReturnStatusOk; }
-
-    /** This method should decode and return a pointer to a \em brand \em new
-        \em object, i.e., the method must create a new object on the heap from
-        the decoded data instead of filling up the object for which the method
-        was invoked.
-
-        NOTE: This default implementation can not be
-        used when the memory of data members is not continously allocated,
-        for example, some data members are pointers, STL set, map, etc.
-    */
-    virtual AlpsKnowledge* decode(AlpsEncoded& encoded) const;
-
-    /** Get/set encoded. */
-    inline AlpsEncoded* getEncoded() const { return encoded_; }
-    inline void setEncoded(AlpsEncoded* e) { encoded_ = e; }
+  /// Decode the given AlpsEncoded object into this.  Implementation given in
+  /// this class can not be used when the memory of data members is not
+  /// contiguous, i.e., some data members are pointers to heap locations, STL
+  /// set, map, etc. These type of user application sub-classes should
+  /// implement their own version of this.
+  virtual AlpsReturnStatus decodeToSelf(AlpsEncoded & encoded);
 };
 
 //#############################################################################

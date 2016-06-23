@@ -34,54 +34,75 @@
 
 class AlpsSolution : public AlpsKnowledge {
 
- private:
-    /** Diable copy constructor and assignment. */
-    AlpsSolution(const AlpsSolution&);
-    AlpsSolution& operator=(const AlpsSolution&);
+private:
+  /** Diable copy constructor and assignment. */
+  AlpsSolution(const AlpsSolution&);
+  AlpsSolution& operator=(const AlpsSolution&);
 
-    /** The index of the node where the solution was found. */
-    int index_;
+  /** The index of the node where the solution was found. */
+  int index_;
 
-    /** The depth of the node where the solution was found. */
-    int depth_;
+  /** The depth of the node where the solution was found. */
+  int depth_;
 
- public:
+public:
 
-    /** Default constructor. */
-    AlpsSolution() :
-       index_(-1),
-       depth_(-1)
-    {
-       setType(AlpsKnowledgeTypeSolution);
-    }
+  /** Default constructor. */
+  AlpsSolution(): index_(-1), depth_(-1) {
+    setType(AlpsKnowledgeTypeSolution);
+  }
 
-    /** Constructor to set index and depth. */
-    AlpsSolution(const AlpsNodeIndex_t i, const int d) :
-       index_(i),
-       depth_(d)
-    {
-       setType(AlpsKnowledgeTypeSolution);
-    }
+  /** Constructor to set index and depth. */
+  AlpsSolution(const AlpsNodeIndex_t i, const int d): index_(i), depth_(d) {
+    setType(AlpsKnowledgeTypeSolution);
+  }
 
-    /** Destructor. */
-    virtual ~AlpsSolution() {}
+  /** Destructor. */
+  virtual ~AlpsSolution() {}
 
-    /** Get index where solution was found */
-    AlpsNodeIndex_t getIndex() { return index_; }
+  /** Get index where solution was found */
+  AlpsNodeIndex_t getIndex() { return index_; }
 
-    /** Set index where solution was found */
-    void setIndex(const AlpsNodeIndex_t i) { index_ = i; }
+  /** Set index where solution was found */
+  void setIndex(const AlpsNodeIndex_t i) { index_ = i; }
 
-    /** Get depth where solution was found */
-    int getDepth() { return depth_; }
+  /** Get depth where solution was found */
+  int getDepth() { return depth_; }
 
-    /** Set depth where solution was found */
-    void setDepth(const int d) { depth_ = d; }
+  /** Set depth where solution was found */
+  void setDepth(const int d) { depth_ = d; }
 
-    /** Print out the solution.*/
-    virtual void print(std::ostream& os) const{
-        os << "WARNING: No solution print function is defined." << std::endl;
-    }
+  /** Print out the solution.*/
+  virtual void print(std::ostream& os) const{
+    os << "WARNING: No solution print function is defined." << std::endl;
+  }
+
+  /// Get encode defined in AlpsKnowledge.
+  using AlpsKnowledge::encode;
+
+  /// Encode this into the given AlpsEncoded object.
+  virtual AlpsReturnStatus encode(AlpsEncoded * encoded) const {
+    AlpsKnowledge::encode(encoded);
+    encoded->writeRep(index_);
+    encoded->writeRep(depth_);
+    return AlpsReturnStatusOk;
+  }
+
+  // /// Decode the given AlpsEncoded object into a new object.
+  // virtual AlpsKnowledge * decode(AlpsEncoded & encoded) const {
+  //   std::cerr << "Not implemented!" << std::endl;
+  //   throw std::exception();
+  // }
+
+  /// Decode the given AlpsEncoded object into this.
+  virtual AlpsReturnStatus decodeToSelf(AlpsEncoded & encoded) {
+    // decode index and depth
+    AlpsKnowledge::decodeToSelf(encoded);
+    encoded.readRep(index_);
+    encoded.readRep(depth_);
+    return AlpsReturnStatusOk;
+  }
+
 };
 
 #endif

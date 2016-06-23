@@ -134,10 +134,8 @@ AlpsTreeNode::removeDescendants()
 
 //#############################################################################
 
-/** Pack Alps portion of node into an encoded object. */
-AlpsReturnStatus
-AlpsTreeNode::encodeAlps(AlpsEncoded *encoded) const
-{
+/// Pack Alps portion of node into an encoded object.
+AlpsReturnStatus AlpsTreeNode::encode(AlpsEncoded * encoded) const {
     AlpsReturnStatus status = AlpsReturnStatusOk;
 
     encoded->writeRep(explicit_);
@@ -165,33 +163,41 @@ AlpsTreeNode::encodeAlps(AlpsEncoded *encoded) const
 
 //#############################################################################
 
-/** Unpack Alps portion of node from an encoded object. */
-AlpsReturnStatus
-AlpsTreeNode::decodeAlps(AlpsEncoded &encoded)
-{
-    AlpsReturnStatus status = AlpsReturnStatusOk;
+/// Unpack Alps portion of node into this from an encoded object.
+AlpsReturnStatus AlpsTreeNode::decodeToSelf(AlpsEncoded & encoded) {
+  AlpsReturnStatus status = AlpsReturnStatusOk;
 
-    encoded.readRep(explicit_);
-    encoded.readRep(index_);
-    encoded.readRep(depth_);
-    encoded.readRep(solEstimate_);
-    encoded.readRep(quality_);
-    encoded.readRep(parentIndex_);
-    encoded.readRep(numChildren_);
-    encoded.readRep(status_);
-    encoded.readRep(sentMark_);
+  encoded.readRep(explicit_);
+  encoded.readRep(index_);
+  encoded.readRep(depth_);
+  encoded.readRep(solEstimate_);
+  encoded.readRep(quality_);
+  encoded.readRep(parentIndex_);
+  encoded.readRep(numChildren_);
+  encoded.readRep(status_);
+  encoded.readRep(sentMark_);
 
 #ifdef NF_DEBUG
-    std::cout << std::endl;
-    std::cout << "index_ = " << index_ << "; ";
-    std::cout << "depth_ = " << depth_ << "; ";
-    std::cout << "quality_ = " << quality_ << "; ";
-    std::cout << "parentIndex_ = " << parentIndex_ << "; ";
-    std::cout << "numChildren_ = " << numChildren_ << std::endl;
-    std::cout << "status_ = " << status_ << std::endl;
+  std::cout << std::endl;
+  std::cout << "index_ = " << index_ << "; ";
+  std::cout << "depth_ = " << depth_ << "; ";
+  std::cout << "quality_ = " << quality_ << "; ";
+  std::cout << "parentIndex_ = " << parentIndex_ << "; ";
+  std::cout << "numChildren_ = " << numChildren_ << std::endl;
+  std::cout << "status_ = " << status_ << std::endl;
 #endif
 
-    return status;
+  return status;
 }
+
+/// Unpack Alps portion of node into a new AlpsTreeNode object and return a
+/// pointer to it.
+/// Not implemented. We do not need this for now.
+AlpsKnowledge * AlpsTreeNode::decode(AlpsEncoded & encoded) const {
+  std::cerr << "Not implemented!" << std::endl;
+  throw std::exception();
+}
+
+
 
 //#############################################################################

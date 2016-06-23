@@ -167,11 +167,13 @@ class AlpsTreeNode : public AlpsKnowledge {
        description. */
     virtual AlpsTreeNode* createNewTreeNode(AlpsNodeDesc*& desc) const = 0;
 
-    /** Query/set the current status. */
-    ///@{
-    inline AlpsNodeStatus getStatus() const { return status_; }
-    inline void setStatus(const AlpsNodeStatus stat) { status_ = stat; }
-    ///@}
+  ///@name Query/set the current status.
+  ///@{
+  /// set status.
+  inline AlpsNodeStatus getStatus() const { return status_; }
+  /// get status.
+  inline void setStatus(const AlpsNodeStatus stat) { status_ = stat; }
+  ///@}
 
     /** Query functions about specific stati. */
     ///@{
@@ -347,13 +349,15 @@ class AlpsTreeNode : public AlpsKnowledge {
     virtual std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> >
         branch() = 0;
 
- protected:
-
-    /** Pack Alps portion of node into an encoded object. */
-    AlpsReturnStatus encodeAlps(AlpsEncoded *encoded) const;
-
-    /** Unpack Alps portion of node from an encoded object. */
-    AlpsReturnStatus decodeAlps(AlpsEncoded &encoded);
+  /// Get encode function defined in AlpsKnowledge.
+  using AlpsKnowledge::encode;
+  /// Pack Alps portion of node into an encoded object.
+  virtual AlpsReturnStatus encode(AlpsEncoded * encoded) const;
+  /// Unpack Alps portion of node into this from an encoded object.
+  virtual AlpsReturnStatus decodeToSelf(AlpsEncoded & encoded);
+  /// Unpack Alps portion of node into a new AlpsTreeNode object and return a
+  /// pointer to it.
+  virtual AlpsKnowledge * decode(AlpsEncoded & encoded) const;
 
 };
 #endif
