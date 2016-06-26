@@ -38,35 +38,47 @@ lib_LTLIBRARIES = libAlps.la
 libAlps_la_SOURCES = \
 	AlpsConfig.h \
 	AlpsAix43.h \
-	AlpsSearchStrategy.cpp AlpsSearchStrategy.h \
-	AlpsSearchStrategyBase.h \
 	AlpsCygwin.h \
-	AlpsEncoded.h \
-	AlpsEnumProcessT.h \
-	Alps.h \
-	AlpsHelperFunctions.h \
-	AlpsKnowledgeBroker.cpp AlpsKnowledgeBroker.h \
-	AlpsKnowledge.cpp AlpsKnowledge.h \
-	AlpsKnowledgePool.h \
 	AlpsLicense.h \
 	AlpsLinux.h \
 	AlpsMACH.h \
-	AlpsMessage.cpp AlpsMessage.h \
-	AlpsMessageTag.h \
-	AlpsModel.cpp AlpsModel.h \
-	AlpsNodeDesc.h \
-	AlpsNodePool.h \
 	AlpsOs.h \
-	AlpsParameterBase.cpp AlpsParameterBase.h \
-	AlpsParams.cpp AlpsParams.h \
-	AlpsPriorityQueue.h \
-	AlpsSolution.h \
-	AlpsSolutionPool.h \
-	AlpsSubTree.cpp AlpsSubTree.h \
-	AlpsSubTreePool.h \
 	AlpsSunos.h \
 	AlpsTime.h \
-	AlpsTreeNode.cpp AlpsTreeNode.h
+	Alps.h \
+	AlpsEncoded.h \
+	AlpsEnumProcessT.h \
+	AlpsHelperFunctions.h \
+	AlpsParameterBase.h \
+	AlpsParameterBase.cpp \
+	AlpsParams.h \
+	AlpsParams.cpp \
+	AlpsMessageTag.h \
+	AlpsMessage.h \
+	AlpsMessage.cpp \
+	AlpsKnowledge.h \
+	AlpsKnowledge.cpp \
+	AlpsPriorityQueue.h \
+	AlpsKnowledgePool.h \
+	AlpsNodeDesc.h \
+	AlpsTreeNode.h \
+	AlpsTreeNode.cpp \
+	AlpsNodePool.h \
+	AlpsNodePool.cpp \
+	AlpsSolution.h \
+	AlpsSolutionPool.h \
+	AlpsSolutionPool.cpp \
+	AlpsSubTree.h \
+	AlpsSubTree.cpp \
+	AlpsSubTreePool.h \
+	AlpsSubTreePool.cpp \
+	AlpsKnowledgeBroker.h \
+	AlpsKnowledgeBroker.cpp \
+	AlpsSearchStrategyBase.h \
+	AlpsSearchStrategy.h \
+	AlpsSearchStrategy.cpp \
+	AlpsModel.h \
+	AlpsModel.cpp
 
 if COIN_HAS_MPI
 libAlps_la_SOURCES += AlpsKnowledgeBrokerMPI.cpp AlpsKnowledgeBrokerMPI.h
