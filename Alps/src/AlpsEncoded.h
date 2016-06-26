@@ -27,18 +27,17 @@
   comminucated. You can consider AlpsEncoded as the same information in another
   shape that is suitable to sent/receive over the network.
 
- This data structure is to contain the packed form of an encodable
-   knowledge. It servers two purposes:
+  This data structure is to contain the packed form of an encodable
+  knowledge. It servers two purposes:
   <ul>
-  <li> used as a buffer when passing messages
-  <li> allow Alps to manipulate the user derived knowledge
+    <li> used as a buffer when passing messages
+    <li> allow Alps to manipulate the user derived knowledge
   </ul>
 */
 
 class AlpsEncoded {
 
  private:
-
     /** Disable copy constructor and assignment operator */
     ///@{
     AlpsEncoded(const AlpsEncoded&);

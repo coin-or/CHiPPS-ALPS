@@ -111,6 +111,8 @@
 #define ALPS_MEMORY_USAGE 1
 #endif
 
+typedef int AlpsNodeIndex_t;
+
 //#############################################################################
 /** The possible values for clock type. */
 //#############################################################################
@@ -165,6 +167,13 @@ enum AlpsKnowledgeType{
    AlpsKnowledgeTypeSolution,
    AlpsKnowledgeTypeSubTree,
    AlpsKnowledgeTypeUndefined
+};
+
+enum AlpsKnowledgePoolType{
+  AlpsKnowledgePoolTypeNode = 0,
+  AlpsKnowledgePoolTypeSolution,
+  AlpsKnowledgePoolTypeSubTree,
+  AlpsKnowledgePoolTypeUndefined
 };
 
 //#############################################################################

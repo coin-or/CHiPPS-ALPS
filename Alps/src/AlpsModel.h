@@ -147,8 +147,9 @@ public:
   //@{
   /** Default construtor. */
   AlpsModel() :
+    AlpsKnowledge(AlpsKnowledgeTypeModel),
     broker_(NULL),
-    AlpsPar_(new AlpsParams) { setType(AlpsKnowledgeTypeModel); }
+    AlpsPar_(new AlpsParams) { }
   /** Destructor. */
   virtual ~AlpsModel() { delete AlpsPar_; }
   //@}
@@ -190,10 +191,7 @@ public:
   /** Postprocessing results. */
   virtual void postprocess() {}
   /** Create the root node. Default: do nothing */
-  virtual AlpsTreeNode * createRoot() {
-    throw CoinError("createRoot is not defined.", "createRoot",
-                    "AlpsModel");
-  }
+  virtual AlpsTreeNode * createRoot() = 0;
   /** Problem specific log. */
   virtual void modelLog() {}
   /** Node log. */

@@ -22,11 +22,10 @@
 
 #include "AlpsKnowledge.h"
 
-// Initialize static member.
-//std::map<const char*, const AlpsKnowledge*, AlpsStrLess>*
-//AlpsKnowledge::decodeMap_ = new std::map<const char*, const AlpsKnowledge*,
-//  AlpsStrLess>;
-
+AlpsKnowledge::AlpsKnowledge(AlpsKnowledgeType type,
+                             AlpsKnowledgeBroker * broker)
+  : type_(type), broker_(broker) {
+}
 
 // encodes this into a new object and returns a pointer to it.
 AlpsEncoded * AlpsKnowledge::encode() const {

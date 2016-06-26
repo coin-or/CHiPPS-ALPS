@@ -30,119 +30,73 @@
 #include "AlpsTreeNode.h"
 #include "AlpsKnowledgePool.h"
 
-//#############################################################################
-/** Node pool is used to store the nodes to be processed. */
-//#############################################################################
+/*!
 
-class AlpsNodePool : public AlpsKnowledgePool {
+  #AlpsNodePool is used to store the nodes to be processed.
 
- private:
-    AlpsNodePool(const AlpsNodePool&);
-    AlpsNodePool& operator=(const AlpsNodePool&);
+*/
 
-    AlpsPriorityQueue<AlpsTreeNode*> candidateList_;
+class AlpsNodePool: public AlpsKnowledgePool {
+  /// Candidate list.
+  AlpsPriorityQueue<AlpsTreeNode*> candidateList_;
 
- public:
-    AlpsNodePool() {}
-    virtual ~AlpsNodePool() {
-        //std::cout << "- delete nodes pool, size = " << getNumKnowledges() << std::endl;
-        if (!candidateList_.empty()) {
-            deleteGuts();
-        }
-    }
+public:
+  ///@name Constructor and destructor.
+  //@{
+  /// Default constructor.
+  AlpsNodePool();
+  /// Destructor.
+  virtual ~AlpsNodePool();
+  //@}
 
-    /** Query the number of nodes in the node pool. */
-    inline int getNumKnowledges() const { return static_cast<int>
-          (candidateList_.size()); }
-    
-    /** Get the "best value" of the nodes in node pool. */
-    inline double getBestKnowledgeValue() const {
-        const std::vector<AlpsTreeNode *>& pool=candidateList_.getContainer();
-        int k;
-        int size = static_cast<int> (pool.size());
-        double bestQuality = ALPS_OBJ_MAX;
-        AlpsTreeNode * node = NULL;
-        for (k = 0; k < size; ++k) {
-            node = pool[k];
-            if (node->getQuality() < bestQuality) {
-                bestQuality = node->getQuality();
-            }
-        }
-        return bestQuality;
-    }
+  ///@name Querry methods
+  //@{
+  /// Query the number of nodes in the node pool.
+  virtual int getNumKnowledges() const;
+  /// Get the node with highest priority. Doesn't remove it from the pool.
+  virtual std::pair<AlpsKnowledge*, double> getKnowledge() const;
+  /// Check whether there are still nodes in the node pool.
+  virtual bool hasKnowledge() const { return !(candidateList_.empty()); }
+  /// Query the quantity limit of knowledges.
+  virtual int getMaxNumKnowledges() const { return INT_MAX; };
+  /// Query the best knowledge in the pool.
+  virtual std::pair<AlpsKnowledge*, double> getBestKnowledge() const;
+  /// Get a reference to all the knowledges in the pool.*/
+  virtual void getAllKnowledges (std::vector<std::pair<AlpsKnowledge*,
+                                 double> >& kls) const;
+  //@}
 
-    /** Get the "best" nodes in node pool. */
-    inline AlpsTreeNode *getBestNode() const {
-        const std::vector<AlpsTreeNode *>& pool=candidateList_.getContainer();
-        int k;
-        int size = static_cast<int> (pool.size());
-        double bestQuality = ALPS_OBJ_MAX;
-        AlpsTreeNode * bestNode = NULL;
-        AlpsTreeNode * node = NULL;
+  ///@name Knowledge manipulation
+  //@{
+  /// Add a node to node pool.
+  virtual void addKnowledge(AlpsKnowledge* node, double priority);
+  /// Remove the node with highest priority from the pool.
+  virtual void popKnowledge() { candidateList_.pop(); }
+  //@}
 
-        for (k = 0; k < size; ++k) {
-            node = pool[k];
-            if (node->getQuality() < bestQuality) {
-                bestQuality = node->getQuality();
-                bestNode = node;
-            }
-        }
-        return bestNode;
-    }
+  ///@name Other functions
+  //@{
+  /// Set the quantity limit of knowledges that can be stored in the pool.
+  virtual void setMaxNumKnowledges(int num);
+  /// Get the "best value" of the nodes in node pool.
+  double getBestKnowledgeValue() const;
+  /// Get the "best" nodes in node pool.
+  AlpsTreeNode * getBestNode() const;
+  /// Get a constant reference to the priority queue that stores nodes.
+  AlpsPriorityQueue<AlpsTreeNode*> const & getCandidateList() const;
+  /// Set strategy and resort heap.
+  void setNodeSelection(AlpsSearchStrategy<AlpsTreeNode*> & compare);
+  /// Delete all the nodes in the pool and free memory.
+  void deleteGuts();
+  /// Remove all the nodes in the pool (does not free memory).
+  void clear() { candidateList_.clear(); }
+  //@}
 
-    /** Check whether there are still nodes in the node pool. */
-    inline bool hasKnowledge() const{ return ! (candidateList_.empty()); }
-
-    /** Get the node with highest priority. Doesn't remove it from the pool*/
-    inline std::pair<AlpsKnowledge*, double> getKnowledge() const {
-        return std::make_pair( static_cast<AlpsKnowledge *>
-                               (candidateList_.top()),
-                               candidateList_.top()->getQuality() );
-    }
-
-    /** Remove the node with highest priority from the pool*/
-    inline void popKnowledge() {
-        candidateList_.pop();
-    }
-
-    /** Remove the node with highest priority from the pool and the elite
-        list*/
-    /** Add a node to node pool. */
-    inline void addKnowledge(AlpsKnowledge* node, double priority) {
-        AlpsTreeNode * nn = dynamic_cast<AlpsTreeNode*>(node);
-        //     if(!nn) {
-        //AlpsTreeNode * nonnn = const_cast<AlpsTreeNode*>(nn);
-        candidateList_.push(nn);
-        //     }
-        //    else
-        // std::cout << "Add node failed\n";
-        //     else
-        // throw CoinError();
-    }
-
-    /** Get a constant reference to the priority queue that stores nodes. */
-    inline const AlpsPriorityQueue<AlpsTreeNode*>&
-        getCandidateList() const { return candidateList_; }
-
-    /** Set strategy and resort heap. */
-    void setNodeSelection(AlpsSearchStrategy<AlpsTreeNode*>& compare) {
-        candidateList_.setComparison(compare);
-    }
-
-    /** Delete all the nodes in the pool and free memory. */
-    void deleteGuts() {
-        std::vector<AlpsTreeNode* > nodeVec = candidateList_.getContainer();
-        std::for_each(nodeVec.begin(), nodeVec.end(), DeletePtrObject());
-        candidateList_.clear();
-        assert(candidateList_.size() == 0);
-
-        //std::cout << "-- delete nodes in pool" << std::endl;
-    }
-
-    /** Remove all the nodes in the pool (does not free memory). */
-    void clear() {
-        candidateList_.clear();
-    }
+private:
+  /// Disable copy contructor.
+  AlpsNodePool(AlpsNodePool const &);
+  /// Disable copy assignment operator.
+  AlpsNodePool & operator=(AlpsNodePool const &);
 };
 
 #endif

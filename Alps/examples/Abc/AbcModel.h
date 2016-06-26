@@ -933,6 +933,8 @@ class AbcModel : public AlpsModel {
 
     //-------------------------------------------------------------------------
 
+  virtual AlpsTreeNode * createRoot();
+
     /** Do necessary work to make model usable. Return success or not. */
     virtual bool setupSelf();
 
@@ -959,6 +961,7 @@ class AbcModel : public AlpsModel {
                 return 1000;
         }
 
+  using AlpsKnowledge::encode;
   /// Pack AlpsPar_ into a given encode object.
   virtual AlpsReturnStatus encode(AlpsEncoded * encoded) const;
   /// Decode the given AlpsEncoded object into this.

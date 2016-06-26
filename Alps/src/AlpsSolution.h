@@ -48,8 +48,8 @@ private:
 public:
 
   /** Default constructor. */
-  AlpsSolution(): index_(-1), depth_(-1) {
-    setType(AlpsKnowledgeTypeSolution);
+  AlpsSolution(): AlpsKnowledge(AlpsKnowledgeTypeSolution),
+                index_(-1), depth_(-1) {
   }
 
   /** Constructor to set index and depth. */
@@ -82,22 +82,13 @@ public:
 
   /// Encode this into the given AlpsEncoded object.
   virtual AlpsReturnStatus encode(AlpsEncoded * encoded) const {
-    AlpsKnowledge::encode(encoded);
     encoded->writeRep(index_);
     encoded->writeRep(depth_);
     return AlpsReturnStatusOk;
   }
 
-  // /// Decode the given AlpsEncoded object into a new object.
-  // virtual AlpsKnowledge * decode(AlpsEncoded & encoded) const {
-  //   std::cerr << "Not implemented!" << std::endl;
-  //   throw std::exception();
-  // }
-
   /// Decode the given AlpsEncoded object into this.
   virtual AlpsReturnStatus decodeToSelf(AlpsEncoded & encoded) {
-    // decode index and depth
-    AlpsKnowledge::decodeToSelf(encoded);
     encoded.readRep(index_);
     encoded.readRep(depth_);
     return AlpsReturnStatusOk;

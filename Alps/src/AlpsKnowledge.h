@@ -30,13 +30,14 @@
 #include "Alps.h"
 #include "AlpsEncoded.h"
 
-//#############################################################################
-/** A function object to perform lexicographic lexicographic comparison
-    between two C style strings. */
-//#############################################################################
+class AlpsKnowledgeBroker;
 
-struct AlpsStrLess
-{
+/*!
+  A function object to perform lexicographic lexicographic comparison
+  between two C style strings.
+*/
+
+struct AlpsStrLess {
   inline bool operator()(const char* s1, const char* s2) const {
     return strcmp(s1, s2) < 0;
   }
@@ -46,32 +47,27 @@ struct AlpsStrLess
 /*!
 
   The abstract base class of Alps knowledges generated during the search. It is
-  inherited by #AlpsModel, #AlpsTreeNode, #AlpsSolution.
+  inherited by #AlpsModel, #AlpsTreeNode, #AlpsSolution and #AlpsSubTree.
 
-  It provides the API for encode and decode functions. encode/decode functions
-  implemented here will work on simple classes (stored in contigious memory),
-  that does not have pointers or STL containers. Complicated classes are
-  required to implement their versions of encode/decode functions.
+  It provides the API for encoding and decoding functions. ::encode/::decode
+  functions implemented here will work on simple classes (stored in contigious
+  memory), that does not have pointers or STL containers. Complicated classes
+  are required to implement their versions of encode/decode functions.
 
 */
 
-
 class AlpsKnowledge {
-
-private:
-  AlpsKnowledge(const AlpsKnowledge&);
-  AlpsKnowledge& operator=(const AlpsKnowledge&);
-
-protected:
-
   AlpsKnowledgeType type_;
+public:
+  AlpsKnowledgeBroker * broker_;
 
 public:
-
   ///@name Constructor and Destructor
   //@{
   /// Default constructor
-  AlpsKnowledge(): type_(AlpsKnowledgeTypeUndefined) {}
+  AlpsKnowledge(): type_(AlpsKnowledgeTypeUndefined), broker_(0) {}
+  AlpsKnowledge(AlpsKnowledgeType type): type_(type), broker_(0) {}
+  AlpsKnowledge(AlpsKnowledgeType type, AlpsKnowledgeBroker * broker);
   /// Destructor
   virtual ~AlpsKnowledge() {}
   //@}
@@ -82,6 +78,12 @@ public:
   AlpsKnowledgeType getType() { return type_; }
   /// Set knowledge type.
   void setType(AlpsKnowledgeType t) { type_ = t; }
+  /// Get pointer to the knowledge broker
+  AlpsKnowledgeBroker * broker() { return broker_; }
+  /// Get pointer to the knowledge broker
+  AlpsKnowledgeBroker const * broker() const { return broker_; }
+  /// Set knowledge broker
+  void setBroker(AlpsKnowledgeBroker * broker) { broker_=broker; }
   //@}
 
   ///@name Encoding and Decoding functions
@@ -95,20 +97,24 @@ public:
   /// heap locations, STL set, map, etc. These type of user application
   /// sub-classes should implement their own version of this.
   virtual AlpsReturnStatus encode(AlpsEncoded * encoded) const;
-
   /// Decode the given AlpsEncoded object into a new AlpsKnowledge object and
   /// return a pointer to it. User application sub-classes should implement this
   /// since the returned pointer will point to user sub-class instances.
   virtual AlpsKnowledge * decode(AlpsEncoded & encoded) const = 0;
-
   /// Decode the given AlpsEncoded object into this.  Implementation given in
   /// this class can not be used when the memory of data members is not
   /// contiguous, i.e., some data members are pointers to heap locations, STL
   /// set, map, etc. These type of user application sub-classes should
   /// implement their own version of this.
   virtual AlpsReturnStatus decodeToSelf(AlpsEncoded & encoded);
-};
+  //@}
 
-//#############################################################################
+private:
+  /// Disable copy constructor.
+  AlpsKnowledge(AlpsKnowledge const &);
+  /// Disable copy assignment operator.
+  AlpsKnowledge & operator=(AlpsKnowledge const &);
+
+};
 
 #endif

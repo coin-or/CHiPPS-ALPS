@@ -65,29 +65,19 @@ class AbcTreeNode : public AlpsTreeNode {
  public:
     AbcTreeNode()
         :
+      AlpsTreeNode(),
         branchedOn_(-1),
         branchedOnVal_(ALPS_BND_MAX),
         branchedDir_(0),
         guessedObjectiveValue_(ALPS_OBJ_MAX),
         numberUnsatisfied_(0)
         {
-            desc_ = new AbcNodeDesc(dynamic_cast<AbcModel*>
-                       (getKnowledgeBroker()->getModel()));
-        }
-
-    AbcTreeNode(AbcModel* m)
-        :
-        branchedOn_(-1),
-        branchedOnVal_(ALPS_BND_MAX),
-        branchedDir_(0),
-        guessedObjectiveValue_(ALPS_OBJ_MAX),
-        numberUnsatisfied_(0)
-        {
-            desc_ = new AbcNodeDesc(m);
+          desc_ = new AbcNodeDesc();
         }
 
     AbcTreeNode(AbcNodeDesc*& desc)
         :
+      AlpsTreeNode(),
         branchedOn_(-1),
         branchedOnVal_(ALPS_BND_MAX),
         branchedDir_(0),
@@ -100,7 +90,7 @@ class AbcTreeNode : public AlpsTreeNode {
             //desc_->setModel(getKnowledgeBroker()->getDataPool()->getModel());
         }
 
-    ~AbcTreeNode()
+    virtual ~AbcTreeNode()
         {
         }
 
@@ -152,9 +142,8 @@ class AbcTreeNode : public AlpsTreeNode {
     ///
     double getBranchedOnValue() const { return branchedOnVal_; }
     ///
-  using AlpsTreeNode::encode;
 
-
+  using AlpsKnowledge::encode;
   /// Encode this into given object as input.
   virtual AlpsReturnStatus encode(AlpsEncoded * encoded) const;
 

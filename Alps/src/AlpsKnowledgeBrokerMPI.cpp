@@ -304,7 +304,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
     workerWorkQualities_[0] = workQuality_;
     workerWorkQuantities_[0] = workQuantity_;
 
-    root->setKnowledgeBroker(this);
+    root->setBroker(this);
     root->setQuality(ALPS_OBJ_MAX);
     root->setDepth(0);
     root->setIndex(0);
@@ -3880,8 +3880,10 @@ AlpsKnowledgeBrokerMPI::receiveRampUpNode(int sender,
         // local node pool
 
         //node->setSubTree(st);
-        node->setKnowledgeBroker(this);
-        node->modifyDesc()->setModel(model_);
+        node->setBroker(this);
+        // todo(aykut) node desc does not hold a pointer to the model
+        // it holds  pointer to the broker.
+        //node->modifyDesc()->setModel(model_);
         node->setParent(NULL);
 
         // Do not want to do this, parent index is unique.
@@ -3961,7 +3963,7 @@ AlpsKnowledgeBrokerMPI::receiveSubTree(char*& bufLarge,
              (decoderObject(AlpsKnowledgeTypeSubTree)))->
             newSubTree();
 
-        tempST->setKnowledgeBroker(this);
+        tempST->setBroker(this);
         tempST->setNodeSelection(nodeSelection_);
 
         AlpsSubTree* subTree =
@@ -4569,6 +4571,8 @@ void AlpsKnowledgeBrokerMPI::search(AlpsModel *model)
         // Only master need create root.
         // NOTE: masterRank_ has been assigned in intializeSearch().
         root = model->createRoot();
+        root->setBroker(this);
+        root->modifyDesc()->setBroker(this);
     }
 
     rootSearch(root);
@@ -6140,7 +6144,7 @@ AlpsKnowledgeBrokerMPI::rootInitMaster(AlpsTreeNode* root)
     rampUpSubTree_ = dynamic_cast<AlpsSubTree*>
         (const_cast<AlpsKnowledge *>(decoderObject(AlpsKnowledgeTypeSubTree)))
         ->newSubTree();
-    rampUpSubTree_->setKnowledgeBroker(this);
+    rampUpSubTree_->setBroker(this);
     rampUpSubTree_->setNodeSelection(rampUpNodeSelection_);
     rampUpSubTree_->setNextIndex(1); // One more than root's index
 
@@ -6440,7 +6444,7 @@ AlpsKnowledgeBrokerMPI::rootInitHub()
     rampUpSubTree_ = dynamic_cast<AlpsSubTree*>
         (const_cast<AlpsKnowledge *>
          (decoderObject(AlpsKnowledgeTypeSubTree)))->newSubTree();
-    rampUpSubTree_->setKnowledgeBroker(this);
+    rampUpSubTree_->setBroker(this);
     rampUpSubTree_->setNodeSelection(rampUpNodeSelection_);
 
     // Make sure the number of nodes created is larger than cluster size.
@@ -6534,15 +6538,17 @@ AlpsKnowledgeBrokerMPI::rootInitHub()
                         AlpsSubTree* myTree = dynamic_cast<AlpsSubTree*>
                             (const_cast<AlpsKnowledge *> (decoderObject
                                 (AlpsKnowledgeTypeSubTree)))->newSubTree();
-                        myTree->setKnowledgeBroker(this);
+                        myTree->setBroker(this);
                         myTree->setNodeSelection(nodeSelection_);
 
                         AlpsTreeNode* node = static_cast<AlpsTreeNode* >
                             (rampUpSubTree_->nodePool()->getKnowledge().first);
                         rampUpSubTree_->nodePool()->popKnowledge();
 
-                        node->setKnowledgeBroker(this);
-                        node->modifyDesc()->setModel(model_);
+                        node->setBroker(this);
+                        // todo(aykut) node desc does not hold a pointer to the model
+                        // it holds  pointer to the broker.
+                        //node->modifyDesc()->setModel(model_);
                         node->setParent(NULL);
                         node->setParentIndex(-1);
                         node->setNumChildren(0);
@@ -6671,7 +6677,7 @@ AlpsKnowledgeBrokerMPI::rootInitWorker()
             (const_cast<AlpsKnowledge *>
              (decoderObject(AlpsKnowledgeTypeSubTree)))->
             newSubTree();
-        rampUpSubTree_->setKnowledgeBroker(this);
+        rampUpSubTree_->setBroker(this);
         rampUpSubTree_->setNodeSelection(nodeSelection_);
 
         // NOTE: received subtree is decoded into rampUpSubTree_
@@ -6763,7 +6769,7 @@ AlpsKnowledgeBrokerMPI::spiralMaster(AlpsTreeNode *root)
     rampUpSubTree_ = dynamic_cast<AlpsSubTree*>
         (const_cast<AlpsKnowledge *>(decoderObject(AlpsKnowledgeTypeSubTree)))
         ->newSubTree();
-    rampUpSubTree_->setKnowledgeBroker(this);
+    rampUpSubTree_->setBroker(this);
     rampUpSubTree_->setNodeSelection(rampUpNodeSelection_);
     rampUpSubTree_->setNextIndex(1); // One more than root's index
 
@@ -7174,15 +7180,17 @@ AlpsKnowledgeBrokerMPI::spiralRecvProcessNode()
 
     rampUpSubTree_ = dynamic_cast<AlpsSubTree*>
         (const_cast<AlpsKnowledge *>(decoderObject(AlpsKnowledgeTypeSubTree)))->newSubTree();
-    rampUpSubTree_->setKnowledgeBroker(this);
+    rampUpSubTree_->setBroker(this);
     rampUpSubTree_->setNodeSelection(nodeSelection_);
 
     AlpsEncoded* encodedNode = unpackEncoded(largeBuffer_,pos,MPI_COMM_WORLD);
     AlpsTreeNode* node = dynamic_cast<AlpsTreeNode* >
         ( decoderObject(encodedNode->type())->decode(*encodedNode) );
 
-    node->setKnowledgeBroker(this);
-    node->modifyDesc()->setModel(model_);
+    node->setBroker(this);
+    // todo(aykut) node desc does not hold a pointer to the model
+    // it holds  pointer to the broker.
+    //node->modifyDesc()->setModel(model_);
     node->setParent(NULL);
 
     rampUpSubTree_->nodePool()->addKnowledge(node, node->getQuality());

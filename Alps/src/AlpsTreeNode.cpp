@@ -147,6 +147,8 @@ AlpsReturnStatus AlpsTreeNode::encode(AlpsEncoded * encoded) const {
     encoded->writeRep(numChildren_);
     encoded->writeRep(status_);
     encoded->writeRep(sentMark_);
+    status = desc_->encode(encoded);
+    assert(status==AlpsReturnStatusOk);
 
 #ifdef NF_DEBUG
     std::cout << std::endl;
@@ -176,6 +178,7 @@ AlpsReturnStatus AlpsTreeNode::decodeToSelf(AlpsEncoded & encoded) {
   encoded.readRep(numChildren_);
   encoded.readRep(status_);
   encoded.readRep(sentMark_);
+  status = desc_->decodeToSelf(encoded);
 
 #ifdef NF_DEBUG
   std::cout << std::endl;
@@ -190,13 +193,13 @@ AlpsReturnStatus AlpsTreeNode::decodeToSelf(AlpsEncoded & encoded) {
   return status;
 }
 
-/// Unpack Alps portion of node into a new AlpsTreeNode object and return a
-/// pointer to it.
-/// Not implemented. We do not need this for now.
-AlpsKnowledge * AlpsTreeNode::decode(AlpsEncoded & encoded) const {
-  std::cerr << "Not implemented!" << std::endl;
-  throw std::exception();
-}
+// Unpack Alps portion of node into a new AlpsTreeNode object and return a
+// pointer to it.
+// Not implemented. We do not need this for now.
+// AlpsKnowledge * AlpsTreeNode::decode(AlpsEncoded & encoded) const {
+//   std::cerr << "Not implemented!" << std::endl;
+//   throw std::exception();
+// }
 
 
 

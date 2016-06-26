@@ -86,10 +86,10 @@ AC_COIN_PROG_CXX
 
 # We filter out the -pedantic-errors flag for C and C++ compiler in
 # case the user wants to use MPI, since otherwise the compilation
-# fails. 
+# fails.
 if test "${with_mpi_lib+set}" = set; then
-  CFLAGS=`echo $CFLAGS | sed -e s/-pedantic-errors//g` 
-  CXXFLAGS=`echo $CXXFLAGS | sed -e s/-pedantic-errors//g` 
+  CFLAGS=`echo $CFLAGS | sed -e s/-pedantic-errors//g`
+  CXXFLAGS=`echo $CXXFLAGS | sed -e s/-pedantic-errors//g`
 fi
 
 # Initialize automake and libtool
@@ -97,6 +97,9 @@ AC_COIN_INIT_AUTO_TOOLS
 
 # Get the EXEXT variable for CYGWIN
 AC_EXEEXT
+
+# Check if standard C++11 is available, add it to flags if so.
+AX_CXX_COMPILE_STDCXX_11
 
 #############################################################################
 #                           COIN-OR components                              #
@@ -182,14 +185,14 @@ AC_COIN_DOXYGEN(CoinUtils)
 # Here list all the files that configure should create (except for the
 # configuration header file)
 AC_CONFIG_FILES([Makefile
-		 examples/Abc/Makefile
-		 examples/Abc/abc.par
-		 examples/Knap/Makefile
-		 examples/Knap/knap.par
+                 examples/Abc/Makefile
+                 examples/Abc/abc.par
+                 examples/Knap/Makefile
+                 examples/Knap/knap.par
                  src/Makefile
                  test/Makefile
-		 alps.pc
-		 alps-uninstalled.pc])
+                 alps.pc
+                 alps-uninstalled.pc])
 
 AC_CONFIG_FILES([doxydoc/doxygen.conf])
 

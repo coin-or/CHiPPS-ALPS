@@ -73,11 +73,6 @@ protected:
   /** A quantity indicating how good this subtree is. */
   double quality_;
 
-  /** A pointer to the knowledge broker of the process where this subtree is
-      processed. */
-  // Need broker to query model && parameters.
-  AlpsKnowledgeBroker*  broker_;
-
 protected:
 
   /** The purpose of this method is to remove nodes that are not needed in
@@ -102,7 +97,7 @@ public:
   AlpsSubTree();
 
   /** Useful constructor. */
-  AlpsSubTree(AlpsKnowledgeBroker* kb);
+  AlpsSubTree(AlpsKnowledgeBroker * kb);
 
   /** Destructor. */
   virtual ~AlpsSubTree();
@@ -164,15 +159,6 @@ public:
 
   /** Get the "best" node in the subtree. */
   AlpsTreeNode *getBestNode() const;
-
-  /** Get the knowledge broker. */
-  inline AlpsKnowledgeBroker*  getKnowledgeBroker() const { return broker_; }
-
-  /** Set a pointer to the knowledge broker. */
-  inline void setKnowledgeBroker(AlpsKnowledgeBroker* kb) {
-    assert(kb);
-    broker_ = kb;
-  }
 
   /** Get the quality of this subtree. */
   inline double getQuality() const { return quality_; }
@@ -282,7 +268,7 @@ public:
   /** Create a AlpsSubtree object dynamically. Only parallel code need
       this function.*/
   virtual AlpsSubTree* newSubTree() const {
-    return new AlpsSubTree;
+    return new AlpsSubTree(broker_);
   }
 
   /** Remove nodes in pools in the subtree. Do not free memory. */

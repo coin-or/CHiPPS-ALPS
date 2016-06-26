@@ -855,6 +855,14 @@ void AbcModel::setCutoff (double value)
     solver_->setDblParam(OsiDualObjectiveLimit, value * direction);
 }
 
+
+
+AlpsTreeNode * AbcModel::createRoot() {
+  return new AbcTreeNode();
+}
+
+
+
 //#############################################################################
 // Initial solve and find integers
 bool

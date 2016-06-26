@@ -27,44 +27,41 @@
 
 class AlpsModel;
 
-//#############################################################################
-/** A class to refer to the description of a search tree node.
- *FIXME* : write a better doc...
+/*!
+  This is an abstract base class for subproblem data to be stored in a tree
+  node. An instance of this class is a member in #AlpsTreeNode.
+
+  #AlpsTreeNode keeps data related to node's position within the tree and
+  #AlpsNodeDesc holds data directly related to the corresponding
+  subproblem. This design is prefered due to its simplicity and convenience of
+  separating subproblem data from tree search related data.
+
  */
-//#############################################################################
-class AlpsNodeDesc {
 
- protected:
-
-    /** A pointer to model. */
-    // Should allow change model due to presolve
-    AlpsModel* model_;
-
+class AlpsNodeDesc: virtual public AlpsKnowledge {
  public:
+  ///@name Constructor and Destructor.
+  //@{
+  /// Default constructor.
+  AlpsNodeDesc() {}
+  /// Destructor.
+  virtual ~AlpsNodeDesc() {}
+  //@}
 
-    AlpsNodeDesc() {}
-    AlpsNodeDesc(AlpsModel* m)
-        { model_ = m; }
-
-    virtual ~AlpsNodeDesc() {}
-
-    inline AlpsModel* getModel() const { return model_; }
-    inline void setModel(AlpsModel* m) { model_ = m; }
-
-    /** Pack node description into an encoded. */
-    virtual AlpsReturnStatus encode(AlpsEncoded *encoded) const {
-        AlpsReturnStatus status = AlpsReturnStatusOk;
-        // Should never be called.
-        assert(0);
-        return status;
-    }
-
-    /** Unpack a node description from an encoded. Fill member data. */
-    virtual AlpsReturnStatus decode(AlpsEncoded &encoded) {
-        AlpsReturnStatus status = AlpsReturnStatusOk;
-        assert(0);
-        return status;
-    }
+  ///@name Encode/Decode inherited from #AlpsKnowledge.
+  //@{
+  /// Pack this into an #AlpsEncoded object and return a pointer to it.
+  using AlpsKnowledge::encode;
+  /// Pack this node description into the given #AlpsEncoded object.
+  virtual AlpsReturnStatus encode(AlpsEncoded * encoded) const {
+    return AlpsReturnStatusOk;
+  }
+  /// Unpack fields from the given #AlpsEncoded object.
+  virtual AlpsReturnStatus decodeToSelf(AlpsEncoded & encoded) {
+    return AlpsReturnStatusOk;
+  }
+  /// Unpack into a new #AlpsNodeDesc and return a pointer to it.
+  virtual AlpsNodeDesc * decode(AlpsEncoded & encoded) const = 0;
 };
 
 #endif

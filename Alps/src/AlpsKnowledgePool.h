@@ -23,77 +23,71 @@
 #ifndef AlpsKnowledgePool_h
 #define AlpsKnowledgePool_h
 
+// STL headers
 #include <climits>
 #include <iostream>
 #include <vector>
 
+// CoinUtils headers
 #include "CoinError.hpp"
+
+// Alps headers
 #include "AlpsKnowledge.h"
 
-//#############################################################################
-//#############################################################################
+/*!
+  This is an abstract base class, fixing an API for pool types of Alps,
+  #AlpsNodePool, #AlpsSolutionPool, #AlpsSubTreePool.
+
+ */
 
 class AlpsKnowledgePool {
- private:
-  AlpsKnowledgePool(const AlpsKnowledgePool&);
-  AlpsKnowledgePool& operator=(const AlpsKnowledgePool&);
+  AlpsKnowledgePoolType type_;
 
- public:
-  AlpsKnowledgePool() {}                     // Need: otherwise
-  virtual ~AlpsKnowledgePool() {}            // won't compile.
+public:
+  ///@name Constructor and Destructor.
+  //@{
+  /// Default constructor.
+  AlpsKnowledgePool(AlpsKnowledgePoolType type) { type_ = type; }
+  /// Destructor.
+  virtual ~AlpsKnowledgePool() {}
+  //@}
 
-  /** Add a knowledge to pool */
-  virtual void addKnowledge(AlpsKnowledge * nk, double priority) = 0;
-
-  /** Query how many knowledges are in the pool.*/
+  ///@name Querry methods
+  //@{
+  /// Return size of the pool.
   virtual int getNumKnowledges() const = 0;
-
-  /** Query a knowledge, but doesn't remove it from the pool*/
+  /// Check the first item in the pool.
   virtual std::pair<AlpsKnowledge*, double> getKnowledge() const = 0;
-
-  /** Remove the queried knowledge from the pool*/
-  virtual void popKnowledge() {
-    throw CoinError("Can not call popKnowledge()",
-                    "popKnowledge()", "AlpsKnowledgePool");
-  }
-
-  /** Check whether the pool has knowledge. */
-  virtual bool hasKnowledge() const{
-    throw CoinError("Can not call hasKnowledge()",
-                    "hasKnowledge()", "AlpsKnowledgePool");
-  }
-
-  /** Set the quantity limit of knowledges that can be stored in the pool. */
-  virtual void setMaxNumKnowledges(int num) {
-    std::cout << "Can not call setMaxNumKnowledges without overriding"
-              << std::endl;
-    throw CoinError("Can not call  setMaxNumKnowledges()",
-                    "setMaxNumKnowledges()", "AlpsKnowledgePool");
-  }
-
-  /** Query the quantity limit of knowledges. */
-  virtual int getMaxNumKnowledges() const {
-    // throw CoinError("Can not call getMaxNumKnowledges()",
-    //              "getMaxNumKnowledges()", "AlpsKnowledgePool");
-    return INT_MAX;
-  }
-
-  /** Query the best knowledge in the pool.*/
-  virtual std::pair<AlpsKnowledge*, double>
-    getBestKnowledge() const {
-    throw CoinError("Can not call  getBestKnowledge()",
-                    "getBestKnowledge()", "AlpsKnowledgePool");
-  }
-
-  /** Get a reference to all the knowledges in the pool.*/
+  /// Check whether the pool is empty.
+  virtual bool hasKnowledge() const = 0;
+  /// Query the quantity limit of knowledges.
+  virtual int getMaxNumKnowledges() const = 0;
+  /// Query the best knowledge in the pool.
+  virtual std::pair<AlpsKnowledge*, double> getBestKnowledge() const = 0;
+  /// Get a reference to all the knowledges in the pool.*/
   virtual void getAllKnowledges (std::vector<std::pair<AlpsKnowledge*,
-                                 double> >& kls) const {
-    std::cout << "Can not call  getAllKnowledge() without overriding"
-              << std::endl;
-    throw CoinError("Can not call  getAllKnowledge()",
-                    "getAllKnowledge()", "AlpsKnowledgePool");
-  }
+                                 double> >& kls) const = 0;
+  //@}
 
+  ///@name Knowledge manipulation
+  //@{
+  /// Add a knowledge to pool.
+  virtual void addKnowledge(AlpsKnowledge * nk, double priority) = 0;
+  /// Pop the first knowledge from the pool.
+  virtual void popKnowledge() = 0;
+  //@}
+
+  ///@name Other functions
+  //@{
+  /// Set the quantity limit of knowledges that can be stored in the pool.
+  virtual void setMaxNumKnowledges(int num) = 0;
+  //@}
+
+private:
+  /// Disable copy constructor.
+  AlpsKnowledgePool(AlpsKnowledgePool const &);
+  /// Disable copy assignment operator.
+  AlpsKnowledgePool & operator=(AlpsKnowledgePool const &);
 };
 
 #endif

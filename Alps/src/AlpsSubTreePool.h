@@ -24,88 +24,71 @@
 #define AlpsSubTreePool_h_
 
 #include "AlpsHelperFunctions.h"
+#include "AlpsPriorityQueue.h"
+#include "AlpsKnowledgePool.h"
 #include "AlpsSubTree.h"
+/*!
 
-//#############################################################################
+  The subtree pool is used to store subtrees
 
-/** The subtree pool is used to store subtrees */
-class AlpsSubTreePool : public AlpsKnowledgePool {
+*/
+class AlpsSubTreePool: public AlpsKnowledgePool {
+  AlpsPriorityQueue<AlpsSubTree*> subTreeList_;
 
- private:
-    AlpsSubTreePool(const AlpsSubTreePool&);
-    AlpsSubTreePool& operator=(const AlpsSubTreePool&);
+public:
+  ///@name Constructor and destructor.
+  //@{
+  /// Default constructor.
+  AlpsSubTreePool();
+  /// Destructor.
+  virtual ~AlpsSubTreePool();
+  //@}
 
-    AlpsPriorityQueue<AlpsSubTree*> subTreeList_;
+  ///@name Querry methods
+  //@{
+  /// Query the number of subtrees in the pool.
+  virtual int getNumKnowledges() const;
+  /// Get a subtree from subtree pool, doesn't remove it from the pool.
+  virtual std::pair<AlpsKnowledge*, double> getKnowledge() const;
+  /// Check whether there is a subtree in the subtree pool.
+  virtual bool hasKnowledge() const{ return ! (subTreeList_.empty()); }
+  /// Query the quantity limit of knowledges.
+  virtual int getMaxNumKnowledges() const { return INT_MAX; }
+  /// Query the best knowledge in the pool.
+  virtual std::pair<AlpsKnowledge*, double> getBestKnowledge() const;
+  /// Get a reference to all the knowledges in the pool.*/
+  virtual void getAllKnowledges (std::vector<std::pair<AlpsKnowledge*,
+                                 double> >& kls) const;
+  //@}
 
- public:
-    AlpsSubTreePool() {}
-    virtual ~AlpsSubTreePool() {
-        if (!subTreeList_.empty()) {
-            deleteGuts();
-        }
-    }
+  ///@name Knowledge manipulation
+  //@{
+  /// Add a subtree to the subtree pool.
+  virtual void addKnowledge(AlpsKnowledge* subTree, double priority);
+  /// Remove a subtree from the pool.
+  virtual void popKnowledge() { subTreeList_.pop(); }
+  //@}
 
-    /** Query the number of subtrees in the pool. */
-    inline int getNumKnowledges() const { return static_cast<int> (subTreeList_.size()); }
+  ///@name Other functions
+  //@{
+  /// Set the quantity limit of knowledges that can be stored in the pool.
+  virtual void setMaxNumKnowledges(int num);
+  //@}
 
-    /** Check whether there is a subtree in the subtree pool. */
-    inline bool hasKnowledge() const{ return ! (subTreeList_.empty()); }
+  /// Return the container of subtrees.
+  virtual AlpsPriorityQueue< AlpsSubTree*> const & getSubTreeList() const;
+  /// Set comparison function and resort heap.
+  void setComparison(AlpsSearchStrategy<AlpsSubTree*>& compare);
+  /// Delete the subtrees in the pool.
+  void deleteGuts();
+  /// Get the quality of the best subtree.
+  double getBestQuality();
 
-    /** Get a subtree from subtree pool, doesn't remove it from the pool*/
-    inline std::pair<AlpsKnowledge*, double> getKnowledge() const {
-        return std::make_pair( static_cast<AlpsKnowledge *>
-                               (subTreeList_.top()),
-                               subTreeList_.top()->getQuality() );
-    }
-
-    /** Remove a subtree from the pool*/
-    inline void popKnowledge() {
-        subTreeList_.pop();
-    }
-
-    /** Add a subtree to the subtree pool. */
-    inline void addKnowledge(AlpsKnowledge* subTree, double priority) {
-        AlpsSubTree * st = dynamic_cast<AlpsSubTree* >(subTree);
-        subTreeList_.push(st);
-    }
-
-    /** Return the container of subtrees. */
-    inline const AlpsPriorityQueue< AlpsSubTree*>&
-        getSubTreeList() const { return subTreeList_; }
-
-    /** Set comparison function and resort heap. */
-    void setComparison(AlpsSearchStrategy<AlpsSubTree*>& compare) {
-        subTreeList_.setComparison(compare);
-    }
-
-    /** Delete the subtrees in the pool. */
-    void deleteGuts() {
-        std::vector<AlpsSubTree* > treeVec = subTreeList_.getContainer();
-        std::for_each(treeVec.begin(), treeVec.end(), DeletePtrObject());
-        subTreeList_.clear();
-        assert(subTreeList_.size() == 0);
-    }
-
-    /** Get the quality of the best subtree. */
-    double getBestQuality() {
-        double quality = ALPS_OBJ_MAX;
-
-        std::vector<AlpsSubTree* > subTreeVec = subTreeList_.getContainer();
-
-        std::vector<AlpsSubTree* >::iterator pos1, pos2;
-
-        pos1 = subTreeVec.begin();
-        pos2 = subTreeVec.end();
-
-        for (; pos1 != pos2; ++pos1) {
-            (*pos1)->calculateQuality();
-            if ((*pos1)->getQuality() < quality) {
-                quality = (*pos1)->getQuality();
-            }
-        }
-
-        return quality;
-    }
+private:
+  /// Disable copy constructor.
+  AlpsSubTreePool(AlpsSubTreePool const &);
+  /// Disable copy assignment operator.
+  AlpsSubTreePool& operator=(const AlpsSubTreePool &);
 };
 
 #endif

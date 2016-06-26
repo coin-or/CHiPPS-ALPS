@@ -250,8 +250,8 @@ class AlpsKnowledgeBroker {
         <code>obj = AlpsKnowledge::decoderObject(name)->decode(buf) </code>
     */
 
-    const AlpsKnowledge* decoderObject(int name) {
-        return decodeMap_[name];
+    AlpsKnowledge const * decoderObject(int name) const {
+      return decodeMap_.at(name);
     }
     //@}
 
@@ -272,6 +272,8 @@ class AlpsKnowledgeBroker {
     /** Search best solution for a given model. */
     virtual void search(AlpsModel *model) {
         AlpsTreeNode* root = model->createRoot();
+        root->setBroker(this);
+        root->modifyDesc()->setBroker(this);
         rootSearch(root);
     }
     //@}
@@ -413,6 +415,8 @@ class AlpsKnowledgeBroker {
                               AlpsKnowledge* kl,
                               double value ) {
         if(kt == AlpsKnowledgeTypeSolution || kt == AlpsKnowledgeTypeSubTree) {
+          //todo(aykut) is this the right place to do this?
+          //kl->setType(kt);
             getKnowledgePool(kt)->addKnowledge(kl, value);
         }
         else {

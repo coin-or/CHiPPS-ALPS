@@ -89,13 +89,13 @@ int
 AbcTreeNode::process(bool isRoot, bool rampUp)
 {
     bool betterSolution = false;
-    double bestValue = getKnowledgeBroker()->getIncumbentValue();
+    double bestValue = broker()->getIncumbentValue();
     double parentObjValue = getObjValue();
     double primalTolerance = 1.0e-7;
     bool cutDuringRampup;
-    AlpsProcessType myType = getKnowledgeBroker()->getProcType();
+    AlpsProcessType myType = broker()->getProcType();
 
-    AbcModel *model=dynamic_cast<AbcModel *>(getKnowledgeBroker()->getModel());
+    AbcModel *model=dynamic_cast<AbcModel *>(broker()->getModel());
 
     cutDuringRampup = true;
 
@@ -117,7 +117,7 @@ AbcTreeNode::process(bool isRoot, bool rampUp)
 
     int i = -1;
     AbcNodeDesc *desc = dynamic_cast<AbcNodeDesc*>(desc_);
-    AbcModel *m = dynamic_cast<AbcModel*>(desc->getModel());
+    AbcModel *m = dynamic_cast<AbcModel*>(broker()->getModel());
 
     // Update cutoff if recv a better solution from other process
     if (bestValue < m->getCutoff()) {
@@ -133,9 +133,9 @@ AbcTreeNode::process(bool isRoot, bool rampUp)
     assert(nodeInterval > 0);
 
     if(m->getNodeCount() % nodeInterval == 0){
-        const int nodeLeft = getKnowledgeBroker()->updateNumNodesLeft();
+        const int nodeLeft = broker()->updateNumNodesLeft();
         m->messageHandler()->message(ABC_STATUS, m->messages())
-            << getKnowledgeBroker()->getProcRank() << (m->getNodeCount())
+            << broker()->getProcRank() << (m->getNodeCount())
             << nodeLeft <<  m->getCutoff() << parentObjValue << CoinMessageEol;
     }
 
@@ -180,7 +180,7 @@ AbcTreeNode::process(bool isRoot, bool rampUp)
         AbcSolution* sol = new AbcSolution(numCols,
                                            m->bestSolution(),
                                            m->getObjValue());
-        getKnowledgeBroker()->addKnowledge(AlpsKnowledgeTypeSolution, sol,
+        broker()->addKnowledge(AlpsKnowledgeTypeSolution, sol,
                                            m->getObjValue());
     }
 
@@ -213,7 +213,7 @@ AbcTreeNode::process(bool isRoot, bool rampUp)
                 AbcSolution* ksol = new AbcSolution(numCols,
                                                     m->getColSolution(),
                                                     val);
-                getKnowledgeBroker()->addKnowledge(AlpsKnowledgeTypeSolution,
+                broker()->addKnowledge(AlpsKnowledgeTypeSolution,
                                                    ksol, val);
             }
             setStatus(AlpsNodeStatusFathomed);
@@ -223,7 +223,7 @@ AbcTreeNode::process(bool isRoot, bool rampUp)
                 bool strongFound = false;
                 int action = -1;
                 while (action == -1) {
-                    if(getKnowledgeBroker()->getProcRank() == -1) {
+                    if(broker()->getProcRank() == -1) {
                         std::cout << "*** I AM RANK ONE: before choose:action = " << action
                                   << std::endl;
                     }
@@ -234,7 +234,7 @@ AbcTreeNode::process(bool isRoot, bool rampUp)
                         AbcSolution *sol = new AbcSolution(numCols,
                                                            m->bestSolution(),
                                                            m->getObjValue());
-                        getKnowledgeBroker()->addKnowledge(
+                        broker()->addKnowledge(
                            AlpsKnowledgeTypeSolution, sol, m->getObjValue());
 
                     }
@@ -251,7 +251,7 @@ AbcTreeNode::process(bool isRoot, bool rampUp)
                     if (action == -2) {
                         feasible = false;
                     }
-                    if(getKnowledgeBroker()->getProcRank() == -1) {
+                    if(broker()->getProcRank() == -1) {
                         std::cout << "*** I AM RANK ONE: action = " << action
                                   << std::endl;
                     }
@@ -300,7 +300,7 @@ AbcTreeNode::branch()
 {
     AbcNodeDesc* desc =
         dynamic_cast<AbcNodeDesc*>(desc_);
-    AbcModel* m = dynamic_cast<AbcModel*>(desc->getModel());
+    AbcModel* m = dynamic_cast<AbcModel*>(broker()->getModel());
 
     double* oldLbs = desc->lowerBounds();
     double* oldUbs = desc->upperBounds();
@@ -336,7 +336,11 @@ AbcTreeNode::branch()
     newUbs[branchedOn_] = floor(branchedOnVal_);//floor(branchedOnVal_+1.0e-5);
     AbcNodeDesc* child;
     assert(branchedOn_ >= 0);
-    child = new AbcNodeDesc(m, newLbs, newUbs);
+    child = new AbcNodeDesc();
+    child->setBroker(broker());
+    child->setLowerBounds(newLbs, numCols);
+    child->setUpperBounds(newUbs, numCols);
+
     child->setBranchedOn(branchedOn_);
     child->setBranchedOnValue(branchedOnVal_);
     child->setBranchedDir(-1);
@@ -348,7 +352,10 @@ AbcTreeNode::branch()
     newUbs[branchedOn_] = oldUbs[branchedOn_];
     newLbs[branchedOn_] = ceil(branchedOnVal_);//ceil(branchedOnVal_ - 1.0e-5);
     child = 0;
-    child = new AbcNodeDesc(m, newLbs, newUbs);
+    child = new AbcNodeDesc();
+    child->setBroker(broker());
+    child->setLowerBounds(newLbs, numCols);
+    child->setUpperBounds(newUbs, numCols);
     child->setBranchedOn(branchedOn_);
     child->setBranchedOnValue(branchedOnVal_);
     child->setBranchedDir(1);
@@ -415,7 +422,7 @@ AlpsReturnStatus AbcTreeNode::encode(AlpsEncoded * encoded) const {
     std::cout << "AbcTreeNode::encode()--start to encode" << std::endl;
 #endif
     AbcNodeDesc* desc = dynamic_cast<AbcNodeDesc*>(desc_);
-    AbcModel* model = dynamic_cast<AbcModel*>(desc->getModel());
+    AbcModel* model = dynamic_cast<AbcModel*>(desc->broker()->getModel());
 
     int numCols = model->getNumCols();
     assert(numCols);
@@ -487,8 +494,10 @@ AlpsKnowledge * AbcTreeNode::decode(AlpsEncoded& encoded) const {
         assert(branchedOn >= 0 && branchedOn < numCols);
     }
 
-    AbcNodeDesc* nodeDesc = new AbcNodeDesc(dynamic_cast<AbcModel*>
-                                            (desc_->getModel()), lb, ub);
+    AbcNodeDesc* nodeDesc = new AbcNodeDesc();
+    nodeDesc->setBroker(desc_->broker());
+    nodeDesc->setLowerBounds(lb, numCols);
+    nodeDesc->setUpperBounds(ub, numCols);
 
     //  nodeDesc->setModel(getKnowledgeBroker()->getDataPool()->getModel());
     AbcTreeNode* treeNode = new AbcTreeNode(nodeDesc);
@@ -563,7 +572,7 @@ int AbcTreeNode::chooseBranch(AbcModel *model, bool& strongFound)
     double saveObjectiveValue = solver->getObjValue();
     double objectiveValue = solver->getObjSense() * saveObjectiveValue;
 
-    if(getKnowledgeBroker()->getProcRank() == -1) {
+    if(broker()->getProcRank() == -1) {
         std::cout << "*** I AM RANK FIVE: obj = "<< objectiveValue
                   << ", cutoff = "<< model->getCutoff() << std::endl;
     }
@@ -973,7 +982,7 @@ outputStuff = new int [4 * numberStrong];
         solver->setWarmStart(ws);	// restore basis
         delete ws;
 
-        if(getKnowledgeBroker()->getProcRank() == -1) {
+        if(broker()->getProcRank() == -1) {
             std::cout << "*** I AM RANK ONE: chooseBranch():anyAction = "
                       << anyAction << "numberStrong = "<< numberStrong
                       << std::endl;
