@@ -21,29 +21,43 @@
 
 //#############################################################################
 
-void
-KnapSolution::print(std::ostream& os) const
-{
-    const int* seq = getModel()->getSequence();
+KnapSolution::KnapSolution(KnapModel * model): model_(model), size_(0),
+                                               solution_(0), value_(0) {
+}
 
-    int i;
-    std::set<int> solu;
-    for (i = 0; i < size_; ++i) {
-        if (solution_[i] == 1)
-            solu.insert( seq[i]+1 );
-    }
+KnapSolution::KnapSolution(KnapModel * model, int s, int*& sol, int v)
+  : model_(model), size_(s), solution_(sol), value_(v) {
+  sol = 0;
+}
 
-    i = 0;
-    std::set<int>::iterator pos;
-    //os << "Items in knapsack are:\n\n";
-    for (pos = solu.begin(); pos != solu.end(); ++pos) {
-        os << *pos;
-        if (i != 0 && !((++i)%5))
-            os << "\n";
-        else
-            os << "\t";
-    }
-    os << std::endl;
+KnapSolution::~KnapSolution() {
+  if (solution_) {
+    delete [] solution_;
+    solution_ = 0;
+  }
+}
+
+void KnapSolution::print(std::ostream& os) const {
+  const int* seq = model_->getSequence();
+
+  int i;
+  std::set<int> solu;
+  for (i = 0; i < size_; ++i) {
+    if (solution_[i] == 1)
+      solu.insert( seq[i]+1 );
+  }
+
+  i = 0;
+  std::set<int>::iterator pos;
+  //os << "Items in knapsack are:\n\n";
+  for (pos = solu.begin(); pos != solu.end(); ++pos) {
+    os << *pos;
+    if (i != 0 && !((++i)%5))
+      os << "\n";
+    else
+      os << "\t";
+  }
+  os << std::endl;
 }
 
 //#############################################################################
@@ -65,7 +79,7 @@ AlpsKnowledge * KnapSolution::decode(AlpsEncoded& encoded) const {
   encoded.readRep(v);
   encoded.readRep(s);        // s must immediately before sol
   encoded.readRep(sol, s);
-  return new KnapSolution(s, sol, v, getModel());
+  return new KnapSolution(model_, s, sol, v);
 }
 
 //#############################################################################

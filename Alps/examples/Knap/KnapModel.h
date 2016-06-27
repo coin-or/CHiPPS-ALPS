@@ -17,25 +17,21 @@
 #define KnapModel_h_
 
 
-#include "AlpsKnowledge.h"
 #include "AlpsModel.h"
+
 #include "KnapParams.h"
+
+#include "KnapTreeNode.h"
 
 //#############################################################################
 
 class KnapModel : public AlpsModel {
-
- private:
-
   /** Capacity of the knapsack */
   int capacity_;
-
   /** List of sizes and profits of the items */
   std::vector< std::pair<int, int> > items_;
-
   /** The descent sequence based on ratio: profit/size. */
   int* sequence_;
-
   /** Knap parameters. */
   KnapParams *KnapPar_;
 
@@ -49,7 +45,7 @@ class KnapModel : public AlpsModel {
       KnapPar_(new KnapParams)
       { items_.insert(items_.begin(), items.begin(), items.end()); }
 
-  ~KnapModel() {
+  virtual ~KnapModel() {
       if (sequence_ != 0) {
           delete [] sequence_;
           sequence_ = 0;
@@ -79,6 +75,11 @@ class KnapModel : public AlpsModel {
       KnapPar_->readFromArglist(argnum, arglist);
   }
 
+  virtual AlpsTreeNode * createRoot() {
+    return (new KnapTreeNode(this));
+  }
+
+
   /** Get the size of item i */
   inline std::pair<int, int> getItem(int i) const {
     return(items_[sequence_[i]]);
@@ -106,6 +107,9 @@ class KnapModel : public AlpsModel {
   /// Decode the given AlpsEncoded object into this.
   virtual AlpsReturnStatus decodeToSelf(AlpsEncoded & encoded);
   virtual AlpsKnowledge * decode(AlpsEncoded & encoded) const;
+private:
+  KnapModel(KnapModel const &);
+  KnapModel & operator=(KnapModel const &);
 };
 
 //#############################################################################

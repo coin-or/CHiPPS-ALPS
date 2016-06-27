@@ -16,149 +16,47 @@
 #ifndef KnapTreeNode_h_
 #define KnapTreeNode_h_
 
+// STL headers
 #include <utility>
-
+// ALPS headers
 #include "AlpsTreeNode.h"
 
-#include "KnapModel.h"
+class KnapModel;
+class KnapNodeDesc;
 
-
-//#############################################################################
-
-enum KnapVarStatus {
-    KnapVarFree,
-    KnapVarFixedToOne,
-    KnapVarFixedToZero
-};
-
-//#############################################################################
-
-class KnapNodeDesc : public AlpsNodeDesc {
-
- private:
-
-    /* Here, we need to fill in what the node description will look
-       like. For now, we will not use differencing -- just explicitly
-       represent it. Probably this means that we will just store the
-       original problem data and a list of the variables that have been
-       fixed. */
-
-    /** This array keeps track of which variables have been fixed by
-        branching and which are still free. */
-    // In the constructor, we should allocate this array to be the right
-    // length.
-    KnapVarStatus* varStatus_;
-
-    /** The total size of the items fixed to be put into the knapsack */
-    int usedCapacity_;
-    int usedValue_;
-
- public:
-#if 0
-    KnapNodeDesc()
-        :
-        usedCapacity_(0),
-        usedValue_(0)
-        {
-            const int n =
-                dynamic_cast<const KnapModel*>(model_)->getNumItems();
-            varStatus_ = new KnapVarStatus[n];
-            std::fill(varStatus_, varStatus_ + n, KnapVarFree);
-        }
-#endif
-
-    KnapNodeDesc(KnapModel* m)
-        :
-        AlpsNodeDesc(m),
-        usedCapacity_(0),
-        usedValue_(0)
-        {
-            //model_ = m;      // data member declared in Alps
-            const int n = dynamic_cast<KnapModel* >(model_)->getNumItems();
-            varStatus_ = new KnapVarStatus[n];
-            std::fill(varStatus_, varStatus_ + n, KnapVarFree);
-        }
-
-    KnapNodeDesc(KnapModel* m, KnapVarStatus *& st, int cap, int val)
-        :
-        //      model_(m), varStatus_(0), usedCapacity_(cap), usedValue_(val) {
-        AlpsNodeDesc(m),
-        varStatus_(0),
-        usedCapacity_(cap),
-        usedValue_(val)
-        {
-            // model_ = m;
-            std::swap(varStatus_, st);
-        }
-
-    virtual ~KnapNodeDesc() { delete[] varStatus_; }
-
-    // inline KnapModel* getModel() { return model_; }
-    // inline const KnapModel* getModel() const { return model_; }// move Alps
-
-    inline void setVarStatus(const int i, const KnapVarStatus status)
-        { varStatus_[i] = status; }
-
-    inline KnapVarStatus getVarStatus(const int i)
-        { return varStatus_[i]; }
-
-    inline const KnapVarStatus* getVarStati() const
-        { return varStatus_; }
-
-    inline int getUsedCapacity() const { return usedCapacity_; }
-    inline int getUsedValue() const { return usedValue_; }
-};
-
-//#############################################################################
+/*!
+  Holds a Knapsack tree node.
+ */
 
 class KnapTreeNode : public AlpsTreeNode {
- private:
-    // NO: default constructor, copy constructor, assignment operator
-    KnapTreeNode(const KnapTreeNode&);
-    KnapTreeNode& operator=(const KnapTreeNode&);
+  /** The index of the branching variable */
+  int branchedOn_;
 
- private:
-    /** The index of the branching variable */
-    int branchedOn_;
+public:
+  KnapTreeNode(KnapModel * model);
+  KnapTreeNode(KnapNodeDesc *& desc);
+  virtual ~KnapTreeNode() { }
 
- public:
-    KnapTreeNode() : branchedOn_(-1) {
-        desc_ = new KnapNodeDesc(dynamic_cast<KnapModel* >
-                                 (getKnowledgeBroker()->getModel()));
-    }
+  void setBranchOn(int b) { branchedOn_ = b; }
 
-    KnapTreeNode(KnapModel* model) : branchedOn_(-1) {
-        desc_ = new KnapNodeDesc(model);
-    }
+  virtual AlpsTreeNode * createNewTreeNode(AlpsNodeDesc*& desc) const;
 
-    KnapTreeNode(KnapNodeDesc*& desc) : branchedOn_(-1) {
-        desc_ = desc;
-        desc = 0;
-        // At the time of registering node, that node hasn't set broker
-        // desc_->setModel(getKnowledgeBroker()->getDataPool()->getModel());
-    }
+  virtual int process(bool isRoot = false, bool rampUp = false);
 
-    ~KnapTreeNode() { }
-
-    void setBranchOn(int b) { branchedOn_ = b; }
-
-    virtual AlpsTreeNode* createNewTreeNode(AlpsNodeDesc*& desc) const;
-
-    virtual int process(bool isRoot = false, bool rampUp = false);
-
-    virtual std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> >
-        branch();
+  virtual std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> >
+  branch();
 
   using AlpsTreeNode::encode;
   /// Encode this into the given AlpsEncoded object.
   virtual AlpsReturnStatus encode(AlpsEncoded * encoded) const;
   /// Decode the given AlpsEncoded object into this.
-  virtual AlpsReturnStatus decodeToSelf(AlpsEncoded & encoded) {
-    std::cerr << "Not implemented!" << std::endl;
-    throw std::exception();
-  }
+  virtual AlpsReturnStatus decodeToSelf(AlpsEncoded & encoded);
   virtual AlpsKnowledge * decode(AlpsEncoded & encoded) const;
 
+private:
+  // NO: default constructor, copy constructor, assignment operator
+  KnapTreeNode(KnapTreeNode const &);
+  KnapTreeNode & operator=(KnapTreeNode const &);
 };
 
 #endif

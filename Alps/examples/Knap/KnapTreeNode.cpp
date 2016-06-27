@@ -23,7 +23,9 @@
 #include "AlpsKnowledge.h"
 
 #include "KnapTreeNode.h"
+#include "KnapNodeDesc.h"
 #include "KnapSolution.h"
+#include "KnapModel.h"
 
 //#############################################################################
 
@@ -31,114 +33,120 @@ static const double KnapZeroTol = 1e-8;
 
 //#############################################################################
 
-AlpsTreeNode*
-KnapTreeNode::createNewTreeNode(AlpsNodeDesc*& desc) const
-{
-    // Create a new tree node
-    KnapNodeDesc* d = dynamic_cast<KnapNodeDesc*>(desc);
-    KnapTreeNode* node = new KnapTreeNode(d);
-    desc = 0;
-    return(node);
+KnapTreeNode::KnapTreeNode(KnapModel * model) : branchedOn_(-1) {
+  desc_ = new KnapNodeDesc(model);
+}
+
+KnapTreeNode::KnapTreeNode(KnapNodeDesc *& desc) : branchedOn_(-1) {
+  desc_ = desc;
+  desc = 0;
+}
+
+AlpsTreeNode * KnapTreeNode::createNewTreeNode(AlpsNodeDesc*& desc) const {
+  // Create a new tree node
+  KnapNodeDesc * d = dynamic_cast<KnapNodeDesc*>(desc);
+  KnapTreeNode * node = new KnapTreeNode(d);
+  desc = 0;
+  return node;
 }
 
 //#############################################################################
 
-int
-KnapTreeNode::process(bool isRoot, bool rampUp)
-{
-    bool foundSolution = false;
-    KnapNodeDesc* desc = dynamic_cast<KnapNodeDesc*>(desc_);
-    const KnapModel* m = dynamic_cast<KnapModel*>(desc->getModel());
+int KnapTreeNode::process(bool isRoot, bool rampUp) {
+  bool foundSolution = false;
+  KnapNodeDesc* desc = dynamic_cast<KnapNodeDesc*>(desc_);
+  const KnapModel* m = dynamic_cast<KnapModel*>(desc->model());
 
-    //------------------------------------------------------
-    // Here, we need to fill in the method for bounding.
-    // Solve the lp relaxation.
-    //------------------------------------------------------
+  //------------------------------------------------------
+  // Here, we need to fill in the method for bounding.
+  // Solve the lp relaxation.
+  //------------------------------------------------------
 
-    int cap = m->getCapacity() - desc->getUsedCapacity();
-    int val = desc->getUsedValue();
-    const KnapVarStatus* stati =
-        dynamic_cast<KnapNodeDesc*>(desc_)->getVarStati();
-    int i;
-    const int n = m->getNumItems();
+  int cap = m->getCapacity() - desc->getUsedCapacity();
+  int val = desc->getUsedValue();
+  const KnapVarStatus* stati =
+    dynamic_cast<KnapNodeDesc*>(desc_)->getVarStati();
+  int i;
+  const int n = m->getNumItems();
 #if defined NF_DEBUG_MORE
-    std::cout << "Num of items = " << n << std::endl;
+  std::cout << "Num of items = " << n << std::endl;
 #endif
-    for (i = 0; i < n; ++i) {
-        if (stati[i] == KnapVarFree) {
-            cap -= m->getItem(i).first;
-            val += m->getItem(i).second;
-            if (cap <= 0)
-                break;
-        }
-#if defined NF_DEBUG_MORE
-        std::cout << m->getItem(i).second << " ";
-#endif
+  for (i = 0; i < n; ++i) {
+    if (stati[i] == KnapVarFree) {
+      cap -= m->getItem(i).first;
+      val += m->getItem(i).second;
+      if (cap <= 0)
+        break;
     }
 #if defined NF_DEBUG_MORE
-    std::cout << std::endl;
+    std::cout << m->getItem(i).second << " ";
+#endif
+  }
+#if defined NF_DEBUG_MORE
+  std::cout << std::endl;
 #endif
 
-    // get the best solution so far (for parallel, it is the incumbent)
-    int bestval = 0;
-    double valRelax = 0;
+  // get the best solution so far (for parallel, it is the incumbent)
+  int bestval = 0;
+  double valRelax = 0;
 
-    // The quality of a solution is the negative of the objective value
-    //  since Alps consideres sols with lower quality values better.
-    bestval = -static_cast<int>(getKnowledgeBroker()->getIncumbentValue());
+  // The quality of a solution is the negative of the objective value
+  //  since Alps consideres sols with lower quality values better.
+  bestval = -static_cast<int>(broker()->getIncumbentValue());
 
-    if (cap < 0) {
-        // The last item dosn't fit fully, but some portion of it has been put
-        // in (otherwise we'd have stopped at the previous i)
-        const int size = m->getItem(i).first;
-        const int cost = m->getItem(i).second;
-        val -= cost;
-        cap += size;
-        valRelax = val + cost*cap/double(size);
+  if (cap < 0) {
+    // The last item dosn't fit fully, but some portion of it has been put
+    // in (otherwise we'd have stopped at the previous i)
+    const int size = m->getItem(i).first;
+    const int cost = m->getItem(i).second;
+    val -= cost;
+    cap += size;
+    valRelax = val + cost*cap/double(size);
 
-        if (valRelax <= bestval)
-            setStatus(AlpsNodeStatusFathomed); // set the status to fathomed
-        else {
-            branchedOn_ = i;
-            setStatus(AlpsNodeStatusPregnant);
-        }
-    }
+    if (valRelax <= bestval)
+      setStatus(AlpsNodeStatusFathomed); // set the status to fathomed
     else {
-        // The last item made it in fully, or no item free to make it fully,
-        // find a feasible solution and fathom this node
-        // save the solution if better than the best so far.
-        valRelax = val;
-        if (bestval < val) {                 // Find a better solution
-            int* sol = new int[n];
-            for (i = 0; i < n; ++i) {
-                sol[i] = stati[i] == KnapVarFixedToOne ? 1 : 0;
-            }
-            cap = m->getCapacity() - desc->getUsedCapacity();
-            for (i = 0; i < n; ++i) {
-                if (stati[i] == KnapVarFree) {
-                    sol[i] = 1;
-                    cap -= m->getItem(i).first;
-                    if (cap == 0)
-                        break;
-                }
-            }
-            foundSolution = true;
-            KnapSolution* ksol = new KnapSolution(n, sol, val,
-                            dynamic_cast<KnapModel*>(desc->getModel()));
-            getKnowledgeBroker()->addKnowledge(AlpsKnowledgeTypeSolution, ksol,
-                                               -val);
-            getKnowledgeBroker()->messageHandler()->
-                message(ALPS_S_SEARCH_SOL, getKnowledgeBroker()->messages())
-                    << (getKnowledgeBroker()->getProcRank())
-                    << valRelax << CoinMessageEol;
-
-        }
-        setStatus(AlpsNodeStatusFathomed);   // set the status to fathomed
+      branchedOn_ = i;
+      setStatus(AlpsNodeStatusPregnant);
     }
+  }
+  else {
+    // The last item made it in fully, or no item free to make it fully,
+    // find a feasible solution and fathom this node
+    // save the solution if better than the best so far.
+    valRelax = val;
+    if (bestval < val) {                 // Find a better solution
+      int* sol = new int[n];
+      for (i = 0; i < n; ++i) {
+        sol[i] = stati[i] == KnapVarFixedToOne ? 1 : 0;
+      }
+      cap = m->getCapacity() - desc->getUsedCapacity();
+      for (i = 0; i < n; ++i) {
+        if (stati[i] == KnapVarFree) {
+          sol[i] = 1;
+          cap -= m->getItem(i).first;
+          if (cap == 0)
+            break;
+        }
+      }
+      foundSolution = true;
+      KnapSolution* ksol =
+        new KnapSolution(dynamic_cast<KnapModel*>(desc->model()), n,
+                         sol, val);
+      broker()->addKnowledge(AlpsKnowledgeTypeSolution, ksol,
+                                         -val);
+      broker()->messageHandler()->
+        message(ALPS_S_SEARCH_SOL, broker()->messages())
+        << (broker()->getProcRank())
+        << valRelax << CoinMessageEol;
 
-    quality_ = -valRelax;  // Set objective
+    }
+    setStatus(AlpsNodeStatusFathomed);   // set the status to fathomed
+  }
 
-    return foundSolution;
+  quality_ = -valRelax;  // Set objective
+
+  return foundSolution;
 }
 
 //#############################################################################
@@ -150,7 +158,7 @@ KnapTreeNode::branch()
         dynamic_cast<KnapNodeDesc*>(desc_);
     const int oldCap = desc->getUsedCapacity();
     const int oldVal = desc->getUsedValue();
-    const KnapModel* m = dynamic_cast<KnapModel*>(desc->getModel());
+    const KnapModel* m = dynamic_cast<KnapModel*>(desc->model());
 
     const int n = m->getNumItems();
     const KnapVarStatus* oldStati = desc->getVarStati();
@@ -197,107 +205,134 @@ KnapTreeNode::branch()
     return newNodes;
 }
 
+AlpsReturnStatus KnapTreeNode::encode(AlpsEncoded * encoded) const {
+  AlpsReturnStatus status;
+  status = AlpsTreeNode::encode(encoded);
+  encoded->writeRep(branchedOn_);
+  status = dynamic_cast<KnapNodeDesc*>(desc_)->encode(encoded);
+  assert(status==AlpsReturnStatusOk);
+  return status;
+}
+
+/// Decode the given AlpsEncoded object into this.
+AlpsReturnStatus KnapTreeNode::decodeToSelf(AlpsEncoded & encoded) {
+  AlpsReturnStatus status;
+  status = AlpsTreeNode::decodeToSelf(encoded);
+  encoded.readRep(branchedOn_);
+  status = dynamic_cast<KnapNodeDesc*>(desc_)->decodeToSelf(encoded);
+  assert(status==AlpsReturnStatusOk);
+  return status;
+}
+
+AlpsKnowledge * KnapTreeNode::decode(AlpsEncoded & encoded) const {
+  AlpsReturnStatus status;
+  KnapTreeNode * nn = new KnapTreeNode(dynamic_cast<KnapNodeDesc*>(desc_)->model());
+  status = nn->decodeToSelf(encoded);
+  assert(status==AlpsReturnStatusOk);
+  return nn;
+}
+
 //#############################################################################
 
-AlpsReturnStatus KnapTreeNode::encode(AlpsEncoded * encoded) const {
-  const KnapNodeDesc* desc =
-    dynamic_cast<const KnapNodeDesc*>(desc_);
+// AlpsReturnStatus KnapTreeNode::encode(AlpsEncoded * encoded) const {
+//   const KnapNodeDesc* desc =
+//     dynamic_cast<const KnapNodeDesc*>(desc_);
 
-  int num  = dynamic_cast<KnapModel*>(desc->getModel())->getNumItems();
+//   int num  = dynamic_cast<KnapModel*>(desc->model())->getNumItems();
 
-  const KnapVarStatus* stati = desc->getVarStati();
-  const int usedCap = desc->getUsedCapacity();
-  const int usedVal = desc->getUsedValue();
+//   const KnapVarStatus* stati = desc->getVarStati();
+//   const int usedCap = desc->getUsedCapacity();
+//   const int usedVal = desc->getUsedValue();
 
-  encoded->writeRep(explicit_);
-  encoded->writeRep(num);
-  encoded->writeRep(stati, num);
-  encoded->writeRep(usedCap);
-  encoded->writeRep(usedVal);
-  encoded->writeRep(index_);
-  encoded->writeRep(depth_);
-  encoded->writeRep(quality_);
-  encoded->writeRep(parentIndex_);
-  encoded->writeRep(numChildren_);
-  encoded->writeRep(status_);
-  encoded->writeRep(sentMark_);
-  encoded->writeRep(branchedOn_);
+//   encoded->writeRep(explicit_);
+//   encoded->writeRep(num);
+//   encoded->writeRep(stati, num);
+//   encoded->writeRep(usedCap);
+//   encoded->writeRep(usedVal);
+//   encoded->writeRep(index_);
+//   encoded->writeRep(depth_);
+//   encoded->writeRep(quality_);
+//   encoded->writeRep(parentIndex_);
+//   encoded->writeRep(numChildren_);
+//   encoded->writeRep(status_);
+//   encoded->writeRep(sentMark_);
+//   encoded->writeRep(branchedOn_);
 
-#if defined NF_DEBUG_MORE
-  std::cout << "num = " << num << "; ";
-  std::cout << "usedCap = " << usedCap << "; ";
-  std::cout << "usedVal = " << usedVal << "; ";
-  std::cout << "index_ = " << index_ << "; ";
-  std::cout << "depth_ = " << depth_ << "; ";
-  std::cout << "quality_ = " << quality_ << "; ";
-  std::cout << "parentIndex_ = " << parentIndex_ << "; ";
-  std::cout << "numChildren_ = " << numChildren_ << "; ";
-  std::cout << "status_ = " << status_ << "; ";
-  std::cout << "sentMark_ = " << sentMark_ << std::endl;
-#endif
+// #if defined NF_DEBUG_MORE
+//   std::cout << "num = " << num << "; ";
+//   std::cout << "usedCap = " << usedCap << "; ";
+//   std::cout << "usedVal = " << usedVal << "; ";
+//   std::cout << "index_ = " << index_ << "; ";
+//   std::cout << "depth_ = " << depth_ << "; ";
+//   std::cout << "quality_ = " << quality_ << "; ";
+//   std::cout << "parentIndex_ = " << parentIndex_ << "; ";
+//   std::cout << "numChildren_ = " << numChildren_ << "; ";
+//   std::cout << "status_ = " << status_ << "; ";
+//   std::cout << "sentMark_ = " << sentMark_ << std::endl;
+// #endif
 
-  return AlpsReturnStatusOk;
-}
+//   return AlpsReturnStatusOk;
+// }
 
-AlpsKnowledge * KnapTreeNode::decode(AlpsEncoded& encoded) const {
-  int expli;
-  int num;
-  KnapVarStatus* stati;
-  int usedCap;
-  int usedVal;
-  int index;
-  int depth;
-  double quality;
-  int parentIndex;
-  int numChildren;
-  AlpsNodeStatus     nodeStatus;
-  int sentMark;
-  int branchedOn;
+// AlpsKnowledge * KnapTreeNode::decode(AlpsEncoded& encoded) const {
+//   int expli;
+//   int num;
+//   KnapVarStatus* stati;
+//   int usedCap;
+//   int usedVal;
+//   int index;
+//   int depth;
+//   double quality;
+//   int parentIndex;
+//   int numChildren;
+//   AlpsNodeStatus     nodeStatus;
+//   int sentMark;
+//   int branchedOn;
 
-  encoded.readRep(expli);  // Check whether has full or partial
-  encoded.readRep(num);
-  encoded.readRep(stati, num);
-  encoded.readRep(usedCap);
-  encoded.readRep(usedVal);
-  encoded.readRep(index);
-  encoded.readRep(depth);
-  encoded.readRep(quality);
-  encoded.readRep(parentIndex);
-  encoded.readRep(numChildren);
-  encoded.readRep(nodeStatus);
-  encoded.readRep(sentMark);
-  encoded.readRep(branchedOn);
+//   encoded.readRep(expli);  // Check whether has full or partial
+//   encoded.readRep(num);
+//   encoded.readRep(stati, num);
+//   encoded.readRep(usedCap);
+//   encoded.readRep(usedVal);
+//   encoded.readRep(index);
+//   encoded.readRep(depth);
+//   encoded.readRep(quality);
+//   encoded.readRep(parentIndex);
+//   encoded.readRep(numChildren);
+//   encoded.readRep(nodeStatus);
+//   encoded.readRep(sentMark);
+//   encoded.readRep(branchedOn);
 
-  KnapNodeDesc* nodeDesc = new KnapNodeDesc(
-                                            dynamic_cast<KnapModel*>(desc_->getModel()),
-                                            stati,
-                                            usedCap,
-                                            usedVal
-                                            );
+//   KnapNodeDesc* nodeDesc = new KnapNodeDesc(
+//                                             dynamic_cast<KnapModel*>(desc_->model()),
+//                                             stati,
+//                                             usedCap,
+//                                             usedVal
+//                                             );
 
-  KnapTreeNode* treeNode = new KnapTreeNode(nodeDesc);
-  treeNode->setIndex(index);
-  treeNode->setDepth(depth);
-  treeNode->setQuality(quality);
-  treeNode->setParentIndex(parentIndex);
-  treeNode->setNumChildren(numChildren);
-  treeNode->setStatus(nodeStatus);
-  treeNode->setSentMark(sentMark);
-  treeNode->setBranchOn(branchedOn);
+//   KnapTreeNode* treeNode = new KnapTreeNode(nodeDesc);
+//   treeNode->setIndex(index);
+//   treeNode->setDepth(depth);
+//   treeNode->setQuality(quality);
+//   treeNode->setParentIndex(parentIndex);
+//   treeNode->setNumChildren(numChildren);
+//   treeNode->setStatus(nodeStatus);
+//   treeNode->setSentMark(sentMark);
+//   treeNode->setBranchOn(branchedOn);
 
-#if defined NF_DEBUG_MORE
-  std::cout << "num = " << num << "; ";
-  std::cout << "usedCap = " << usedCap << "; ";
-  std::cout << "usedVal = " << usedVal << "; ";
-  std::cout << "index = " << index << "; ";
-  std::cout << "depth = " << depth << "; ";
-  std::cout << "quality = " << quality << "; ";
-  std::cout << "parentIndex = " << parentIndex << "; ";
-  std::cout << "numChildren = " << numChildren << "; ";
-  std::cout << "nodeStatus = " << nodeStatus << "; ";
-  std::cout << "sentMark = " << sentMark << "treeNode->getSentMark() = "
-            <<  treeNode->getSentMark() << std::endl;
-#endif
+// #if defined NF_DEBUG_MORE
+//   std::cout << "num = " << num << "; ";
+//   std::cout << "usedCap = " << usedCap << "; ";
+//   std::cout << "usedVal = " << usedVal << "; ";
+//   std::cout << "index = " << index << "; ";
+//   std::cout << "depth = " << depth << "; ";
+//   std::cout << "quality = " << quality << "; ";
+//   std::cout << "parentIndex = " << parentIndex << "; ";
+//   std::cout << "numChildren = " << numChildren << "; ";
+//   std::cout << "nodeStatus = " << nodeStatus << "; ";
+//   std::cout << "sentMark = " << sentMark << "treeNode->getSentMark() = "
+//             <<  treeNode->getSentMark() << std::endl;
+// #endif
 
-  return treeNode;
-}
+//   return treeNode;
+// }

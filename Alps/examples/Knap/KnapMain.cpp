@@ -8,7 +8,7 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
+ *                                                                           *
  *                                                                           *
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
@@ -26,8 +26,8 @@
 #  include "AlpsKnowledgeBrokerSerial.h"
 #endif
 
+#include "KnapModel.h"
 #include "KnapSolution.h"
-#include "KnapTreeNode.h"
 
 //#############################################################################
 
@@ -35,49 +35,44 @@ int main(int argc, char* argv[])
 {
 
     try{
-	// 1: Declare application parameter set, model and knowledge broker
-	KnapModel model;
+        // 1: Declare application parameter set, model and knowledge broker
+        KnapModel model;
 
 #ifdef COIN_HAS_MPI
-	AlpsKnowledgeBrokerMPI broker(argc, argv, model);
+        AlpsKnowledgeBrokerMPI broker(argc, argv, model);
 #else
-	AlpsKnowledgeBrokerSerial broker(argc, argv, model);
+        AlpsKnowledgeBrokerSerial broker(argc, argv, model);
 #endif
-	
-	// 2: Register model, solution, and tree node
-	broker.registerClass(AlpsKnowledgeTypeModel, new KnapModel);
-	broker.registerClass(AlpsKnowledgeTypeSolution, 
-			     new KnapSolution(&model));
-	broker.registerClass(AlpsKnowledgeTypeNode, new KnapTreeNode(&model));
 
-	// 3: Formulate the root node
-	// NOTE: root will be deleted by ALPS 
-	AlpsTreeNode* root = new KnapTreeNode(&model);
+        // 2: Register model, solution, and tree node
+        broker.registerClass(AlpsKnowledgeTypeModel, new KnapModel());
+        broker.registerClass(AlpsKnowledgeTypeSolution,
+                             new KnapSolution(&model));
+        broker.registerClass(AlpsKnowledgeTypeNode, new KnapTreeNode(&model));
 
-	// 4: Solve the problem
-	broker.rootSearch(root);
-    
-	// 5: Report the best solution found and its ojective value
-	broker.printBestSolution();
-        
+        // 4: Solve the problem
+        broker.search(&model);
+
+        // 5: Report the best solution found and its ojective value
+        broker.printBestSolution();
+
 #ifdef NF_DEBUG
-	const int numSol = broker.getNumKnowledges(AlpsKnowledgeTypeSolution);
-	broker.messageHandler()->message(AlpsKnowledgeTypeSolution_COUNT,broker.messages())
-	    << broker.getProcRank() << numSol << CoinMessageEol;
+        const int numSol = broker.getNumKnowledges(AlpsKnowledgeTypeSolution);
+        broker.messageHandler()->message(AlpsKnowledgeTypeSolution_COUNT,broker.messages())
+            << broker.getProcRank() << numSol << CoinMessageEol;
 #endif
 
     }
     catch(CoinError& er) {
-	std::cerr << "ERROR:" << er.message() << std::endl
-		  << " from function " << er.methodName() << std::endl
-		  << " from class " << er.className() << std::endl;
+        std::cerr << "ERROR:" << er.message() << std::endl
+                  << " from function " << er.methodName() << std::endl
+                  << " from class " << er.className() << std::endl;
     }
     catch(...) {
-	std::cerr << "Something went wrong!" << std::endl;
+        std::cerr << "Something went wrong!" << std::endl;
     }
 
     return 0;
 }
 
 //#############################################################################
-

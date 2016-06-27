@@ -18,40 +18,17 @@
 
 #include "AlpsSolution.h"
 
-#include "KnapModel.h"
-
-
 class KnapSolution : public AlpsSolution {
- private:
+  KnapModel * model_;
   /** The solution (indicator vector for the items) and its value */
   int  size_;
   int* solution_;
   int  value_;
-  /** To access model data. */
-  // I guess it is necessary to add a pointer to model (origin, prosolved)
-  const KnapModel* model_;
 
- public:
-  KnapSolution(const KnapModel* m)
-    :
-    size_(0),
-    solution_(0),
-    value_(0),
-    model_(m)
-    {}
-  KnapSolution(int s, int*& sol, int v, const KnapModel* m)
-    :
-    size_(s),
-    solution_(sol),
-    value_(v),
-    model_(m)
-    { sol = 0; }
-  ~KnapSolution() {
-    if (solution_ != 0) {
-      delete [] solution_;
-      solution_ = 0;
-    }
-  }
+public:
+  KnapSolution(KnapModel * model);
+  KnapSolution(KnapModel * model, int s, int*& sol, int v);
+  virtual ~KnapSolution();
 
   /** Get the best solution value */
   double getObjValue() const { return value_; }
@@ -63,9 +40,6 @@ class KnapSolution : public AlpsSolution {
 
   /** Get item i in the solution vector */
   int getSolution(int i) const { return solution_[i]; }
-
-  /** Get model data. */
-  const KnapModel* getModel() const { return model_; }
 
   /** Print out the solution.*/
   virtual void print(std::ostream& os) const;
@@ -81,6 +55,11 @@ class KnapSolution : public AlpsSolution {
   /// Decode the given AlpsEncoded object into a new KnapSolution
   /// and return a pointer to it.
   virtual AlpsKnowledge * decode(AlpsEncoded & encoded) const;
+private:
+  /// Disable copy constructor
+  KnapSolution(KnapSolution const & other);
+  /// Disable copy assignment operator
+  KnapSolution & operator=(KnapSolution const & rhs);
 };
 
 #endif
