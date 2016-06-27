@@ -20,8 +20,8 @@
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
-#ifndef AlpsKnowledge_h
-#define AlpsKnowledge_h
+#ifndef AlpsKnowledge_h_
+#define AlpsKnowledge_h_
 
 #include <map>
 #include <memory>

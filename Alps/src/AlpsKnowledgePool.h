@@ -20,8 +20,8 @@
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
-#ifndef AlpsKnowledgePool_h
-#define AlpsKnowledgePool_h
+#ifndef AlpsKnowledgePool_h_
+#define AlpsKnowledgePool_h_
 
 // STL headers
 #include <climits>

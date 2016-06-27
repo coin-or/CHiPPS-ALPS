@@ -20,8 +20,8 @@
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
-#ifndef AlpsLinux_h
-#define AlpsLinux_h
+#ifndef AlpsLinux_h_
+#define AlpsLinux_h_
 
 // AlpsLinux.h is modified from BCPLinux.hpp
 // This file is fully docified.

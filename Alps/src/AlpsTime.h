@@ -20,8 +20,8 @@
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
-#ifndef AlpsTime_
-#define AlpsTime_
+#ifndef AlpsTime_h_
+#define AlpsTime_h_
 
 //#############################################################################
 

@@ -20,8 +20,8 @@
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
-#ifndef AlpsModel_h
-#define AlpsModel_h
+#ifndef AlpsModel_h_
+#define AlpsModel_h_
 
 #include <string>
 

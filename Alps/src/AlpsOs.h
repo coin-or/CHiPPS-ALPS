@@ -20,8 +20,8 @@
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
-#ifndef AlpsOs_h
-#define AlpsOs_h
+#ifndef AlpsOs_h_
+#define AlpsOs_h_
 
 // AlpsOs.h is modified from BCP_os.hpp
 // This file is fully docified.

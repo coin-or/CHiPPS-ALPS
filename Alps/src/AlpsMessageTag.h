@@ -20,8 +20,8 @@
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
-#ifndef AlpsMessageTag_h
-#define AlpsMessageTag_h
+#ifndef AlpsMessageTag_h_
+#define AlpsMessageTag_h_
 
 // This file is fully docified.
 

@@ -20,8 +20,8 @@
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
-#ifndef AlpsParams_h
-#define AlpsParams_h
+#ifndef AlpsParams_h_
+#define AlpsParams_h_
 
 #include "AlpsKnowledge.h"
 #include "AlpsParameterBase.h"

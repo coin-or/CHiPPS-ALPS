@@ -20,8 +20,8 @@
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
-#ifndef AlpsMACH_h
-#define AlpsMACH_h
+#ifndef AlpsMACH_h_
+#define AlpsMACH_h_
 
 // AlpsMACH.h is modified from BCP_MACH.hpp
 // This file is fully docified.

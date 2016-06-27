@@ -20,8 +20,8 @@
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
-#ifndef AlpsSunos_h
-#define AlpsSunos_h
+#ifndef AlpsSunos_h_
+#define AlpsSunos_h_
 
 // AlpsSunos.h is modified from BCP_sunos.hpp
 // This file is fully docified.

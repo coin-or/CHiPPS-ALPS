@@ -20,8 +20,8 @@
  * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
-#ifndef AlpsParameters_h
-#define AlpsParameters_h
+#ifndef AlpsParameterBase_h_
+#define AlpsParameterBase_h_
 
 //----------------------------------------------------------
 // AlpsParameterBase.h is modified from BCP_parameters.hpp

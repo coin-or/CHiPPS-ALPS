@@ -23,8 +23,6 @@
 #ifndef AlpsNodeDesc_h_
 #define AlpsNodeDesc_h_
 
-//#include "AlpsModel.h"
-
 #include "AlpsKnowledge.h"
 
 class AlpsModel;
