@@ -911,7 +911,6 @@ AlpsReturnStatus AbcModel::encode(AlpsEncoded * encoded) const {
     //------------------------------------------------------
     // Encode Alps part.
     //------------------------------------------------------
-
     status = AlpsModel::encode(encoded);
 
     //------------------------------------------------------
@@ -1089,6 +1088,7 @@ AlpsReturnStatus AbcModel::decodeToSelf(AlpsEncoded & encoded) {
     colStart = NULL;
     delete [] index;
     index = NULL;
+    return status;
 }
 
 /// Abc does not need this for now.
