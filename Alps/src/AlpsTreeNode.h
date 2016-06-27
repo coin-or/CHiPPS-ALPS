@@ -46,10 +46,6 @@ class AlpsKnowledgeBroker;
 //#############################################################################
 
 class AlpsTreeNode : public AlpsKnowledge {
- private:
-    AlpsTreeNode(const AlpsTreeNode&);
-    AlpsTreeNode& operator=(const AlpsTreeNode&);
-
  protected:
     /** The subtree own this node. */
     //AlpsSubTree*       subTree_;
@@ -359,5 +355,10 @@ class AlpsTreeNode : public AlpsKnowledge {
   /// Unpack Alps portion of node into this from an encoded object.
   virtual AlpsReturnStatus decodeToSelf(AlpsEncoded & encoded);
 
+private:
+  /// Disable copy constructor.
+  AlpsTreeNode(AlpsTreeNode const &);
+  /// Disable copy assignment operator.
+  AlpsTreeNode & operator=(AlpsTreeNode const &);
 };
 #endif
