@@ -42,11 +42,6 @@ enum AbcVarStatus {
 
 class AbcTreeNode : public AlpsTreeNode {
  private:
-    // NO: default constructor, copy constructor, assignment operator
-    AbcTreeNode(const AbcTreeNode&);
-    AbcTreeNode& operator=(const AbcTreeNode&);
-
- private:
     /** The index of the branching variable */
     int branchedOn_;
 
@@ -155,6 +150,12 @@ class AbcTreeNode : public AlpsTreeNode {
     std::cerr << "Not implemented!" << std::endl;
     throw std::exception();
   }
+
+private:
+  /// Disable copy constructor.
+  AbcTreeNode(AbcTreeNode const &);
+  /// Disable copy assignment operator.
+  AbcTreeNode & operator=(AbcTreeNode const &);
 
 };
 
