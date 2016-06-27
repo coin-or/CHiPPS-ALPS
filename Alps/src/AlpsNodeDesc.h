@@ -43,7 +43,8 @@ class AlpsNodeDesc: virtual public AlpsKnowledge {
   ///@name Constructor and Destructor.
   //@{
   /// Default constructor.
-  AlpsNodeDesc() {}
+  AlpsNodeDesc(): AlpsKnowledge() {}
+  AlpsNodeDesc(AlpsKnowledgeBroker * broker): AlpsKnowledge(AlpsKnowledgeTypeNodeDesc, broker) {}
   /// Destructor.
   virtual ~AlpsNodeDesc() {}
   //@}
@@ -60,8 +61,6 @@ class AlpsNodeDesc: virtual public AlpsKnowledge {
   virtual AlpsReturnStatus decodeToSelf(AlpsEncoded & encoded) {
     return AlpsReturnStatusOk;
   }
-  /// Unpack into a new #AlpsNodeDesc and return a pointer to it.
-  virtual AlpsNodeDesc * decode(AlpsEncoded & encoded) const = 0;
 };
 
 #endif
