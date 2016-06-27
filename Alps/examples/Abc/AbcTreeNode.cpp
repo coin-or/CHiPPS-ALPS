@@ -422,7 +422,7 @@ AlpsReturnStatus AbcTreeNode::encode(AlpsEncoded * encoded) const {
     std::cout << "AbcTreeNode::encode()--start to encode" << std::endl;
 #endif
     AbcNodeDesc* desc = dynamic_cast<AbcNodeDesc*>(desc_);
-    AbcModel* model = dynamic_cast<AbcModel*>(desc->broker()->getModel());
+    AbcModel* model = dynamic_cast<AbcModel*>(broker_->getModel());
 
     int numCols = model->getNumCols();
     assert(numCols);
@@ -495,7 +495,7 @@ AlpsKnowledge * AbcTreeNode::decode(AlpsEncoded& encoded) const {
     }
 
     AbcNodeDesc* nodeDesc = new AbcNodeDesc();
-    nodeDesc->setBroker(desc_->broker());
+    //nodeDesc->setBroker(desc_->broker());
     nodeDesc->setLowerBounds(lb, numCols);
     nodeDesc->setUpperBounds(ub, numCols);
 
