@@ -103,6 +103,18 @@
   Each processor has an AlpsKnowledgeBroker instance responsible with
   coordinating search with other processors' brokers.
 
+
+  ## Ideas for future
+  Each #AlpsKnowledge instance has a pointer that points to its broker.
+
+  Knowledge broker should be able to follow created knowledges. In current
+  design user apps can create knowledges in TreeNode::branch() functions. Do we
+  want that?
+
+  What about a mechanism where user app requests broker to create a new
+  AlpsKnowledge object and then fills the data. This was knowledge broker can
+  keep an account of the knowledges created.
+
 */
 
 //#############################################################################
@@ -164,6 +176,7 @@ enum AlpsKnowledgeType{
    AlpsKnowledgeTypeModel = 0,
    AlpsKnowledgeTypeModelGen,
    AlpsKnowledgeTypeNode,
+   AlpsKnowledgeTypeNodeDesc,
    AlpsKnowledgeTypeSolution,
    AlpsKnowledgeTypeSubTree,
    AlpsKnowledgeTypeUndefined
