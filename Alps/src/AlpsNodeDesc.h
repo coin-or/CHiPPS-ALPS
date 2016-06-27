@@ -25,6 +25,8 @@
 
 //#include "AlpsModel.h"
 
+#include "AlpsKnowledge.h"
+
 class AlpsModel;
 
 /*!
