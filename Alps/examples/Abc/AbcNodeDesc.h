@@ -77,6 +77,7 @@ class AbcNodeDesc : public AlpsNodeDesc {
  public:
     AbcNodeDesc()
         :
+      AlpsNodeDesc(),
         lowerBounds_(0),
         upperBounds_(0),
         numberRows_(0),
@@ -175,6 +176,16 @@ class AbcNodeDesc : public AlpsNodeDesc {
     int getBranchedDir() const { return branchedDir_; }
     ///
     double getBranchedOnValue() const { return branchedOnVal_; }
+
+  virtual AlpsReturnStatus encode(AlpsEncoded * encoded) const {
+    std::cerr << "Not implemented!" << std::endl;
+    throw std::exception();
+  }
+
+  virtual AlpsReturnStatus decodeToSelf(AlpsEncoded & encoded) {
+    std::cerr << "Not implemented!" << std::endl;
+    throw std::exception();
+  }
 
   virtual AlpsNodeDesc * decode(AlpsEncoded & encoded) const {
     std::cerr << "Not implemented!" << std::endl;
