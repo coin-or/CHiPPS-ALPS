@@ -101,7 +101,7 @@ class KnapModel : public AlpsModel {
   /** Order the items based on their cost/size */
   void orderItems();
   /// Get encode from AlpsModel.
-  using AlpsModel::encode;
+  using AlpsKnowledge::encode;
   /// Encode this into the given AlpsEncoded object.
   virtual AlpsReturnStatus encode(AlpsEncoded * encoded) const;
   /// Decode the given AlpsEncoded object into this.
