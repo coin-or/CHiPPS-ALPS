@@ -4204,7 +4204,7 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
     // Store a pointer to model.
     //------------------------------------------------------
 
-    model.setKnowledgeBroker(this);
+    model.setBroker(this);
     model_ = &model;
 
     //------------------------------------------------------

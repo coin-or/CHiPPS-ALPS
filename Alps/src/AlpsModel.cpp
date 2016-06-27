@@ -79,8 +79,8 @@ AlpsModel::nodeLog(AlpsTreeNode *node, bool force)
         }
 
         //Take into account pregnant nodes (processed but not branched)
-        getKnowledgeBroker()->messageHandler()->
-            message(ALPS_S_NODE_COUNT, getKnowledgeBroker()->messages())
+        broker_->messageHandler()->
+            message(ALPS_S_NODE_COUNT, broker_->messages())
             << numNodesProcessed
             << numNodesPartial
             << broker_->updateNumNodesLeft() - numNodesPartial

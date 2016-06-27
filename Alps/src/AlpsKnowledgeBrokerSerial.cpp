@@ -33,7 +33,7 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
                                             AlpsModel& model) {
 
     // Store a pointer to model
-    model.setKnowledgeBroker(this);
+    model.setBroker(this);
     model_ = &model;
 
     //--------------------------------------------------

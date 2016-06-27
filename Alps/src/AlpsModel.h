@@ -133,9 +133,6 @@ private:
   AlpsModel& operator=(const AlpsModel&);
 
 protected:
-
-  /** Knowledge broker. */
-  AlpsKnowledgeBroker * broker_;
   /** Data file. */
   std::string dataFile_;
   /** The parameter set that is used in Alps. */
@@ -148,7 +145,6 @@ public:
   /** Default construtor. */
   AlpsModel() :
     AlpsKnowledge(AlpsKnowledgeTypeModel),
-    broker_(NULL),
     AlpsPar_(new AlpsParams) { }
   /** Destructor. */
   virtual ~AlpsModel() { delete AlpsPar_; }
@@ -156,8 +152,6 @@ public:
 
   ///@name Get methods
   //@{
-  /** Get knowledge broker. */
-  AlpsKnowledgeBroker *getKnowledgeBroker() { return broker_; }
   /** Get the input file. */
   inline std::string getDataFile() const { return dataFile_; }
   /** Access Alps Parameters. */
@@ -166,8 +160,6 @@ public:
 
   ///@name Set methods
   //@{
-  /** Set knowledge broker. */
-  void setKnowledgeBroker(AlpsKnowledgeBroker *b) { broker_ = b; }
   /** Set the data file. */
   inline void setDataFile(std::string infile) { dataFile_ = infile; }
   //@}
