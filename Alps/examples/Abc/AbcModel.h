@@ -255,7 +255,7 @@ class AbcModel : public AlpsModel {
             }
         }
 
-    ~AbcModel()
+    virtual ~AbcModel()
         {
             if ( handler_ != 0){
                 delete handler_;
@@ -970,6 +970,13 @@ class AbcModel : public AlpsModel {
   /// return a pointer to it. User application sub-classes should implement this
   /// since the returned pointer will point to user sub-class instances.
   virtual AlpsKnowledge * decode(AlpsEncoded & encoded) const;
+
+private:
+  /// Disable copy constructor.
+  AbcModel(AbcModel const &);
+  /// Disable copy assignment operator.
+  AbcModel & operator=(AbcModel const &);
+
 };
 
 //#############################################################################
