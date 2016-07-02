@@ -91,11 +91,6 @@ class AlpsTreeNode : public AlpsKnowledge {
     /** The current status of the node. */
     AlpsNodeStatus     status_;
 
-    /** A pointer to the knowledge broker of the process where this node is
-        processed. */
-    // Need broker to get incumbent value and add solution when process().
-    AlpsKnowledgeBroker*  knowledgeBroker_;
-
     /** Various mark used in splitting and passing subtrees. */
     // 0: default; 1: in subtree to be sent: 2: in subtree's node pool 
     int sentMark_;   
@@ -120,7 +115,6 @@ class AlpsTreeNode : public AlpsKnowledge {
         explicit_(0),
         desc_(0),
         status_(AlpsNodeStatusCandidate),
-        knowledgeBroker_(0),
         sentMark_(0),
         { }
 
@@ -146,16 +140,6 @@ class AlpsTreeNode : public AlpsKnowledge {
     AlpsNodeDesc* modifyDesc() { return desc_; }
     AlpsNodeDesc* getDesc() const { return desc_; }
     void setDesc(AlpsNodeDesc* desc) { desc_ = desc; }
-
-    /** Functions to access/set the knwoledge broker */
-    // inline AlpsKnowledgeBroker*  getKnowledgeBroker() const
-    //     { return knowledgeBroker_; }
-    // inline void setKnowledgeBroker(AlpsKnowledgeBroker* kb) {
-    //   knowledgeBroker_ = kb;
-    //   // if (desc_->getModel()==NULL) {
-    //   //   desc_->setModel(kb->getModel());
-    //   // }
-    // }
 
     /** The purpose of this function is be able to create the children of
         a node after branching. */
