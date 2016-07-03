@@ -36,9 +36,30 @@
 /*! \mainpage
 
   Description here is a brief introduction to Abstract Library for Parallel
-  tree Search (Alps). For theoretical details of parallel tree search see <a
+  tree Search (Alps). For theoretical details of parallel tree search see
+
+  <ul>
+
+  <li> <a href="http://coral.ie.lehigh.edu/~ted/files/papers/JSC02.pdf"> A
+  Library Hierarchy for Implementing Scalable Parallel Search Algorithms</a>
+
+  <li> <a href="http://coral.ie.lehigh.edu/~ted/files/papers/ALPS04.pdf"> ALPS:
+  A Framework for Implementing Parallel Search Algorithms</a>
+
+  <li> <a href="http://coral.ie.lehigh.edu/~ted/files/papers/CHiPPS-Rev.pdf">
+  Computational Experience with a Software Framework for Parallel Integer
+  Programming</a>
+
+  <li> <a
   href="http://coral.ie.lehigh.edu/~ted/files/papers/YanXuDissertation07.pdf">Yan
   Xu's dissertation</a>.
+
+  </ul>
+
+  Documentation here can be considered as a condensed summary of all the work
+  listed. It is also more focused in the implementation of the ideas presented
+  in the listed publications.
+
 
   ## Alps Design
 
@@ -47,6 +68,16 @@
   search problem of its user. Any tree search problem can be implemented as an
   application on top of the Alps, ie. DFS, BFS, Dijkstra's algorithm or Branch
   and Bound search for discrete optimization problems.
+
+  A basic unit of work in ALPS is an entire subtree. This means that each
+  worker is capable of processing an entire subtree autonomously. Each broker
+  is responsible for tracking a list of subtrees that it is responsible
+  for. The broker dispenses new candidate nodes (leaves of one of the subtrees
+  it is responsible for) to the workers as needed and track their
+  progress. When a worker receives a new node, it treats this node as the root
+  of a subtree and begins processing that subtree, stopping only when the work
+  is completed or the broker instructs it to stop. Periodically, the worker
+  informs the broker of its progress.
 
   A tree search can be abstracted as defining the following,
 
