@@ -189,6 +189,7 @@ public:
     }
 
     decodeMap_[name] = userKnowledge;
+    userKnowledge->setBroker(this);
   }
   /** This method returns the pointer to an empty object of the registered
       class <code>name</code>. Then the <code>decode()</code> method of that
