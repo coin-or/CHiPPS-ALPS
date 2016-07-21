@@ -38,6 +38,17 @@
 
 //#############################################################################
 
+/*!
+
+  MPI implementation of #AlpsKnowledgeBroker interface. Each hub will have an
+  instance of this class to manage the knowledges sent and received with its
+  workers and with the master.
+
+  There are 3 functions that controls the workflow #workerMain(), #hubMain() and
+  #masterMain().
+
+ */
+
 class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
  private:
