@@ -75,7 +75,7 @@ public:
   ///@name Get type and set type functions
   //@{
   /// Get knowledge type.
-  AlpsKnowledgeType getType() { return type_; }
+  AlpsKnowledgeType getType() const { return type_; }
   /// Set knowledge type.
   void setType(AlpsKnowledgeType t) { type_ = t; }
   /// Get pointer to the knowledge broker
