@@ -979,10 +979,6 @@ AlpsReturnStatus AlpsSubTree::encode(AlpsEncoded * encoded) const {
 
   encoded->writeRep(nodeNum);              // First write number of nodes
 
-  //todo(aykut) debug print
-  std::cout << "Rank: " << broker_->getProcRank() << " sending "
-            << nodeNum << std::endl;
-
   AlpsTreeNode* node = NULL;
 
   for (i = 0; i < nodeNum; ++i) {          // Write all nodes to rep of enc
@@ -1028,10 +1024,6 @@ AlpsKnowledge * AlpsSubTree::decode(AlpsEncoded & encoded) const {
   std::vector<AlpsTreeNode* > nodeVector;
 
   encoded.readRep(nodeNum);
-
-  //todo(aykut) debug print
-  std::cout << "Rank: " << broker_->getProcRank() << " receiving "
-            << nodeNum << std::endl;
 
 #ifdef NF_DEBUG
   std::cout << "AlpsSubTree : decode: nodeNum = " << nodeNum << std::endl;
