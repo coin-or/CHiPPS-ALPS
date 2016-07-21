@@ -69,6 +69,7 @@
   application on top of the Alps, ie. DFS, BFS, Dijkstra's algorithm or Branch
   and Bound search for discrete optimization problems.
 
+  ### Task granularity
   A basic unit of work in ALPS is an entire subtree. This means that each
   worker is capable of processing an entire subtree autonomously. Each broker
   is responsible for tracking a list of subtrees that it is responsible
@@ -78,6 +79,10 @@
   of a subtree and begins processing that subtree, stopping only when the work
   is completed or the broker instructs it to stop. Periodically, the worker
   informs the broker of its progress.
+
+  ### Asynchronous messaging
+
+  ### Building Apps
 
   A tree search can be abstracted as defining the following,
 
