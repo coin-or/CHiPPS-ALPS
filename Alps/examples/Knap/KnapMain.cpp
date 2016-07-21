@@ -58,7 +58,8 @@ int main(int argc, char* argv[])
 
 #ifdef NF_DEBUG
         const int numSol = broker.getNumKnowledges(AlpsKnowledgeTypeSolution);
-        broker.messageHandler()->message(AlpsKnowledgeTypeSolution_COUNT,broker.messages())
+        broker.messageHandler()->message(ALPS_SOLUTION_COUNT,
+                                         broker.messages())
             << broker.getProcRank() << numSol << CoinMessageEol;
 #endif
 
