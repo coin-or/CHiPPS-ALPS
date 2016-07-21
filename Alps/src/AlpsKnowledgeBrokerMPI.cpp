@@ -3091,7 +3091,8 @@ AlpsKnowledgeBrokerMPI::masterUpdateSysStatus(char*& bufLarge,
 #ifdef NF_DEBUG
     std::cout << "MASTER[" << globalRank_
               << "]: After updateSystem() : curQuality "
-              << curQuality << " preQuality = " << preQuality
+              << curQuality
+      //<< " preQuality = " << preQuality
               << ", hubReported_[" << sender << "] = "
               << hubReported_[sender]
               << ", systemSendCount_ = " << systemSendCount_
