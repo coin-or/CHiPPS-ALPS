@@ -26,9 +26,9 @@
 #include <cmath>
 #include <iosfwd>
 
-#undef SEEK_SET
-#undef SEEK_END
-#undef SEEK_CUR
+// #undef SEEK_SET
+// #undef SEEK_END
+// #undef SEEK_CUR
 #include "mpi.h"
 
 #include "AlpsEnumProcessT.h"
