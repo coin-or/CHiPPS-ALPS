@@ -25,9 +25,9 @@
 
 //#############################################################################
 
-#undef SEEK_SET
-#undef SEEK_END
-#undef SEEK_CUR
+// #undef SEEK_SET
+// #undef SEEK_END
+// #undef SEEK_CUR
 #include "Alps.h"
 #include "AlpsConfig.h"
 
