@@ -71,7 +71,6 @@ AlpsReturnStatus KnapNodeDesc::decodeToSelf(AlpsEncoded & encoded) {
     delete[] varStatus_;
     varStatus_ = NULL;
   }
-  // todo(aykut) do we need to allocate memory?
   int n = model_->getNumItems();
   if (varStatus_) {
     delete[] varStatus_;
