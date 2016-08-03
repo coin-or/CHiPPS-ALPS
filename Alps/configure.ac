@@ -100,6 +100,12 @@ AC_EXEEXT
 
 # Check if standard C++11 is available, add it to flags if so.
 AX_CXX_COMPILE_STDCXX_11
+#############################################################################
+#                             Other dependencies                            #
+#############################################################################
+
+AC_COIN_CHECK_USER_LIBRARY([Mpi], [MPI], [mpi.h], [MPI_Irecv], [], [AlpsLib])
+# ToDo: Automatically choose MPI compiler
 
 #############################################################################
 #                           COIN-OR components                              #
@@ -113,13 +119,6 @@ fi
 # These are only required for the unit test and the Abc example.
 # We name it Clp, because the code checks for COIN_HAS_CLP
 AC_COIN_CHECK_PACKAGE(Clp, [cgl osi-clp], [Abc])
-
-#############################################################################
-#                             Other dependencies                            #
-#############################################################################
-
-AC_COIN_CHECK_USER_LIBRARY([Mpi], [MPI], [mpi.h], [MPI_Irecv], [], [AlpsLib])
-# ToDo: Automatically choose MPI compiler
 
 #############################################################################
 #                  System header                                            #
