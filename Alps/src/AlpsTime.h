@@ -34,7 +34,7 @@
 #include "CoinTime.hpp"
 
 #ifdef COIN_HAS_MPI
-# include "mpi.h"
+  #include <mpi.h>
 #endif
 
 //#############################################################################
