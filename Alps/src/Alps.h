@@ -70,15 +70,16 @@
   and Bound search for discrete optimization problems.
 
   ### Task granularity
+
   A basic unit of work in ALPS is an entire subtree. This means that each
   worker is capable of processing an entire subtree autonomously. Each broker
   is responsible for tracking a list of subtrees that it is responsible
-  for. The broker dispenses new candidate nodes (leaves of one of the subtrees
-  it is responsible for) to the workers as needed and track their
-  progress. When a worker receives a new node, it treats this node as the root
-  of a subtree and begins processing that subtree, stopping only when the work
-  is completed or the broker instructs it to stop. Periodically, the worker
-  informs the broker of its progress.
+  for. The hub broker dispenses new candidate nodes (leaves of one of the
+  subtrees it is responsible for) to the workers (worker broker receives it) as
+  needed and track their progress. When a worker receives a new node, it treats
+  this node as the root of a subtree and begins processing that subtree,
+  stopping only when the work is completed or the hub broker instructs it to
+  stop. Periodically, the worker informs the hub broker of its progress.
 
   ### Asynchronous messaging
 
@@ -139,7 +140,6 @@
   Each processor has an AlpsKnowledgeBroker instance responsible with
   coordinating search with other processors' brokers.
 
-
   ## Ideas for future
   Each #AlpsKnowledge instance has a pointer that points to its broker.
 
@@ -148,7 +148,7 @@
   want that?
 
   What about a mechanism where user app requests broker to create a new
-  AlpsKnowledge object and then fills the data. This was knowledge broker can
+  AlpsKnowledge object and then fills the data. This way knowledge broker can
   keep an account of the knowledges created.
 
 */
