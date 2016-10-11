@@ -658,6 +658,7 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
     }
 
     /** The master queries the quality of the best solution it knowns. */
+  //todo(aykut) why not this returns to incumbentValue_
     virtual double getBestQuality() const {
         if (globalRank_ == masterRank_) {
             if (getNumKnowledges(AlpsKnowledgeTypeSolution) > 0) {

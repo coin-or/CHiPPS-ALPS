@@ -151,6 +151,15 @@
   AlpsKnowledge object and then fills the data. This way knowledge broker can
   keep an account of the knowledges created.
 
+  ## Fix
+
+  AlpsKnowledgeBroker::getBestNode returns the most promising node, i.e. best
+  quality node. AlpsKnowledgeBroker::getBestQuality() returns to the quality of
+  the best solution found (quality of incumbent solution). This should be
+  fixed. Moreover AlpsKnowledgeBroker::getBestNode does a search to locate the
+  best node, this is not necessary and should be fixed (just update the best
+  node whenever new nodes are created).
+
 */
 
 //#############################################################################

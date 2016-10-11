@@ -45,7 +45,8 @@ AlpsModel::readParameters(const int argnum, const char * const * arglist)
 
 //##############################################################################
 
-//Shouldn't this method be a member of either the broker or subtree classes?
+//todo(aykut) Shouldn't this method be a member of either the broker or subtree classes?
+//todo(aykut) this should have const modifier
 void
 AlpsModel::nodeLog(AlpsTreeNode *node, bool force)
 {
