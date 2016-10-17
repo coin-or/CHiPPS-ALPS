@@ -154,6 +154,11 @@ static double computeBalancePeriod(bool hasUserInput,
 {
     if (hasUserInput) return oldBalancePeriod;
 
+    //todo(aykut) added to fix when nodeProcessingTime is inf.
+    if (nodeProcessingTime>1e80) {
+      return 0.3;
+    }
+
     double newPeriod = 0.1;
 
     if (nodeProcessingTime < 1.0e-14) {
@@ -420,9 +425,9 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
                 processMessages(largeBuffer_, status, request);
             }
             elaspeTime = masterTimer_.getTime();
-            //std::cout << "***** elaspeTime = " << elaspeTime
-            //      << ", masterBalancePeriod_ = " << masterBalancePeriod_
-            //      << std::endl;
+            // std::cout << "***** elaspeTime = " << elaspeTime
+            //       << ", masterBalancePeriod_ = " << masterBalancePeriod_
+            //       << std::endl;
         }
 
         //**------------------------------------------------
