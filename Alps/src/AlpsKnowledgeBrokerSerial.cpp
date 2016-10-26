@@ -197,7 +197,7 @@ AlpsKnowledgeBrokerSerial::rootSearch(AlpsTreeNode* root)
     timer_.start();
 
     root->setBroker(this);
-    root->setQuality(ALPS_OBJ_MAX);
+    root->setQuality(-ALPS_OBJ_MAX);
     root->setDepth(0);
     root->setIndex(0);
     root->setExplicit(1); // True.

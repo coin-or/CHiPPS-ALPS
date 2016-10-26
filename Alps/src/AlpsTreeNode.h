@@ -102,8 +102,8 @@ class AlpsTreeNode : public AlpsKnowledge {
         active_(false),
         index_(-1),
         depth_(-1),
-        solEstimate_(ALPS_OBJ_MAX),
-        quality_(ALPS_OBJ_MAX),   // Smaller than default incumbentValue
+        solEstimate_(-ALPS_OBJ_MAX),
+        quality_(-ALPS_OBJ_MAX),   // Smaller than default incumbentValue
         parent_(0),
         parentIndex_(-1),
         numChildren_(0),
