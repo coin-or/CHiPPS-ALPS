@@ -106,9 +106,6 @@ class AlpsTreeNode : public AlpsKnowledge {
     // 0: default; 1: in subtree to be sent: 2: in subtree's node pool 
     int sentMark_;   
     
-    /** When processing it, if it is in the diving processing. */
-    bool diving_;
-    
  public:
     AlpsTreeNode() 
 	:
@@ -129,8 +126,7 @@ class AlpsTreeNode : public AlpsKnowledge {
 	desc_(0),
 	status_(AlpsNodeStatusCandidate),
 	knowledgeBroker_(0),
-	sentMark_(0),
-        diving_(false)
+	sentMark_(0)
 	{ setType(AlpsKnowledgeTypeNode); }
     
     virtual ~AlpsTreeNode() {
@@ -301,12 +297,6 @@ class AlpsTreeNode : public AlpsKnowledge {
     virtual void convertToExplicit() {}
     virtual void convertToRelative() {}
     ///@}
-
-    /** If the this node is in a diving process. */
-    ///@{
-    inline int getDiving() const { return diving_; }
-    inline void setDiving(const bool d) { diving_ = d; }
-     ///@}
 
     /** Various marks used in parallel code. */
     ///@{
