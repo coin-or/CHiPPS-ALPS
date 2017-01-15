@@ -39,7 +39,7 @@ AlpsNodeSelection::selectNextNode(AlpsSubTree *subTree)
 
 //#############################################################################
 
-void 
+void
 AlpsNodeSelection::createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node) 
 {
     std::vector< CoinTriple<AlpsNodeDesc*, AlpsNodeStatus, double> > 
@@ -89,37 +89,25 @@ AlpsNodeSelectionHybrid::selectNextNode(AlpsSubTree *subTree)
 {
     AlpsTreeNode *node = subTree->activeNode();
 
-    /* Check if dive too deep */
-    if (node) {
-        if (subTree->getDiveDepth() > 30) {
-            /* Too deep, put nodes in dive pool to regular pool. */
-            //std::cout << "++++ TOO DEEP: depth " << subTree->getDiveDepth() 
-            //       << std::endl;
-            subTree->reset();
-            node = NULL;
-        }
+    if (!subTree->doDive()) { //We should fill in some criteria here
+       // Stop diving: put nodes from dive pool back into regular pool
+       subTree->reset();
     }
     
-    if (node) {
-        subTree->incDiveDepth();
-        node->setDiving(true);
+    if (subTree->diveNodePool()->getNumKnowledges() > 0) {
+       node = dynamic_cast<AlpsTreeNode*>(subTree->diveNodePool()
+                                          ->getKnowledge().first); 
+       subTree->diveNodePool()->popKnowledge();
+    }
+    else if (subTree->nodePool()->hasKnowledge()) {
+       node = dynamic_cast<AlpsTreeNode*>(subTree->nodePool()
+                                          ->getKnowledge().first); 
+       subTree->nodePool()->popKnowledge();
     }
     else {
-        subTree->setDiveDepth(0);
-	if (subTree->diveNodePool()->getNumKnowledges() > 0) {
-	    node = dynamic_cast<AlpsTreeNode*>(subTree->diveNodePool()->getKnowledge().first); 
-	    node->setDiving(false);	    
-	    subTree->diveNodePool()->popKnowledge();
-	}
-	else if (subTree->nodePool()->hasKnowledge()) {
-	    node = dynamic_cast<AlpsTreeNode*>(subTree->nodePool()->getKnowledge().first); 
-	    node->setDiving(false);
-	    subTree->nodePool()->popKnowledge();
-	}
-	else {
-	    assert(0);
-	}
-        
+       assert(0);
+    }
+    
 #if 0
         std::cout << "======= NOTE[" << node->getIndex() 
                   << "]: JUMP : depth = " << node->getDepth() 
@@ -127,18 +115,18 @@ AlpsNodeSelectionHybrid::selectNextNode(AlpsSubTree *subTree)
                   << ", estimate = " << node->getSolEstimate()
                   << std::endl;
 #endif
-    }
     
     return node;
 }
 
 //#############################################################################
 
-void 
-AlpsNodeSelectionHybrid::createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node) 
+void
+AlpsNodeSelectionHybrid::createNewNodes(AlpsSubTree *subTree,
+                                        AlpsTreeNode *node) 
 {
     int numChildren = 0;
-    AlpsTreeNode *tempNode, *activeNode = 0;
+    AlpsTreeNode *tempNode, *diveNode = 0;
 
     while (subTree->diveNodePool()->getNumKnowledges() > 0) {
         tempNode = dynamic_cast<AlpsTreeNode *>
@@ -152,13 +140,15 @@ AlpsNodeSelectionHybrid::createNewNodes(AlpsSubTree *subTree, AlpsTreeNode *node
     
     subTree->createChildren(node, children, subTree->diveNodePool());
     numChildren = subTree->diveNodePool()->getNumKnowledges();
-    
+
+#if 0
     if (numChildren > 0) {
-        activeNode = dynamic_cast<AlpsTreeNode *>
+        diveNode = dynamic_cast<AlpsTreeNode *>
             (subTree->diveNodePool()->getKnowledge().first);
         subTree->diveNodePool()->popKnowledge();
     }
-    subTree->setActiveNode(activeNode);
+    return(diveNode);
+#endif
 }
 
 //#############################################################################

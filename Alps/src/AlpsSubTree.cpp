@@ -120,7 +120,6 @@ AlpsSubTree::AlpsSubTree()
     nodePool_(new AlpsNodePool), 
     diveNodePool_(new AlpsNodePool), 
     diveNodeRule_(new AlpsNodeSelectionBest),
-    diveDepth_(0),
     activeNode_(0),
     quality_(ALPS_OBJ_MAX),
     broker_(0)
@@ -140,7 +139,6 @@ AlpsSubTree::AlpsSubTree(AlpsKnowledgeBroker* kb)
     nodePool_(new AlpsNodePool),
     diveNodePool_(new AlpsNodePool),
     diveNodeRule_(new AlpsNodeSelectionBest),
-    diveDepth_(0),
     activeNode_(0),
     quality_(ALPS_OBJ_MAX)
 { 
@@ -280,7 +278,7 @@ AlpsSubTree::createChildren(
         return;
     }
 
-    parent->setStatus(AlpsNodeStatusBranched);
+    parent->setStatus(AlpsNodeStatusFathomed);
     
     if (msgLevel >= 100){
 	std::cout << std::endl;
@@ -314,6 +312,7 @@ AlpsSubTree::createChildren(
         case AlpsNodeStatusCandidate:
         case AlpsNodeStatusEvaluated:
         case AlpsNodeStatusPregnant:
+            parent->setStatus(AlpsNodeStatusBranched);
 	    if (diveNodePool) {
                 diveNodePool->addKnowledge(child, child->getSolEstimate());
 	    }
@@ -1252,8 +1251,9 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
 	}
 
 	assert(numNodesProcessed == numNodesBranched + numNodesFathomed);
-	assert(nodePool_->getNumKnowledges() == 
-	       numNodesCandidate + numNodesPartial); 
+	assert(nodePool_->getNumKnowledges() +
+               diveNodePool_->getNumKnowledges() ==
+               numNodesCandidate + numNodesPartial); 
 
 	// Get the next node to be processed.
         activeNode_ = nodeSel->selectNextNode(this);
@@ -1267,6 +1267,9 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
             nodeSel->createNewNodes(this, activeNode_);
 	    numNodesCandidate += nodePool_->getNumKnowledges() - 
 	       oldNumNodesCandidate;
+            if (diveNodePool_){
+               numNodesCandidate += diveNodePool_->getNumKnowledges();
+            }
 	    --numNodesPartial;
 	    ++numNodesProcessed;
             switch (activeNode_->getStatus()) {
@@ -1291,7 +1294,8 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
 	case AlpsNodeStatusCandidate:
 	case AlpsNodeStatusEvaluated:
             activeNode_->setActive(true);
-	    if ((oldStatus = activeNode_->getStatus()) == AlpsNodeStatusEvaluated){
+	    if ((oldStatus = activeNode_->getStatus()) ==
+                AlpsNodeStatusEvaluated){
 	       --numNodesPartial;
 	    }else{
 	       --numNodesCandidate;
