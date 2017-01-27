@@ -17,7 +17,7 @@
  *          Matthew Saltzman, Clemson University                             *
  *                                                                           * 
  *                                                                           *
- * Copyright (C) 2001-2015, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
 #ifndef AlpsNodePool_h_
@@ -52,7 +52,8 @@ class AlpsNodePool : public AlpsKnowledgePool {
     }
     
     /** Query the number of nodes in the node pool. */
-    inline int getNumKnowledges() const { return static_cast<int> (candidateList_.size()); }
+    inline int getNumKnowledges() const { return static_cast<int>
+          (candidateList_.size()); }
     
     /** Get the "best value" of the nodes in node pool. */
     inline double getBestKnowledgeValue() const { 
