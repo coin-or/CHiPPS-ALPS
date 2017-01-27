@@ -13,10 +13,11 @@ Windows at
 ***                         DOWNLOAD                               ***
 **********************************************************************
 
-Pre-built binaries are available for some versions of ALPS on some
-platforms. They can be downloaded at
+ALPS has been packaged for some Linux distributions and is in the
+process of being packaged for Homebrew on OS X. For Windows, pre-built
+binaries are available as part of the COIN-OR Optimization Suite:
 
-  http://www.coin-or.org/download/binary/Alps
+https://www.coin-or.org/download/binary/OptimizationSuite/
 
 If you would like to build from source, you can obtain the source code for
 ALPS in two ways:
@@ -25,13 +26,13 @@ ALPS in two ways:
    (recommended). For this, you need a subversion client installed. For a
    command-line client, check out the code with
 
-   svn co https://projects.coin-or.org/svn/CHiPPS/Alps/stable/1.4 Alps-1.4
+   svn co https://projects.coin-or.org/svn/CHiPPS/Alps/stable/1.5 Alps-1.5
 
 2. Download the source in a compressed file from from
    http://www.coin-or.org/download/source/Alps and
    extract it, for example, with
 
-   tar -xzvf Alps-1.4.0.tgz
+   tar -xzvf Alps-1.5.0.tgz
 
    More detailed download instructions can be found at
 
@@ -45,7 +46,7 @@ ALPS in two ways:
 -----------------
 
 Switch to the directory in which you just downloaded or extracted the source
-(e.g., Alps-1.4) and execute the following commands:
+(e.g., Alps-1.5) and execute the following commands:
 
   1) ./configure
   2) make
