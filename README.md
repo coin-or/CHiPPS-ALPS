@@ -13,6 +13,13 @@ TESTING STATUS
 
 [![Build status](https://ci.appveyor.com/api/projects/status/aj8ibib6m4sphnwh?svg=true)](https://ci.appveyor.com/project/tkralphs/chipps-alps)
 
+DOWNLOAD
+========
+
+Binaries available as part of the [CHiPPS-BLIS](http://github.com/coin-or/CHiPPS-BLIS) binary distribution on [BinTray](http://bintray.com):
+
+[ ![Download](https://api.bintray.com/packages/coin-or/download/CHiPPS-BLIS/images/download.svg?version=0.94) ](https://bintray.com/coin-or/download/CHiPPS-BLIS/0.94/link)
+
 CITE
 ====
 
