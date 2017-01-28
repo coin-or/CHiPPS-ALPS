@@ -19,6 +19,11 @@ binaries are available as part of the COIN-OR Optimization Suite:
 
 https://www.coin-or.org/download/binary/OptimizationSuite/
 
+Automatically generated binaries are also available from BinTray as part
+of the BLIS binary distribution:
+
+https://bintray.com/coin-or/download/CHiPPS-BLIS
+
 If you would like to build from source, you can obtain the source code for
 ALPS in two ways:
 
