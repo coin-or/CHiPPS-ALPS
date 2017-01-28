@@ -2,9 +2,6 @@ platform:
   - x64
 
 environment:
-  global:
-    MSYS2_BASEVER: 20150512
-    MSYS2_ARCH: x86_64
   matrix:
     - ARCH: win32-msvc9
       HOST_ARCH_ARG: --enable-msvc=MD
@@ -21,7 +18,9 @@ environment:
     - ARCH: i686-w64-mingw32
       HOST_ARCH_ARG: --host=i686-w64-mingw32
       ADD_PATH: /mingw32/bin
-                                                                                 - IF %ARCH%==win32-msvc9 (CALL C:\"Program Files (x86)\Microsoft Visual Studio 9.0\VC\vcvarsall.bat")
+
+install:
+  - IF %ARCH%==win32-msvc9 (CALL C:\"Program Files (x86)\Microsoft Visual Studio 9.0\VC\vcvarsall.bat")
   - IF %ARCH%==win32-msvc12 (CALL C:\"Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat")
   - IF %ARCH%==win32-msvc14 (CALL C:\"Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat")
   - C:\msys64\usr\bin\bash -lc ""
