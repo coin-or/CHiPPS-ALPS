@@ -323,8 +323,8 @@ unitTest_DEPENDENCIES = ../src/libAlps.la $(CLP_DEPENDENCIES) $(ALPSLIB_DEPENDEN
 # Here list all include flags, relative to this "srcdir" directory.  This
 # "cygpath" stuff is necessary to compile with native compilers on Cygwin
 AM_CPPFLAGS = -I`$(CYGPATH_W) $(srcdir)/../src` \
-        $(CLP_CFLAGS) \
-        $(ALPSLIB_CFLAGS) -DCOIN_HAS_CLP
+	$(CLP_CFLAGS) \
+	$(ALPSLIB_CFLAGS) -DCOIN_HAS_CLP
 
 
 # This line is necessary to allow VPATH compilation
@@ -597,8 +597,13 @@ uninstall-am: uninstall-info-am
 	uninstall-info-am
 
 
+@COIN_HAS_MPI_TRUE@	UNIT_TEST_CMD='$MPICXX -n 2 ./unitTest$(EXEEXT) -param ../examples/Abc/abc.par'
+@COIN_HAS_MPI_FALSE@	UNIT_TEST_CMD='./unitTest$(EXEEXT) -param ../examples/Abc/abc.par'
+
+all: test
+
 test: unitTest$(EXEEXT)
-	./unitTest$(EXEEXT) -param ../examples/Abc/abc.par
+	$(UNIT_TEST_CMD)
 
 .PHONY: test
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

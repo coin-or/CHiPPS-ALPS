@@ -54,14 +54,23 @@ unitTest_DEPENDENCIES = ../src/libAlps.la $(CLP_DEPENDENCIES) $(ALPSLIB_DEPENDEN
 # Here list all include flags, relative to this "srcdir" directory.  This
 # "cygpath" stuff is necessary to compile with native compilers on Cygwin
 AM_CPPFLAGS = -I`$(CYGPATH_W) $(srcdir)/../src` \
-        $(CLP_CFLAGS) \
-        $(ALPSLIB_CFLAGS) -DCOIN_HAS_CLP
+	$(CLP_CFLAGS) \
+	$(ALPSLIB_CFLAGS) -DCOIN_HAS_CLP
 
 # This line is necessary to allow VPATH compilation
 DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` -I$(top_builddir)/src
 
+if COIN_HAS_MPI
+	UNIT_TEST_CMD='$MPICXX -n 2 ./unitTest$(EXEEXT) -param ../examples/Abc/abc.par'
+else
+	UNIT_TEST_CMD='./unitTest$(EXEEXT) -param ../examples/Abc/abc.par'
+endif
+
+all: test
+
+
 test: unitTest$(EXEEXT)
-	./unitTest$(EXEEXT) -param ../examples/Abc/abc.par
+	$(UNIT_TEST_CMD)
 
 .PHONY: test
 
