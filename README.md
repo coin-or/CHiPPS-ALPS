@@ -1,10 +1,10 @@
-ALPS Version 1.5 README
+ALPS Version 2.0 README
 =======================
 
 Welcome to ALPS. Alps is distributed under the Eclipse Public License and is
 freely redistributable. All source code and documentation is Copyright
-2001-2017 by Lehigh University, Yan Xu, and Ted Ralphs. This README may be
-distributed freely.
+2001-2017 by Lehigh University, Yan Xu, Aykut Bulut, and Ted Ralphs. This
+README may be distributed freely.
 
 TESTING STATUS
 ==============
@@ -40,7 +40,7 @@ includes a library for solving mixed integer linear programs (BLIS).
 PROJECT WEB PAGE
 ================
 
-https://projects.coin-or.org/CHiPPS
+https://github.com/coin-or/CHiPPS-ALPS
 
 DOCUMENTATION
 =============
@@ -74,6 +74,7 @@ SUPPORT
 Source Code:
 
 Yan Xu (yax2@lehigh.edu)
+Aykut Bulut (aykutblt@gmail.com) 
 Ted Ralphs (ted@lehigh.edu), Project Manager
 
 Original Conceptual Design:

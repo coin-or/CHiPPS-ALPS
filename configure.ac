@@ -7,6 +7,7 @@
 # Authors:                                                                 #
 #                                                                          #
 #          Yan Xu, Lehigh University                                       #
+#          Aykut Bulut, Lehigh University                                  #
 #          Ted Ralphs, Lehigh University                                   #
 #                                                                          #
 # Conceptual Design:                                                       #
@@ -17,7 +18,8 @@
 #          Matthew Saltzman, Clemson University                            #
 #                                                                          #
 #                                                                          #
-# Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.      #
+# Copyright (C) 2001-2018, Lehigh University, Yan Xu, Aykut Bulut, and     #
+#                          Ted Ralphs.                                     #
 # All Rights Reserved.                                                     #
 #==========================================================================#
 
@@ -41,6 +43,7 @@ AC_COPYRIGHT([
  * Authors:                                                                  *
  *                                                                           *
  *          Yan Xu, Lehigh University                                        *
+ *          Aykut Bulut, Lehigh University                                   *
  *          Ted Ralphs, Lehigh University                                    *
  *                                                                           *
  * Conceptual Design:                                                        *
@@ -51,7 +54,7 @@ AC_COPYRIGHT([
  *          Matthew Saltzman, Clemson University                             *
  *                                                                           *
  *                                                                           *
- * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ * Copyright (C) 2001-2018, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 ])
 
