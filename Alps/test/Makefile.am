@@ -61,9 +61,9 @@ AM_CPPFLAGS = -I`$(CYGPATH_W) $(srcdir)/../src` \
 DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` -I$(top_builddir)/src
 
 if COIN_HAS_MPI
-	UNIT_TEST_CMD='$MPICXX -n 2 ./unitTest$(EXEEXT) -param ../examples/Abc/abc.par'
+UNIT_TEST_CMD=$MPICXX -n 2 ./unitTest$(EXEEXT) -param ../examples/Abc/abc.par
 else
-	UNIT_TEST_CMD='./unitTest$(EXEEXT) -param ../examples/Abc/abc.par'
+UNIT_TEST_CMD=./unitTest$(EXEEXT) -param ../examples/Abc/abc.par
 endif
 
 all: test
