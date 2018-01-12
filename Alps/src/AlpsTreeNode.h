@@ -115,7 +115,7 @@ class AlpsTreeNode : public AlpsKnowledge {
         explicit_(0),
         desc_(0),
         status_(AlpsNodeStatusCandidate),
-        sentMark_(0),
+        sentMark_(0)
         { }
 
     virtual ~AlpsTreeNode() {
