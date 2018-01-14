@@ -84,13 +84,8 @@ Ted Ralphs (ted@lehigh.edu), Project Manager
 Laci Ladanyi (ladanyi@us.ibm.com)
 Matt Saltzman (mjs@clemson.edu)
 
-2. List Serve
+2. Bug Reports and Other Issues
 
-Alps users should use the CHiPPS mailing list. To subscribe, go to 
-http://list.coin-or.org/mailman/listinfo/chipps
+Bug reports should be reported on the CHiPPS GitHub web site at
 
-3. Bug Reports
-
-Bug reports should be reported on the CHiPPS development web site at
-
-https://projects.coin-or.org/CHiPPS/newticket
+https://github.com/coin-or/CHiPPS-ALPS/issues/new
