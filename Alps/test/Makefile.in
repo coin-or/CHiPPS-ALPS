@@ -23,6 +23,7 @@
 # Authors:                                                                 #
 #                                                                          #
 #          Yan Xu, Lehigh University                                       #
+#          Aykut Bulut, Lehigh University                                  #
 #          Ted Ralphs, Lehigh University                                   #
 #                                                                          #
 # Conceptual Design:                                                       #
@@ -33,7 +34,7 @@
 #          Matthew Saltzman, Clemson University                            #
 #                                                                          #
 #                                                                          #
-# Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.      #
+# Copyright (C) 2001-2018, Lehigh University, Yan Xu, and Ted Ralphs.      #
 # All Rights Reserved.                                                     #
 #==========================================================================#
 
@@ -329,6 +330,8 @@ AM_CPPFLAGS = -I`$(CYGPATH_W) $(srcdir)/../src` \
 
 # This line is necessary to allow VPATH compilation
 DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` -I$(top_builddir)/src
+@COIN_HAS_MPI_FALSE@UNIT_TEST_CMD = ./unitTest$(EXEEXT) -param ../examples/Abc/abc.par
+@COIN_HAS_MPI_TRUE@UNIT_TEST_CMD = $MPICXX -n 2 ./unitTest$(EXEEXT) -param ../examples/Abc/abc.par
 
 ########################################################################
 #                          Cleaning stuff                              #
@@ -596,9 +599,6 @@ uninstall-am: uninstall-info-am
 	pdf pdf-am ps ps-am tags uninstall uninstall-am \
 	uninstall-info-am
 
-
-@COIN_HAS_MPI_TRUE@UNIT_TEST_CMD=$MPICXX -n 2 ./unitTest$(EXEEXT) -param ../examples/Abc/abc.par
-@COIN_HAS_MPI_FALSE@UNIT_TEST_CMD=./unitTest$(EXEEXT) -param ../examples/Abc/abc.par
 
 all: test
 
