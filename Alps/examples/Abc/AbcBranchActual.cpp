@@ -7,6 +7,7 @@
  * Authors:                                                                  *
  *                                                                           *
  *          Yan Xu, Lehigh University                                        *
+ *          Aykut Bulut, Lehigh University                                   *
  *          Ted Ralphs, Lehigh University                                    *
  *                                                                           *
  * Conceptual Design:                                                        *
@@ -15,10 +16,13 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
  *                                                                           *
- * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ *                                                                           *
+ * Copyright (C) 2001-2018, Lehigh University, Yan Xu, Aykut Bulut, and      *
+ *                          Ted Ralphs.                                      *
+ * All Rights Reserved.                                                      *
  *===========================================================================*/
+
 
 //#############################################################################
 // This file is modified from SbbBranchActual.cpp
@@ -42,7 +46,7 @@
 //#############################################################################
 //#############################################################################
 
-// Default Constructor 
+// Default Constructor
 AbcBranchDefaultDecision::AbcBranchDefaultDecision()
     :
     AbcBranchDecision()
@@ -56,7 +60,7 @@ AbcBranchDefaultDecision::AbcBranchDefaultDecision()
     bestObject_ = -1;
 }
 
-// Copy constructor 
+// Copy constructor
 AbcBranchDefaultDecision::AbcBranchDefaultDecision (
     const AbcBranchDefaultDecision & rhs)
     :
@@ -76,14 +80,14 @@ AbcBranchDefaultDecision::~AbcBranchDefaultDecision()
 }
 
 // Clone
-AbcBranchDecision * 
+AbcBranchDecision *
 AbcBranchDefaultDecision::clone() const
 {
     return new AbcBranchDefaultDecision(*this);
 }
 
 // Initialize i.e. before start of choosing at a node
-void 
+void
 AbcBranchDefaultDecision::initialize(AbcModel * model)
 {
     model_ = model;
@@ -95,9 +99,9 @@ AbcBranchDefaultDecision::initialize(AbcModel * model)
     bestObject_ = -1;
 }
 
-// Simple default decision algorithm. Compare based on infeasibility 
-// (numInfUp, numInfDn) until a solution is found by search, then switch 
-// to change in objective (changeUp, changeDn). Note that bestSoFar is 
+// Simple default decision algorithm. Compare based on infeasibility
+// (numInfUp, numInfDn) until a solution is found by search, then switch
+// to change in objective (changeUp, changeDn). Note that bestSoFar is
 // remembered in bestObject_, so the parameter bestSoFar is unused.
 int
 AbcBranchDefaultDecision::betterBranch(int thisOne, int bestSoFar,
@@ -112,7 +116,7 @@ AbcBranchDefaultDecision::betterBranch(int thisOne, int bestSoFar,
 	    bestNumberUp_ = COIN_INT_MAX;
 	    bestNumberDown_ = COIN_INT_MAX;
 	}
-	
+
 	// before solution - choose smallest number could add in depth as well
 	int bestNumber = std::min(bestNumberUp_, bestNumberDown_);
 	if (numInfUp < numInfDn) {
@@ -146,7 +150,7 @@ AbcBranchDefaultDecision::betterBranch(int thisOne, int bestSoFar,
 		    betterWay = -1;
 	    }
 	}
-    } 
+    }
     else {        // got a solution
 	if (bestObject_ < 0) {
 	    bestCriterion_ = -1.0;
@@ -154,7 +158,7 @@ AbcBranchDefaultDecision::betterBranch(int thisOne, int bestSoFar,
 	if (changeUp <= changeDn) {
 	    if (changeUp > bestCriterion_)
 		betterWay = 1;
-	} 
+	}
 	else {
 	    if (changeDn > bestCriterion_)
 		betterWay = -1;
@@ -173,7 +177,7 @@ AbcBranchDefaultDecision::betterBranch(int thisOne, int bestSoFar,
     return betterWay;
 }
 
-void 
+void
 AbcPseudocost::update(const int dir,
 		      const double parentObjValue,
 		      const double objValue,
@@ -182,7 +186,7 @@ AbcPseudocost::update(const int dir,
     double fraction = solValue - floor(solValue);
     double objDiff = objValue - parentObjValue;
     double cost;
-    
+
     if (dir == 1) {
 	cost = objDiff / (fraction + 1.0e-9);
 	upCost_ = (upCost_ * upNum_ + cost) / (upNum_ + 1);

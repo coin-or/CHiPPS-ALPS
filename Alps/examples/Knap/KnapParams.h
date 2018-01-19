@@ -4,14 +4,25 @@
  * ALPS is distributed under the Eclipse Public License as part of the       *
  * COIN-OR repository (http://www.coin-or.org).                              *
  *                                                                           *
- * Authors: Yan Xu, Lehigh University                                       *
+ * Authors:                                                                  *
+ *                                                                           *
+ *          Yan Xu, Lehigh University                                        *
+ *          Aykut Bulut, Lehigh University                                   *
+ *          Ted Ralphs, Lehigh University                                    *
+ *                                                                           *
+ * Conceptual Design:                                                        *
+ *                                                                           *
+ *          Yan Xu, Lehigh University                                        *
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
  *                                                                           *
- * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ *                                                                           *
+ * Copyright (C) 2001-2018, Lehigh University, Yan Xu, Aykut Bulut, and      *
+ *                          Ted Ralphs.                                      *
+ * All Rights Reserved.                                                      *
  *===========================================================================*/
+
 
 #ifndef KnapParams_h
 #define KnapParams_h
@@ -43,7 +54,7 @@ class KnapParams : public AlpsParameterSet {
 
   /** Double parameters. */
   enum dblParams{
-    dblDummy, 
+    dblDummy,
     //
     endOfDblParams
   };
@@ -92,18 +103,18 @@ class KnapParams : public AlpsParameterSet {
 
  public:
   //===========================================================================
-  /** For user application: 
-   *   Following code are do NOT need to change. 
-   *   The reason can not put following functions in base class 
+  /** For user application:
+   *   Following code are do NOT need to change.
+   *   The reason can not put following functions in base class
    *   <CODE> AlpsParameterSet </CODE> is that <CODE> chrParams </CODE>
-   *   and <CODE> endOfChrParams </CODE> etc., are NOT 
+   *   and <CODE> endOfChrParams </CODE> etc., are NOT
    *   declared in base class.
    */
   //===========================================================================
 
-  
-  /**@name Query methods 
-      
+
+  /**@name Query methods
+
      The members of the parameter set can be queried for using the overloaded
      entry() method. Using the example in the class
      documentation the user can get a parameter with the
@@ -160,7 +171,7 @@ class KnapParams : public AlpsParameterSet {
 
   /**@name Packing/unpacking methods */
   /*@{*/
-  /** Pack the parameter set into the buffer (AlpsEncoded is used 
+  /** Pack the parameter set into the buffer (AlpsEncoded is used
       as buffer Here). */
   void pack(AlpsEncoded& buf) {
     buf.writeRep(bpar_, endOfChrParams)

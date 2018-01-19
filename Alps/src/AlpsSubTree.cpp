@@ -18,8 +18,11 @@
  *          Matthew Saltzman, Clemson University                             *
  *                                                                           *
  *                                                                           *
- * Copyright (C) 2001-2018, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ * Copyright (C) 2001-2018, Lehigh University, Yan Xu, Aykut Bulut, and      *
+ *                          Ted Ralphs.                                      *
+ * All Rights Reserved.                                                      *
  *===========================================================================*/
+
 
 #include <cmath>
 #include <iostream>
@@ -1254,7 +1257,7 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
 	assert(numNodesProcessed == numNodesBranched + numNodesFathomed);
 	assert(nodePool_->getNumKnowledges() +
                diveNodePool_->getNumKnowledges() ==
-               numNodesCandidate + numNodesPartial); 
+               numNodesCandidate + numNodesPartial);
 
 	// Get the next node to be processed.
 	activeNode_ = nodeSel->selectNextNode(this);

@@ -7,6 +7,7 @@
  * Authors:                                                                  *
  *                                                                           *
  *          Yan Xu, Lehigh University                                        *
+ *          Aykut Bulut, Lehigh University                                   *
  *          Ted Ralphs, Lehigh University                                    *
  *                                                                           *
  * Conceptual Design:                                                        *
@@ -15,10 +16,13 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
  *                                                                           *
- * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ *                                                                           *
+ * Copyright (C) 2001-2018, Lehigh University, Yan Xu, Aykut Bulut, and      *
+ *                          Ted Ralphs.                                      *
+ * All Rights Reserved.                                                      *
  *===========================================================================*/
+
 
 //#############################################################################
 // This file is modified from SbbCutGenerator.cpp
@@ -40,7 +44,7 @@
 #include "AbcCutGenerator.h"
 
 
-// Default Constructor 
+// Default Constructor
 AbcCutGenerator::AbcCutGenerator ()
     : model_(NULL),
       generator_(NULL),
@@ -54,7 +58,7 @@ AbcCutGenerator::AbcCutGenerator ()
 // Normal constructor
 AbcCutGenerator::AbcCutGenerator(AbcModel * model,CglCutGenerator * generator,
 				 int howOften, const char * name,
-				 bool normal, bool atSolution, 
+				 bool normal, bool atSolution,
 				 bool infeasible)
 {
     model_ = model;
@@ -70,7 +74,7 @@ AbcCutGenerator::AbcCutGenerator(AbcModel * model,CglCutGenerator * generator,
     whenInfeasible_ = infeasible;
 }
 
-// Copy constructor 
+// Copy constructor
 AbcCutGenerator::AbcCutGenerator ( const AbcCutGenerator & rhs)
 {
     model_ = rhs.model_;
@@ -83,8 +87,8 @@ AbcCutGenerator::AbcCutGenerator ( const AbcCutGenerator & rhs)
     whenInfeasible_ = rhs.whenInfeasible_;
 }
 
-// Assignment operator 
-AbcCutGenerator & 
+// Assignment operator
+AbcCutGenerator &
 AbcCutGenerator::operator=( const AbcCutGenerator& rhs)
 {
     if (this != &rhs) {
@@ -102,7 +106,7 @@ AbcCutGenerator::operator=( const AbcCutGenerator& rhs)
     return *this;
 }
 
-// Destructor 
+// Destructor
 AbcCutGenerator::~AbcCutGenerator ()
 {
     free(generatorName_);
@@ -110,9 +114,9 @@ AbcCutGenerator::~AbcCutGenerator ()
 
 /* This is used to refresh any inforamtion.
    It also refreshes the solver in the cut generator
-   in case generator wants to do some work 
+   in case generator wants to do some work
 */
-void 
+void
 AbcCutGenerator::refreshModel(AbcModel * model)
 {
     model_ = model;
@@ -130,7 +134,7 @@ AbcCutGenerator::generateCuts( OsiCuts & cs , bool fullScan)
 	return false;
     if (howOften > 0)
 	howOften = howOften % 1000000;
-    else 
+    else
 	howOften = 1;
     if (!howOften)
 	howOften = 1;
@@ -176,16 +180,16 @@ AbcCutGenerator::generateCuts( OsiCuts & cs , bool fullScan)
     return returnCode;
 }
 
-void 
-AbcCutGenerator::setHowOften(int howOften) 
+void
+AbcCutGenerator::setHowOften(int howOften)
 {
     if (howOften >= 1000000) {
 	// leave Probing every 10
 	howOften = howOften % 1000000;
 	CglProbing* generator =
 	    dynamic_cast<CglProbing*>(generator_);
-	
-	if (generator && howOften > 10) 
+
+	if (generator && howOften > 10)
 	    howOften = 10 + 1000000;
     }
     whenCutGenerator_ = howOften;

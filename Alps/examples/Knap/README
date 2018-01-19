@@ -10,16 +10,16 @@ and others. This README may be distributed freely.
 WHAT IS KNAP
 ============
 
-Knap is an example of the applications developed on top of Alps (See 
-the README of Alps to know what Alps is). Knap is a branch and bound 
+Knap is an example of the applications developed on top of Alps (See
+the README of Alps to know what Alps is). Knap is a branch and bound
 based solver to solve Knapsack problems.
 
 
 DOCUMENTATION
 =============
 
-The html documentation of the classes in Alps (See INSTALL of Alps) can 
-be created. A user's guide that is under preparation that can help 
+The html documentation of the classes in Alps (See INSTALL of Alps) can
+be created. A user's guide that is under preparation that can help
 users to develop an application.
 
 
@@ -44,13 +44,14 @@ SUPPORT
 1. Authors
 
 Yan Xu (yan.xu@sas.com)
+Aykut Bulut (aykutblt@gmail.com)
 Ted Ralphs (tkralphs@lehigh.edu), Project Manager
 Laci Ladanyi (ladanyi@us.ibm.com)
 Matt Saltzman (mjs@clemson.edu)
 
 2. List Serve
 
-Alps users should use the Coin-Discuss mailing list. To subscribe, go to 
+Alps users should use the Coin-Discuss mailing list. To subscribe, go to
 http://list.coin-or.org/mailman/listinfo/coin-discuss
 
 3. Bug Reports

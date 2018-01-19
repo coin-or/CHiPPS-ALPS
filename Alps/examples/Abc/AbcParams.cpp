@@ -7,6 +7,7 @@
  * Authors:                                                                  *
  *                                                                           *
  *          Yan Xu, Lehigh University                                        *
+ *          Aykut Bulut, Lehigh University                                   *
  *          Ted Ralphs, Lehigh University                                    *
  *                                                                           *
  * Conceptual Design:                                                        *
@@ -15,17 +16,20 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
  *                                                                           *
- * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ *                                                                           *
+ * Copyright (C) 2001-2018, Lehigh University, Yan Xu, Aykut Bulut, and      *
+ *                          Ted Ralphs.                                      *
+ * All Rights Reserved.                                                      *
  *===========================================================================*/
+
 
 #include "AlpsParameterBase.h"
 #include "AbcParams.h"
 
 using std::make_pair;
 
-void 
+void
 AbcParams::createKeywordList() {
 
     // Create the list of keywords for parameter file reading
@@ -33,7 +37,7 @@ AbcParams::createKeywordList() {
     // CharPar
     keys_.push_back(make_pair(std::string("Abc_cutDuringRampup"),
 			      AlpsParameter(AlpsBoolPar, cutDuringRampup)));
-    
+
     //-------------------------------------------------------------------------
     // BoolArrayPar
 
@@ -46,7 +50,7 @@ AbcParams::createKeywordList() {
 
     //-------------------------------------------------------------------------
     // DoublePar
-   
+
     //-------------------------------------------------------------------------
     // StringPar
 
@@ -54,20 +58,20 @@ AbcParams::createKeywordList() {
 
 //#############################################################################
 
-void 
+void
 AbcParams::setDefaultEntries() {
     //-------------------------------------------------------------------------
     // CharPar
     setEntry(cutDuringRampup, false);
-    
+
     //-------------------------------------------------------------------------
     // IntPar
     setEntry(statusInterval, 50);
     setEntry(logLevel, 1);
-    
+
     //-------------------------------------------------------------------------
     // DoublePar
-  
+
     //-------------------------------------------------------------------------
     // StringPar
 
