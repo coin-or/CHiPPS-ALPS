@@ -103,7 +103,7 @@ AC_COIN_INIT_AUTO_TOOLS
 AC_EXEEXT
 
 # Check if standard C++11 is available, add it to flags if so.
-AX_CXX_COMPILE_STDCXX_11
+AC_CXX_COMPILE_STDCXX_11
 #############################################################################
 #                             Other dependencies                            #
 #############################################################################
