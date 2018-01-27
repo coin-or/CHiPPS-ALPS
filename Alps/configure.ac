@@ -102,8 +102,6 @@ AC_COIN_INIT_AUTO_TOOLS
 # Get the EXEXT variable for CYGWIN
 AC_EXEEXT
 
-# Check if standard C++11 is available, add it to flags if so.
-AC_CXX_COMPILE_STDCXX_11
 #############################################################################
 #                             Other dependencies                            #
 #############################################################################

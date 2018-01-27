@@ -203,7 +203,13 @@ public:
       <code>obj = AlpsKnowledge::decoderObject(name)->decode(buf) </code>
   */
   AlpsKnowledge const * decoderObject(int name) const {
-    return decodeMap_.at(name);
+    // todo(aykut) convert this to .at() once C++11 standard is available.
+    std::map<int,AlpsKnowledge*>::const_iterator it = decodeMap_.find(name);
+    if (it == decodeMap_.end()) {
+      // this should not happen.
+      throw std::exception();
+    }
+    return it->second;
   }
   //@}
 
