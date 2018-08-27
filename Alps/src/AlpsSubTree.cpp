@@ -1483,9 +1483,15 @@ AlpsSubTree::getBestNode() const
     AlpsTreeNode *bn2 = NULL;
     AlpsTreeNode *bestNode = NULL;
 
-    bestNode = nodePool_->getBestNode();
-    bn2 = diveNodePool_->getBestNode();
-    
+    //Sahar:added:start
+    int searchStrategy = broker_->getModel()->AlpsPar()->entry(AlpsParams::searchStrategy);
+    //Sahar:added:end
+
+    //Sahar:modified:start
+    bestNode = nodePool_->getBestNode(searchStrategy);
+    bn2 = diveNodePool_->getBestNode(searchStrategy);
+    //Sahar:modified:end
+
     if (bn2) {
 	if (bestNode) {
 	    if (bestNode->getQuality() > bn2->getQuality()) {
