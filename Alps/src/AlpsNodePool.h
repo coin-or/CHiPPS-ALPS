@@ -85,7 +85,8 @@ public:
   /// Get the "best value" of the nodes in node pool.
   double getBestKnowledgeValue() const;
   /// Get the "best" nodes in node pool.
-  AlpsTreeNode * getBestNode() const;
+  //Sahar: changed the following line
+  AlpsTreeNode * getBestNode(int searchStrategy) const;
   /// Get a constant reference to the priority queue that stores nodes.
   AlpsPriorityQueue<AlpsTreeNode*> const & getCandidateList() const;
   /// Set strategy and resort heap.
