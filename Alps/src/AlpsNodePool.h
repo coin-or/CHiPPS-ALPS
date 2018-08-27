@@ -72,21 +72,34 @@ class AlpsNodePool : public AlpsKnowledgePool {
     }
 
     /** Get the "best" nodes in node pool. */
-    inline AlpsTreeNode *getBestNode() const { 
+    //Sahar: changed the following line
+    inline AlpsTreeNode *getBestNode(int searchStrategy) const { 
         const std::vector<AlpsTreeNode *>& pool=candidateList_.getContainer();
         int k;
         int size = static_cast<int> (pool.size());
         double bestQuality = ALPS_OBJ_MAX;
         AlpsTreeNode * bestNode = NULL;
         AlpsTreeNode * node = NULL;
-        
-        for (k = 0; k < size; ++k) {
-            node = pool[k];
-            if (node->getQuality() < bestQuality) {
-                bestQuality = node->getQuality();
+
+	//Sahar:added:start
+	if(size > 0){
+	  if ((searchStrategy == AlpsSearchTypeBestFirst) ||
+	      (searchStrategy == AlpsSearchTypeBreadthFirst) ||
+	      (searchStrategy == AlpsSearchTypeHybrid)) {
+	    bestNode = pool[0];
+	  }
+	  else{
+	    for (k = 0; k < size; ++k) {
+	      node = pool[k];
+	      if (node->getQuality() < bestQuality) {
+		bestQuality = node->getQuality();
                 bestNode = node;
-            }
-        }
+	      }
+	    }
+	  }
+	}
+	//Sahar:added:end
+	
         return bestNode;
     }
     
