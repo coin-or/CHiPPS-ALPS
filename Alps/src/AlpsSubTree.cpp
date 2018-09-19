@@ -231,6 +231,7 @@ AlpsSubTree::removeDeadNodes(AlpsTreeNode*& node)
     //delete node;
     //node = NULL;
   }
+  if (activeNode_==node) activeNode_ = NULL;
 }
 
 //#############################################################################
