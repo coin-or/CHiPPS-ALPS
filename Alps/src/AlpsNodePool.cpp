@@ -31,6 +31,10 @@ AlpsNodePool::AlpsNodePool()
   candidateList_.clear();
 }
 
+AlpsNodePool::AlpsNodePool(AlpsSearchType type)
+  : AlpsKnowledgePool(AlpsKnowledgePoolTypeNode), searchStrategy_(type){
+  candidateList_.clear();
+}
 
 AlpsNodePool::~AlpsNodePool() {
   if (!candidateList_.empty()) {
@@ -85,7 +89,7 @@ double AlpsNodePool::getBestKnowledgeValue() const {
 }
 
 //Sahar: changed the following line
-AlpsTreeNode * AlpsNodePool::getBestNode(int searchStrategy) const {
+AlpsTreeNode * AlpsNodePool::getBestNode() const {
   const std::vector<AlpsTreeNode *>& pool=candidateList_.getContainer();
   int k;
   int size = static_cast<int> (pool.size());
@@ -95,9 +99,9 @@ AlpsTreeNode * AlpsNodePool::getBestNode(int searchStrategy) const {
 
   //Sahar:added:start
   if(size > 0){
-      if ((searchStrategy == AlpsSearchTypeBestFirst) ||
-	  (searchStrategy == AlpsSearchTypeBreadthFirst) ||
-	  (searchStrategy == AlpsSearchTypeHybrid)) {
+      if ((searchStrategy_ == AlpsSearchTypeBestFirst) ||
+	  (searchStrategy_ == AlpsSearchTypeBreadthFirst) ||
+	  (searchStrategy_ == AlpsSearchTypeHybrid)) {
 	  bestNode = pool[0];
       }
       else{

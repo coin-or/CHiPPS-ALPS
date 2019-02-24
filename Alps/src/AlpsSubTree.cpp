@@ -122,11 +122,18 @@ AlpsSubTree::AlpsSubTree()
   AlpsKnowledge(AlpsKnowledgeTypeSubTree),
   root_(0),
   //nextIndex_(0),
-  nodePool_(new AlpsNodePool),
-  diveNodePool_(new AlpsNodePool),
+  //nodePool_(new AlpsNodePool),
+  //diveNodePool_(new AlpsNodePool),
   diveNodeRule_(new AlpsNodeSelectionBest),
   activeNode_(0),
-  quality_(ALPS_OBJ_MAX) {
+  quality_(ALPS_OBJ_MAX)
+{
+  nodePool_ = new AlpsNodePool((AlpsSearchType)broker_->getModel()->AlpsPar()->
+                               entry(AlpsParams::searchStrategy));
+  diveNodePool_ = new AlpsNodePool((AlpsSearchType)broker_->getModel()->
+                                   AlpsPar()->
+                                   entry(AlpsParams::searchStrategy));
+
   diveNodePool_->setNodeSelection(*diveNodeRule_);
 }
 
@@ -138,14 +145,20 @@ AlpsSubTree::AlpsSubTree(AlpsKnowledgeBroker* kb)
   AlpsKnowledge(AlpsKnowledgeTypeSubTree, kb),
   root_(0),
   // nextIndex_(0),
-  nodePool_(new AlpsNodePool),
-  diveNodePool_(new AlpsNodePool),
+  // nodePool_(new AlpsNodePool),
+  // diveNodePool_(new AlpsNodePool),
   diveNodeRule_(new AlpsNodeSelectionBest),
   activeNode_(0),
   quality_(ALPS_OBJ_MAX)
 {
   //eliteSize_ = kb->getDataPool()->
   //getOwnParams()->entry(AlpsParams::eliteSize);
+
+  nodePool_ = new AlpsNodePool((AlpsSearchType)broker_->getModel()->AlpsPar()->
+                               entry(AlpsParams::searchStrategy));
+  diveNodePool_ = new AlpsNodePool((AlpsSearchType)broker_->getModel()->
+                                   AlpsPar()->
+                                   entry(AlpsParams::searchStrategy));
 
   diveNodePool_->setNodeSelection(*diveNodeRule_);
 }
@@ -1494,13 +1507,8 @@ AlpsSubTree::getBestNode() const
     AlpsTreeNode *bn2 = NULL;
     AlpsTreeNode *bestNode = NULL;
 
-    //Sahar:added:start
-    int searchStrategy = broker_->getModel()->AlpsPar()->entry(AlpsParams::searchStrategy);
-    //Sahar:added:end
-    //Sahar:modified:start
-    bestNode = nodePool_->getBestNode(searchStrategy);
-    bn2 = diveNodePool_->getBestNode(searchStrategy);
-    //Sahar:modified:end
+    bestNode = nodePool_->getBestNode();
+    bn2 = diveNodePool_->getBestNode();
 
     if (bn2) {
         if (bestNode) {
