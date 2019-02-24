@@ -49,7 +49,7 @@ protected:
     double weight_;
     
     /** Which type of strategy: best-first, etc. */
-    int type_;
+    AlpsSearchType type_;
     
 public:
     /** Default Constructor. */
