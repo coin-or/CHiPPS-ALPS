@@ -223,7 +223,8 @@ AlpsKnowledgeBroker::setupKnowledgePools()
     //--------------------------------------------------
     // Setup search strategy.
     //--------------------------------------------------
-    int strategy = model_->AlpsPar()->entry(AlpsParams::searchStrategy);
+    AlpsSearchType strategy =
+       (AlpsSearchType) model_->AlpsPar()->entry(AlpsParams::searchStrategy);
     
     if (strategy == AlpsSearchTypeBestFirst) {
         treeSelection_ = new AlpsTreeSelectionBest;
@@ -251,7 +252,8 @@ AlpsKnowledgeBroker::setupKnowledgePools()
 			"setupKnowledgePools()", "AlpsKnowledgeBroker"); 
     }
 
-    strategy = model_->AlpsPar()->entry(AlpsParams::searchStrategyRampUp);
+    strategy = (AlpsSearchType) model_->AlpsPar()->
+       entry(AlpsParams::searchStrategyRampUp);
     
     if (strategy == AlpsSearchTypeBestFirst) {
         rampUpNodeSelection_ = new AlpsNodeSelectionBest;

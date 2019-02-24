@@ -41,9 +41,14 @@ class AlpsNodePool : public AlpsKnowledgePool {
     AlpsNodePool& operator=(const AlpsNodePool&);
     
     AlpsPriorityQueue<AlpsTreeNode*> candidateList_;
+
+    AlpsSearchType searchStrategy_;
     
  public:
     AlpsNodePool() {}
+
+    AlpsNodePool(AlpsSearchType type) : searchStrategy_(type) {}
+    
     virtual ~AlpsNodePool() {
 	//std::cout << "- delete nodes pool, size = " << getNumKnowledges() << std::endl;
 	if (!candidateList_.empty()) {
@@ -72,8 +77,7 @@ class AlpsNodePool : public AlpsKnowledgePool {
     }
 
     /** Get the "best" nodes in node pool. */
-    //Sahar: changed the following line
-    inline AlpsTreeNode *getBestNode(int searchStrategy) const { 
+    inline AlpsTreeNode *getBestNode() const { 
         const std::vector<AlpsTreeNode *>& pool=candidateList_.getContainer();
         int k;
         int size = static_cast<int> (pool.size());
@@ -81,11 +85,10 @@ class AlpsNodePool : public AlpsKnowledgePool {
         AlpsTreeNode * bestNode = NULL;
         AlpsTreeNode * node = NULL;
 
-	//Sahar:added:start
 	if(size > 0){
-	  if ((searchStrategy == AlpsSearchTypeBestFirst) ||
-	      (searchStrategy == AlpsSearchTypeBreadthFirst) ||
-	      (searchStrategy == AlpsSearchTypeHybrid)) {
+	  if ((searchStrategy_ == AlpsSearchTypeBestFirst) ||
+	      (searchStrategy_ == AlpsSearchTypeBreadthFirst) ||
+	      (searchStrategy_ == AlpsSearchTypeHybrid)) {
 	    bestNode = pool[0];
 	  }
 	  else{
@@ -98,7 +101,6 @@ class AlpsNodePool : public AlpsKnowledgePool {
 	    }
 	  }
 	}
-	//Sahar:added:end
 	
         return bestNode;
     }
