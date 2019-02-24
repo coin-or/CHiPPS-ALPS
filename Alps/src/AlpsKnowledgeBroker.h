@@ -211,6 +211,9 @@ class AlpsKnowledgeBroker {
     /** Default constructor. */
     AlpsKnowledgeBroker();
 
+    /** Constructor passing in model. */
+    AlpsKnowledgeBroker(AlpsModel& model);
+
     /** Destructor. */
     virtual ~AlpsKnowledgeBroker();
 
