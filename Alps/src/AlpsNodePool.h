@@ -44,11 +44,15 @@ class AlpsNodePool: public AlpsKnowledgePool {
   /// Candidate list.
   AlpsPriorityQueue<AlpsTreeNode*> candidateList_;
 
+  AlpsSearchType searchStrategy_;
+
 public:
   ///@name Constructor and destructor.
   //@{
   /// Default constructor.
   AlpsNodePool();
+  /// Default constructor.
+  AlpsNodePool(AlpsSearchType type);
   /// Destructor.
   virtual ~AlpsNodePool();
   //@}
@@ -86,7 +90,7 @@ public:
   double getBestKnowledgeValue() const;
   /// Get the "best" nodes in node pool.
   //Sahar: changed the following line
-  AlpsTreeNode * getBestNode(int searchStrategy) const;
+  AlpsTreeNode * getBestNode() const;
   /// Get a constant reference to the priority queue that stores nodes.
   AlpsPriorityQueue<AlpsTreeNode*> const & getCandidateList() const;
   /// Set strategy and resort heap.

@@ -75,7 +75,7 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
 /* Constructor that sets the model. */
 AlpsKnowledgeBroker::AlpsKnowledgeBroker(AlpsModel& model)
     :
-    model_(model),
+    model_(&model),
     phase_(AlpsPhaseSearch),
     subTreePool_ (new AlpsSubTreePool),
     solPool_ (new AlpsSolutionPool),
@@ -269,7 +269,8 @@ AlpsKnowledgeBroker::setupKnowledgePools()
     //--------------------------------------------------
     // Setup search strategy.
     //--------------------------------------------------
-    int strategy = model_->AlpsPar()->entry(AlpsParams::searchStrategy);
+    AlpsSearchType strategy = (AlpsSearchType) model_->AlpsPar()->
+       entry(AlpsParams::searchStrategy);
 
     if (strategy == AlpsSearchTypeBestFirst) {
         treeSelection_ = new AlpsTreeSelectionBest;
@@ -297,7 +298,8 @@ AlpsKnowledgeBroker::setupKnowledgePools()
                         "setupKnowledgePools()", "AlpsKnowledgeBroker");
     }
 
-    strategy = model_->AlpsPar()->entry(AlpsParams::searchStrategyRampUp);
+    strategy = (AlpsSearchType) model_->AlpsPar()->
+       entry(AlpsParams::searchStrategyRampUp);
 
     if (strategy == AlpsSearchTypeBestFirst) {
         rampUpNodeSelection_ = new AlpsNodeSelectionBest;
