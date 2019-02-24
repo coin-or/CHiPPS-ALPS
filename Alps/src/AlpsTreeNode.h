@@ -18,8 +18,11 @@
  *          Matthew Saltzman, Clemson University                             *
  *                                                                           *
  *                                                                           *
- * Copyright (C) 2001-2018, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ * Copyright (C) 2001-2018, Lehigh University, Yan Xu, Aykut Bulut, and      *
+ *                          Ted Ralphs.                                      *
+ * All Rights Reserved.                                                      *
  *===========================================================================*/
+
 
 #ifndef AlpsTreeNode_h_
 #define AlpsTreeNode_h_
@@ -93,9 +96,9 @@ class AlpsTreeNode : public AlpsKnowledge {
     AlpsNodeStatus     status_;
 
     /** Various mark used in splitting and passing subtrees. */
-    // 0: default; 1: in subtree to be sent: 2: in subtree's node pool 
-    int sentMark_;   
-    
+    // 0: default; 1: in subtree to be sent: 2: in subtree's node pool
+    int sentMark_;
+
  public:
     AlpsTreeNode()
         :

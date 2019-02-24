@@ -18,8 +18,11 @@
  *          Matthew Saltzman, Clemson University                             *
  *                                                                           *
  *                                                                           *
- * Copyright (C) 2001-2018, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ * Copyright (C) 2001-2018, Lehigh University, Yan Xu, Aykut Bulut, and      *
+ *                          Ted Ralphs.                                      *
+ * All Rights Reserved.                                                      *
  *===========================================================================*/
+
 
 #ifndef AlpsSearchStrategyBase_h_
 #define AlpsSearchStrategyBase_h_
@@ -50,7 +53,7 @@ protected:
     double weight_;
 
     /** Which type of strategy: best-first, etc. */
-    int type_;
+    AlpsSearchType type_;
 
 public:
     /** Default Constructor. */

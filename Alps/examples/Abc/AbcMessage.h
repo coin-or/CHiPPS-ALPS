@@ -7,6 +7,7 @@
  * Authors:                                                                  *
  *                                                                           *
  *          Yan Xu, Lehigh University                                        *
+ *          Aykut Bulut, Lehigh University                                   *
  *          Ted Ralphs, Lehigh University                                    *
  *                                                                           *
  * Conceptual Design:                                                        *
@@ -15,10 +16,13 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
  *                                                                           *
- * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ *                                                                           *
+ * Copyright (C) 2001-2018, Lehigh University, Yan Xu, Aykut Bulut, and      *
+ *                          Ted Ralphs.                                      *
+ * All Rights Reserved.                                                      *
  *===========================================================================*/
+
 
 #ifndef AbcMessage_H_
 #define AbcMessage_H_
@@ -36,7 +40,7 @@
     CoinMessageHandler.hpp is the general part of message handling.
     All it has are enum's for the various messages.
     AbcMessage.cpp has text in various languages.
-    
+
     It is trivial to use the .hpp and .cpp file as a basis for
     messages for other components.
  */

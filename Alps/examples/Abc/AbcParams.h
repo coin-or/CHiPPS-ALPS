@@ -7,6 +7,7 @@
  * Authors:                                                                  *
  *                                                                           *
  *          Yan Xu, Lehigh University                                        *
+ *          Aykut Bulut, Lehigh University                                   *
  *          Ted Ralphs, Lehigh University                                    *
  *                                                                           *
  * Conceptual Design:                                                        *
@@ -15,10 +16,13 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
  *                                                                           *
- * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ *                                                                           *
+ * Copyright (C) 2001-2018, Lehigh University, Yan Xu, Aykut Bulut, and      *
+ *                          Ted Ralphs.                                      *
+ * All Rights Reserved.                                                      *
  *===========================================================================*/
+
 
 #ifndef AbcParams_h
 #define AbcParams_h
@@ -35,7 +39,7 @@ class AbcParams : public AlpsParameterSet {
   /** Character parameters. All of these variable are used as booleans
       (ture = 1, false = 0). */
   enum boolParams{
-    /// Whether generate cuts during rampup 
+    /// Whether generate cuts during rampup
     cutDuringRampup,
     //
     endOfBoolParams
@@ -45,7 +49,7 @@ class AbcParams : public AlpsParameterSet {
   enum intParams{
       /// The interval (number of nodes) to report current search status
       statusInterval,
-      /// 
+      ///
       logLevel,
       //
       endOfIntParams
@@ -53,7 +57,7 @@ class AbcParams : public AlpsParameterSet {
 
   /** Double parameters. */
   enum dblParams{
-    dblDummy, 
+    dblDummy,
     //
     endOfDblParams
   };
@@ -102,18 +106,18 @@ class AbcParams : public AlpsParameterSet {
 
  public:
   //===========================================================================
-  /** For user application: 
-   *   Following code are do NOT need to change. 
-   *   The reason can not put following functions in base class 
+  /** For user application:
+   *   Following code are do NOT need to change.
+   *   The reason can not put following functions in base class
    *   <CODE> AlpsParameterSet </CODE> is that <CODE> boolParams </CODE>
    *   and <CODE> endOfBoolParams </CODE> etc., are NOT the same as those
    *   declared in base class.
    */
   //===========================================================================
 
-  
-  /**@name Query methods 
-      
+
+  /**@name Query methods
+
      The members of the parameter set can be queried for using the overloaded
      entry() method. Using the example in the class
      documentation the user can get a parameter with the
@@ -170,7 +174,7 @@ class AbcParams : public AlpsParameterSet {
 
   /**@name Packing/unpacking methods */
   /*@{*/
-  /** Pack the parameter set into the buffer (AlpsEncoded is used 
+  /** Pack the parameter set into the buffer (AlpsEncoded is used
       as buffer Here). */
   void pack(AlpsEncoded& buf) {
     buf.writeRep(bpar_, endOfBoolParams)

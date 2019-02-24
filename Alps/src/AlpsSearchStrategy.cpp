@@ -18,8 +18,11 @@
  *          Matthew Saltzman, Clemson University                             *
  *                                                                           *
  *                                                                           *
- * Copyright (C) 2001-2018, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ * Copyright (C) 2001-2018, Lehigh University, Yan Xu, Aykut Bulut, and      *
+ *                          Ted Ralphs.                                      *
+ * All Rights Reserved.                                                      *
  *===========================================================================*/
+
 
 #include "AlpsSearchStrategy.h"
 
@@ -94,21 +97,21 @@ AlpsNodeSelectionHybrid::selectNextNode(AlpsSubTree *subTree)
        // Stop diving: put nodes from dive pool back into regular pool
        subTree->reset();
     }
-    
+
     if (subTree->diveNodePool()->getNumKnowledges() > 0) {
        node = dynamic_cast<AlpsTreeNode*>(subTree->diveNodePool()
-                                          ->getKnowledge().first); 
+                                          ->getKnowledge().first);
        subTree->diveNodePool()->popKnowledge();
     }
     else if (subTree->nodePool()->hasKnowledge()) {
        node = dynamic_cast<AlpsTreeNode*>(subTree->nodePool()
-                                          ->getKnowledge().first); 
+                                          ->getKnowledge().first);
        subTree->nodePool()->popKnowledge();
     }
     else {
        assert(0);
     }
-    
+
 #if 0
         std::cout << "======= NOTE[" << node->getIndex()
                   << "]: JUMP : depth = " << node->getDepth()
@@ -124,7 +127,7 @@ AlpsNodeSelectionHybrid::selectNextNode(AlpsSubTree *subTree)
 
 void
 AlpsNodeSelectionHybrid::createNewNodes(AlpsSubTree *subTree,
-                                        AlpsTreeNode *node) 
+                                        AlpsTreeNode *node)
 {
     int numChildren = 0;
     AlpsTreeNode *tempNode, *diveNode = 0;

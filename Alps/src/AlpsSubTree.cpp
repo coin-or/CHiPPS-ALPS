@@ -18,8 +18,11 @@
  *          Matthew Saltzman, Clemson University                             *
  *                                                                           *
  *                                                                           *
- * Copyright (C) 2001-2018, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ * Copyright (C) 2001-2018, Lehigh University, Yan Xu, Aykut Bulut, and      *
+ *                          Ted Ralphs.                                      *
+ * All Rights Reserved.                                                      *
  *===========================================================================*/
+
 
 #include <cmath>
 #include <iostream>
@@ -119,11 +122,18 @@ AlpsSubTree::AlpsSubTree()
   AlpsKnowledge(AlpsKnowledgeTypeSubTree),
   root_(0),
   //nextIndex_(0),
-  nodePool_(new AlpsNodePool),
-  diveNodePool_(new AlpsNodePool),
+  //nodePool_(new AlpsNodePool),
+  //diveNodePool_(new AlpsNodePool),
   diveNodeRule_(new AlpsNodeSelectionBest),
   activeNode_(0),
-  quality_(ALPS_OBJ_MAX) {
+  quality_(ALPS_OBJ_MAX)
+{
+  nodePool_ = new AlpsNodePool((AlpsSearchType)broker_->getModel()->AlpsPar()->
+                               entry(AlpsParams::searchStrategy));
+  diveNodePool_ = new AlpsNodePool((AlpsSearchType)broker_->getModel()->
+                                   AlpsPar()->
+                                   entry(AlpsParams::searchStrategy));
+
   diveNodePool_->setNodeSelection(*diveNodeRule_);
 }
 
@@ -135,14 +145,20 @@ AlpsSubTree::AlpsSubTree(AlpsKnowledgeBroker* kb)
   AlpsKnowledge(AlpsKnowledgeTypeSubTree, kb),
   root_(0),
   // nextIndex_(0),
-  nodePool_(new AlpsNodePool),
-  diveNodePool_(new AlpsNodePool),
+  // nodePool_(new AlpsNodePool),
+  // diveNodePool_(new AlpsNodePool),
   diveNodeRule_(new AlpsNodeSelectionBest),
   activeNode_(0),
   quality_(ALPS_OBJ_MAX)
 {
   //eliteSize_ = kb->getDataPool()->
   //getOwnParams()->entry(AlpsParams::eliteSize);
+
+  nodePool_ = new AlpsNodePool((AlpsSearchType)broker_->getModel()->AlpsPar()->
+                               entry(AlpsParams::searchStrategy));
+  diveNodePool_ = new AlpsNodePool((AlpsSearchType)broker_->getModel()->
+                                   AlpsPar()->
+                                   entry(AlpsParams::searchStrategy));
 
   diveNodePool_->setNodeSelection(*diveNodeRule_);
 }
@@ -228,6 +244,7 @@ AlpsSubTree::removeDeadNodes(AlpsTreeNode*& node)
     //delete node;
     //node = NULL;
   }
+  if (activeNode_==node) activeNode_ = NULL;
 }
 
 //#############################################################################
@@ -1254,7 +1271,7 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
 	assert(numNodesProcessed == numNodesBranched + numNodesFathomed);
 	assert(nodePool_->getNumKnowledges() +
                diveNodePool_->getNumKnowledges() ==
-               numNodesCandidate + numNodesPartial); 
+               numNodesCandidate + numNodesPartial);
 
 	// Get the next node to be processed.
 	activeNode_ = nodeSel->selectNextNode(this);

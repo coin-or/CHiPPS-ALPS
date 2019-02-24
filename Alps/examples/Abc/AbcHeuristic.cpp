@@ -7,6 +7,7 @@
  * Authors:                                                                  *
  *                                                                           *
  *          Yan Xu, Lehigh University                                        *
+ *          Aykut Bulut, Lehigh University                                   *
  *          Ted Ralphs, Lehigh University                                    *
  *                                                                           *
  * Conceptual Design:                                                        *
@@ -15,10 +16,13 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
  *                                                                           *
- * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ *                                                                           *
+ * Copyright (C) 2001-2018, Lehigh University, Yan Xu, Aykut Bulut, and      *
+ *                          Ted Ralphs.                                      *
+ * All Rights Reserved.                                                      *
  *===========================================================================*/
+
 
 //#############################################################################
 // This file is modified from SbbHeuristic.cpp
@@ -34,7 +38,7 @@
 #include "AbcHeuristic.h"
 
 // Default Constructor
-AbcHeuristic::AbcHeuristic() 
+AbcHeuristic::AbcHeuristic()
     :model_(NULL)
 {
 }
@@ -42,10 +46,10 @@ AbcHeuristic::AbcHeuristic()
 // Constructor from model
 AbcHeuristic::AbcHeuristic(AbcModel & model)
 {
-    model_ = &model; 
+    model_ = &model;
 }
 
-// Destructor 
+// Destructor
 AbcHeuristic::~AbcHeuristic ()
 {
 }
@@ -57,7 +61,7 @@ void AbcHeuristic::setModel(AbcModel * model)
 }
 
 // Default Constructor
-AbcRounding::AbcRounding() 
+AbcRounding::AbcRounding()
     :AbcHeuristic()
 {
     // matrix and row copy will automatically be empty
@@ -70,7 +74,7 @@ AbcRounding::AbcRounding(AbcModel & model)
     assert(model.solver());
 }
 
-// Destructor 
+// Destructor
 AbcRounding::~AbcRounding ()
 {
 }
@@ -82,7 +86,7 @@ AbcRounding::clone() const
     return new AbcRounding(*this);
 }
 
-// Copy constructor 
+// Copy constructor
 AbcRounding::AbcRounding(const AbcRounding & rhs)
     :
     AbcHeuristic(rhs),
@@ -94,7 +98,7 @@ AbcRounding::AbcRounding(const AbcRounding & rhs)
 // See if rounding will give solution
 // Sets value of solution
 // Assumes rhs for original matrix still okay
-// At present only works with integers 
+// At present only works with integers
 // Fix values if asked for
 // Returns 1 if solution, 0 if not
 int
@@ -198,7 +202,7 @@ AbcRounding::solution(double & solutionValue,
     }
 
     double penalty = 0.0;
-  
+
     // see if feasible
     for (i = 0; i < numberRows; i++) {
 	double value = rowActivity[i];
@@ -228,22 +232,22 @@ AbcRounding::solution(double & solutionValue,
 		    double absElement = fabs(elementValue);
 		    if (thisInfeasibility * elementValue > 0.0) {
 			// we want to reduce
-			if ((currentValue - lowerValue) * absElement >= 
+			if ((currentValue - lowerValue) * absElement >=
 			    absInfeasibility) {
-			    
+
 			    // possible - check if integer
 			    double distance = absInfeasibility / absElement;
-			    double thisCost = 
+			    double thisCost =
 				-direction * objective[iColumn] * distance;
 			    if (solver->isInteger(iColumn)) {
 				distance = ceil(distance - primalTolerance);
-				assert (currentValue - distance >= 
+				assert (currentValue - distance >=
 					lowerValue - primalTolerance);
-				if (absInfeasibility - distance * absElement 
+				if (absInfeasibility - distance * absElement
 				    < -gap - primalTolerance)
 				    thisCost = 1.0e100; // no good
 				else
-				    thisCost = 
+				    thisCost =
 					-direction*objective[iColumn]*distance;
 			    }
 			    if (thisCost < bestCost) {
@@ -256,21 +260,21 @@ AbcRounding::solution(double & solutionValue,
 			}
 		    } else {
 			// we want to increase
-			if ((upperValue - currentValue) * absElement >= 
+			if ((upperValue - currentValue) * absElement >=
 			    absInfeasibility) {
 			    // possible - check if integer
 			    double distance = absInfeasibility / absElement;
-			    double thisCost = 
+			    double thisCost =
 				direction * objective[iColumn] * distance;
 			    if (solver->isInteger(iColumn)) {
 				distance = ceil(distance - 1.0e-7);
-				assert (currentValue - distance <= 
+				assert (currentValue - distance <=
 					upperValue + primalTolerance);
-				if (absInfeasibility - distance * absElement 
+				if (absInfeasibility - distance * absElement
 				    < -gap - primalTolerance)
 				    thisCost = 1.0e100; // no good
 				else
-				    thisCost = 
+				    thisCost =
 					direction*objective[iColumn]*distance;
 			    }
 			    if (thisCost < bestCost) {
@@ -336,7 +340,7 @@ AbcRounding::solution(double & solutionValue,
 			     j < columnStart[iColumn] + columnLength[iColumn];
 			     j++) {
 			    int iRow = row[j];
-			    double newActivity = 
+			    double newActivity =
 				rowActivity[iRow] + move*element[j];
 			    if (newActivity < rowLower[iRow] - primalTolerance
 				||
@@ -350,7 +354,7 @@ AbcRounding::solution(double & solutionValue,
 			    newSolutionValue += move * cost;
 			    int j;
 			    for (j = columnStart[iColumn];
-				 j < columnStart[iColumn] + 
+				 j < columnStart[iColumn] +
 				     columnLength[iColumn]; j++) {
 				int iRow = row[j];
 				rowActivity[iRow] += move*element[j];
@@ -389,7 +393,7 @@ AbcRounding::solution(double & solutionValue,
 	    }
 	    if (feasible) {
 		// new solution
-		memcpy(betterSolution, newSolution, 
+		memcpy(betterSolution, newSolution,
 		       numberColumns * sizeof(double));
 		solutionValue = newSolutionValue;
 		//printf("** Solution of %g found by rounding\n",newSolutionValue);

@@ -7,6 +7,7 @@
  * Authors:                                                                  *
  *                                                                           *
  *          Yan Xu, Lehigh University                                        *
+ *          Aykut Bulut, Lehigh University                                   *
  *          Ted Ralphs, Lehigh University                                    *
  *                                                                           *
  * Conceptual Design:                                                        *
@@ -15,10 +16,13 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
  *                                                                           *
- * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ *                                                                           *
+ * Copyright (C) 2001-2018, Lehigh University, Yan Xu, Aykut Bulut, and      *
+ *                          Ted Ralphs.                                      *
+ * All Rights Reserved.                                                      *
  *===========================================================================*/
+
 
 //#############################################################################
 // This file is modified from SbbHeuristic.hpp
@@ -40,7 +44,7 @@ class AbcModel;
 /** Heuristic base class */
 class AbcHeuristic {
 public:
-  // Default Constructor 
+  // Default Constructor
   AbcHeuristic ();
 
   // Constructor with model - assumed before cuts
@@ -50,13 +54,13 @@ public:
 
   /// update model (This is needed if cliques update matrix etc)
   virtual void setModel(AbcModel * model);
-  
+
   /// Clone
   virtual AbcHeuristic * clone() const=0;
 
   /** returns 0 if no solution, 1 if valid solution
       with better objective value than one passed in
-      Sets solution values if good, sets objective value 
+      Sets solution values if good, sets objective value
       This is called after cuts have been added - so can not add cuts
   */
   virtual int solution(double & objectiveValue,
@@ -78,10 +82,10 @@ protected:
   /// Model
   AbcModel * model_;
 private:
-  
-  /// Illegal Assignment operator 
+
+  /// Illegal Assignment operator
   AbcHeuristic & operator=(const AbcHeuristic& rhs);
-  
+
 };
 
 /** Rounding class
@@ -90,24 +94,24 @@ private:
 class AbcRounding : public AbcHeuristic {
 public:
 
-  // Default Constructor 
+  // Default Constructor
   AbcRounding ();
 
   // Constructor with model - assumed before cuts
   AbcRounding (AbcModel & model);
-  
-  // Copy constructor 
+
+  // Copy constructor
   AbcRounding ( const AbcRounding &);
-   
-  // Destructor 
+
+  // Destructor
   ~AbcRounding ();
-  
+
   /// Clone
   virtual AbcHeuristic * clone() const;
 
   /// update model (This is needed if cliques update matrix etc)
   virtual void setModel(AbcModel * model);
-  
+
   /** returns 0 if no solution, 1 if valid solution
       with better objective value than one passed in
       Sets solution values if good, sets objective value (only if good)
@@ -127,17 +131,16 @@ protected:
   // Original matrix by column
   CoinPackedMatrix matrix_;
 
-  // Original matrix by 
+  // Original matrix by
   CoinPackedMatrix matrixByRow_;
 
   // Seed for random stuff
   int seed_;
 
 private:
-  /// Illegal Assignment operator 
+  /// Illegal Assignment operator
   AbcRounding & operator=(const AbcRounding& rhs);
 };
 
 
 #endif
-

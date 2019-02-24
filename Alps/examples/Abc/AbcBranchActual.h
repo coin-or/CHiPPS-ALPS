@@ -7,6 +7,7 @@
  * Authors:                                                                  *
  *                                                                           *
  *          Yan Xu, Lehigh University                                        *
+ *          Aykut Bulut, Lehigh University                                   *
  *          Ted Ralphs, Lehigh University                                    *
  *                                                                           *
  * Conceptual Design:                                                        *
@@ -15,10 +16,13 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
  *                                                                           *
- * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ *                                                                           *
+ * Copyright (C) 2001-2018, Lehigh University, Yan Xu, Aykut Bulut, and      *
+ *                          Ted Ralphs.                                      *
+ * All Rights Reserved.                                                      *
  *===========================================================================*/
+
 
 #ifndef AbcBranchActual_h_
 #define AbcBranchActual_h_
@@ -33,17 +37,17 @@
 /** Branching decision default class
 
   This class implements a simple default algorithm
-  (betterBranch()) for choosing a branching variable. 
+  (betterBranch()) for choosing a branching variable.
 */
 class AbcBranchDefaultDecision : public AbcBranchDecision {
 
  public:
-    // Default Constructor 
+    // Default Constructor
     AbcBranchDefaultDecision();
 
-    // Copy constructor 
+    // Copy constructor
     AbcBranchDefaultDecision(const AbcBranchDefaultDecision &);
-    
+
     virtual ~AbcBranchDefaultDecision();
 
     /// Clone
@@ -55,23 +59,23 @@ class AbcBranchDefaultDecision : public AbcBranchDecision {
     /** \brief Compare two branching objects. Return nonzero if \p thisOne is
 	better than \p bestSoFar.
 
-	The routine compares branches using the values supplied in 
-	\p numInfUp and \p numInfDn until a solution is found by search, 
-	after which it uses the values supplied in \p changeUp and 
-	\p changeDn. The best branching object seen so far and the 
+	The routine compares branches using the values supplied in
+	\p numInfUp and \p numInfDn until a solution is found by search,
+	after which it uses the values supplied in \p changeUp and
+	\p changeDn. The best branching object seen so far and the
 	associated parameter values are remembered in the
-	\c AbcBranchDefaultDecision object. The nonzero return value is +1 
+	\c AbcBranchDefaultDecision object. The nonzero return value is +1
 	if the up branch is preferred, -1 if the down branch is preferred.
-	
+
 	As the names imply, the assumption is that the values supplied for
-	\p numInfUp and \p numInfDn will be the number of infeasibilities 
-	reported by the branching object, and \p changeUp and \p changeDn 
-	will be the estimated change in objective. Other measures can be 
+	\p numInfUp and \p numInfDn will be the number of infeasibilities
+	reported by the branching object, and \p changeUp and \p changeDn
+	will be the estimated change in objective. Other measures can be
 	used if desired.
 
-	Because an \c AbcBranchDefaultDecision object remembers the current 
-	best branching candidate (#bestObject_) as well as the values used 
-	in the comparison, the parameter \p bestSoFar is redundant, hence 
+	Because an \c AbcBranchDefaultDecision object remembers the current
+	best branching candidate (#bestObject_) as well as the values used
+	in the comparison, the parameter \p bestSoFar is redundant, hence
 	unused.
     */
     virtual int betterBranch(int thisOne,
@@ -80,8 +84,8 @@ class AbcBranchDefaultDecision : public AbcBranchDecision {
 			     double changeDn, int numInfDn);
 
  private:
-  
-    /// Illegal Assignment operator 
+
+    /// Illegal Assignment operator
     AbcBranchDefaultDecision & operator=(const AbcBranchDefaultDecision& rhs);
 
     /// data
@@ -108,7 +112,7 @@ class AbcBranchDefaultDecision : public AbcBranchDecision {
 };
 
 
-class AbcPseudocost 
+class AbcPseudocost
 {
  public:
     int colInd_;
@@ -118,27 +122,27 @@ class AbcPseudocost
     int downNum_;
 
  public:
-    AbcPseudocost() 
-	: 
-	colInd_(-1), 
-	upCost_(0.0), upNum_(0), 
+    AbcPseudocost()
+	:
+	colInd_(-1),
+	upCost_(0.0), upNum_(0),
 	downCost_(0.0), downNum_(0) {}
 
-    AbcPseudocost(const int ind, 
-		  const double uc, 
+    AbcPseudocost(const int ind,
+		  const double uc,
 		  const int un,
-		  const double dc, 
+		  const double dc,
 		  const int dn)
 	:
-	colInd_(ind), 
+	colInd_(ind),
 	upCost_(uc), upNum_(un),
 	downCost_(dc), downNum_(dn) {}
-    
+
     void update(const int dir,
 		const double parentObjValue,
 		const double objValue,
 		const double solValue);
-    
+
 };
 
 #endif

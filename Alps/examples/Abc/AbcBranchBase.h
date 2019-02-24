@@ -7,6 +7,7 @@
  * Authors:                                                                  *
  *                                                                           *
  *          Yan Xu, Lehigh University                                        *
+ *          Aykut Bulut, Lehigh University                                   *
  *          Ted Ralphs, Lehigh University                                    *
  *                                                                           *
  * Conceptual Design:                                                        *
@@ -15,10 +16,13 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
  *                                                                           *
- * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ *                                                                           *
+ * Copyright (C) 2001-2018, Lehigh University, Yan Xu, Aykut Bulut, and      *
+ *                          Ted Ralphs.                                      *
+ * All Rights Reserved.                                                      *
  *===========================================================================*/
+
 
 #ifndef AbcBranchBase_h_
 #define AbcBranchBase_h_
@@ -44,12 +48,12 @@ class AbcBranchingObject;
     In the abstract, an AbcBranchDecision object is expected to be able to
     compare two possible branching choices.
 
-    The #betterBranch() method is the crucial routine. It is expected to be 
+    The #betterBranch() method is the crucial routine. It is expected to be
     able to compare two integer variables.
 */
 class AbcBranchDecision {
  public:
-    /// Default Constructor 
+    /// Default Constructor
     AbcBranchDecision ();
 
     /// Destructor
@@ -61,10 +65,10 @@ class AbcBranchDecision {
     /// Initialize <i>e.g.</i> before starting to choose a branch at a node
     virtual void initialize(AbcModel * model) = 0;
 
-    /** \brief Compare two branching objects (current just integer variables). 
-	Return nonzero if branching using \p thisOne is better than 
+    /** \brief Compare two branching objects (current just integer variables).
+	Return nonzero if branching using \p thisOne is better than
 	branching using \p bestSoFar.
-    
+
 	If \p bestSoFar is NULL, the routine should return a nonzero value.
 	This routine is used only after strong branching.
 
@@ -74,32 +78,32 @@ class AbcBranchDecision {
     virtual int
 	betterBranch(int thisOne,
 		     int bestSoFar,
-		     double changeUp, 
+		     double changeUp,
 		     int numberInfeasibilitiesUp,
-		     double changeDown, 
+		     double changeDown,
 		     int numberInfeasibilitiesDown) = 0 ;
 
     /** \brief Compare N branching objects. Return index of best
 	and sets way of branching in chosen object.
-    
+
 	This routine is used only after strong branching.
 	This is reccommended version as it can be more sophisticated
     */
     virtual int	bestBranch ( AbcModel* model,
-			     int* objects, 
-			     int numberObjects, 
+			     int* objects,
+			     int numberObjects,
 			     int numberUnsatisfied,
-			     double * changeUp, 
+			     double * changeUp,
 			     int * numberInfeasibilitiesUp,
-			     double * changeDown, 
+			     double * changeDown,
 			     int * numberInfeasibilitiesDown,
 			     double objectiveValue );
-    
+
  private:
-    
+
     /// Assignment is illegal
     AbcBranchDecision & operator=(const AbcBranchDecision& rhs);
-    
+
 };
 
 #endif

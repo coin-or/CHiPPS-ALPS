@@ -18,8 +18,11 @@
  *          Matthew Saltzman, Clemson University                             *
  *                                                                           *
  *                                                                           *
- * Copyright (C) 2001-2018, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ * Copyright (C) 2001-2018, Lehigh University, Yan Xu, Aykut Bulut, and      *
+ *                          Ted Ralphs.                                      *
+ * All Rights Reserved.                                                      *
  *===========================================================================*/
+
 
 #ifndef AlpsNodePool_h_
 #define AlpsNodePool_h_
@@ -41,11 +44,15 @@ class AlpsNodePool: public AlpsKnowledgePool {
   /// Candidate list.
   AlpsPriorityQueue<AlpsTreeNode*> candidateList_;
 
+  AlpsSearchType searchStrategy_;
+
 public:
   ///@name Constructor and destructor.
   //@{
   /// Default constructor.
   AlpsNodePool();
+  /// Default constructor.
+  AlpsNodePool(AlpsSearchType type);
   /// Destructor.
   virtual ~AlpsNodePool();
   //@}
@@ -82,6 +89,7 @@ public:
   /// Get the "best value" of the nodes in node pool.
   double getBestKnowledgeValue() const;
   /// Get the "best" nodes in node pool.
+  //Sahar: changed the following line
   AlpsTreeNode * getBestNode() const;
   /// Get a constant reference to the priority queue that stores nodes.
   AlpsPriorityQueue<AlpsTreeNode*> const & getCandidateList() const;

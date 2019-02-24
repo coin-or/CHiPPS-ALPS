@@ -7,6 +7,7 @@
  * Authors:                                                                  *
  *                                                                           *
  *          Yan Xu, Lehigh University                                        *
+ *          Aykut Bulut, Lehigh University                                   *
  *          Ted Ralphs, Lehigh University                                    *
  *                                                                           *
  * Conceptual Design:                                                        *
@@ -15,10 +16,13 @@
  *          Ted Ralphs, Lehigh University                                    *
  *          Laszlo Ladanyi, IBM T.J. Watson Research Center                  *
  *          Matthew Saltzman, Clemson University                             *
- *                                                                           * 
  *                                                                           *
- * Copyright (C) 2001-2017, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ *                                                                           *
+ * Copyright (C) 2001-2018, Lehigh University, Yan Xu, Aykut Bulut, and      *
+ *                          Ted Ralphs.                                      *
+ * All Rights Reserved.                                                      *
  *===========================================================================*/
+
 
 //#############################################################################
 // This file is modified from SbbBranchBase.cpp
@@ -37,7 +41,7 @@
 //#############################################################################
 //#############################################################################
 
-// Default Constructor 
+// Default Constructor
 AbcBranchDecision::AbcBranchDecision ()
 {
 }
@@ -46,26 +50,26 @@ AbcBranchDecision::~AbcBranchDecision()
 {
 }
 
-// Compare N branching objects. Return index of best and sets way of 
-// branching in chosen object. This routine is used only after strong 
+// Compare N branching objects. Return index of best and sets way of
+// branching in chosen object. This routine is used only after strong
 // branching. This is reccommended version as it can be more sophisticated
 int
 AbcBranchDecision::bestBranch ( AbcModel* model,
-				int* objects, 
+				int* objects,
 				int numberObjects,
 				int numberUnsatisfied,
-				double * changeUp, 
+				double * changeUp,
 				int * numberInfeasibilitiesUp,
-				double * changeDown, 
+				double * changeDown,
 				int * numberInfeasibilitiesDown,
-				double objectiveValue ) 
+				double objectiveValue )
 {
     int bestWay = 0;
     int whichObject = -1;
     int i;
-    
+
     if (numberObjects) {
-	initialize(model); 
+	initialize(model);
 	int bestObject = -1;
 	for (i = 0; i < numberObjects; ++i) {
 	    int betterWay = betterBranch(objects[i],

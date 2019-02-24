@@ -1,26 +1,28 @@
-#==========================================================================#
-# This file is part of the Abstract Library for Parallel Search (ALPS).    #
-#                                                                          #
-# ALPS is distributed under the Eclipse Public License as part of the      #
-# COIN-OR repository (http://www.coin-or.org).                             #
-#                                                                          #
-# Authors:                                                                 #
-#                                                                          #
-#          Yan Xu, Lehigh University                                       #
-#          Aykut Bulut, Lehigh University                                  #
-#          Ted Ralphs, Lehigh University                                   #
-#                                                                          #
-# Conceptual Design:                                                       #
-#                                                                          #
-#          Yan Xu, Lehigh University                                       #
-#          Ted Ralphs, Lehigh University                                   #
-#          Laszlo Ladanyi, IBM T.J. Watson Research Center                 #
-#          Matthew Saltzman, Clemson University                            #
-#                                                                          #
-#                                                                          #
-# Copyright (C) 2001-2018, Lehigh University, Yan Xu, and Ted Ralphs.      #
-# All Rights Reserved.                                                     #
-#==========================================================================#
+#=============================================================================#
+# This file is part of the Abstract Library for Parallel Search (ALPS).       #
+#                                                                             #
+# ALPS is distributed under the Eclipse Public License as part of the         #
+# COIN-OR repository (http://www.coin-or.org).                                #
+#                                                                             #
+# Authors:                                                                    #
+#                                                                             #
+#          Yan Xu, Lehigh University                                          #
+#          Aykut Bulut, Lehigh University                                     #
+#          Ted Ralphs, Lehigh University                                      #
+#                                                                             #
+# Conceptual Design:                                                          #
+#                                                                             #
+#          Yan Xu, Lehigh University                                          #
+#          Ted Ralphs, Lehigh University                                      #
+#          Laszlo Ladanyi, IBM T.J. Watson Research Center                    #
+#          Matthew Saltzman, Clemson University                               #
+#                                                                             #
+#                                                                             #
+# Copyright (C) 2001-2018, Lehigh University, Yan Xu, Aykut Bulut, and        #
+#                          Ted Ralphs.                                        #
+# All Rights Reserved.                                                        #
+#=============================================================================#
+
 
 ## $Id: configure.ac 786 2006-06-01 04:10:46Z andreasw $
 
@@ -100,8 +102,6 @@ AC_COIN_INIT_AUTO_TOOLS
 # Get the EXEXT variable for CYGWIN
 AC_EXEEXT
 
-# Check if standard C++11 is available, add it to flags if so.
-AX_CXX_COMPILE_STDCXX_11
 #############################################################################
 #                             Other dependencies                            #
 #############################################################################
