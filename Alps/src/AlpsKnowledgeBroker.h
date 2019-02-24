@@ -166,6 +166,8 @@ public:
   //@{
   /** Default constructor. */
   AlpsKnowledgeBroker();
+  /** Constructor that sets the model. */
+  AlpsKnowledgeBroker(AlpsModel& model);
   /** Destructor. */
   virtual ~AlpsKnowledgeBroker();
   //@}

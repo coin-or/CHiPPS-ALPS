@@ -72,6 +72,48 @@ AlpsKnowledgeBroker::AlpsKnowledgeBroker()
 
 //#############################################################################
 
+/* Constructor that sets the model. */
+AlpsKnowledgeBroker::AlpsKnowledgeBroker(AlpsModel& model)
+    :
+    model_(model),
+    phase_(AlpsPhaseSearch),
+    subTreePool_ (new AlpsSubTreePool),
+    solPool_ (new AlpsSolutionPool),
+    pools_(0),
+    workingSubTree_(0),
+    needWorkingSubTree_(true),// Initially workingSubTree_ points to NULL
+    nextIndex_(0),
+    maxIndex_(INT_MAX),
+    solNum_(0),
+    nodeProcessedNum_(0),
+    nodeBranchedNum_(0),
+    nodeDiscardedNum_(0),
+    nodePartialNum_(0),
+    systemNodeProcessed_(0),
+    nodeLeftNum_(0),
+    treeDepth_(0),
+    bestSolNode_(-1),
+    peakMemory_(0.0),
+    exitStatus_(AlpsExitStatusUnknown),
+    treeSelection_(0),
+    nodeSelection_(0),
+    rampUpNodeSelection_(0),
+    msgLevel_(2),
+    hubMsgLevel_(0),
+    workerMsgLevel_(0),
+    logFileLevel_(0),
+    nodeMemSize_(0),
+    nodeProcessingTime_(ALPS_NODE_PROCESS_TIME), // Positive
+    largeSize_(100000),
+    numNodeLog_(0)
+{
+    registerClass(AlpsKnowledgeTypeSubTree, new AlpsSubTree(this));
+    handler_ = new CoinMessageHandler();
+    handler_->setLogLevel(2);
+    messages_ = AlpsMessage();
+}
+//#############################################################################
+
 AlpsKnowledgeBroker:: ~AlpsKnowledgeBroker()
 {
     std::map<int, AlpsKnowledge*>::iterator pos, pos1;

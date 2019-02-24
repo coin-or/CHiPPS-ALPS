@@ -63,7 +63,7 @@ class AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
                               char* argv[],
                               AlpsModel& model)
         :
-        AlpsKnowledgeBroker()
+        AlpsKnowledgeBroker(model)
         {
             initializeSearch(argc, argv, model);
         }
