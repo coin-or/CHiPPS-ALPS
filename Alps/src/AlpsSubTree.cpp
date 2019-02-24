@@ -125,11 +125,11 @@ AlpsSubTree::AlpsSubTree()
     broker_(0)
                         //eliteSize_(-1)
 {
-   nodePool_ = new AlpsNodePool((AlpsSearchType)broker_->getModel()->AlpsPar()->
-                            entry(AlpsParams::searchStrategy));
-   diveNodePool_ = new AlpsNodePool((AlpsSearchType)broker_->getModel()->
-                                    AlpsPar()->
-                                    entry(AlpsParams::searchStrategy));
+    nodePool_ = new AlpsNodePool((AlpsSearchType)broker_->getModel()->
+                                 AlpsPar()->entry(AlpsParams::searchStrategy));
+    diveNodePool_ = new AlpsNodePool((AlpsSearchType)broker_->getModel()->
+                                     AlpsPar()->
+                                     entry(AlpsParams::searchStrategy));
     
     setType(AlpsKnowledgeTypeSubTree);
     diveNodePool_->setNodeSelection(*diveNodeRule_);
@@ -151,6 +151,12 @@ AlpsSubTree::AlpsSubTree(AlpsKnowledgeBroker* kb)
     assert(kb);
     broker_ = kb;
     setType(AlpsKnowledgeTypeSubTree);
+    
+    nodePool_ = new AlpsNodePool((AlpsSearchType)broker_->getModel()->
+                                 AlpsPar()->entry(AlpsParams::searchStrategy));
+    diveNodePool_ = new AlpsNodePool((AlpsSearchType)broker_->getModel()->
+                                     AlpsPar()->
+                                     entry(AlpsParams::searchStrategy));
     
     //eliteSize_ = kb->getDataPool()->
     //getOwnParams()->entry(AlpsParams::eliteSize);
