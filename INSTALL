@@ -52,9 +52,9 @@ To get help with additional options available in running the script, do
 ./coin/install.sh --help
 ```
 
-The above procedures will build all required dependencies and SYMPHONY itself.
+The above procedures will build all required dependencies and Alps itself.
 Afterwards, the binaries will be installed in the directory `Mibs/build/bin`
-and the libraries in the directory `SYMPHONY/build/lib`. If you wish to
+and the libraries in the directory `Alps/build/lib`. If you wish to
 install in a different directory, such as `/usr/local`, then run the command
 
 ```
@@ -96,8 +96,8 @@ pacman -S make wget tar patch dos2unix diffutils git svn
 ```
 
 To obtain the source code, the first step is to get the installer that will then
-fetch the source for SYMPHONY and all its dependencies. *You do not need to
-clone SYMPHONY first, just do the following!* Open a terminal and execute
+fetch the source for Alps and all its dependencies. *You do not need to
+clone Alps first, just do the following!* Open a terminal and execute
 
 ```
 git clone https://www.github.com/coin-or/COIN-OR-OptimizationSuite
@@ -139,11 +139,11 @@ To get help with additional options available in running the script, do
 To use the resulting binaries and/or libraries, you will need to add the
 full path of the directory `build\bin` to your Windows executable
 search `PATH`, or, alternatively, copy the conents of the build directory to 
-`C:\Program Files (x86)\SYMPHONY` and add the directory
-`C:\Program Files (x86)\SYMPHONY\bin` 
+`C:\Program Files (x86)\Alps` and add the directory
+`C:\Program Files (x86)\Alps\bin` 
 to your Windows executable search `PATH`. You may also consider adding
-`C:\Program Files (x86)\SYMPHONY\lib` to the `LIB` path and 
-`C:\Program Files (x86)\SYMPHONY\include` to the `INCLUDE` path. 
+`C:\Program Files (x86)\Alps\lib` to the `LIB` path and 
+`C:\Program Files (x86)\Alps\include` to the `INCLUDE` path. 
 
 It is possible to use almost the exact same commands to build with the Visual
 Studio compilers. Before doing any of the above commands in the Windows
@@ -185,8 +185,8 @@ brew install gcc wget svn git
 ```
 
 To obtain the source code, the first step is to get the installer that will then
-fetch the source for SYMPHONY and all its dependencies. *You do not need to
-clone SYMPHONY first, just do the following!* Open a terminal and execute
+fetch the source for Alps and all its dependencies. *You do not need to
+clone Alps first, just do the following!* Open a terminal and execute
 
 ```
 git clone https://www.github.com/coin-or/COIN-OR-OptimizationSuite
@@ -209,7 +209,7 @@ rest should happen automagically. Alternatively, the following command-line
 incantation will execute the procedure non-interactively.
 
 ```
-./coin.install.sh fetch build --no-prompt --main-proj=SYMPHONY
+./coin.install.sh fetch build --no-prompt --main-proj=Alps
 ```
 
 With this setup, `clang` will be used for compiling C++ by default and
@@ -220,7 +220,7 @@ If you want to use the `gcc` compiler provided by Homebrew, then replace the
 `build` command above with
 
 ```
-./coin.install.sh build --no-prompt --main-proj=SYMPHONY CC=gcc-5 CXX=g++-5
+./coin.install.sh build --no-prompt --main-proj=Alps CC=gcc-5 CXX=g++-5
 ```
 
 Options that would have been passed to the `configure` script under the old
@@ -228,7 +228,7 @@ build system can simply be added to the command-line. For example, to build
 with debugging symbols, do
 
 ```
-./coin.install.sh fetch build --no-prompt --main-proj=SYMPHONY --enable-debug
+./coin.install.sh fetch build --no-prompt --main-proj=Alps --enable-debug
 ```
 
 To get help with additional options available in running the script, do
@@ -241,7 +241,7 @@ If you wish to install in a different directory, such as `/usr/local`, then run
 the command
 
 ```
-./coin.install.sh install --no-prompt --main-proj=SYMPHONY --prefix=/path/to/install/dir
+./coin.install.sh install --no-prompt --main-proj=Alps --prefix=/path/to/install/dir
 ```
 
 After installation, you will also need to add `/path/to/install/dir/bin` to your
