@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type = "text/xsl" href = "http://www.coin-or.org/projects/autoGen.xsl"?>
+<projectData xmlns="coin-or.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="coin-or.org  http://www.coin-or.org/projects/autoGen.xsd">
+
+	<projectBasics>
+
+		<projectName>Alps</projectName>
+
+		<projectDescription> CHiPPS is the COIN-OR Open Parallel Search Framework, a framework for implementing parallel algorithms based on tree search. The current CHiPPS architecture consists of three layers (ALPS, BiCEPS, BLIS). The Abstract Library for Parallel Search (ALPS) is the base layer of a hierarchy consisting of implementations of various tree search algorithms for specific problem types.
+		</projectDescription>
+		<projectShortDescription>
+		  Abstract Library for Parallel Search is the base layer of the CHiPPS framework.
+		</projectShortDescription>
+
+		<projectManager>Ted Ralphs, ted at lehigh dot edu </projectManager>
+
+		<projectHomePage> https://github.com/coin-or/CHiPPS-ALPS</projectHomePage>
+
+		<projectLicense>Eclipse Public License 1.0</projectLicense>
+		<projectLicenseURL>http://www.opensource.org/licenses/eclipse-1.0</projectLicenseURL>
+
+		<coinLinkedProjects>  
+		     <coinProject>
+		           <repoName>BuildTools</repoName>
+		     </coinProject>
+		     <coinProject>
+		           <repoName>CoinUtils</repoName>
+		     </coinProject>
+		     <coinProject>
+		           <repoName>Cgl</repoName>
+		     </coinProject>
+                     <coinProject>
+		           <repoName>Osi</repoName>
+		     </coinProject>
+                     <coinProject>
+		           <repoName>Clp</repoName>
+		     </coinProject>
+		</coinLinkedProjects>
+	
+		<otherLinkedPackages>
+		
+		    <otherPackage>
+			    <packageName> BLAS </packageName>
+			    <packageURL> http://www.netlib.org/blas </packageURL>
+			    <requiredOrOptional> Optional </requiredOrOptional>
+		    </otherPackage>
+
+		    <otherPackage>
+			    <packageName> LAPACK </packageName>
+			    <packageURL> http://www.netlib.org/lapack </packageURL>
+			    <requiredOrOptional> Optional </requiredOrOptional>
+		    </otherPackage> 
+			
+		</otherLinkedPackages>
+
+		<projectLanguage>C++</projectLanguage>
+
+		<developmentStatus>
+
+			<activityStatus>Active</activityStatus>
+
+			<maturityLevel>5</maturityLevel>
+
+			<stableVersionNumber> see project home page </stableVersionNumber>
+
+			<releaseNumber> see project home page </releaseNumber>
+
+		</developmentStatus>
+
+		<testedPlatforms>
+
+                     <platform>
+                           <operatingSystem>Microsoft Windows</operatingSystem>
+			   <compiler>MSVC++/cl</compiler>
+                     </platform>
+                     <platform>
+                           <operatingSystem>Microsoft Windows</operatingSystem>
+                           <compiler>CYGWIN/cl</compiler>
+                     </platform>
+		     <platform>
+                           <operatingSystem>Microsoft Windows</operatingSystem>
+			   <compiler>CYGWIN/gcc</compiler>
+                     </platform>
+                     <platform>
+                           <operatingSystem>Microsoft Windows</operatingSystem>
+			   <compiler>MSys/gcc</compiler>
+		     </platform>
+                     <platform>
+                           <operatingSystem>Linux</operatingSystem>
+			   <compiler>gcc</compiler>
+		     </platform>
+		     <platform>
+                          <operatingSystem>OSX</operatingSystem>
+			  <compiler>gcc</compiler>
+                     </platform>
+		     <platform>
+		          <operatingSystem>Solarix X86</operatingSystem>
+			  <compiler>gcc</compiler>
+		     </platform>
+		     <platform>
+		          <operatingSystem>Solarix X86</operatingSystem>
+			  <compiler>sunpro</compiler>
+                      </platform>
+
+		</testedPlatforms>
+
+		<projectCategories>
+
+		      <category>
+		           Optimization deterministic linear discrete
+		      </category>
+		      <category>
+		           Optimization utility
+		      </category>
+		</projectCategories>
+
+	</projectBasics>
+
+	<leftMenuLinks>  
+	        <documentation>http://projects.coin-or.org/CHiPPS/</documentation>
+		<sourceCodeDownload>http://www.coin-or.org/download/source/CHiPPS</sourceCodeDownload>
+		<binaryDownload></binaryDownload>
+		<mailingList>http://list.coin-or.org/mailman/listinfo/cops</mailingList>
+	</leftMenuLinks>
+
+    </projectData>
