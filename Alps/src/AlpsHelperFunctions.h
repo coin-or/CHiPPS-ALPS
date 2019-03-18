@@ -23,7 +23,7 @@
 #ifndef AlpsHelperFunctions_h_
 #define AlpsHelperFunctions_h_
 
-#if defined(NF_DEBGU)
+#if defined(NF_DEBUG)
 #include <iostream>
 #endif
 #include <cmath>
