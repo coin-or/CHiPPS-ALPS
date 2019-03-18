@@ -535,6 +535,9 @@ public:
   void setNumNodeLog(int num) { numNodeLog_ = num; }
   //@}
 
+  //Suresh: added temporarily for warm starting
+  AlpsSubTree * getWorkingSubTree() {return workingSubTree_;}
+
 private:
   AlpsKnowledgeBroker(const AlpsKnowledgeBroker&);
   AlpsKnowledgeBroker& operator=(const AlpsKnowledgeBroker&);
