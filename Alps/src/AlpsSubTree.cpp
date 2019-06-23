@@ -1215,8 +1215,8 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
     const bool deleteNode =
       broker_->getModel()->AlpsPar()->entry(AlpsParams::deleteDeadNode);
 
-    const bool warmStart =
-	broker_->getModel()->AlpsPar()->entry(AlpsParams::warmStart);
+    const bool deletePrunedNodes =
+	broker_->getModel()->AlpsPar()->entry(AlpsParams::deletePrunedNodes);
 
     AlpsSearchStrategy<AlpsTreeNode*> *nodeSel = broker_->getNodeSelection();
 
@@ -1411,7 +1411,7 @@ AlpsSubTree::exploreUnitWork(bool leaveAsIt,
         /* Delete all nodes if required. */
         if (broker_->getModel()->fathomAllNodes()) {
 	    //Suresh: added temporarily for warm starting
-	    if (!warmStart) {
+	    if (!deletePrunedNodes) {
 		/* Delete all nodes on this subtree. */
 		numNodesDiscarded += nodePool_->getNumKnowledges()
 		    - numNodesPartial;

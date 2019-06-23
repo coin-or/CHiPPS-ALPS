@@ -61,7 +61,7 @@ class AlpsParams : public AlpsParameterSet {
       printSolution,
       /** Warm start or not. 
 	  Default: false. */
-      warmStart,
+      deletePrunedNodes,
       /***/
       endOfBoolParams
   };
