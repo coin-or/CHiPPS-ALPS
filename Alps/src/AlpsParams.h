@@ -59,6 +59,9 @@ class AlpsParams : public AlpsParameterSet {
           logFileLevel permits.
           Default: false. */
       printSolution,
+      /** Warm start or not. 
+	  Default: false. */
+      deletePrunedNodes,
       /***/
       endOfBoolParams
   };
