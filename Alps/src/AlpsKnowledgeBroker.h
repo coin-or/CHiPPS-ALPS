@@ -624,5 +624,8 @@ class AlpsKnowledgeBroker {
     /** Get times that node log has been printed */
     void setNumNodeLog(int num) { numNodeLog_ = num; }
     //@}
+
+    //Suresh: added temporarily for warm starting
+    AlpsSubTree * getWorkingSubTree() {return workingSubTree_;}
 };
 #endif

@@ -129,7 +129,7 @@ enum AlpsReturnStatus {
 enum AlpsPhase {
     AlpsPhaseRampup = 0,
     AlpsPhaseSearch,
-    AlpasPhaseRampdown
+    AlpsPhaseRampdown
 };
 
 #define ALPS_NODE_PROCESS_TIME  0.0123
