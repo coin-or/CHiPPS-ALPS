@@ -47,7 +47,7 @@
 
 //#############################################################################
 
-static inline double AlpsWallClock()
+static inline double AlpsGetTimeOfDay()
 {
 
 #ifndef COIN_HAS_MPI
@@ -99,13 +99,13 @@ class AlpsTimer
     /** Start to count times. */
     void start() {
         startCpu_ = AlpsCpuTime();
-        startWall_ = AlpsWallClock();
+        startWall_ = AlpsGetTimeOfDay();
     }
 
     /** Stop timer and computing times. */
     void stop() {
         finishCpu_ = AlpsCpuTime();
-        finishWall_ = AlpsWallClock();
+        finishWall_ = AlpsGetTimeOfDay();
         cpu_ = finishCpu_ - startCpu_;
         wall_ = finishWall_ - startWall_;
     }
@@ -124,7 +124,7 @@ class AlpsTimer
 
     /** Get cpu timee. */
     double getWallClock() {
-        finishWall_ = AlpsWallClock();
+        finishWall_ = AlpsGetTimeOfDay();
         wall_ = finishWall_ - startWall_;
         return wall_;
     }
@@ -139,7 +139,7 @@ class AlpsTimer
         return cpu_;
       }
       else {
-        finishWall_ = AlpsWallClock();
+        finishWall_ = AlpsGetTimeOfDay();
         wall_ = finishWall_ - startWall_;
         return wall_;
       }
@@ -152,7 +152,7 @@ class AlpsTimer
     /** Check if cpu time reach limit. */
     bool reachCpuLimit() {
         finishCpu_ = AlpsCpuTime();
-        finishWall_ = AlpsWallClock();
+        finishWall_ = AlpsGetTimeOfDay();
         if (finishCpu_ - startCpu_ > limit_) {
             return true;
         }
@@ -164,7 +164,7 @@ class AlpsTimer
     /** Check if wallclock time reach limit. */
     bool reachWallLimit() {
         finishCpu_ = AlpsCpuTime();
-        finishWall_ = AlpsWallClock();
+        finishWall_ = AlpsGetTimeOfDay();
         if (finishWall_ - startWall_ > limit_) {
             return true;
         }
