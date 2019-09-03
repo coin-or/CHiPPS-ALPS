@@ -122,8 +122,8 @@ class AlpsTimer
         return cpu_;
     }
 
-    /** Get cpu timee. */
-    double getWallClock() {
+    /** Get wallclock timee. */
+    double getWallClockTime() {
         finishWall_ = AlpsGetTimeOfDay();
         wall_ = finishWall_ - startWall_;
         return wall_;
