@@ -323,7 +323,7 @@ AlpsKnowledgeBrokerSerial::searchLog()
         messageHandler()->message(ALPS_S_FINAL_CPU, messages())
             << timer_.getCpuTime() << CoinMessageEol;
         messageHandler()->message(ALPS_S_FINAL_WALLCLOCK, messages())
-            << timer_.getWallClock() << CoinMessageEol;
+            << timer_.getWallClockTime() << CoinMessageEol;
 
         if (peakMemory_ > 0.0001) {
             messageHandler()->message(ALPS_PEAK_MEMORY, messages())
@@ -356,7 +356,7 @@ AlpsKnowledgeBrokerSerial::searchLog()
 
         fout << "Search CPU time =  " << timer_.getCpuTime() << " seconds"
              << std::endl;
-        fout << "Search wallclock = " << timer_.getWallClock() <<" seconds"
+        fout << "Search wallclock = " << timer_.getWallClockTime() <<" seconds"
               << std::endl;
         fout << std::endl;
 
