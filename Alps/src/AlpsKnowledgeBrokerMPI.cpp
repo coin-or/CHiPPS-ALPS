@@ -494,7 +494,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
                             << systemSendCount_ << systemRecvCount_
                             << masterCheckCount
                             << incumbentValue_
-                            << timer_.getWallClock()
+                            << timer_.getWallClockTime()
                             << CoinMessageEol;
                     }
                     else {
@@ -504,7 +504,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
                             << systemWorkQuantityForce_
                             << systemSendCount_ << systemRecvCount_
                             << masterCheckCount
-                            << timer_.getWallClock()
+                            << timer_.getWallClockTime()
                             << CoinMessageEol;
                     }
 
@@ -541,7 +541,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
                             << systemSendCount_ << systemRecvCount_
                             << masterCheckCount
                             << incumbentValue_
-                            << timer_.getWallClock()
+                            << timer_.getWallClockTime()
                             << CoinMessageEol;
                     }
                     else {
@@ -551,7 +551,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
                             << systemWorkQuantityForce_
                             << systemSendCount_ << systemRecvCount_
                             << masterCheckCount
-                            << timer_.getWallClock()
+                            << timer_.getWallClockTime()
                             << CoinMessageEol;
                     }
                 }
@@ -580,7 +580,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
                             << systemSendCount_ << systemRecvCount_
                             << masterCheckCount
                             << incumbentValue_
-                            << timer_.getWallClock()
+                            << timer_.getWallClockTime()
                             << CoinMessageEol;
                     }
                     else {
@@ -590,7 +590,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
                             << systemWorkQuantityForce_
                             << systemSendCount_ << systemRecvCount_
                             << masterCheckCount
-                            << timer_.getWallClock()
+                            << timer_.getWallClockTime()
                             << CoinMessageEol;
                     }
                 }
@@ -603,7 +603,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
                             << masterCheckCount << masterBalancePeriod_
                             << nodeProcessingTime_ << unitWorkNodes_
                             << incumbentValue_
-                            << timer_.getWallClock()
+                            << timer_.getWallClockTime()
                             << CoinMessageEol;
                     }
                     else {
@@ -613,7 +613,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
                             << systemSendCount_ << systemRecvCount_
                             << masterCheckCount << masterBalancePeriod_
                             << nodeProcessingTime_ << unitWorkNodes_
-                            << timer_.getWallClock()
+                            << timer_.getWallClockTime()
                             << CoinMessageEol;
                     }
                 }
@@ -826,7 +826,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
                             << systemSendCount_ << systemRecvCount_
                             << masterCheckCount
                             << incumbentValue_
-                            << timer_.getWallClock()
+                            << timer_.getWallClockTime()
                             << CoinMessageEol;
                     }
                     else {
@@ -836,7 +836,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
                             << systemWorkQuantityForce_
                             << systemSendCount_ << systemRecvCount_
                             << masterCheckCount
-                            << timer_.getWallClock()
+                            << timer_.getWallClockTime()
                             << CoinMessageEol;
                     }
                 }
@@ -849,7 +849,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
                             << masterCheckCount << masterBalancePeriod_
                             << nodeProcessingTime_ << unitWorkNodes_
                             << incumbentValue_
-                            << timer_.getWallClock()
+                            << timer_.getWallClockTime()
                             << CoinMessageEol;
                     }
                     else {
@@ -859,7 +859,7 @@ AlpsKnowledgeBrokerMPI::masterMain(AlpsTreeNode* root)
                             << systemSendCount_ << systemRecvCount_
                             << masterCheckCount << masterBalancePeriod_
                             << nodeProcessingTime_ << unitWorkNodes_
-                            << timer_.getWallClock()
+                            << timer_.getWallClockTime()
                             << CoinMessageEol;
                     }
                 }
@@ -5093,7 +5093,7 @@ AlpsKnowledgeBrokerMPI::searchLog()
             logFout << "Min CPU time (worker) = " << minCpuTime << std::endl;
             logFout << "Total CPU time = " << sumCpuTime << std::endl;
             logFout << "Search wallclock time (master) = "
-                    << timer_.getWallClock() << " seconds" <<  std::endl;
+                    << timer_.getWallClockTime() << " seconds" <<  std::endl;
             logFout << "Max wallclock (worker) = "<< maxWallClock << std::endl;
             logFout << "Min wallclock (worker) = "<< minWallClock << std::endl;
             logFout << "Total wallclock = " << sumWallClock << std::endl;
@@ -5306,7 +5306,7 @@ AlpsKnowledgeBrokerMPI::searchLog()
                       << ", max = " << maxCpuTime
                       << ", min = "<< minCpuTime
                       << ", total CPU time = " << sumCpuTime << std::endl;
-            std::cout << "Search wallclock  = "<<timer_.getWallClock()
+            std::cout << "Search wallclock  = "<<timer_.getWallClockTime()
                       <<" seconds"
                       << ", max = " << maxWallClock
                       << ", min = "<< minWallClock
