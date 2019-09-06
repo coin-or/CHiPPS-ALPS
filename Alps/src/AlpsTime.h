@@ -43,26 +43,11 @@
 
 //#############################################################################
 
-static inline double AlpsWallClock()
+static inline double AlpsGetTimeOfDay()
 {
 
 #ifndef COIN_HAS_MPI
-    double cpu_temp;
-#if defined(_MSC_VER) || defined(__MSVCRT__)
-    unsigned int ticksnow;        /* clock_t is same as int */
-    ticksnow = (unsigned int)clock();
-    cpu_temp = (double)((double)ticksnow/CLOCKS_PER_SEC);
-    double sys_temp = 0.;
-#else
-    double sys_temp;
-    struct rusage usage;
-    getrusage(RUSAGE_SELF,&usage);
-    cpu_temp = (double) usage.ru_utime.tv_sec;
-    cpu_temp += 1.0e-6*((double) usage.ru_utime.tv_usec);
-    sys_temp = (double) usage.ru_stime.tv_sec
-	+ 1.e-6 * (double) usage.ru_stime.tv_usec;
-#endif
-    return cpu_temp + sys_temp;
+    return CoinGetTimeOfDay();
 #else
     // COIN_HAS_MPI
     return MPI_Wtime();
@@ -110,13 +95,13 @@ class AlpsTimer
     /** Start to count times. */
     void start() {
 	startCpu_ = AlpsCpuTime();
-	startWall_ = AlpsWallClock();
+	startWall_ = AlpsGetTimeOfDay();
     }
     
     /** Stop timer and computing times. */
     void stop() {
 	finishCpu_ = AlpsCpuTime();
-	finishWall_ = AlpsWallClock();
+	finishWall_ = AlpsGetTimeOfDay();
 	cpu_ = finishCpu_ - startCpu_;
 	wall_ = finishWall_ - startWall_;
     }
@@ -135,7 +120,7 @@ class AlpsTimer
 
     /** Get cpu timee. */
     double getWallClock() { 
-        finishWall_ = AlpsWallClock();
+        finishWall_ = AlpsGetTimeOfDay();
         wall_ = finishWall_ - startWall_;
         return wall_; 
     }
@@ -150,7 +135,7 @@ class AlpsTimer
 	return cpu_;
       }
       else {
-        finishWall_ = AlpsWallClock();
+        finishWall_ = AlpsGetTimeOfDay();
         wall_ = finishWall_ - startWall_;
         return wall_; 
       }
@@ -163,7 +148,7 @@ class AlpsTimer
     /** Check if cpu time reach limit. */
     bool reachCpuLimit() {
 	finishCpu_ = AlpsCpuTime();
-	finishWall_ = AlpsWallClock();
+	finishWall_ = AlpsGetTimeOfDay();
 	if (finishCpu_ - startCpu_ > limit_) {
 	    return true;
 	}
@@ -175,7 +160,7 @@ class AlpsTimer
     /** Check if wallclock time reach limit. */
     bool reachWallLimit() {
 	finishCpu_ = AlpsCpuTime();
-	finishWall_ = AlpsWallClock();
+	finishWall_ = AlpsGetTimeOfDay();
 	if (finishWall_ - startWall_ > limit_) {
 	    return true;
 	}
