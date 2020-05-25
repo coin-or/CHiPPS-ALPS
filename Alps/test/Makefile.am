@@ -51,8 +51,13 @@ nodist_unitTest_SOURCES = \
 
 
 # List libraries that need to be linked in
-unitTest_LDADD        = ../src/libAlps.la $(CLP_LIBS) $(ALPSLIB_LIBS)
-unitTest_DEPENDENCIES = ../src/libAlps.la $(CLP_DEPENDENCIES) $(ALPSLIB_DEPENDENCIES)
+unitTest_LDADD        = ../src/libAlps.la $(CGL_LIBS) $(CLP_LIBS) $(OSI_LIBS) \
+                        $(ALPSLIB_LIBS)
+unitTest_DEPENDENCIES = ../src/libAlps.la \
+                        $(CGL_DEPENDENCIES) \
+                        $(CLP_DEPENDENCIES) \
+                        $(OSI_DEPENDENCIES) \
+                        $(ALPSLIB_DEPENDENCIES)
 
 # Here list all include flags, relative to this "srcdir" directory.  This
 # "cygpath" stuff is necessary to compile with native compilers on Cygwin

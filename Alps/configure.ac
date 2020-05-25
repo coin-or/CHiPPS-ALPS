@@ -120,7 +120,9 @@ fi
 
 # These are only required for the unit test and the Abc example.
 # We name it Clp, because the code checks for COIN_HAS_CLP
-AC_COIN_CHECK_PACKAGE(Clp, [cgl osi-clp], [Abc])
+AC_COIN_CHECK_PACKAGE(Clp, [osi-clp clp], [Abc])
+AC_COIN_CHECK_PACKAGE(Cgl, [cgl], [Abc])
+AC_COIN_CHECK_PACKAGE(Osi, [osi], [Abc])
 
 #############################################################################
 #                  System header                                            #
