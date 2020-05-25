@@ -14,29 +14,30 @@
 
 @SET_MAKE@
 
-#==========================================================================#
-# This file is part of the Abstract Library for Parallel Search (ALPS).    #
-#                                                                          #
-# ALPS is distributed under the Eclipse Public License as part of the      #
-# COIN-OR repository (http://www.coin-or.org).                             #
-#                                                                          #
-# Authors:                                                                 #
-#                                                                          #
-#          Yan Xu, Lehigh University                                       #
-#          Aykut Bulut, Lehigh University                                  #
-#          Ted Ralphs, Lehigh University                                   #
-#                                                                          #
-# Conceptual Design:                                                       #
-#                                                                          #
-#          Yan Xu, Lehigh University                                       #
-#          Ted Ralphs, Lehigh University                                   #
-#          Laszlo Ladanyi, IBM T.J. Watson Research Center                 #
-#          Matthew Saltzman, Clemson University                            #
-#                                                                          #
-#                                                                          #
-# Copyright (C) 2001-2019, Lehigh University, Yan Xu, and Ted Ralphs.      #
-# All Rights Reserved.                                                     #
-#==========================================================================#
+#=============================================================================#
+# This file is part of the Abstract Library for Parallel Search (ALPS).       #
+#                                                                             #
+# ALPS is distributed under the Eclipse Public License as part of the         #
+# COIN-OR repository (http://www.coin-or.org).                                #
+#                                                                             #
+# Authors:                                                                    #
+#                                                                             #
+#          Yan Xu, Lehigh University                                          #
+#          Aykut Bulut, Lehigh University                                     #
+#          Ted Ralphs, Lehigh University                                      #
+#                                                                             #
+# Conceptual Design:                                                          #
+#                                                                             #
+#          Yan Xu, Lehigh University                                          #
+#          Ted Ralphs, Lehigh University                                      #
+#          Laszlo Ladanyi, IBM T.J. Watson Research Center                    #
+#          Matthew Saltzman, Clemson University                               #
+#                                                                             #
+#                                                                             #
+# Copyright (C) 2001-2019, Lehigh University, Yan Xu, Aykut Bulut, and        #
+#                          Ted Ralphs.                                        #
+# All Rights Reserved.                                                        #
+#=============================================================================#
 
 # Author:  Yan Xu Lehigh
 
@@ -145,6 +146,13 @@ CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CDEFS = @CDEFS@
 CFLAGS = @CFLAGS@
+CGL_CFLAGS = @CGL_CFLAGS@
+CGL_CFLAGS_INSTALLED = @CGL_CFLAGS_INSTALLED@
+CGL_DATA = @CGL_DATA@
+CGL_DATA_INSTALLED = @CGL_DATA_INSTALLED@
+CGL_DEPENDENCIES = @CGL_DEPENDENCIES@
+CGL_LIBS = @CGL_LIBS@
+CGL_LIBS_INSTALLED = @CGL_LIBS_INSTALLED@
 CLP_CFLAGS = @CLP_CFLAGS@
 CLP_CFLAGS_INSTALLED = @CLP_CFLAGS_INSTALLED@
 CLP_DATA = @CLP_DATA@
@@ -163,6 +171,8 @@ COIN_CC_IS_CL_FALSE = @COIN_CC_IS_CL_FALSE@
 COIN_CC_IS_CL_TRUE = @COIN_CC_IS_CL_TRUE@
 COIN_CXX_IS_CL_FALSE = @COIN_CXX_IS_CL_FALSE@
 COIN_CXX_IS_CL_TRUE = @COIN_CXX_IS_CL_TRUE@
+COIN_HAS_CGL_FALSE = @COIN_HAS_CGL_FALSE@
+COIN_HAS_CGL_TRUE = @COIN_HAS_CGL_TRUE@
 COIN_HAS_CLP_FALSE = @COIN_HAS_CLP_FALSE@
 COIN_HAS_CLP_TRUE = @COIN_HAS_CLP_TRUE@
 COIN_HAS_COINUTILS_FALSE = @COIN_HAS_COINUTILS_FALSE@
@@ -173,6 +183,8 @@ COIN_HAS_LATEX_FALSE = @COIN_HAS_LATEX_FALSE@
 COIN_HAS_LATEX_TRUE = @COIN_HAS_LATEX_TRUE@
 COIN_HAS_MPI_FALSE = @COIN_HAS_MPI_FALSE@
 COIN_HAS_MPI_TRUE = @COIN_HAS_MPI_TRUE@
+COIN_HAS_OSI_FALSE = @COIN_HAS_OSI_FALSE@
+COIN_HAS_OSI_TRUE = @COIN_HAS_OSI_TRUE@
 COIN_HAS_PKGCONFIG_FALSE = @COIN_HAS_PKGCONFIG_FALSE@
 COIN_HAS_PKGCONFIG_TRUE = @COIN_HAS_PKGCONFIG_TRUE@
 COIN_PKG_CONFIG_PATH = @COIN_PKG_CONFIG_PATH@
@@ -225,6 +237,13 @@ MPILIB = @MPILIB@
 OBJEXT = @OBJEXT@
 OPT_CFLAGS = @OPT_CFLAGS@
 OPT_CXXFLAGS = @OPT_CXXFLAGS@
+OSI_CFLAGS = @OSI_CFLAGS@
+OSI_CFLAGS_INSTALLED = @OSI_CFLAGS_INSTALLED@
+OSI_DATA = @OSI_DATA@
+OSI_DATA_INSTALLED = @OSI_DATA_INSTALLED@
+OSI_DEPENDENCIES = @OSI_DEPENDENCIES@
+OSI_LIBS = @OSI_LIBS@
+OSI_LIBS_INSTALLED = @OSI_LIBS_INSTALLED@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -276,6 +295,7 @@ coin_doxy_usedot = @coin_doxy_usedot@
 coin_have_doxygen = @coin_have_doxygen@
 coin_have_latex = @coin_have_latex@
 datadir = @datadir@
+dos2unix = @dos2unix@
 exec_prefix = @exec_prefix@
 have_autoconf = @have_autoconf@
 have_automake = @have_automake@
@@ -318,8 +338,15 @@ nodist_unitTest_SOURCES = \
 
 
 # List libraries that need to be linked in
-unitTest_LDADD = ../src/libAlps.la $(CLP_LIBS) $(ALPSLIB_LIBS)
-unitTest_DEPENDENCIES = ../src/libAlps.la $(CLP_DEPENDENCIES) $(ALPSLIB_DEPENDENCIES)
+unitTest_LDADD = ../src/libAlps.la $(CGL_LIBS) $(CLP_LIBS) $(OSI_LIBS) \
+                        $(ALPSLIB_LIBS)
+
+unitTest_DEPENDENCIES = ../src/libAlps.la \
+                        $(CGL_DEPENDENCIES) \
+                        $(CLP_DEPENDENCIES) \
+                        $(OSI_DEPENDENCIES) \
+                        $(ALPSLIB_DEPENDENCIES)
+
 
 # Here list all include flags, relative to this "srcdir" directory.  This
 # "cygpath" stuff is necessary to compile with native compilers on Cygwin
