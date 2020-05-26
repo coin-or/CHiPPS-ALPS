@@ -51,19 +51,14 @@ nodist_unitTest_SOURCES = \
 
 
 # List libraries that need to be linked in
-unitTest_LDADD        = ../src/libAlps.la $(CGL_LIBS) $(CLP_LIBS) $(OSI_LIBS) \
-                        $(ALPSLIB_LIBS)
-unitTest_DEPENDENCIES = ../src/libAlps.la \
-                        $(CGL_DEPENDENCIES) \
-                        $(CLP_DEPENDENCIES) \
-                        $(OSI_DEPENDENCIES) \
-                        $(ALPSLIB_DEPENDENCIES)
+unitTest_LDADD        = ../src/libAlps.la $(ABC_LIBS) $(ALPSLIB_LIBS)
+unitTest_DEPENDENCIES = ../src/libAlps.la $(ABC_DEPENDENCIES) $(ALPSLIB_DEPENDENCIES)
 
 # Here list all include flags, relative to this "srcdir" directory.  This
 # "cygpath" stuff is necessary to compile with native compilers on Cygwin
 AM_CPPFLAGS = -I`$(CYGPATH_W) $(srcdir)/../src` \
-	$(CLP_CFLAGS) \
-	$(ALPSLIB_CFLAGS) -DCOIN_HAS_CLP
+        $(ABC_CFLAGS) \
+        $(ALPSLIB_CFLAGS) -DCOIN_HAS_CLP
 
 # This line is necessary to allow VPATH compilation
 DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` -I$(top_builddir)/src

@@ -120,9 +120,16 @@ fi
 
 # These are only required for the unit test and the Abc example.
 # We name it Clp, because the code checks for COIN_HAS_CLP
+AC_COIN_CHECK_PACKAGE(Ccgl, [cgl], [Abc])
 AC_COIN_CHECK_PACKAGE(Clp, [osi-clp clp], [Abc])
-AC_COIN_CHECK_PACKAGE(Cgl, [cgl], [Abc])
 AC_COIN_CHECK_PACKAGE(Osi, [osi], [Abc])
+
+#############################################################################
+#                             Other dependencies                            #
+#############################################################################
+
+AC_COIN_CHECK_USER_LIBRARY([Mpi], [MPI], [mpi.h], [MPI_Irecv], [], [AlpsLib])
+# ToDo: Automatically choose MPI compiler
 
 #############################################################################
 #                  System header                                            #
