@@ -28,8 +28,6 @@
 
 # Author:  Yan Xu Lehigh
 
-AUTOMAKE_OPTIONS = foreign
-
 ########################################################################
 #                      unitTest for Alps                               #
 ########################################################################
@@ -49,19 +47,12 @@ nodist_unitTest_SOURCES = \
 	AbcSolution.cpp AbcSolution.h \
 	AbcTreeNode.cpp AbcTreeNode.h
 
-
 # List libraries that need to be linked in
-unitTest_LDADD        = ../src/libAlps.la $(ABC_LIBS) $(ALPSLIB_LIBS)
-unitTest_DEPENDENCIES = ../src/libAlps.la $(ABC_DEPENDENCIES) $(ALPSLIB_DEPENDENCIES)
+unitTest_LDADD        = ../src/libAlps.la $(ABC_LFLAGS) $(ALPSLIB_LFLAGS)
 
-# Here list all include flags, relative to this "srcdir" directory.  This
-# "cygpath" stuff is necessary to compile with native compilers on Cygwin
-AM_CPPFLAGS = -I`$(CYGPATH_W) $(srcdir)/../src` \
-        $(ABC_CFLAGS) \
-        $(ALPSLIB_CFLAGS) -DCOIN_HAS_CLP
+AM_LDFLAGS = $(LT_LDFLAGS)
 
-# This line is necessary to allow VPATH compilation
-DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` -I$(top_builddir)/src
+AM_CPPFLAGS = -I$(srcdir)/../src $(ABC_CFLAGS) $(ALPSLIB_CFLAGS) 	
 
 if COIN_HAS_MPI
 UNIT_TEST_CMD=$MPICXX -n 2 ./unitTest$(EXEEXT) -param ../examples/Abc/abc.par

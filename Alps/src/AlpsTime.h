@@ -37,7 +37,7 @@
 
 #include "CoinTime.hpp"
 
-#ifdef COIN_HAS_MPI
+#ifdef ALPS_HAS_MPI
   #include <mpi.h>
 #endif
 
@@ -50,10 +50,10 @@
 static inline double AlpsGetTimeOfDay()
 {
 
-#ifndef COIN_HAS_MPI
+#ifndef ALPS_HAS_MPI
     return CoinGetTimeOfDay();
 #else
-    // COIN_HAS_MPI
+    // ALPS_HAS_MPI
     return MPI_Wtime();
 #endif
 }

@@ -43,6 +43,6 @@
 #undef ALPS_SVN_REV
 
 /* Define to 1 if the Mpi package is available */
-#undef COIN_HAS_MPI
+#undef ALPS_HAS_MPI
 
 #endif

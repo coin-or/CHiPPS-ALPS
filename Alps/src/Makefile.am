@@ -28,7 +28,7 @@
 
 # Author:  Yan Xu Lehigh
 
-AUTOMAKE_OPTIONS = foreign
+include $(top_srcdir)/BuildTools/Makemain.inc
 
 ########################################################################
 #                               libAlps                                #
@@ -89,13 +89,7 @@ else
 libAlps_la_SOURCES += AlpsKnowledgeBrokerSerial.cpp AlpsKnowledgeBrokerSerial.h
 endif
 
-# List all additionally required libraries
-if DEPENDENCY_LINKING
-libAlps_la_LIBADD = $(ALPSLIB_LIBS)
-endif
-
-# This is for libtool
-libAlps_la_LDFLAGS = $(LT_LDFLAGS)
+libAlps_la_LIBADD = $(ALPSLIB_LFLAGS)
 
 ########################################################################
 #                            Additional flags                          #
@@ -110,9 +104,8 @@ if COIN_HAS_MPI
 AM_CPPFLAGS +=  -I`$(CYGPATH_W) $(MPIINCDIR)`
 endif
 
-# This line is necessary to allow VPATH compilation with MS compilers
-# on Cygwin
-DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)`
+# Use additional libtool flags
+AM_LDFLAGS = $(LT_LDFLAGS)
 
 ########################################################################
 #                Headers that need to be installed                     #
@@ -120,7 +113,7 @@ DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)`
 
 # Here list all the header files that are required by a user of the library,
 # and that therefore should be installed in 'include/coin'
-includecoindir = $(includedir)/coin
+includecoindir = $(pkgincludedir)
 includecoin_HEADERS = \
 	Alps.h \
 	AlpsSearchStrategy.h \

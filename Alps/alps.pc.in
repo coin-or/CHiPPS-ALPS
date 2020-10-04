@@ -1,12 +1,15 @@
-prefix=@prefix@
+@COIN_RELOCATABLE_FALSE@prefix=@prefix@
+@COIN_RELOCATABLE_TRUE@prefix=${pcfiledir}/../..
 exec_prefix=@exec_prefix@
 libdir=@libdir@
-includedir=@includedir@/coin
+includedir=@includedir@/coin-or
 
-Name: ALPS
+Name: @PACKAGE_NAME@
 Description: Abstract Library for Parallel Search
-URL: https://projects.coin-or.org/CHiPPS
+URL: @PACKAGE_URL@
 Version: @PACKAGE_VERSION@
-Libs: -L${libdir} -lAlps @ALPSLIB_PCLIBS@
 Cflags: -I${includedir}
-Requires: @ALPSLIB_PCREQUIRES@
+@COIN_STATIC_BUILD_FALSE@Libs: -L${libdir} -lAlps
+@COIN_STATIC_BUILD_FALSE@Requires.private: @ALPSLIB_PCFILES@
+@COIN_STATIC_BUILD_TRUE@Libs: -L${libdir} -lAlps @ALPSLIB_LFLAGS_NOPC@
+@COIN_STATIC_BUILD_TRUE@Requires: @ALPSLIB_PCFILES@
