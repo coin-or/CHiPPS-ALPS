@@ -87,7 +87,7 @@ test: all
 
 unitTest: test
 
-clean-local: clean-doxygendoc
+clean-local: clean-doxygen-docs
 	if test -r test/Makefile; then cd test; $(MAKE) clean; fi
 
 install-exec-local: install-doc

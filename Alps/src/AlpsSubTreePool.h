@@ -27,6 +27,8 @@
 #ifndef AlpsSubTreePool_h_
 #define AlpsSubTreePool_h_
 
+#include "AlpsConfig.h"
+
 #include "AlpsHelperFunctions.h"
 #include "AlpsPriorityQueue.h"
 #include "AlpsKnowledgePool.h"
@@ -36,7 +38,7 @@
   The subtree pool is used to store subtrees
 
 */
-class AlpsSubTreePool: public AlpsKnowledgePool {
+class ALPSLIB_EXPORT AlpsSubTreePool: public AlpsKnowledgePool {
   AlpsPriorityQueue<AlpsSubTree*> subTreeList_;
 
 public:

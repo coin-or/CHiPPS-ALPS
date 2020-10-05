@@ -27,13 +27,9 @@
 #ifndef AlpsTime_h_
 #define AlpsTime_h_
 
-//#############################################################################
-
-// #undef SEEK_SET
-// #undef SEEK_END
-// #undef SEEK_CUR
-#include "Alps.h"
 #include "AlpsConfig.h"
+
+#include "Alps.h"
 
 #include "CoinTime.hpp"
 
@@ -61,7 +57,7 @@ static inline double AlpsGetTimeOfDay()
 //#############################################################################
 
 /* A timer used to record cpu and wallclock time. */
-class AlpsTimer
+class ALPSLIB_EXPORT AlpsTimer
 {
  public:  /* Public for parallecl gather. */
 

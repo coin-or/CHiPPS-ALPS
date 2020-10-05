@@ -27,6 +27,8 @@
 #ifndef AlpsNodeDesc_h_
 #define AlpsNodeDesc_h_
 
+#include "AlpsConfig.h"
+
 #include "AlpsKnowledge.h"
 
 class AlpsModel;
@@ -42,7 +44,7 @@ class AlpsModel;
 
  */
 
-class AlpsNodeDesc: virtual public AlpsKnowledge {
+class ALPSLIB_EXPORT AlpsNodeDesc: virtual public AlpsKnowledge {
  public:
   ///@name Constructor and Destructor.
   //@{

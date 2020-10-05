@@ -27,6 +27,8 @@
 #ifndef AlpsSolution_h_
 #define AlpsSolution_h_
 
+#include "AlpsConfig.h"
+
 #include <iosfwd>
 #include <map>
 #include <vector>
@@ -36,7 +38,7 @@
 
 //#############################################################################
 
-class AlpsSolution : public AlpsKnowledge {
+class ALPSLIB_EXPORT AlpsSolution : public AlpsKnowledge {
 
 private:
   /** Diable copy constructor and assignment. */

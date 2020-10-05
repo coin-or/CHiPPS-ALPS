@@ -27,6 +27,8 @@
 #ifndef AlpsKnowledgeBroker_h_
 #define AlpsKnowledgeBroker_h_
 
+#include "AlpsConfig.h"
+
 #include <cmath>
 #include <iosfwd>
 #include <map>
@@ -49,7 +51,7 @@
 //#############################################################################
 
 /** The base class of knowledge broker class. */
-class AlpsKnowledgeBroker {
+class ALPSLIB_EXPORT AlpsKnowledgeBroker {
   /** Stores registered knowledge. */
   std::map<int, AlpsKnowledge*> decodeMap_;
 
@@ -512,7 +514,7 @@ public:
   /** Pass in Message handler (not deleted at end). */
   void passInMessageHandler(CoinMessageHandler * handler);
   /** Set language. */
-  void newLanguage(CoinMessages::Language language);
+  void newLanguage(CoinMessages::Language language){/*Not sure what this should do*/};
   void setLanguage(CoinMessages::Language language)
   { newLanguage(language); }
   /** Return handler. */

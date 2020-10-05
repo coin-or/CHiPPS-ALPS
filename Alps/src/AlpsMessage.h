@@ -27,6 +27,8 @@
 #ifndef AlpsMessage_h_
 #define AlpsMessage_h_
 
+#include "AlpsConfig.h"
+
 #include "CoinMessageHandler.hpp"
 
 //#############################################################################
@@ -117,7 +119,7 @@ enum ALPS_Message
 
 //#############################################################################
 
-class AlpsMessage : public CoinMessages {
+class ALPSLIB_EXPORT AlpsMessage : public CoinMessages {
 
  public:
     /**@name Constructors etc */

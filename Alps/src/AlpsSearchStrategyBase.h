@@ -27,6 +27,8 @@
 #ifndef AlpsSearchStrategyBase_h_
 #define AlpsSearchStrategyBase_h_
 
+#include "AlpsConfig.h"
+
 #include "Alps.h"
 
 class AlpsModel;
@@ -46,7 +48,7 @@ class AlpsTreeNode;
     3) set it to knowledge broker.
 */
 template<class T>
-class AlpsSearchStrategy
+class ALPSLIB_EXPORT AlpsSearchStrategy
 {
 protected:
     /** Used to change search behavior. */
@@ -105,7 +107,7 @@ public:
 
 /** Compare function for priority queue. */
 template<class T>
-class AlpsCompare
+class  ALPSLIB_EXPORT AlpsCompare
 {
 public:
     AlpsSearchStrategy<T>* strategy_;

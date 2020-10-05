@@ -27,6 +27,8 @@
 #ifndef AlpsEncoded_h
 #define AlpsEncoded_h
 
+#include "AlpsConfig.h"
+
 #include <cstring>
 #include <string>
 #include <memory>
@@ -61,7 +63,7 @@
   </ul>
 */
 
-class AlpsEncoded {
+class ALPSLIB_EXPORT AlpsEncoded {
 
  private:
     /** Disable copy constructor and assignment operator */

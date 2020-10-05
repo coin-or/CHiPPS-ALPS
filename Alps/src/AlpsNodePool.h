@@ -27,6 +27,8 @@
 #ifndef AlpsNodePool_h_
 #define AlpsNodePool_h_
 
+#include "AlpsConfig.h"
+
 #include <vector>
 
 #include "AlpsHelperFunctions.h"
@@ -40,7 +42,7 @@
 
 */
 
-class AlpsNodePool: public AlpsKnowledgePool {
+class ALPSLIB_EXPORT AlpsNodePool: public AlpsKnowledgePool {
   /// Candidate list.
   AlpsPriorityQueue<AlpsTreeNode*> candidateList_;
 

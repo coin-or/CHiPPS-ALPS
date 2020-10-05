@@ -27,6 +27,8 @@
 #ifndef AlpsModel_h_
 #define AlpsModel_h_
 
+#include "AlpsConfig.h"
+
 #include <string>
 
 #include "CoinError.hpp"
@@ -35,7 +37,7 @@
 #include "AlpsTreeNode.h"
 #include "AlpsParams.h"
 
-class AlpsKnowledgeBroker;
+class ALPSLIB_EXPORT AlpsKnowledgeBroker;
 
 /*!
 
@@ -129,7 +131,7 @@ class AlpsKnowledgeBroker;
 
  */
 
-class AlpsModel : public AlpsKnowledge {
+class ALPSLIB_EXPORT AlpsModel : public AlpsKnowledge {
 
 private:
 

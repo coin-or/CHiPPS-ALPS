@@ -27,6 +27,8 @@
 #ifndef AlpsSolutionPool_h_
 #define AlpsSolutionPool_h_
 
+#include "AlpsConfig.h"
+
 #include "AlpsKnowledgePool.h"
 #include "AlpsSolution.h"
 
@@ -40,7 +42,7 @@
   desirable the solution is.
 */
 
-class AlpsSolutionPool: public AlpsKnowledgePool {
+class ALPSLIB_EXPORT AlpsSolutionPool: public AlpsKnowledgePool {
   std::multimap<double, AlpsSolution*> solutions_;
   int maxNumSolutions_;
 

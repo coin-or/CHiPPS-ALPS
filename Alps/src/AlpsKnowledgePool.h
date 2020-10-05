@@ -27,6 +27,8 @@
 #ifndef AlpsKnowledgePool_h_
 #define AlpsKnowledgePool_h_
 
+#include "AlpsConfig.h"
+
 // STL headers
 #include <climits>
 #include <iostream>
@@ -44,7 +46,7 @@
 
  */
 
-class AlpsKnowledgePool {
+class ALPSLIB_EXPORT AlpsKnowledgePool {
   AlpsKnowledgePoolType type_;
 
 public:

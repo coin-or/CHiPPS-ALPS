@@ -27,6 +27,8 @@
 #ifndef AlpsKnowledge_h_
 #define AlpsKnowledge_h_
 
+#include "AlpsConfig.h"
+
 #include <map>
 #include <memory>
 #include <typeinfo>
@@ -60,7 +62,7 @@ struct AlpsStrLess {
 
 */
 
-class AlpsKnowledge {
+class ALPSLIB_EXPORT AlpsKnowledge {
   AlpsKnowledgeType type_;
 public:
   AlpsKnowledgeBroker * broker_;

@@ -27,6 +27,8 @@
 #ifndef AlpsKnowledgeBrokerMPI_h_
 #define AlpsKnowledgeBrokerMPI_h_
 
+#include "AlpsConfig.h"
+
 #include <cmath>
 #include <iosfwd>
 
@@ -53,7 +55,7 @@
 
  */
 
-class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
+class ALPSLIB_EXPORT AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
  private:
     /** Disable copy construct and assignment operator. */

@@ -46,15 +46,30 @@
 #define __ALPSCONFIG_H__
 
 #ifdef HAVE_CONFIG_H
-#ifdef ALPS_BUILD
+
+#ifdef ALPSLIB_BUILD
 #include "config.h"
+
+/* overwrite COINUTILSLIB_EXPORT from config.h when building CoinUtils
+ * we want it to be __declspec(dllexport) when building a DLL on Windows
+ * we want it to be __attribute__((__visibility__("default"))) when building with GCC,
+ *   so user can compile with -fvisibility=hidden
+ */
+#ifdef DLL_EXPORT
+#undef ALPSLIB_EXPORT
+#define ALPSLIB_EXPORT __declspec(dllexport)
+#elif defined(__GNUC__) && __GNUC__ >= 4
+#undef ALPSLIB_EXPORT
+#define ALPSLIB_EXPORT __attribute__((__visibility__("default")))
+#endif
+
 #else
 #include "config_alps.h"
 #endif
 
 #else /* HAVE_CONFIG_H */
 
-#ifdef ALPS_BUILD
+#ifdef ALPSLIB_BUILD
 #include "config_default.h"
 #else
 #include "config_alps_default.h"

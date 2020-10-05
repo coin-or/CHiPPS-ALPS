@@ -27,6 +27,8 @@
 #ifndef AlpsTreeNode_h_
 #define AlpsTreeNode_h_
 
+#include "AlpsConfig.h"
+
 #include <algorithm>
 #include <utility>
 #include <vector>
@@ -49,7 +51,7 @@ class AlpsKnowledgeBroker;
     operation of the search tree.*/
 //#############################################################################
 
-class AlpsTreeNode : public AlpsKnowledge {
+class ALPSLIB_EXPORT AlpsTreeNode : public AlpsKnowledge {
  protected:
     /** The subtree own this node. */
     //AlpsSubTree*       subTree_;

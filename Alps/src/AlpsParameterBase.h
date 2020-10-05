@@ -27,6 +27,8 @@
 #ifndef AlpsParameterBase_h_
 #define AlpsParameterBase_h_
 
+#include "AlpsConfig.h"
+
 //----------------------------------------------------------
 // AlpsParameterBase.h is modified from BCP_parameters.hpp
 //----------------------------------------------------------
@@ -78,7 +80,7 @@ enum AlpsParameterT{
 
 /** This parameter indeintifies a single parameter entry. */
 
-class AlpsParameter {
+class ALPSLIB_EXPORT AlpsParameter {
 
  private:
     /**@name Data members */
@@ -135,7 +137,7 @@ class AlpsParameter {
     After this the user can read in the parameters from a file, she can
     set/access the parameters in the parameter set.
 */
-class AlpsParameterSet {
+class ALPSLIB_EXPORT AlpsParameterSet {
  protected:
     /**@name Data members. All of them are protected. */
     /*@{*/
