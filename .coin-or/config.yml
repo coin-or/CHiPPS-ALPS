@@ -1,15 +1,15 @@
 Description:
   Slug: CHiPPS-ALPS
-  ShortName: CHiPPS-ALPS
+  ShortName: Alps
   LongName: Abstract Library for Parallel Search.
   ShortDescription: A collection of abstract base classes for implementing parallel tree search.
   LongDescription: |2
-    CHiPPS is the COIN-OR Open Parallel Search Framework, a framework for
-    implementing parallel algorithms based on tree search. The current CHiPPS
-    architecture consists of three layers (ALPS, BiCEPS, BLIS). The Abstract
-    Library for Parallel Search (ALPS) is the base layer of a hierarchy
-    consisting of implementations of various tree search algorithms for
-    specific problem types.
+    The Abstract Library for Parallel Search (ALPS) is a collection of abstract
+    base classes that forms the base level of a class hierarchy comprising
+    CHiPPS, the COIN-OR Open Parallel Search Framework. CHiPPS is a framework
+    for implementing parallel algorithms based on tree search. The current
+    CHiPPS hierarchy consists of three main layers (ALPS, BiCEPS, BLIS) upon
+    which multiple applications are built.  
   Manager: Ted Ralphs, ted at lehigh dot edu 
   Homepage: https://github.com/coin-or/CHiPPS-ALPS
   License: Eclipse Public License 2.0
