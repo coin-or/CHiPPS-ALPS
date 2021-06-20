@@ -30,8 +30,6 @@
 #                       Names and other basic things                        #
 #############################################################################
 
-AC_PREREQ(2.59)
-
 AC_INIT([Alps],[devel],[https://github.com/coin-or/CHiPPS-ALPS/issues/new],[coin-or-alps],[https://github.com/coin-or/CHiPPS-ALPS])
 
 AC_COPYRIGHT([
@@ -117,7 +115,8 @@ AC_COIN_CHK_PKG(Cgl, [Abc])
 #                             Other dependencies                            #
 #############################################################################
 
-AC_COIN_CHK_LIB(MPI,[AlpsLib],[-lmpi],[],[],[MPI_Irecv],[],[no])
+AC_COIN_CHK_LIB(MPI,[AlpsLib],[-lmpi],[],[],[MPI_Irecv],[#include "mpi.h"],
+                [no])
 # ToDo: Automatically choose MPI compiler
 
 ##############################################################################
