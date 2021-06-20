@@ -1,0 +1,75 @@
+Description:
+  Slug: CHiPPS-ALPS
+  ShortName: CHiPPS-ALPS
+  LongName: Abstract Library for Parallel Search.
+  ShortDescription: A collection of abstract base classes for implementing parallel tree search.
+  LongDescription: |2
+    CHiPPS is the COIN-OR Open Parallel Search Framework, a framework for
+    implementing parallel algorithms based on tree search. The current CHiPPS
+    architecture consists of three layers (ALPS, BiCEPS, BLIS). The Abstract
+    Library for Parallel Search (ALPS) is the base layer of a hierarchy
+    consisting of implementations of various tree search algorithms for
+    specific problem types.
+  Manager: Ted Ralphs, ted at lehigh dot edu 
+  Homepage: https://github.com/coin-or/CHiPPS-ALPS
+  License: Eclipse Public License 2.0
+  LicenseURL: http://www.opensource.org/licenses/eclipse-2.0
+  Zenodo: 23726893
+  IncludedIn:
+    Package: CHiPPS-BLIS
+  Language:
+    - C++
+  Categories: 
+    - Optimization deterministic linear discrete
+    - Optimization utility
+
+Dependencies:
+  - Description: COIN-OR Utilities
+    URL: https://github.com/coin-or/CoinUtils
+    Version: 2.11
+    Required: Required
+  - Description: Open Solver Interface
+    URL: https://github.com/coin-or/Osi
+    Version: 0.108
+    Required: Required
+  - Description: Open Solver Interface
+    URL: https://github.com/coin-or/Clp
+    Version: 1.17
+    Required: Recommended
+  - Description: Open Solver Interface
+    URL: https://github.com/coin-or/Cgl
+    Version: 0.60
+    Required: Recommended
+  - Description: Basic Linear Algebra Subroutines (BLAS)
+    URL: http://www.netlib.org/blas
+    Required: Optional
+  - Description: Linear Algebra Package (LAPACK)
+    URL: http://www.netlib.org/lapack
+    Required: Optional
+  - Description: GNU Readline
+    Required: Recommended
+  - Description: GNU History
+    Required: Recommended
+
+DevelopmentStatus: 
+  activityStatus: Active
+  maturityLevel: 5
+  testedPlatforms: 
+  - operatingSystem: Linux
+    compiler: gcc
+  - operatingSystem: Mac OS X
+    compiler:
+    - gcc
+    - clang
+  - operatingSystem: Microsoft Windows
+    compiler: cl
+  - operatingSystem: Microsoft Windows with MSys2
+    compiler:
+    - gcc
+    - cl
+    - icl
+  - operatingSystem: Microsoft Windows Subsystem for Linux
+    compiler:
+    - gcc
+    - cl
+    - icl
