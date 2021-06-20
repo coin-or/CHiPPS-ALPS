@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+
+# Exit when command fails
+set -e
+#Attempt to use undefined variable outputs error message, and forces an exit
+set -u
+#Causes a pipeline to return the exit status of the last command in the pipe
+#that returned a non-zero return value.
+set -o pipefail
+#set -x
+
+source $COINBREW_HOME/scripts/generate_readme
+
+pushd . > /dev/null
+cd $(dirname $0)
+SCRIPT_DIR=$PWD
+popd > /dev/null
+
+create_variables $SCRIPT_DIR/config.yml
+
+make_header
+
+echo "Welcome to ALPS. Alps is a framework for implementing parallel graph 
+search algorithms. Its methodology generalizes many of the notions of an 
+LP-based branch-and-bound algorithm, allowing the implementation of a wide 
+range of algorithms with a simplified interface. Alps implements the search 
+handling methods required for implementing large-scale, data-intensive parallel 
+search algorithms, such as those used for solving discrete optimization 
+problems. It is the base layer of the CHiPPS (COIN High Performance Parallel 
+Search) library hierarchy that will includes a library for solving mixed 
+integer linear programs (BLIS)."
+
+make_build_info_no_packages
+
+echo "## BUILDING with MPI (PARALLEL VERSION)
+
+For configuration and compilation of the parallel version, the user has
+to specify the location of MPI with options \`--with-mpi-cflags\`,
+\`--with-mpi-lflags\`, \`MPICC\`, and \`MPICXX\`. 
+
+\`\`\`
+./coinbrew build Alps --enable-static --disable-shared \
+--with-mpi-cflags=\"\$\(pkg-config --cflags mpi\)\" \
+--with-mpi-lflags=\"\$\(pkg-config --libs mpi\)\" MPICC=mpicc MPICXX=mpiCC
+\`\`\`
+
+## BUILDING EXAMPLES
+
+To build example codes (ABC and KNAP), configure and build as above. Switch
+into the appropriate subdirectory in the source distribution and type \`make\`."
+
+make_doxygen_info
+
+make_links
+
+echo "## CURRENT TESTING STATUS
+
+  1. Configurations
+    - Serial: Well tested.
+    - LAMMPI: Well tested.
+    - MPICH: Well tested.
+
+  2. Applications (See INSTALL)
+    - Abc: Alps Branch and Cut (A simple generic MILP solver): Well tested.
+    - Knap: Knapsack solver: Well tested.
+
+## Authors
+
+Source Code:
+
+Yan Xu (yax2@lehigh.edu)
+Aykut Bulut (aykutblt@gmail.com) 
+Ted Ralphs (ted@lehigh.edu), Project Manager
+
+Original Conceptual Design:
+
+Yan Xu (yax2@lehigh.edu)
+Ted Ralphs (ted@lehigh.edu), Project Manager
+Laci Ladanyi (ladanyi@us.ibm.com)
+Matt Saltzman (mjs@clemson.edu)"
