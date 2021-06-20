@@ -9,15 +9,15 @@ _This file is auto-generated from [config.yml](.coin-or/config.yml) using the
 To make changes, please edit [config.yml](.coin-or/config.yml) or the generation scripts
 [here](.coin-or/generate_readme) and [here](https://github.com/coin-or/coinbrew/blob/master/scripts/generate_readme)._
 
-Welcome to ALPS. Alps is a framework for implementing parallel graph 
-search algorithms. Its methodology generalizes many of the notions of an 
-LP-based branch-and-bound algorithm, allowing the implementation of a wide 
-range of algorithms with a simplified interface. Alps implements the search 
-handling methods required for implementing large-scale, data-intensive parallel 
-search algorithms, such as those used for solving discrete optimization 
-problems. It is the base layer of the CHiPPS (COIN High Performance Parallel 
-Search) library hierarchy that will includes a library for solving mixed 
-integer linear programs (BLIS).
+Welcome to Alps, (Abstract Library for Parallel Search). Alps is a 
+framework for implementing parallel graph search algorithms. Its methodology 
+generalizes many of the notions of an LP-based branch-and-bound algorithm, 
+allowing the implementation of a wide range of algorithms with a simplified 
+interface. Alps implements the search handling methods required for 
+implementing large-scale, data-intensive parallel search algorithms, such as 
+those used for solving discrete optimization problems. It is the base layer 
+of the CHiPPS (COIN High Performance Parallel Search) library hierarchy that 
+will includes a library for solving mixed integer linear programs (BLIS).
 
 Alps is written in C++ and is released as open source under the [Eclipse Public License 2.0](http://www.opensource.org/licenses/eclipse-2.0).
 
