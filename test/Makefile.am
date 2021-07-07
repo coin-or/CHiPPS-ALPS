@@ -62,7 +62,6 @@ endif
 
 all: test
 
-
 test: unitTest$(EXEEXT)
 	$(UNIT_TEST_CMD)
 
