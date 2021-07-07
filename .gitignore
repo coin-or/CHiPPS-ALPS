@@ -1,5 +1,4 @@
-Alps/acinclude.m4
-Alps/build/*
+build/*
 acinclude.m4
 aclocal.m4*
 aclocal.m4.orig*
