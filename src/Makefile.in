@@ -41,6 +41,10 @@
 
 # Author:  Yan Xu Lehigh
 
+########################################################################
+#                               libAlps                                #
+########################################################################
+
 
 VPATH = @srcdir@
 am__is_gnu_make = { \
@@ -98,6 +102,8 @@ am__make_running_with_option = \
   test $$has_opt = yes
 am__make_dryrun = (target_option=n; $(am__make_running_with_option))
 am__make_keepgoing = (target_option=k; $(am__make_running_with_option))
+pkgdatadir = $(datadir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkglibexecdir = $(libexecdir)/@PACKAGE@
 am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
@@ -116,9 +122,6 @@ build_triplet = @build@
 host_triplet = @host@
 @COIN_HAS_MPI_TRUE@am__append_1 = AlpsKnowledgeBrokerMPI.cpp AlpsKnowledgeBrokerMPI.h
 @COIN_HAS_MPI_FALSE@am__append_2 = AlpsKnowledgeBrokerSerial.cpp AlpsKnowledgeBrokerSerial.h
-
-# Include MPI header directory if MPI is used
-@COIN_HAS_MPI_TRUE@am__append_3 = -I`$(CYGPATH_W) $(MPIINCDIR)`
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -270,8 +273,6 @@ am__define_uniq_tagged_files = \
   done | $(am__uniquify_input)`
 ETAGS = etags
 CTAGS = ctags
-pkgdatadir = $(datadir)/$(PACKAGE_TARNAME)
-pkgincludedir = $(includedir)/coin-or
 ABC_CFLAGS = @ABC_CFLAGS@
 ABC_CFLAGS_NOPC = @ABC_CFLAGS_NOPC@
 ABC_LFLAGS = @ABC_LFLAGS@
@@ -417,23 +418,6 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-pkgdocdir = $(docdir)
-pkgconfiglibdir = $(libdir)/pkgconfig
-
-# doxydocdir is the top-level directory for doxygen documentation. It holds
-# the tag file and possibly the PDF or Postscript version. doxyhtmldir is
-# typically a subdirectory containing all the files doxygen creates for
-# html documentation.
-doxydocdir = $(pkgdocdir)/doxydoc
-doxyhtmldir = $(doxydocdir)/html
-DocFiles = README README.md AUTHORS LICENSE
-COIN_HAS_DOXYGEN = @COIN_HAS_DOXYGEN_TRUE@TRUE
-COIN_HAS_LATEX = @COIN_HAS_LATEX_TRUE@TRUE
-DOXYTAG_EDIT = sed -e 's|@baredocdir_nosub@|$(datarootdir)/doc|g'
-
-########################################################################
-#                               libAlps                                #
-########################################################################
 
 # Name of the library compiled in this directory.
 lib_LTLIBRARIES = libAlps.la
@@ -460,10 +444,6 @@ libAlps_la_CPPFLAGS = $(ALPSLIB_CFLAGS)
 #                            Additional flags                          #
 ########################################################################
 
-# Here list all include flags, relative to this "srcdir" directory.  This
-# "cygpath" stuff is necessary to compile with native compilers on Windows.
-AM_CPPFLAGS = $(ALPSLIB_CFLAGS) $(am__append_3)
-
 # Use additional libtool flags
 AM_LDFLAGS = $(LT_LDFLAGS)
 
@@ -473,7 +453,7 @@ AM_LDFLAGS = $(LT_LDFLAGS)
 
 # Here list all the header files that are required by a user of the library,
 # and that therefore should be installed in 'include/coin'
-includecoindir = $(pkgincludedir)
+includecoindir = $(includedir)/coin-or
 includecoin_HEADERS = \
 	Alps.h \
 	AlpsSearchStrategy.h \
@@ -505,7 +485,7 @@ all: config.h config_alps.h
 
 .SUFFIXES:
 .SUFFIXES: .cpp .lo .o .obj
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/BuildTools/Makemain.inc $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -525,7 +505,6 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__maybe_remake_depfiles)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__maybe_remake_depfiles);; \
 	esac;
-$(top_srcdir)/BuildTools/Makemain.inc $(am__empty):
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
@@ -980,86 +959,6 @@ uninstall-am: uninstall-includecoinHEADERS uninstall-libLTLIBRARIES \
 
 .PRECIOUS: Makefile
 
-
-doxygen-docs: 
-	if test "$(COIN_HAS_DOXYGEN)" = TRUE; then \
-	  if test -d "doxydoc/"; then \
-	    if test -f doxydoc/doxygen.conf ; then \
-	      $(DOXYTAG_EDIT) \
-	        doxydoc/doxygen.conf > doxydoc/doxygen.conf.tmp ; \
-	      mv doxydoc/doxygen.conf.tmp doxydoc/doxygen.conf ; \
-	    fi ; \
-	    doxygen doxydoc/doxygen.conf;\
-	  fi;\
-	fi
-
-pdf-doxygen-docs: doxygen-docs
-	if test "$(COIN_HAS_DOXYGEN)" = TRUE; then \
-	  if test -d "doxydoc/latex"; then \
-       	    if test "$(COIN_HAS_LATEX)" = TRUE; then \
-	      cd doxydoc/latex;\
-	      $(MAKE) pdf;\
-	      cd -;\
-	    fi;\
-	  fi;\
-	fi
-
-clean-doxygen-docs:
-	if test -d "doxydoc"; then \
-	  cd doxydoc ;\
-	  rm -rf html latex *.log *.tag;\
-	fi
-
-install-doxygen-docs: doxygen-docs
-	if test "$(COIN_HAS_DOXYGEN)" = TRUE; then \
-	  if test -d "doxydoc"; then \
-	    test -d "$(DESTDIR)$(doxydocdir)" || \
-	         $(mkdir_p) "$(DESTDIR)$(doxydocdir)"; \
-	    $(INSTALL_DATA) doxydoc/@coin_doxy_tagname@ \
-	        "$(DESTDIR)$(doxydocdir)"; \
-	    if test -f "doxydoc/latex/refman.pdf"; then \
-	      $(INSTALL_DATA) doxydoc/latex/refman.pdf \
-	          "$(DESTDIR)$(doxydocdir)";\
-	    fi;\
-	    if test -d "doxydoc/html"; then \
-	      test -d "$(DESTDIR)$(doxyhtmldir)/search/" || \
-	           $(mkdir_p) "$(DESTDIR)$(doxyhtmldir)/search/"; \
-	      $(INSTALL_DATA) doxydoc/html/*.* \
-	          "$(DESTDIR)$(doxyhtmldir)";\
-	      $(INSTALL_DATA) doxydoc/html/search/*.* \
-	          "$(DESTDIR)$(doxyhtmldir)/search";\
-            fi;\
-          fi;\
-        fi
-
-# It's not clear that uninstall-doc should also remove doxygen doc'n. Write
-# the rules so that the last one will remove pkgdocdir (which should be empty
-# by then).
-
-uninstall-doxygen-docs:
-	if test -d "$(DESTDIR)$(doxydocdir)"; then \
-	  rm -rf "$(DESTDIR)$(doxydocdir)"; \
-	fi
-	rmdir $(DESTDIR)$(pkgdocdir) || true
-
-install-doc:
-	$(mkdir_p) "$(DESTDIR)$(pkgdocdir)"
-	for file in $(DocFiles); do \
-	  if test -f "$$file"; then dir=; else dir="$(srcdir)/"; fi; \
-	  if test -f "$$dir$$file"; then \
-	    $(INSTALL_DATA) "$$dir$$file" "$(DESTDIR)$(pkgdocdir)/$$file"; \
-	  fi; \
-	done
-
-uninstall-doc:
-	for file in $(DocFiles); do \
-	  rm -f "$(DESTDIR)$(pkgdocdir)/$$file"; \
-	done
-	rmdir $(DESTDIR)$(pkgdocdir) || true
-
-.PHONY: install-doc uninstall-doc \
-	doxygen-docs pdf-doxygen-docs clean-doxygen-docs \
-	install-doxygen-docs uninstall-doxygen-docs
 
 #############################################################################
 # Create the Config.h file that always defines HAVE_CONFIG_H and install it #

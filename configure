@@ -19160,6 +19160,18 @@ fi
 #                   Finishing up by writing all the output                   #
 ##############################################################################
 
+# Here list all the files that configure should create (except for the
+# configuration header file)
+ac_config_files="$ac_config_files Makefile examples/Abc/Makefile examples/Abc/abc.par examples/Knap/Makefile examples/Knap/knap.par src/Makefile test/Makefile alps.pc"
+
+
+ac_config_files="$ac_config_files doxydoc/doxygen.conf"
+
+
+# Here put the location and name of the configuration header file
+ac_config_headers="$ac_config_headers src/config.h src/config_alps.h"
+
+
 # Finalize libs and cflags.
 
    if test "$BUILDTOOLS_DEBUG" = 1 ; then
@@ -19257,18 +19269,6 @@ printf "%s\n" "$as_me: ABC_LFLAGS: \"${ABC_LFLAGS}\"" >&6;}
 printf "%s\n" "$as_me: ABC_CFLAGS: \"${ABC_CFLAGS}\"" >&6;}
       fi
 
-
-
-# Here list all the files that configure should create (except for the
-# configuration header file)
-ac_config_files="$ac_config_files Makefile examples/Abc/Makefile examples/Abc/abc.par examples/Knap/Makefile examples/Knap/knap.par src/Makefile test/Makefile alps.pc"
-
-
-ac_config_files="$ac_config_files doxydoc/doxygen.conf"
-
-
-# Here put the location and name of the configuration header file
-ac_config_headers="$ac_config_headers src/config.h src/config_alps.h"
 
 
 # Finally, we let configure write all the output...

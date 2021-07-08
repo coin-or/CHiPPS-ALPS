@@ -94,5 +94,5 @@ install-exec-local: install-doc
 
 uninstall-local: uninstall-doc uninstall-doxygen-docs
 
-.PHONY: test unitTest
+.PHONY: test unitTest doxydoc
 

@@ -157,9 +157,6 @@ AC_COIN_DOXYGEN([CoinUtils])
 #                   Finishing up by writing all the output                   #
 ##############################################################################
 
-# Finalize libs and cflags.
-AC_COIN_FINALIZE_FLAGS([AlpsLib Abc])
-
 # Here list all the files that configure should create (except for the
 # configuration header file)
 AC_CONFIG_FILES([Makefile
@@ -175,6 +172,9 @@ AC_CONFIG_FILES([doxydoc/doxygen.conf])
 
 # Here put the location and name of the configuration header file
 AC_CONFIG_HEADER([src/config.h src/config_alps.h])
+
+# Finalize libs and cflags.
+AC_COIN_FINALIZE_FLAGS([AlpsLib Abc])
 
 # Finally, we let configure write all the output...
 AC_COIN_FINALIZE
