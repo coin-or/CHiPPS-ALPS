@@ -160,14 +160,18 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includecoindir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libAlps_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
-@COIN_HAS_MPI_TRUE@am__objects_1 = AlpsKnowledgeBrokerMPI.lo
-@COIN_HAS_MPI_FALSE@am__objects_2 = AlpsKnowledgeBrokerSerial.lo
-am_libAlps_la_OBJECTS = AlpsParameterBase.lo AlpsParams.lo \
-	AlpsMessage.lo AlpsKnowledge.lo AlpsTreeNode.lo \
-	AlpsNodePool.lo AlpsSolutionPool.lo AlpsSubTree.lo \
-	AlpsSubTreePool.lo AlpsKnowledgeBroker.lo \
-	AlpsSearchStrategy.lo AlpsModel.lo $(am__objects_1) \
-	$(am__objects_2)
+@COIN_HAS_MPI_TRUE@am__objects_1 =  \
+@COIN_HAS_MPI_TRUE@	libAlps_la-AlpsKnowledgeBrokerMPI.lo
+@COIN_HAS_MPI_FALSE@am__objects_2 =  \
+@COIN_HAS_MPI_FALSE@	libAlps_la-AlpsKnowledgeBrokerSerial.lo
+am_libAlps_la_OBJECTS = libAlps_la-AlpsParameterBase.lo \
+	libAlps_la-AlpsParams.lo libAlps_la-AlpsMessage.lo \
+	libAlps_la-AlpsKnowledge.lo libAlps_la-AlpsTreeNode.lo \
+	libAlps_la-AlpsNodePool.lo libAlps_la-AlpsSolutionPool.lo \
+	libAlps_la-AlpsSubTree.lo libAlps_la-AlpsSubTreePool.lo \
+	libAlps_la-AlpsKnowledgeBroker.lo \
+	libAlps_la-AlpsSearchStrategy.lo libAlps_la-AlpsModel.lo \
+	$(am__objects_1) $(am__objects_2)
 libAlps_la_OBJECTS = $(am_libAlps_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -188,15 +192,20 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/AlpsKnowledge.Plo \
-	./$(DEPDIR)/AlpsKnowledgeBroker.Plo \
-	./$(DEPDIR)/AlpsKnowledgeBrokerMPI.Plo \
-	./$(DEPDIR)/AlpsKnowledgeBrokerSerial.Plo \
-	./$(DEPDIR)/AlpsMessage.Plo ./$(DEPDIR)/AlpsModel.Plo \
-	./$(DEPDIR)/AlpsNodePool.Plo ./$(DEPDIR)/AlpsParameterBase.Plo \
-	./$(DEPDIR)/AlpsParams.Plo ./$(DEPDIR)/AlpsSearchStrategy.Plo \
-	./$(DEPDIR)/AlpsSolutionPool.Plo ./$(DEPDIR)/AlpsSubTree.Plo \
-	./$(DEPDIR)/AlpsSubTreePool.Plo ./$(DEPDIR)/AlpsTreeNode.Plo
+am__depfiles_remade = ./$(DEPDIR)/libAlps_la-AlpsKnowledge.Plo \
+	./$(DEPDIR)/libAlps_la-AlpsKnowledgeBroker.Plo \
+	./$(DEPDIR)/libAlps_la-AlpsKnowledgeBrokerMPI.Plo \
+	./$(DEPDIR)/libAlps_la-AlpsKnowledgeBrokerSerial.Plo \
+	./$(DEPDIR)/libAlps_la-AlpsMessage.Plo \
+	./$(DEPDIR)/libAlps_la-AlpsModel.Plo \
+	./$(DEPDIR)/libAlps_la-AlpsNodePool.Plo \
+	./$(DEPDIR)/libAlps_la-AlpsParameterBase.Plo \
+	./$(DEPDIR)/libAlps_la-AlpsParams.Plo \
+	./$(DEPDIR)/libAlps_la-AlpsSearchStrategy.Plo \
+	./$(DEPDIR)/libAlps_la-AlpsSolutionPool.Plo \
+	./$(DEPDIR)/libAlps_la-AlpsSubTree.Plo \
+	./$(DEPDIR)/libAlps_la-AlpsSubTreePool.Plo \
+	./$(DEPDIR)/libAlps_la-AlpsTreeNode.Plo
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -445,6 +454,7 @@ libAlps_la_SOURCES = AlpsConfig.h AlpsAix43.h AlpsCygwin.h \
 	AlpsSearchStrategy.h AlpsSearchStrategy.cpp AlpsModel.h \
 	AlpsModel.cpp $(am__append_1) $(am__append_2)
 libAlps_la_LIBADD = $(ALPSLIB_LFLAGS)
+libAlps_la_CPPFLAGS = $(ALPSLIB_CFLAGS)
 
 ########################################################################
 #                            Additional flags                          #
@@ -593,20 +603,20 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AlpsKnowledge.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AlpsKnowledgeBroker.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AlpsKnowledgeBrokerMPI.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AlpsKnowledgeBrokerSerial.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AlpsMessage.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AlpsModel.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AlpsNodePool.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AlpsParameterBase.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AlpsParams.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AlpsSearchStrategy.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AlpsSolutionPool.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AlpsSubTree.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AlpsSubTreePool.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AlpsTreeNode.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libAlps_la-AlpsKnowledge.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libAlps_la-AlpsKnowledgeBroker.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libAlps_la-AlpsKnowledgeBrokerMPI.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libAlps_la-AlpsKnowledgeBrokerSerial.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libAlps_la-AlpsMessage.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libAlps_la-AlpsModel.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libAlps_la-AlpsNodePool.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libAlps_la-AlpsParameterBase.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libAlps_la-AlpsParams.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libAlps_la-AlpsSearchStrategy.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libAlps_la-AlpsSolutionPool.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libAlps_la-AlpsSubTree.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libAlps_la-AlpsSubTreePool.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libAlps_la-AlpsTreeNode.Plo@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -637,6 +647,104 @@ am--depfiles: $(am__depfiles_remade)
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LTCXXCOMPILE) -c -o $@ $<
+
+libAlps_la-AlpsParameterBase.lo: AlpsParameterBase.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libAlps_la-AlpsParameterBase.lo -MD -MP -MF $(DEPDIR)/libAlps_la-AlpsParameterBase.Tpo -c -o libAlps_la-AlpsParameterBase.lo `test -f 'AlpsParameterBase.cpp' || echo '$(srcdir)/'`AlpsParameterBase.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libAlps_la-AlpsParameterBase.Tpo $(DEPDIR)/libAlps_la-AlpsParameterBase.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AlpsParameterBase.cpp' object='libAlps_la-AlpsParameterBase.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libAlps_la-AlpsParameterBase.lo `test -f 'AlpsParameterBase.cpp' || echo '$(srcdir)/'`AlpsParameterBase.cpp
+
+libAlps_la-AlpsParams.lo: AlpsParams.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libAlps_la-AlpsParams.lo -MD -MP -MF $(DEPDIR)/libAlps_la-AlpsParams.Tpo -c -o libAlps_la-AlpsParams.lo `test -f 'AlpsParams.cpp' || echo '$(srcdir)/'`AlpsParams.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libAlps_la-AlpsParams.Tpo $(DEPDIR)/libAlps_la-AlpsParams.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AlpsParams.cpp' object='libAlps_la-AlpsParams.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libAlps_la-AlpsParams.lo `test -f 'AlpsParams.cpp' || echo '$(srcdir)/'`AlpsParams.cpp
+
+libAlps_la-AlpsMessage.lo: AlpsMessage.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libAlps_la-AlpsMessage.lo -MD -MP -MF $(DEPDIR)/libAlps_la-AlpsMessage.Tpo -c -o libAlps_la-AlpsMessage.lo `test -f 'AlpsMessage.cpp' || echo '$(srcdir)/'`AlpsMessage.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libAlps_la-AlpsMessage.Tpo $(DEPDIR)/libAlps_la-AlpsMessage.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AlpsMessage.cpp' object='libAlps_la-AlpsMessage.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libAlps_la-AlpsMessage.lo `test -f 'AlpsMessage.cpp' || echo '$(srcdir)/'`AlpsMessage.cpp
+
+libAlps_la-AlpsKnowledge.lo: AlpsKnowledge.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libAlps_la-AlpsKnowledge.lo -MD -MP -MF $(DEPDIR)/libAlps_la-AlpsKnowledge.Tpo -c -o libAlps_la-AlpsKnowledge.lo `test -f 'AlpsKnowledge.cpp' || echo '$(srcdir)/'`AlpsKnowledge.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libAlps_la-AlpsKnowledge.Tpo $(DEPDIR)/libAlps_la-AlpsKnowledge.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AlpsKnowledge.cpp' object='libAlps_la-AlpsKnowledge.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libAlps_la-AlpsKnowledge.lo `test -f 'AlpsKnowledge.cpp' || echo '$(srcdir)/'`AlpsKnowledge.cpp
+
+libAlps_la-AlpsTreeNode.lo: AlpsTreeNode.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libAlps_la-AlpsTreeNode.lo -MD -MP -MF $(DEPDIR)/libAlps_la-AlpsTreeNode.Tpo -c -o libAlps_la-AlpsTreeNode.lo `test -f 'AlpsTreeNode.cpp' || echo '$(srcdir)/'`AlpsTreeNode.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libAlps_la-AlpsTreeNode.Tpo $(DEPDIR)/libAlps_la-AlpsTreeNode.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AlpsTreeNode.cpp' object='libAlps_la-AlpsTreeNode.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libAlps_la-AlpsTreeNode.lo `test -f 'AlpsTreeNode.cpp' || echo '$(srcdir)/'`AlpsTreeNode.cpp
+
+libAlps_la-AlpsNodePool.lo: AlpsNodePool.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libAlps_la-AlpsNodePool.lo -MD -MP -MF $(DEPDIR)/libAlps_la-AlpsNodePool.Tpo -c -o libAlps_la-AlpsNodePool.lo `test -f 'AlpsNodePool.cpp' || echo '$(srcdir)/'`AlpsNodePool.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libAlps_la-AlpsNodePool.Tpo $(DEPDIR)/libAlps_la-AlpsNodePool.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AlpsNodePool.cpp' object='libAlps_la-AlpsNodePool.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libAlps_la-AlpsNodePool.lo `test -f 'AlpsNodePool.cpp' || echo '$(srcdir)/'`AlpsNodePool.cpp
+
+libAlps_la-AlpsSolutionPool.lo: AlpsSolutionPool.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libAlps_la-AlpsSolutionPool.lo -MD -MP -MF $(DEPDIR)/libAlps_la-AlpsSolutionPool.Tpo -c -o libAlps_la-AlpsSolutionPool.lo `test -f 'AlpsSolutionPool.cpp' || echo '$(srcdir)/'`AlpsSolutionPool.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libAlps_la-AlpsSolutionPool.Tpo $(DEPDIR)/libAlps_la-AlpsSolutionPool.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AlpsSolutionPool.cpp' object='libAlps_la-AlpsSolutionPool.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libAlps_la-AlpsSolutionPool.lo `test -f 'AlpsSolutionPool.cpp' || echo '$(srcdir)/'`AlpsSolutionPool.cpp
+
+libAlps_la-AlpsSubTree.lo: AlpsSubTree.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libAlps_la-AlpsSubTree.lo -MD -MP -MF $(DEPDIR)/libAlps_la-AlpsSubTree.Tpo -c -o libAlps_la-AlpsSubTree.lo `test -f 'AlpsSubTree.cpp' || echo '$(srcdir)/'`AlpsSubTree.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libAlps_la-AlpsSubTree.Tpo $(DEPDIR)/libAlps_la-AlpsSubTree.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AlpsSubTree.cpp' object='libAlps_la-AlpsSubTree.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libAlps_la-AlpsSubTree.lo `test -f 'AlpsSubTree.cpp' || echo '$(srcdir)/'`AlpsSubTree.cpp
+
+libAlps_la-AlpsSubTreePool.lo: AlpsSubTreePool.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libAlps_la-AlpsSubTreePool.lo -MD -MP -MF $(DEPDIR)/libAlps_la-AlpsSubTreePool.Tpo -c -o libAlps_la-AlpsSubTreePool.lo `test -f 'AlpsSubTreePool.cpp' || echo '$(srcdir)/'`AlpsSubTreePool.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libAlps_la-AlpsSubTreePool.Tpo $(DEPDIR)/libAlps_la-AlpsSubTreePool.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AlpsSubTreePool.cpp' object='libAlps_la-AlpsSubTreePool.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libAlps_la-AlpsSubTreePool.lo `test -f 'AlpsSubTreePool.cpp' || echo '$(srcdir)/'`AlpsSubTreePool.cpp
+
+libAlps_la-AlpsKnowledgeBroker.lo: AlpsKnowledgeBroker.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libAlps_la-AlpsKnowledgeBroker.lo -MD -MP -MF $(DEPDIR)/libAlps_la-AlpsKnowledgeBroker.Tpo -c -o libAlps_la-AlpsKnowledgeBroker.lo `test -f 'AlpsKnowledgeBroker.cpp' || echo '$(srcdir)/'`AlpsKnowledgeBroker.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libAlps_la-AlpsKnowledgeBroker.Tpo $(DEPDIR)/libAlps_la-AlpsKnowledgeBroker.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AlpsKnowledgeBroker.cpp' object='libAlps_la-AlpsKnowledgeBroker.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libAlps_la-AlpsKnowledgeBroker.lo `test -f 'AlpsKnowledgeBroker.cpp' || echo '$(srcdir)/'`AlpsKnowledgeBroker.cpp
+
+libAlps_la-AlpsSearchStrategy.lo: AlpsSearchStrategy.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libAlps_la-AlpsSearchStrategy.lo -MD -MP -MF $(DEPDIR)/libAlps_la-AlpsSearchStrategy.Tpo -c -o libAlps_la-AlpsSearchStrategy.lo `test -f 'AlpsSearchStrategy.cpp' || echo '$(srcdir)/'`AlpsSearchStrategy.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libAlps_la-AlpsSearchStrategy.Tpo $(DEPDIR)/libAlps_la-AlpsSearchStrategy.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AlpsSearchStrategy.cpp' object='libAlps_la-AlpsSearchStrategy.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libAlps_la-AlpsSearchStrategy.lo `test -f 'AlpsSearchStrategy.cpp' || echo '$(srcdir)/'`AlpsSearchStrategy.cpp
+
+libAlps_la-AlpsModel.lo: AlpsModel.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libAlps_la-AlpsModel.lo -MD -MP -MF $(DEPDIR)/libAlps_la-AlpsModel.Tpo -c -o libAlps_la-AlpsModel.lo `test -f 'AlpsModel.cpp' || echo '$(srcdir)/'`AlpsModel.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libAlps_la-AlpsModel.Tpo $(DEPDIR)/libAlps_la-AlpsModel.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AlpsModel.cpp' object='libAlps_la-AlpsModel.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libAlps_la-AlpsModel.lo `test -f 'AlpsModel.cpp' || echo '$(srcdir)/'`AlpsModel.cpp
+
+libAlps_la-AlpsKnowledgeBrokerMPI.lo: AlpsKnowledgeBrokerMPI.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libAlps_la-AlpsKnowledgeBrokerMPI.lo -MD -MP -MF $(DEPDIR)/libAlps_la-AlpsKnowledgeBrokerMPI.Tpo -c -o libAlps_la-AlpsKnowledgeBrokerMPI.lo `test -f 'AlpsKnowledgeBrokerMPI.cpp' || echo '$(srcdir)/'`AlpsKnowledgeBrokerMPI.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libAlps_la-AlpsKnowledgeBrokerMPI.Tpo $(DEPDIR)/libAlps_la-AlpsKnowledgeBrokerMPI.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AlpsKnowledgeBrokerMPI.cpp' object='libAlps_la-AlpsKnowledgeBrokerMPI.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libAlps_la-AlpsKnowledgeBrokerMPI.lo `test -f 'AlpsKnowledgeBrokerMPI.cpp' || echo '$(srcdir)/'`AlpsKnowledgeBrokerMPI.cpp
+
+libAlps_la-AlpsKnowledgeBrokerSerial.lo: AlpsKnowledgeBrokerSerial.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libAlps_la-AlpsKnowledgeBrokerSerial.lo -MD -MP -MF $(DEPDIR)/libAlps_la-AlpsKnowledgeBrokerSerial.Tpo -c -o libAlps_la-AlpsKnowledgeBrokerSerial.lo `test -f 'AlpsKnowledgeBrokerSerial.cpp' || echo '$(srcdir)/'`AlpsKnowledgeBrokerSerial.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libAlps_la-AlpsKnowledgeBrokerSerial.Tpo $(DEPDIR)/libAlps_la-AlpsKnowledgeBrokerSerial.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='AlpsKnowledgeBrokerSerial.cpp' object='libAlps_la-AlpsKnowledgeBrokerSerial.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libAlps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libAlps_la-AlpsKnowledgeBrokerSerial.lo `test -f 'AlpsKnowledgeBrokerSerial.cpp' || echo '$(srcdir)/'`AlpsKnowledgeBrokerSerial.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -759,20 +867,20 @@ clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
 	mostlyclean-am
 
 distclean: distclean-am
-		-rm -f ./$(DEPDIR)/AlpsKnowledge.Plo
-	-rm -f ./$(DEPDIR)/AlpsKnowledgeBroker.Plo
-	-rm -f ./$(DEPDIR)/AlpsKnowledgeBrokerMPI.Plo
-	-rm -f ./$(DEPDIR)/AlpsKnowledgeBrokerSerial.Plo
-	-rm -f ./$(DEPDIR)/AlpsMessage.Plo
-	-rm -f ./$(DEPDIR)/AlpsModel.Plo
-	-rm -f ./$(DEPDIR)/AlpsNodePool.Plo
-	-rm -f ./$(DEPDIR)/AlpsParameterBase.Plo
-	-rm -f ./$(DEPDIR)/AlpsParams.Plo
-	-rm -f ./$(DEPDIR)/AlpsSearchStrategy.Plo
-	-rm -f ./$(DEPDIR)/AlpsSolutionPool.Plo
-	-rm -f ./$(DEPDIR)/AlpsSubTree.Plo
-	-rm -f ./$(DEPDIR)/AlpsSubTreePool.Plo
-	-rm -f ./$(DEPDIR)/AlpsTreeNode.Plo
+		-rm -f ./$(DEPDIR)/libAlps_la-AlpsKnowledge.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsKnowledgeBroker.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsKnowledgeBrokerMPI.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsKnowledgeBrokerSerial.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsMessage.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsModel.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsNodePool.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsParameterBase.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsParams.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsSearchStrategy.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsSolutionPool.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsSubTree.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsSubTreePool.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsTreeNode.Plo
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-hdr distclean-tags
@@ -818,20 +926,20 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-		-rm -f ./$(DEPDIR)/AlpsKnowledge.Plo
-	-rm -f ./$(DEPDIR)/AlpsKnowledgeBroker.Plo
-	-rm -f ./$(DEPDIR)/AlpsKnowledgeBrokerMPI.Plo
-	-rm -f ./$(DEPDIR)/AlpsKnowledgeBrokerSerial.Plo
-	-rm -f ./$(DEPDIR)/AlpsMessage.Plo
-	-rm -f ./$(DEPDIR)/AlpsModel.Plo
-	-rm -f ./$(DEPDIR)/AlpsNodePool.Plo
-	-rm -f ./$(DEPDIR)/AlpsParameterBase.Plo
-	-rm -f ./$(DEPDIR)/AlpsParams.Plo
-	-rm -f ./$(DEPDIR)/AlpsSearchStrategy.Plo
-	-rm -f ./$(DEPDIR)/AlpsSolutionPool.Plo
-	-rm -f ./$(DEPDIR)/AlpsSubTree.Plo
-	-rm -f ./$(DEPDIR)/AlpsSubTreePool.Plo
-	-rm -f ./$(DEPDIR)/AlpsTreeNode.Plo
+		-rm -f ./$(DEPDIR)/libAlps_la-AlpsKnowledge.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsKnowledgeBroker.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsKnowledgeBrokerMPI.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsKnowledgeBrokerSerial.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsMessage.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsModel.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsNodePool.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsParameterBase.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsParams.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsSearchStrategy.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsSolutionPool.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsSubTree.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsSubTreePool.Plo
+	-rm -f ./$(DEPDIR)/libAlps_la-AlpsTreeNode.Plo
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

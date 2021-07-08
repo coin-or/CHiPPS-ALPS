@@ -91,6 +91,8 @@ endif
 
 libAlps_la_LIBADD = $(ALPSLIB_LFLAGS)
 
+libAlps_la_CPPFLAGS = $(ALPSLIB_CFLAGS)
+
 ########################################################################
 #                            Additional flags                          #
 ########################################################################
