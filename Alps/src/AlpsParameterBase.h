@@ -36,6 +36,8 @@
 #include <utility>          // for 'pair'
 #include <vector>
 
+#include "AlpsConfig.h"
+
 #include "CoinError.hpp"
 
 #if defined(__GNUC__) && (__GNUC__ >= 3)
@@ -74,7 +76,7 @@ enum AlpsParameterT{
 
 /** This parameter indeintifies a single parameter entry. */
 
-class AlpsParameter {
+class ALPSLIB_EXPORT AlpsParameter {
 
  private:
     /**@name Data members */
@@ -131,7 +133,7 @@ class AlpsParameter {
     After this the user can read in the parameters from a file, she can
     set/access the parameters in the parameter set.
 */
-class AlpsParameterSet {
+class ALPSLIB_EXPORT AlpsParameterSet {
  protected:
     /**@name Data members. All of them are protected. */
     /*@{*/

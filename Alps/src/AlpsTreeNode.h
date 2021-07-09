@@ -30,6 +30,7 @@
 #include "CoinError.hpp"
 #include "CoinSort.hpp"
 
+#include "AlpsConfig.h"
 #include "Alps.h"
 #include "AlpsKnowledge.h"
 #include "AlpsNodeDesc.h"
@@ -47,7 +48,7 @@ class AlpsSubTree;
     operation of the search tree.*/
 //#############################################################################
 
-class AlpsTreeNode : public AlpsKnowledge { 
+class ALPSLIB_EXPORT AlpsTreeNode : public AlpsKnowledge { 
  private:
     AlpsTreeNode(const AlpsTreeNode&);
     AlpsTreeNode& operator=(const AlpsTreeNode&);

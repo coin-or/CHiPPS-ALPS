@@ -28,12 +28,13 @@
 #include <vector>
 
 #include "CoinError.hpp"
+#include "AlpsConfig.h"
 #include "AlpsKnowledge.h"
 
 //#############################################################################
 //#############################################################################
 
-class AlpsKnowledgePool {
+class ALPSLIB_EXPORT AlpsKnowledgePool {
  private:
   AlpsKnowledgePool(const AlpsKnowledgePool&);
   AlpsKnowledgePool& operator=(const AlpsKnowledgePool&);

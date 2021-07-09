@@ -23,6 +23,9 @@
 #ifndef __CONFIG_ALPS_H__
 #define __CONFIG_ALPS_H__
 
+/* Library Visibility Attribute */
+#undef ALPSLIB_EXPORT
+
 /* Version number of project */
 #undef ALPS_VERSION
 
@@ -39,6 +42,6 @@
 #undef ALPS_SVN_REV
 
 /* Define to 1 if the Mpi package is available */
-#undef COIN_HAS_MPI
+#undef ALPS_HAS_MPI
 
 #endif

@@ -1,18 +1,26 @@
-#==========================================================================#
-# This file is part of the Abstract Library for Parallel Search (ALPS).    #
-#                                                                          #
-# ALPS is distributed under the Eclipse Public License as part of the      #
-# COIN-OR repository (http://www.coin-or.org).                             #
-#                                                                          #
-# Authors: Yan Xu, Lehigh University                                       #
-#          Ted Ralphs, Lehigh University                                   #
-#          Laszlo Ladanyi, IBM T.J. Watson Research Center                 #
-#          Matthew Saltzman, Clemson University                            #
-#                                                                          #
-#                                                                          #
-# Copyright (C) 2001-2019, Lehigh University, Yan Xu, and Ted Ralphs.      #
-# All Rights Reserved.                                                     #
-#==========================================================================#
+#=============================================================================#
+# This file is part of the Abstract Library for Parallel Search (ALPS).       #
+#                                                                             #
+# ALPS is distributed under the Eclipse Public License as part of the         #
+# COIN-OR repository (http://www.coin-or.org).                                #
+#                                                                             #
+# Authors:                                                                    #
+#                                                                             #
+#          Yan Xu, Lehigh University                                          #
+#          Ted Ralphs, Lehigh University                                      #
+#                                                                             #
+# Conceptual Design:                                                          #
+#                                                                             #
+#          Yan Xu, Lehigh University                                          #
+#          Ted Ralphs, Lehigh University                                      #
+#          Laszlo Ladanyi, IBM T.J. Watson Research Center                    #
+#          Matthew Saltzman, Clemson University                               #
+#                                                                             #
+#                                                                             #
+# Copyright (C) 2001-2019, Lehigh University, Yan Xu, Ted Ralphs.             #
+# All Rights Reserved.                                                        #
+#=============================================================================#
+
 
 # $Id: Makefile.in 726 2006-04-17 04:16:00Z andreasw $
 
@@ -56,29 +64,20 @@ COIN_CXX_IS_CL = @COIN_CXX_IS_CL_TRUE@TRUE
 CXX = @CXX@
 
 # C++ Compiler options
-CXXFLAGS = @CXXFLAGS@ -DHAVE_CONFIG_H
+CXXFLAGS = @CXXFLAGS@
 
 # additional C++ Compiler options for linking
 CXXLINKFLAGS = @RPATH_FLAGS@
 
 # Include directories (we use the CYGPATH_W variables to allow compilation with Windows compilers)
-ifeq ($(COIN_HAS_PKGCONFIG), TRUE)
-  INCL = `PKG_CONFIG_PATH=@COIN_PKG_CONFIG_PATH@ @PKG_CONFIG@ --cflags alps`
-else
-  INCL = @ALPSLIB_CFLAGS_INSTALLED@
-endif
+@COIN_HAS_PKGCONFIG_TRUE@INCL = `PKG_CONFIG_PATH=@COIN_PKG_CONFIG_PATH@ @PKG_CONFIG@ --cflags alps`
+@COIN_HAS_PKGCONFIG_FALSE@INCL = -I@includedir@/coin-or
 INCL += $(ADDINCFLAGS)
 
 # Linker flags
-ifeq ($(COIN_HAS_PKGCONFIG), TRUE)
-  LIBS = `PKG_CONFIG_PATH=@COIN_PKG_CONFIG_PATH@ @PKG_CONFIG@ --libs alps`
-else
-  ifeq ($(COIN_CXX_IS_CL), TRUE)
-    LIBS = -link -libpath:`$(CYGPATH_W) @abs_lib_dir@` libAlps.lib @ALPSLIB_LIBS_INSTALLED@
-  else
-    LIBS = -L@abs_lib_dir@ -lAlps @ALPSLIB_LIBS_INSTALLED@
-  endif
-endif
+@COIN_HAS_PKGCONFIG_TRUE@LIBS = `PKG_CONFIG_PATH=@COIN_PKG_CONFIG_PATH@ @PKG_CONFIG@ --libs alps --static`
+@COIN_HAS_PKGCONFIG_FALSE@LIBS = -L@libdir@ -lAlps -lCoinUtils
+LIBS += $(ADDLIBS)
 
 # The following is necessary under cygwin, if native compilers are used
 CYGPATH_W = @CYGPATH_W@

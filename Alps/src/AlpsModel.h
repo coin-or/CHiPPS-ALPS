@@ -27,13 +27,14 @@
 
 #include "CoinError.hpp"
 
+#include "AlpsConfig.h"
 #include "AlpsKnowledge.h"
 #include "AlpsTreeNode.h"
 #include "AlpsParams.h"
 
 class AlpsKnowledgeBroker;
 
-class AlpsModel : public AlpsKnowledge {
+class ALPSLIB_EXPORT AlpsModel : public AlpsKnowledge {
 
  private:
 

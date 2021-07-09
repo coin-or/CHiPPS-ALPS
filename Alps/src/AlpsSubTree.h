@@ -29,6 +29,7 @@
 #include "CoinError.hpp"
 #include "CoinSort.hpp"
 
+#include "AlpsConfig.h"
 #include "AlpsSearchStrategy.h"
 #include "AlpsKnowledge.h"
 #include "AlpsNodePool.h"
@@ -44,7 +45,7 @@ class AlpsKnowledgeBroker;
     entire subtrees as much as possible. They will be the basic unit of work
     that will be passed between processes.
 */
-class AlpsSubTree : public AlpsKnowledge {
+class ALPSLIB_EXPORT AlpsSubTree : public AlpsKnowledge {
 
  protected:
 

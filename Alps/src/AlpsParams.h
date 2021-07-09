@@ -23,6 +23,7 @@
 #ifndef AlpsParams_h
 #define AlpsParams_h
 
+#include "AlpsConfig.h"
 #include "AlpsKnowledge.h"
 #include "AlpsParameterBase.h"
 
@@ -33,7 +34,7 @@
 //class AlpsEncoded;
 
 //** Parameters used in Alps. */
-class AlpsParams : public AlpsParameterSet {
+class ALPSLIB_EXPORT AlpsParams : public AlpsParameterSet {
  public:
   /** Character parameters. All of these variable are used as booleans
       (ture = 1, false = 0). */

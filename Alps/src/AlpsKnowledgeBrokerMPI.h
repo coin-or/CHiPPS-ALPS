@@ -31,6 +31,7 @@
 #undef SEEK_CUR
 #include "mpi.h"
 
+#include "AlpsConfig.h"
 #include "AlpsEnumProcessT.h"
 #include "AlpsKnowledge.h"
 #include "AlpsKnowledgeBroker.h"
@@ -38,7 +39,7 @@
 
 //#############################################################################
 
-class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
+class ALPSLIB_EXPORT AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
 
  private:
     /** Disable copy construct and assignment operator. */

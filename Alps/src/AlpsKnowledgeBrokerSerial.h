@@ -23,6 +23,7 @@
 #ifndef AlpsKnowledgeBrokerSerial_h_
 #define AlpsKnowledgeBrokerSerial_h_
 
+#include "AlpsConfig.h"
 #include "Alps.h"
 #include "AlpsEnumProcessT.h"
 #include "AlpsKnowledgeBroker.h"
@@ -32,7 +33,7 @@
 
 //#############################################################################
 
-class AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
+class ALPSLIB_EXPORT AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
  private:
     AlpsKnowledgeBrokerSerial(const AlpsKnowledgeBrokerSerial&);
     AlpsKnowledgeBrokerSerial& operator=(const AlpsKnowledgeBrokerSerial&);

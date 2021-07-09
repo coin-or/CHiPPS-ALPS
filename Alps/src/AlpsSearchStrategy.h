@@ -23,6 +23,7 @@
 #ifndef AlpsSearchStrategy_h_
 #define AlpsSearchStrategy_h_
 
+#include "AlpsConfig.h"
 #include "AlpsSearchStrategyBase.h"
 #include "AlpsSubTree.h"
 #include "AlpsTreeNode.h"
@@ -30,7 +31,7 @@
 //#############################################################################
 //#############################################################################
 
-class AlpsTreeSelection : public AlpsSearchStrategy<AlpsSubTree*> 
+class ALPSLIB_EXPORT AlpsTreeSelection : public AlpsSearchStrategy<AlpsSubTree*> 
 {
 public:
     /** Default Constructor. */
@@ -46,7 +47,7 @@ public:
 
 //#############################################################################
 
-class AlpsNodeSelection : public AlpsSearchStrategy<AlpsTreeNode*> 
+class ALPSLIB_EXPORT AlpsNodeSelection : public AlpsSearchStrategy<AlpsTreeNode*> 
 {
 public:
     /** Default Constructor. */
@@ -70,7 +71,7 @@ public:
 // SUBTREE SELECTION RULES
 //#############################################################################
 
-class AlpsTreeSelectionBest : public AlpsTreeSelection
+class ALPSLIB_EXPORT AlpsTreeSelectionBest : public AlpsTreeSelection
 {
 public:
     /** Default Constructor. */
@@ -86,7 +87,7 @@ public:
 
 //#############################################################################
 
-class AlpsTreeSelectionBreadth : public AlpsTreeSelection
+class ALPSLIB_EXPORT AlpsTreeSelectionBreadth : public AlpsTreeSelection
 {
 public:
     /** Default Constructor */
@@ -102,7 +103,7 @@ public:
 
 //#############################################################################
 
-class AlpsTreeSelectionDepth : public AlpsTreeSelection
+class ALPSLIB_EXPORT AlpsTreeSelectionDepth : public AlpsTreeSelection
 {
 public:
     /** Default Constructor */
@@ -118,7 +119,7 @@ public:
 
 //#############################################################################
 
-class AlpsTreeSelectionEstimate : public AlpsTreeSelection
+class ALPSLIB_EXPORT AlpsTreeSelectionEstimate : public AlpsTreeSelection
 {
 public:
     /** Default Constructor. */
@@ -136,7 +137,7 @@ public:
 // NODE SELECTION RULES
 //#############################################################################
 
-class AlpsNodeSelectionBest : public AlpsNodeSelection
+class ALPSLIB_EXPORT AlpsNodeSelectionBest : public AlpsNodeSelection
 {
 public:
     /** Default Constructor. */
@@ -154,7 +155,7 @@ public:
 
 //#############################################################################
 
-class AlpsNodeSelectionBreadth : public AlpsNodeSelection
+class ALPSLIB_EXPORT AlpsNodeSelectionBreadth : public AlpsNodeSelection
 {
 public:
     /** Default Constructor. */
@@ -172,7 +173,7 @@ public:
 
 //#############################################################################
 
-class AlpsNodeSelectionDepth : public AlpsNodeSelection
+class ALPSLIB_EXPORT AlpsNodeSelectionDepth : public AlpsNodeSelection
 {
  public:
     /** Default Constructor. */
@@ -190,7 +191,7 @@ class AlpsNodeSelectionDepth : public AlpsNodeSelection
 
 //#############################################################################
 
-class AlpsNodeSelectionEstimate : public AlpsNodeSelection
+class ALPSLIB_EXPORT AlpsNodeSelectionEstimate : public AlpsNodeSelection
 {
  public:
     /** Default Constructor. */
@@ -208,7 +209,7 @@ class AlpsNodeSelectionEstimate : public AlpsNodeSelection
 
 //#############################################################################
 
-class AlpsNodeSelectionHybrid : public AlpsNodeSelection
+class ALPSLIB_EXPORT AlpsNodeSelectionHybrid : public AlpsNodeSelection
 {
 public:
     /** Default Constructor. */

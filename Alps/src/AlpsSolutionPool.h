@@ -23,6 +23,7 @@
 #ifndef AlpsSolutionPool_h_
 #define AlpsSolutionPool_h_
 
+#include "AlpsConfig.h"
 #include "AlpsKnowledgePool.h"
 #include "AlpsSolution.h"
 
@@ -30,7 +31,7 @@
 
 /** In the solution pool we assume that the lower the priority value the more
     desirable the solution is. */
-class AlpsSolutionPool : public AlpsKnowledgePool {
+class ALPSLIB_EXPORT AlpsSolutionPool : public AlpsKnowledgePool {
     // *FIXME* ? : we do want to allow solutions with the same priority, but do
     // *FIXME* ? : we want to allow identical solutions?
  private:

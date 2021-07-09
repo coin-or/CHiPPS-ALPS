@@ -27,12 +27,13 @@
 #include <map>
 #include <vector>
 
+#include "AlpsConfig.h"
 #include "AlpsKnowledge.h"
 #include "AlpsTreeNode.h" // to get AlpsNodeIndex_t
 
 //#############################################################################
 
-class AlpsSolution : public AlpsKnowledge { 
+class ALPSLIB_EXPORT AlpsSolution : public AlpsKnowledge { 
 
  private:
     /** Diable copy constructor and assignment. */

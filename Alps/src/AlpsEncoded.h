@@ -8,6 +8,7 @@
 
 #include "CoinError.hpp"
 
+#include "AlpsConfig.h"
 #include "Alps.h"
 
 // AlpsEncoded is modified from BCP_buffer and CoinEncoded
@@ -22,7 +23,7 @@
  */
 //#############################################################################
 
-class AlpsEncoded {  
+class ALPSLIB_EXPORT AlpsEncoded {  
 
  private:
 

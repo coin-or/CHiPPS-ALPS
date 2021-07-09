@@ -25,6 +25,7 @@
 
 #include <vector>
 
+#include "AlpsConfig.h"
 #include "AlpsHelperFunctions.h"
 #include "AlpsPriorityQueue.h"
 #include "AlpsTreeNode.h"
@@ -34,7 +35,7 @@
 /** Node pool is used to store the nodes to be processed. */
 //#############################################################################
 
-class AlpsNodePool : public AlpsKnowledgePool {
+class ALPSLIB_EXPORT AlpsNodePool : public AlpsKnowledgePool {
     
  private:
     AlpsNodePool(const AlpsNodePool&);

@@ -1,31 +1,30 @@
-#==========================================================================#
-# This file is part of the Abstract Library for Parallel Search (ALPS).    #
-#                                                                          #
-# ALPS is distributed under the Eclipse Public License as part of the      #
-# COIN-OR repository (http://www.coin-or.org).                             #
-#                                                                          #
-# Authors:                                                                 #
-#                                                                          #
-#          Yan Xu, Lehigh University                                       #
-#          Ted Ralphs, Lehigh University                                   #
-#                                                                          #
-# Conceptual Design:                                                       #
-#                                                                          #
-#          Yan Xu, Lehigh University                                       #
-#          Ted Ralphs, Lehigh University                                   #
-#          Laszlo Ladanyi, IBM T.J. Watson Research Center                 #
-#          Matthew Saltzman, Clemson University                            #
-#                                                                          #
-#                                                                          #
-# Copyright (C) 2001-2019, Lehigh University, Yan Xu, and Ted Ralphs.      #
-# All Rights Reserved.                                                     #
-#==========================================================================#
+#=============================================================================#
+# This file is part of the Abstract Library for Parallel Search (ALPS).       #
+#                                                                             #
+# ALPS is distributed under the Eclipse Public License as part of the         #
+# COIN-OR repository (http://www.coin-or.org).                                #
+#                                                                             #
+# Authors:                                                                    #
+#                                                                             #
+#          Yan Xu, Lehigh University                                          #
+#          Ted Ralphs, Lehigh University                                      #
+#                                                                             #
+# Conceptual Design:                                                          #
+#                                                                             #
+#          Yan Xu, Lehigh University                                          #
+#          Ted Ralphs, Lehigh University                                      #
+#          Laszlo Ladanyi, IBM T.J. Watson Research Center                    #
+#          Matthew Saltzman, Clemson University                               #
+#                                                                             #
+#                                                                             #
+# Copyright (C) 2001-2019, Lehigh University, Yan Xu, and Ted Ralphs.         #
+# All Rights Reserved.                                                        #
+#=============================================================================#
+
 
 ## $Id: Makefile.am 507 2006-06-03 03:20:16Z andreasw $
 
 # Author:  Yan Xu Lehigh
-
-AUTOMAKE_OPTIONS = foreign
 
 ########################################################################
 #                               libAlps                                #
@@ -74,30 +73,16 @@ else
 libAlps_la_SOURCES += AlpsKnowledgeBrokerSerial.cpp AlpsKnowledgeBrokerSerial.h
 endif
 
-# List all additionally required libraries
-if DEPENDENCY_LINKING
-libAlps_la_LIBADD = $(ALPSLIB_LIBS)
-endif
+libAlps_la_LIBADD = $(ALPSLIB_LFLAGS)
 
-# This is for libtool
-libAlps_la_LDFLAGS = $(LT_LDFLAGS)
+libAlps_la_CPPFLAGS = $(ALPSLIB_CFLAGS)
 
 ########################################################################
 #                            Additional flags                          #
 ########################################################################
 
-# Here list all include flags, relative to this "srcdir" directory.  This
-# "cygpath" stuff is necessary to compile with native compilers on Windows.
-AM_CPPFLAGS = $(ALPSLIB_CFLAGS) 
-
-# Include MPI header directory if MPI is used
-if COIN_HAS_MPI
-AM_CPPFLAGS +=  -I`$(CYGPATH_W) $(MPIINCDIR)`
-endif
-
-# This line is necessary to allow VPATH compilation with MS compilers
-# on Cygwin
-DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` 
+# Use additional libtool flags
+AM_LDFLAGS = $(LT_LDFLAGS)
 
 ########################################################################
 #                Headers that need to be installed                     #
@@ -105,7 +90,7 @@ DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)`
 
 # Here list all the header files that are required by a user of the library,
 # and that therefore should be installed in 'include/coin'
-includecoindir = $(includedir)/coin
+includecoindir = $(includedir)/coin-or
 includecoin_HEADERS = \
 	Alps.h \
 	AlpsSearchStrategy.h \

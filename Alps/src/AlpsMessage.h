@@ -24,6 +24,7 @@
 #define AlpsMessage_h_
 
 #include "CoinMessageHandler.hpp"
+#include "AlpsConfig.h"
 
 //#############################################################################
 /** A list of Alps print out messages. Note this is not the messages sent
@@ -113,7 +114,7 @@ enum ALPS_Message
 
 //#############################################################################
 
-class AlpsMessage : public CoinMessages {
+class ALPSLIB_EXPORT AlpsMessage : public CoinMessages {
 
  public:
     /**@name Constructors etc */

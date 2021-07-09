@@ -1,31 +1,30 @@
-#==========================================================================#
-# This file is part of the Abstract Library for Parallel Search (ALPS).    #
-#                                                                          #
-# ALPS is distributed under the Eclipse Public License as part of the      #
-# COIN-OR repository (http://www.coin-or.org).                             #
-#                                                                          #
-# Authors:                                                                 #
-#                                                                          #
-#          Yan Xu, Lehigh University                                       #
-#          Ted Ralphs, Lehigh University                                   #
-#                                                                          #
-# Conceptual Design:                                                       #
-#                                                                          #
-#          Yan Xu, Lehigh University                                       #
-#          Ted Ralphs, Lehigh University                                   #
-#          Laszlo Ladanyi, IBM T.J. Watson Research Center                 #
-#          Matthew Saltzman, Clemson University                            #
-#                                                                          #
-#                                                                          #
-# Copyright (C) 2001-2019, Lehigh University, Yan Xu, and Ted Ralphs.      #
-# All Rights Reserved.                                                     #
-#==========================================================================#
+#=============================================================================#
+# This file is part of the Abstract Library for Parallel Search (ALPS).       #
+#                                                                             #
+# ALPS is distributed under the Eclipse Public License as part of the         #
+# COIN-OR repository (http://www.coin-or.org).                                #
+#                                                                             #
+# Authors:                                                                    #
+#                                                                             #
+#          Yan Xu, Lehigh University                                          #
+#          Ted Ralphs, Lehigh University                                      #
+#                                                                             #
+# Conceptual Design:                                                          #
+#                                                                             #
+#          Yan Xu, Lehigh University                                          #
+#          Ted Ralphs, Lehigh University                                      #
+#          Laszlo Ladanyi, IBM T.J. Watson Research Center                    #
+#          Matthew Saltzman, Clemson University                               #
+#                                                                             #
+#                                                                             #
+# Copyright (C) 2001-2019, Lehigh University, Yan Xu, and Ted Ralphs.         #
+# All Rights Reserved.                                                        #
+#=============================================================================#
+
 
 ## $Id: Makefile.am 507 2006-06-03 03:20:16Z andreasw $
 
 # Author:  Yan Xu Lehigh
-
-AUTOMAKE_OPTIONS = foreign
 
 ########################################################################
 #                      unitTest for Alps                               #
@@ -46,22 +45,23 @@ nodist_unitTest_SOURCES = \
 	AbcSolution.cpp AbcSolution.h \
 	AbcTreeNode.cpp AbcTreeNode.h
 
-
 # List libraries that need to be linked in
-unitTest_LDADD        = ../src/libAlps.la $(ABC_LIBS) $(ALPSLIB_LIBS)
-unitTest_DEPENDENCIES = ../src/libAlps.la $(ABC_DEPENDENCIES) $(ALPSLIB_DEPENDENCIES)
+unitTest_LDADD        = ../src/libAlps.la $(ABC_LFLAGS) $(ALPSLIB_LFLAGS)
 
-# Here list all include flags, relative to this "srcdir" directory.  This
-# "cygpath" stuff is necessary to compile with native compilers on Cygwin
-AM_CPPFLAGS = -I`$(CYGPATH_W) $(srcdir)/../src` \
-        $(ABC_CFLAGS) \
-        $(ALPSLIB_CFLAGS) -DCOIN_HAS_CLP
+AM_LDFLAGS = $(LT_LDFLAGS)
 
-# This line is necessary to allow VPATH compilation
-DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` -I$(top_builddir)/src
+AM_CPPFLAGS = -I$(srcdir)/../src $(ABC_CFLAGS) $(ALPSLIB_CFLAGS) 	
+
+if COIN_HAS_MPI
+UNIT_TEST_CMD=$MPICXX -n 2 ./unitTest$(EXEEXT) -param ../examples/Abc/abc.par
+else
+UNIT_TEST_CMD=./unitTest$(EXEEXT) -param ../examples/Abc/abc.par
+endif
+
+all: test
 
 test: unitTest$(EXEEXT)
-	./unitTest$(EXEEXT) -param ../examples/Abc/abc.par
+	$(UNIT_TEST_CMD)
 
 .PHONY: test
 

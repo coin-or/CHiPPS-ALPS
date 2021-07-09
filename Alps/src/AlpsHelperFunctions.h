@@ -30,12 +30,13 @@
 
 #include "CoinTime.hpp"
 
+#include "AlpsConfig.h"
 #include "AlpsTreeNode.h"
 
 //#############################################################################
 
 /** A functor class used in calulating total workload in a node pool. */
-class TotalWorkload : public std::unary_function<AlpsTreeNode*, void> {
+class ALPSLIB_EXPORT TotalWorkload : public std::unary_function<AlpsTreeNode*, void> {
 
  private:
     double totalLoad_;

@@ -26,12 +26,13 @@
 #include <queue>
 #include <vector>
 #include "CoinHelperFunctions.hpp"
+#include "AlpsConfig.h"
 #include "AlpsSearchStrategyBase.h"
 
 //#############################################################################
 
 template<class T>
-class AlpsPriorityQueue {
+class ALPSLIB_EXPORT AlpsPriorityQueue {
  private:
     AlpsPriorityQueue(const AlpsPriorityQueue&);
     AlpsPriorityQueue& operator=(const AlpsPriorityQueue&);
@@ -90,7 +91,7 @@ class AlpsPriorityQueue {
 template<class T, 
     class Container = std::vector<T>, 
     class Compare = std::less<typename Container::value_type> >
-class AlpsPriorityQueue : public std::priority_queue<T, Container, Compare> {
+class ALPSLIB_EXPORT AlpsPriorityQueue : public std::priority_queue<T, Container, Compare> {
   public:
   /** Return a const reference to the container. */
   const Container& getContainer() const { return c; }

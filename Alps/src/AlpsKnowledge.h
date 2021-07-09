@@ -27,6 +27,7 @@
 #include <memory>
 #include <typeinfo>
 
+#include "AlpsConfig.h"
 #include "Alps.h"
 #include "AlpsEncoded.h"
 
@@ -48,7 +49,7 @@ struct AlpsStrLess
     that the proper decode method can be called. */
 //#############################################################################
 
-class AlpsKnowledge {
+class ALPSLIB_EXPORT AlpsKnowledge {
 
 private:
     AlpsKnowledge(const AlpsKnowledge&);

@@ -30,6 +30,7 @@
 
 #include "CoinMessageHandler.hpp"
 
+#include "AlpsConfig.h"
 #include "AlpsSearchStrategy.h"
 #include "AlpsEnumProcessT.h"
 #include "AlpsKnowledge.h"
@@ -45,7 +46,7 @@
 //#############################################################################
 
 /** The base class of knowledge broker class. */
-class AlpsKnowledgeBroker {
+class ALPSLIB_EXPORT AlpsKnowledgeBroker {
 
  private:
 
