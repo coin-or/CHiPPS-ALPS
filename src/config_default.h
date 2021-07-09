@@ -18,7 +18,7 @@
 #define COIN_ALPS_VERBOSITY 0
 
 /* Define to 1 if the CoinUtils package is used */
-#define COIN_HAS_COINUTILS 1
+#define ALPS_HAS_COINUTILS 1
 
 /* Define to 1 if the Clp package is used */
-#define COIN_HAS_CLP 1
+#define ALPS_HAS_CLP 1
