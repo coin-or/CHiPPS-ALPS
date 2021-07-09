@@ -50,7 +50,7 @@
 #ifdef ALPSLIB_BUILD
 #include "config.h"
 
-/* overwrite COINUTILSLIB_EXPORT from config.h when building CoinUtils
+/* overwrite ALPSLIB_EXPORT from config.h when building Alps
  * we want it to be __declspec(dllexport) when building a DLL on Windows
  * we want it to be __attribute__((__visibility__("default"))) when building with GCC,
  *   so user can compile with -fvisibility=hidden
