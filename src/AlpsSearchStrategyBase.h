@@ -74,8 +74,8 @@ public:
      *
      */
     //@{
-    inline double getWeight() const { return weight_; }
-    inline void setWeight(double nw) { weight_ = nw; }
+    double getWeight() const { return weight_; }
+    void setWeight(double nw) { weight_ = nw; }
     //@}
     
     /** @name Node selection
@@ -95,7 +95,7 @@ public:
     int getType(){ return type_; }
     
     /** Set type of strategy */
-    void setType(int t) { type_ = t; }
+    void setType(AlpsSearchType t) { type_ = t; }
 };
 
 //#############################################################################

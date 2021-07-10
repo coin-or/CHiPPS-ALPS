@@ -22,6 +22,8 @@
 
 #include "AlpsSearchStrategy.h"
 
+template class ALPSLIB_EXPORT AlpsSearchStrategy<class AlpsTreeNode *>;
+
 //#############################################################################
 //#############################################################################
 
