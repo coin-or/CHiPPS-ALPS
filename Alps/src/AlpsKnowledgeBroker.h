@@ -594,7 +594,7 @@ class ALPSLIB_EXPORT AlpsKnowledgeBroker {
     void passInMessageHandler(CoinMessageHandler * handler);
 
     /** Set language. */
-    void newLanguage(CoinMessages::Language language);
+    void newLanguage(CoinMessages::Language language){/*Not sure what this should do*/};
     void setLanguage(CoinMessages::Language language)
     { newLanguage(language); }
 
