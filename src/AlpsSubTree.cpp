@@ -142,8 +142,8 @@ AlpsSubTree::AlpsSubTree(AlpsKnowledgeBroker* kb)
     : 
     root_(0),
     // nextIndex_(0), 
-    nodePool_(new AlpsNodePool),
-    diveNodePool_(new AlpsNodePool),
+    // nodePool_(new AlpsNodePool),
+    // diveNodePool_(new AlpsNodePool),
     diveNodeRule_(new AlpsNodeSelectionBest),
     activeNode_(0),
     quality_(ALPS_OBJ_MAX)
