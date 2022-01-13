@@ -28,7 +28,7 @@
 #                       Names and other basic things                        #
 #############################################################################
 
-AC_INIT([Alps],[1.6],[https://github.com/coin-or/CHiPPS-ALPS/issues/new],[coin-or-alps],[https://github.com/coin-or/CHiPPS-ALPS])
+AC_INIT([Alps],[1.6.0],[https://github.com/coin-or/CHiPPS-ALPS/issues/new],[coin-or-alps],[https://github.com/coin-or/CHiPPS-ALPS])
 
 AC_COPYRIGHT([
 /*===========================================================================*
@@ -59,7 +59,7 @@ AC_COPYRIGHT([
 AC_CONFIG_SRCDIR(src/Alps.h)
 
 # Do some initialization work (version numbers, change prefix default, ...)
-AC_COIN_INITIALIZE
+AC_COIN_INITIALIZE(9:0:6)
 
 #############################################################################
 #                         Standard build tool stuff                         #

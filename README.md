@@ -1,4 +1,4 @@
-# Alps 1.6
+# Alps 1.6.0
 
 [![A COIN-OR Project](https://coin-or.github.io/coin-or-badge.png)](https://www.coin-or.org)
 
@@ -33,9 +33,9 @@ Paper: http://dx.doi.org/10.1007/0-387-23529-9_21
 
 ## CURRENT BUILD STATUS
 
-[![Windows Builds](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/windows-ci.yml/badge.svg?branch=stable/1.6)](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/windows-ci.yml?query=branch%3Astable/1.6)
+[![Windows Builds](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/windows-ci.yml/badge.svg?branch=releases/1.6.0)](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/windows-ci.yml?query=branch%3Areleases/1.6.0)
 
-[![Linux and MacOS Builds](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/linux-ci.yml/badge.svg?branch=stable/1.6)](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/linux-ci.yml?query=branch%3Astable/1.6)
+[![Linux and MacOS Builds](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/linux-ci.yml/badge.svg?branch=releases/1.6.0)](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/linux-ci.yml?query=branch%3Areleases/1.6.0)
 
 ## DOWNLOAD
 
@@ -93,7 +93,7 @@ following on the command line.
 ```
 wget https://raw.githubusercontent.com/coin-or/coinbrew/master/coinbrew
 chmod u+x coinbrew
-./coinbrew fetch Alps@1.6
+./coinbrew fetch Alps@1.6.0
 ./coinbrew build Alps
 ```
 For more detailed instructions on coinbrew, see https://coin-or.github.io/coinbrew.
@@ -133,7 +133,7 @@ If you have `Doxygen` available, you can build a HTML documentation by typing
 `make doxygen-docs` 
 
 in the build directory. If Alps was built via `coinbrew`, then the build
-directory will be `./build/CHiPPS-ALPS/1.6` by default. The doxygen documentation main file
+directory will be `./build/CHiPPS-ALPS/1.6.0` by default. The doxygen documentation main file
 is found at `<build-dir>/doxydoc/html/index.html`.
 
 If you don't have `doxygen` installed locally, you can use also find the
