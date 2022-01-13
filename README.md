@@ -142,6 +142,7 @@ documentation [here](http://coin-or.github.io/CHiPPS-ALPS/Doxygen).
 
 ## Project Links
 
+ * [Code of Conduct](https://www.coin-or.org/code-of-conduct/)
  * [COIN-OR Web Site](http://www.coin-or.org/)
  * [Discussion formum](https://github.com/coin-or/CHiPPS-ALPS/discussions)
  * [Report a bug](https://github.com/coin-or/CHiPPS-ALPS/issues/new)
