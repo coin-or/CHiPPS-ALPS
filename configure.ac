@@ -28,7 +28,7 @@
 #                       Names and other basic things                        #
 #############################################################################
 
-AC_INIT([Alps],[1.5],[https://github.com/coin-or/CHiPPS-ALPS/issues/new],[coin-or-alps],[https://github.com/coin-or/CHiPPS-ALPS])
+AC_INIT([Alps],[1.6],[https://github.com/coin-or/CHiPPS-ALPS/issues/new],[coin-or-alps],[https://github.com/coin-or/CHiPPS-ALPS])
 
 AC_COPYRIGHT([
 /*===========================================================================*
@@ -168,7 +168,7 @@ AC_CONFIG_FILES([Makefile
 AC_CONFIG_FILES([doxydoc/doxygen.conf])
 
 # Here put the location and name of the configuration header file
-AC_CONFIG_HEADER([src/config.h src/config_alps.h])
+AC_CONFIG_HEADERS([src/config.h src/config_alps.h])
 
 # Finalize libs and cflags.
 AC_COIN_FINALIZE_FLAGS([AlpsLib Abc])
