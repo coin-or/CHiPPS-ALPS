@@ -1565,46 +1565,51 @@ Optional Packages:
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
   --with-sysroot[=DIR]    Search for dependent libraries within DIR (or the
                           compiler's sysroot if not specified).
-  --with-coinutils        Use CoinUtils. If an argument is given, 'yes' is
+  --without-coinutils     Do not use CoinUtils. If an argument is given to
+                          --with-coinutils, then 'yes' is
                           equivalent to --with-coinutils, 'no' is
-                          equivalent to --without-coinutils. Any other
-                          argument is applied as for --with-coinutils-lflags
+                          equivalent to --without-coinutils and any other
+                          argument is applied as for --with-coinutils-lflags.
   --with-coinutils-lflags Linker flags for CoinUtils appropriate for your
                           environment. (Most often, -l specs for libraries.)
   --with-coinutils-cflags Compiler flags for CoinUtils appropriate for your
                           environment. (Most often, -I specs for header file
                           directories.)
-  --with-osi              Use Osi. If an argument is given, 'yes' is
-                          equivalent to --with-osi, 'no' is
-                          equivalent to --without-osi. Any other argument is
-                          applied as for --with-osi-lflags
+  --without-osi           Do not use Osi. If an argument is given to
+                          --with-osi, then 'yes' is equivalent to
+                          --with-osi, 'no' is equivalent to
+                          --without-osi and any other argument is applied as
+                          for --with-osi-lflags.
   --with-osi-lflags       Linker flags for Osi appropriate for your
                           environment. (Most often, -l specs for libraries.)
   --with-osi-cflags       Compiler flags for Osi appropriate for your
                           environment. (Most often, -I specs for header file
                           directories.)
-  --with-clp              Use Clp. If an argument is given, 'yes' is
-                          equivalent to --with-clp, 'no' is
-                          equivalent to --without-clp. Any other argument is
-                          applied as for --with-clp-lflags
+  --without-clp           Do not use Clp. If an argument is given to
+                          --with-clp, then 'yes' is equivalent to
+                          --with-clp, 'no' is equivalent to
+                          --without-clp and any other argument is applied as
+                          for --with-clp-lflags.
   --with-clp-lflags       Linker flags for Clp appropriate for your
                           environment. (Most often, -l specs for libraries.)
   --with-clp-cflags       Compiler flags for Clp appropriate for your
                           environment. (Most often, -I specs for header file
                           directories.)
-  --with-cgl              Use Cgl. If an argument is given, 'yes' is
-                          equivalent to --with-cgl, 'no' is
-                          equivalent to --without-cgl. Any other argument is
-                          applied as for --with-cgl-lflags
+  --without-cgl           Do not use Cgl. If an argument is given to
+                          --with-cgl, then 'yes' is equivalent to
+                          --with-cgl, 'no' is equivalent to
+                          --without-cgl and any other argument is applied as
+                          for --with-cgl-lflags.
   --with-cgl-lflags       Linker flags for Cgl appropriate for your
                           environment. (Most often, -l specs for libraries.)
   --with-cgl-cflags       Compiler flags for Cgl appropriate for your
                           environment. (Most often, -I specs for header file
                           directories.)
-  --with-mpi              Use MPI. If an argument is given, 'yes' is
-                          equivalent to --with-mpi, 'no' is
-                          equivalent to --without-mpi. Any other argument is
-                          applied as for --with-mpi-lflags
+  --without-mpi           Do not use MPI. If an argument is given to
+                          --with-mpi, then 'yes' is equivalent to
+                          --with-mpi, 'no' is equivalent to
+                          --without-mpi and any other argument is applied as
+                          for --with-mpi-lflags.
   --with-mpi-lflags       Linker flags for MPI appropriate for your
                           environment. (Most often, -l specs for libraries.)
   --with-mpi-cflags       Compiler flags for MPI appropriate for your
@@ -3208,7 +3213,7 @@ fi
       : ${FFLAGS:="-nologo -fpp -Z7 -MDd $ADD_FFLAGS"}
       : ${FCFLAGS:="-nologo -fpp -Z7 -MDd $ADD_FCFLAGS"}
       : ${CFLAGS:="-nologo -Z7 -MDd $ADD_CFLAGS"}
-      : ${CXXFLAGS:="-nologo -EHs -Z7 -MDd $ADD_CXXFLAGS"}
+      : ${CXXFLAGS:="-nologo -EHs -Z7 -MDd -Zc:__cplusplus $ADD_CXXFLAGS"}
     else
       : ${FFLAGS:="-g $ADD_FFLAGS"}
       : ${FCFLAGS:="-g $ADD_FCFLAGS"}
@@ -3220,7 +3225,7 @@ fi
       : ${FFLAGS:="-nologo -fpp -O2 -MD $ADD_FFLAGS"}
       : ${FCFLAGS:="-nologo -fpp -O2 -MD $ADD_FCFLAGS"}
       : ${CFLAGS:="-nologo -DNDEBUG -O2 -MD $ADD_CFLAGS"}
-      : ${CXXFLAGS:="-nologo -EHs -DNDEBUG -O2 -MD $ADD_CXXFLAGS"}
+      : ${CXXFLAGS:="-nologo -EHs -DNDEBUG -O2 -MD -Zc:__cplusplus $ADD_CXXFLAGS"}
     else
       : ${FFLAGS:="-O2 $ADD_FFLAGS"}
       : ${FCFLAGS:="-O2 $ADD_FCFLAGS"}
