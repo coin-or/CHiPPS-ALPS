@@ -22,7 +22,8 @@ Description:
   Categories: 
     - Optimization deterministic linear discrete
     - Optimization utility
-
+  PaperCite: http://dx.doi.org/10.1007/0-387-23529-9_21
+  
 Dependencies:
   - Description: COIN-OR Utilities
     URL: https://github.com/coin-or/CoinUtils
