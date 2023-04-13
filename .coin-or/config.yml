@@ -32,11 +32,11 @@ Dependencies:
     URL: https://github.com/coin-or/Osi
     Version: 0.108
     Required: Required
-  - Description: Open Solver Interface
+  - Description: COIN-OR LP Solver
     URL: https://github.com/coin-or/Clp
     Version: 1.17
     Required: Recommended
-  - Description: Open Solver Interface
+  - Description: Cut Generation Library
     URL: https://github.com/coin-or/Cgl
     Version: 0.60
     Required: Recommended
