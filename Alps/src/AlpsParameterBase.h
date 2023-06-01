@@ -139,6 +139,10 @@ class AlpsParameterSet {
      */
     std::vector< std::pair<std::string, AlpsParameter> > keys_;
     
+    /** Suffix to be used for looking up parameters
+     */
+    std::string suffix_;
+
     /** list of obsolete keywords. If any of these is encountered a warning is
 	printed. */
     std::vector<std::string> obsoleteKeys_;
@@ -242,6 +246,7 @@ class AlpsParameterSet {
     /** The constructor allocate memory for parameters. */
     AlpsParameterSet(int c, int i, int d, int s, int sa) :
 	keys_(),
+        suffix_("Alps"),
 	bpar_(new bool[c]),
 	ipar_(new int[i]),
 	dpar_(new double[d]),
