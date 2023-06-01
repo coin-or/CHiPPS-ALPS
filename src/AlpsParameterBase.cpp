@@ -110,7 +110,7 @@ This is absurd.\n", MAX_PARAM_LINE_LENGTH);
 	//--------------------------------------------------
 
 	for (ind = keys_.begin(); ind != keys_.end(); ++ind) {
-	    if (ind->first == keyword) {
+	    if (ind->first == keyword || ind->first == suffix_ + "_" + keyword) {
 		// The keyword does exists
 		// set_param(ind->second, value);    should work
 		if (!quiet) {
