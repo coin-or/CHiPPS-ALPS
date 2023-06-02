@@ -1,6 +1,11 @@
-# Alps 1.5
+# Alps 1.5.9
 
 [![A COIN-OR Project](https://coin-or.github.io/coin-or-badge.png)](https://www.coin-or.org)
+
+Projects such as this one are maintained by a small group of volunteers under
+the auspices of the non-profit [COIN-OR Foundation](https://www.coin-or.org)
+and we need your help! Please consider [sponsoring our
+activities](https://github.com/sponsors/coin-or) or [volunteering](mailto:volunteer@coin-or.org) to help!
 
 [![Latest Release](https://img.shields.io/github/v/release/coin-or/CHiPPS-ALPS?sort=semver)](https://github.com/coin-or/CHiPPS-ALPS/releases)
 
@@ -33,9 +38,9 @@ Paper: http://dx.doi.org/10.1007/0-387-23529-9_21
 
 ## CURRENT BUILD STATUS
 
-[![Windows Builds](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/windows-ci.yml/badge.svg?branch=stable/1.5)](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/windows-ci.yml?query=branch%3Astable/1.5)
+[![Windows Builds](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/windows-ci.yml/badge.svg?branch=releases/1.5.9)](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/windows-ci.yml?query=branch%3Areleases/1.5.9)
 
-[![Linux and MacOS Builds](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/linux-ci.yml/badge.svg?branch=stable/1.5)](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/linux-ci.yml?query=branch%3Astable/1.5)
+[![Linux and MacOS Builds](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/linux-ci.yml/badge.svg?branch=releases/1.5.9)](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/linux-ci.yml?query=branch%3Areleases/1.5.9)
 
 ## DOWNLOAD
 
@@ -93,7 +98,7 @@ following on the command line.
 ```
 wget https://raw.githubusercontent.com/coin-or/coinbrew/master/coinbrew
 chmod u+x coinbrew
-./coinbrew fetch Alps@1.5
+./coinbrew fetch Alps@1.5.9
 ./coinbrew build Alps
 ```
 For more detailed instructions on coinbrew, see https://coin-or.github.io/coinbrew.
@@ -133,7 +138,7 @@ If you have `Doxygen` available, you can build a HTML documentation by typing
 `make doxygen-docs` 
 
 in the build directory. If Alps was built via `coinbrew`, then the build
-directory will be `./build/CHiPPS-ALPS/1.5` by default. The doxygen documentation main file
+directory will be `./build/CHiPPS-ALPS/1.5.9` by default. The doxygen documentation main file
 is found at `<build-dir>/doxydoc/html/index.html`.
 
 If you don't have `doxygen` installed locally, you can use also find the
@@ -144,9 +149,10 @@ documentation [here](http://coin-or.github.io/CHiPPS-ALPS/Doxygen).
 
  * [Code of Conduct](https://www.coin-or.org/code-of-conduct/)
  * [COIN-OR Web Site](http://www.coin-or.org/)
- * [Discussion formum](https://github.com/coin-or/CHiPPS-ALPS/discussions)
+ * [COIN-OR general discussion forum](https://github.com/orgs/coin-or/discussions)
+ * [Alps Discussion forum](https://github.com/coin-or/CHiPPS-ALPS/discussions)
  * [Report a bug](https://github.com/coin-or/CHiPPS-ALPS/issues/new)
- * [Doxygen-generated html documentation](http://coin-or.github.io/CHiPPS-ALPS/Doxygen)
+ * [Doxygen generated documentation](http://coin-or.github.io/CHiPPS-ALPS/Doxygen)
 
 ## CURRENT TESTING STATUS
 
