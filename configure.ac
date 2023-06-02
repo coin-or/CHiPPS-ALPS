@@ -29,7 +29,7 @@
 
 AC_PREREQ(2.59)
 
-AC_INIT([Alps],[1.5],[https://github.com/coin-or/CHiPPS-ALPS/issues/new])
+AC_INIT([Alps],[1.5.10],[https://github.com/coin-or/CHiPPS-ALPS/issues/new])
 
 AC_COPYRIGHT([
 /*===========================================================================*
