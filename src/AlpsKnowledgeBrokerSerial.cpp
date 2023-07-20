@@ -27,10 +27,11 @@
 //#############################################################################
 
 /** Reading in Alps and user parameter sets, and read in model data. */
-void 
-AlpsKnowledgeBrokerSerial::initializeSearch(int argc, 
-					    char* argv[], 
-					    AlpsModel& model) {
+void
+AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
+                                            char* argv[],
+                                            AlpsModel& model,
+                                            bool showBanner) {
 
     // Store a pointer to model
     model.setKnowledgeBroker(this);
@@ -53,22 +54,15 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
     if (logFileLevel_ > 0) {    // Require log file
 	logfile_ = model_->AlpsPar()->entry(AlpsParams::logFile);
     }
-    
-    if (msgLevel_ > 0) {
-	std::cout << "==  Welcome to the Abstract Library for Parallel Search (ALPS) \n";
-	std::cout << "==  Copyright 2000-2019 Lehigh University and others \n";
-	    std::cout << "==  All Rights Reserved. \n";
-	    std::cout << "==  Distributed under the Eclipse Public License 1.0 \n";
-	    if (strcmp(ALPS_VERSION, "trunk")){
-		std::cout << "==  Version: " << ALPS_VERSION << std::endl;
-	    }else{
-		std::cout << "==  Version: Trunk (unstable) \n";
-	    }
-	    std::cout << "==  Build Date: " <<  __DATE__;
-#ifdef ALPS_SVN_REV
-	    std::cout << "\n==  Revision Number: " << ALPS_SVN_REV;
-#endif
-	    std::cout << std::endl;
+
+    if (msgLevel_ > 0 && showBanner) {
+       std::cout << "==  Welcome to the Abstract Library for Parallel Search (ALPS) \n";
+       std::cout << "==  Copyright 2000-2019 Lehigh University and others \n";
+       std::cout << "==  All Rights Reserved. \n";
+       std::cout << "==  Distributed under the Eclipse Public License 1.0 \n";
+       std::cout << "==  Version: " << ALPS_VERSION << std::endl;
+       std::cout << "==  Build Date: " <<  __DATE__;
+       std::cout << std::endl;
     }
 
     //--------------------------------------------------

@@ -40,30 +40,31 @@ class ALPSLIB_EXPORT AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
 
  public:
     /** Default constructor. */
-    AlpsKnowledgeBrokerSerial() 
-	: 
-	AlpsKnowledgeBroker() 
-	{} 
+    AlpsKnowledgeBrokerSerial()
+        :
+        AlpsKnowledgeBroker()
+        {}
 
-    /** Useful constructor. 
-	Note need read in parameters and data seperately. */
-    AlpsKnowledgeBrokerSerial(AlpsModel& model) 
-	: 
-	AlpsKnowledgeBroker() 
-	{
-	    initializeSearch(0, NULL, model); 
-	}   
+    /** Useful constructor.
+        Note need read in parameters and data seperately. */
+    AlpsKnowledgeBrokerSerial(AlpsModel& model)
+        :
+        AlpsKnowledgeBroker()
+        {
+            initializeSearch(0, NULL, model);
+        }
 
-    /** Userful constructor. 
-	Read in parameters from arguments. Also read in data. */
-    AlpsKnowledgeBrokerSerial(int argc, 
-			      char* argv[], 
-			      AlpsModel& model) 
-	: 
-	AlpsKnowledgeBroker(model) 
-	{ 
-	    initializeSearch(argc, argv, model); 
-	}
+    /** Userful constructor.
+        Read in parameters from arguments. Also read in data. */
+    AlpsKnowledgeBrokerSerial(int argc,
+                              char* argv[],
+                              AlpsModel& model,
+                              bool showBanner = true)
+        :
+        AlpsKnowledgeBroker(model)
+        {
+           initializeSearch(argc, argv, model, showBanner);
+        }
 
 
     /** Destructor. */
@@ -138,10 +139,11 @@ class ALPSLIB_EXPORT AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
     //@}
 
     /** Reading in Alps and user parameter sets, and read in model data. */
-    virtual void initializeSearch(int argc, 
-                                  char* argv[], 
-                                  AlpsModel& model);
-    
+    virtual void initializeSearch(int argc,
+                                  char* argv[],
+                                  AlpsModel& model,
+                                  bool shawBanner = true);
+
     /** Search for best solution. */
     virtual void rootSearch(AlpsTreeNode* root);
     
