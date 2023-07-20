@@ -4207,7 +4207,8 @@ void AlpsKnowledgeBrokerMPI::deleteSubTrees()
 void
 AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
                                          char* argv[],
-                                         AlpsModel& model)
+                                         AlpsModel& model,
+                                         bool showBanner)
 {
 
     //------------------------------------------------------
@@ -4253,20 +4254,13 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
         msgLevel_ = model_->AlpsPar()->entry(AlpsParams::msgLevel);
         hubNum_ = model_->AlpsPar()->entry(AlpsParams::hubNum);
 
-        if (msgLevel_ > 0) {
-	std::cout << "==  Welcome to the Abstract Library for Parallel Search (ALPS) \n";
-	std::cout << "==  Copyright 2000-2019 Lehigh University and others \n";
+        if (msgLevel_ > 0 && showBanner) {
+           std::cout << "==  Welcome to the Abstract Library for Parallel Search (ALPS) \n";
+           std::cout << "==  Copyright 2000-2019 Lehigh University and others \n";
 	    std::cout << "==  All Rights Reserved. \n";
 	    std::cout << "==  Distributed under the Eclipse Public License 1.0 \n";
-	    if (strcmp(ALPS_VERSION, "trunk")){
-		std::cout << "==  Version: " << ALPS_VERSION << std::endl;
-	    }else{
-		std::cout << "==  Version: Trunk (unstable) \n";
-	    }
+            std::cout << "==  Version: " << ALPS_VERSION << std::endl;
 	    std::cout << "==  Build Date: " <<  __DATE__;
-#ifdef ALPS_SVN_REV
-            //std::cout << "\n==  Revision Number: " << ALPS_SVN_REV;
-#endif
             std::cout << std::endl;
         }
 
