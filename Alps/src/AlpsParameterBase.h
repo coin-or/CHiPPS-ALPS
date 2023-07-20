@@ -139,7 +139,7 @@ class AlpsParameterSet {
      */
     std::vector< std::pair<std::string, AlpsParameter> > keys_;
     
-    /** Suffix to be used for looking up parameters
+    /** Prefix to be used for looking up parameters
      */
     std::string prefix_;
 
