@@ -2,7 +2,7 @@
 # Wrapper for Microsoft lib.exe
 
 me=ar-lib
-scriptversion=2019-07-04.01; # UTC
+scriptversion=2023-07-04.01; # UTC
 
 # Copyright (C) 2010-2020 Free Software Foundation, Inc.
 # Written by Peter Rosin <peda@lysator.liu.se>.

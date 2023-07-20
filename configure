@@ -32,7 +32,7 @@
 #  *          Matthew Saltzman, Clemson University                             *
 #  *                                                                           *
 #  *                                                                           *
-#  * Copyright (C) 2001-2019, Lehigh University, Yan Xu, and Ted Ralphs.       *
+#  * Copyright (C) 2001-2023, Lehigh University, Yan Xu, and Ted Ralphs.       *
 #  *===========================================================================*/
 #
 ## -------------------- ##
@@ -1732,7 +1732,7 @@ gives unlimited permission to copy, distribute and modify it.
  *          Matthew Saltzman, Clemson University                             *
  *                                                                           *
  *                                                                           *
- * Copyright (C) 2001-2019, Lehigh University, Yan Xu, and Ted Ralphs.       *
+ * Copyright (C) 2001-2023, Lehigh University, Yan Xu, and Ted Ralphs.       *
  *===========================================================================*/
 
 _ACEOF
