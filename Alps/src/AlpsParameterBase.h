@@ -141,7 +141,7 @@ class AlpsParameterSet {
     
     /** Suffix to be used for looking up parameters
      */
-    std::string suffix_;
+    std::string prefix_;
 
     /** list of obsolete keywords. If any of these is encountered a warning is
 	printed. */
@@ -246,7 +246,7 @@ class AlpsParameterSet {
     /** The constructor allocate memory for parameters. */
     AlpsParameterSet(int c, int i, int d, int s, int sa) :
 	keys_(),
-        suffix_("Alps"),
+        prefix_("Alps"),
 	bpar_(new bool[c]),
 	ipar_(new int[i]),
 	dpar_(new double[d]),
