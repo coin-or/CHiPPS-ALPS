@@ -57,11 +57,12 @@ class AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
 	Read in parameters from arguments. Also read in data. */
     AlpsKnowledgeBrokerSerial(int argc, 
 			      char* argv[], 
-			      AlpsModel& model) 
+			      AlpsModel& model,
+                              bool showBanner = true) 
 	: 
 	AlpsKnowledgeBroker(model) 
 	{ 
-	    initializeSearch(argc, argv, model); 
+           initializeSearch(argc, argv, model, showBanner); 
 	}
 
 
@@ -139,7 +140,8 @@ class AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
     /** Reading in Alps and user parameter sets, and read in model data. */
     virtual void initializeSearch(int argc, 
                                   char* argv[], 
-                                  AlpsModel& model);
+                                  AlpsModel& model,
+                                  bool showBanner = true);
     
     /** Search for best solution. */
     virtual void rootSearch(AlpsTreeNode* root);

@@ -4195,7 +4195,8 @@ void AlpsKnowledgeBrokerMPI::deleteSubTrees()
 void 
 AlpsKnowledgeBrokerMPI::initializeSearch(int argc, 
 					 char* argv[], 
-					 AlpsModel& model) 
+					 AlpsModel& model,
+                                         bool showBanner) 
 {
 
     //------------------------------------------------------
@@ -4241,7 +4242,7 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
         msgLevel_ = model_->AlpsPar()->entry(AlpsParams::msgLevel);
         hubNum_ = model_->AlpsPar()->entry(AlpsParams::hubNum);
 
-        if (msgLevel_ > 0) {
+        if (msgLevel_ > 0 && showBanner) {
 	std::cout << "==  Welcome to the Abstract Library for Parallel Search (ALPS) \n";
 	std::cout << "==  Copyright 2000-2019 Lehigh University and others \n";
 	    std::cout << "==  All Rights Reserved. \n";
