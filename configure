@@ -17577,10 +17577,9 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
 
-  LT_LDFLAGS="$LT_LDFLAGS -version-number 1:6:1"
-       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: libtool version info: -version-number 1:6:1" >&5
-printf "%s\n" "$as_me: libtool version info: -version-number 1:6:1" >&6;}
-
+  LT_LDFLAGS="$LT_LDFLAGS -version-info 9:1:6"
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: libtool version info: -version-info 9:1:6" >&5
+printf "%s\n" "$as_me: libtool version info: -version-info 9:1:6" >&6;}
 
   LT_LDFLAGS="$LT_LDFLAGS -no-undefined"
 

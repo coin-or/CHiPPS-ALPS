@@ -59,7 +59,7 @@ AC_COPYRIGHT([
 AC_CONFIG_SRCDIR(src/Alps.h)
 
 # Do some initialization work (version numbers, change prefix default, ...)
-AC_COIN_INITIALIZE
+AC_COIN_INITIALIZE(9:1:6)
 
 #############################################################################
 #                         Standard build tool stuff                         #
