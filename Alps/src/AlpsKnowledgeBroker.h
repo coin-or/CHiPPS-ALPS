@@ -220,7 +220,8 @@ public:
   /** Do some initialization for search. */
   virtual void initializeSearch(int argc,
                                 char* argv[],
-                                AlpsModel& model) = 0;
+                                AlpsModel& model,
+                                bool showBanner = true) = 0;
 
   /** Explore the tree rooted as the given root. */
   virtual void rootSearch(AlpsTreeNode* root) = 0;
