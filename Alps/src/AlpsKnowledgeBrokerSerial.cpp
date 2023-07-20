@@ -31,10 +31,11 @@
 //#############################################################################
 
 /** Reading in Alps and user parameter sets, and read in model data. */
-void
-AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
-                                            char* argv[],
-                                            AlpsModel& model) {
+void 
+AlpsKnowledgeBrokerSerial::initializeSearch(int argc, 
+					    char* argv[], 
+					    AlpsModel& model,
+                                            bool showBanner) {
 
     // Store a pointer to model
     model.setBroker(this);
@@ -57,8 +58,8 @@ AlpsKnowledgeBrokerSerial::initializeSearch(int argc,
     if (logFileLevel_ > 0) {    // Require log file
         logfile_ = model_->AlpsPar()->entry(AlpsParams::logFile);
     }
-
-    if (msgLevel_ > 0) {
+    
+    if (msgLevel_ > 0 && showBanner) {
 	std::cout << "==  Welcome to the Abstract Library for Parallel Search (ALPS) \n";
 	std::cout << "==  Copyright 2000-2019 Lehigh University and others \n";
 	    std::cout << "==  All Rights Reserved. \n";

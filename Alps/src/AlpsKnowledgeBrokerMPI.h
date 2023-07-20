@@ -599,16 +599,17 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
         }
 
     /** Useful construtor. */
-    AlpsKnowledgeBrokerMPI(int argc,
-                           char* argv[],
-                           AlpsModel& model)
-        :
-        AlpsKnowledgeBroker()
-        {
-            init();
-            initializeSearch(argc, argv, model);
-        }
-
+    AlpsKnowledgeBrokerMPI(int argc, 
+			   char* argv[], 
+			   AlpsModel& model,
+                           bool showBanner = true)
+	:
+	AlpsKnowledgeBroker() 
+	{    
+	    init();
+	    initializeSearch(argc, argv, model, showBanner);
+	}
+    
     /** Destructor. */
     ~AlpsKnowledgeBrokerMPI();
 
@@ -633,7 +634,10 @@ class AlpsKnowledgeBrokerMPI : public AlpsKnowledgeBroker {
      *  <li> determines their hub's global rank for workers
      * </ul>
      */
-    void initializeSearch(int argc, char* argv[], AlpsModel& model);
+    void initializeSearch(int argc,
+                          char* argv[],
+                          AlpsModel& model,
+                          bool showBanner = true);
 
     /** Search best solution for a given model. */
     void search(AlpsModel *model);
