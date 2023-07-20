@@ -1,5 +1,0 @@
-<map id="AlpsSolution" name="AlpsSolution">
-<area shape="rect" id="node1" title=" " alt="" coords="14,171,109,197"/>
-<area shape="rect" id="node2" href="$classAlpsKnowledge.html" title="The abstract base class of any user&#45;defined class that Alps has to know about in order to encode/deco..." alt="" coords="5,95,117,121"/>
-<area shape="rect" id="node3" href="$classAlpsEncoded.html" title="This data structure is to contain the packed form of an encodable knowledge." alt="" coords="12,5,111,32"/>
-</map>

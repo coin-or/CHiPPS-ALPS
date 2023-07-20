@@ -1,6 +1,0 @@
-<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classAlpsKnowledgePool.html" title=" " alt="" coords="5,56,144,83"/>
-<area shape="rect" id="node2" href="$classAlpsNodePool.html" title="Node pool is used to store the nodes to be processed." alt="" coords="201,5,306,32"/>
-<area shape="rect" id="node3" href="$classAlpsSolutionPool.html" title="In the solution pool we assume that the lower the priority value the more desirable the solution is." alt="" coords="193,56,314,83"/>
-<area shape="rect" id="node4" href="$classAlpsSubTreePool.html" title="The subtree pool is used to store subtrees." alt="" coords="192,107,315,133"/>
-</map>
