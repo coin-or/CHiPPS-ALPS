@@ -93,44 +93,45 @@ This is absurd.\n", MAX_PARAM_LINE_LENGTH);
 
 	if ( (strcmp(keyword, "param") == 0) ||
              (strcmp(keyword, "par") == 0) ) {
-	    readFromFile(value);
-	}
+            readFromFile(value);
+        }
 
-	//--------------------------------------------------	
-	//--- Check if we need to be quiet -----------------
-	//--------------------------------------------------
+        //--------------------------------------------------
+        //--- Check if we need to be quiet -----------------
+        //--------------------------------------------------
 
-	if (strcmp(keyword, "quiet") == 0) {
-	    int val = atoi(value);
-	    quiet = (val != 0);
-	}
+        if (strcmp(keyword, "quiet") == 0) {
+            int val = atoi(value);
+            quiet = (val != 0);
+        }
 
-	//--------------------------------------------------
-	//--- Find the parameter corresponding to the keyword
-	//--------------------------------------------------
+        //--------------------------------------------------
+        //--- Find the parameter corresponding to the keyword
+        //--------------------------------------------------
 
-	for (ind = keys_.begin(); ind != keys_.end(); ++ind) {
-	    if (ind->first == keyword || ind->first == suffix_ + "_" + keyword) {
-		// The keyword does exists
-		// set_param(ind->second, value);    should work
-		if (!quiet) {
-		    printf("%s %s\n", keyword, value);
-		}
-		setEntry((*ind).second, value);
-		break;
-	    }
-	}
+        for (ind = keys_.begin(); ind != keys_.end(); ++ind) {
+            if (ind->first == keyword ||
+                ind->first == prefix_ + "_" + keyword) {
+                // The keyword does exists
+                // set_param(ind->second, value);    should work
+                if (!quiet) {
+                    printf("%s %s\n", keyword, value);
+                }
+                setEntry((*ind).second, value);
+                break;
+            }
+        }
 
-	for (obsInd = obsoleteKeys_.begin();
-	     obsInd != obsoleteKeys_.end();
-	     ++obsInd) {
-	    if (*obsInd == keyword) {
-		// The keyword does exists but is obsolete
-		printf("***WARNING*** : Obsolete keyword `%s' is found.\n",
-		       keyword);
-		break;
-	    }
-	}
+        for (obsInd = obsoleteKeys_.begin();
+             obsInd != obsoleteKeys_.end();
+             ++obsInd) {
+            if (*obsInd == keyword) {
+                // The keyword does exists but is obsolete
+                printf("***WARNING*** : Obsolete keyword `%s' is found.\n",
+                       keyword);
+                break;
+            }
+        }
     }
     if (!quiet) {
 	printf("\
