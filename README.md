@@ -2,6 +2,11 @@
 
 [![A COIN-OR Project](https://coin-or.github.io/coin-or-badge.png)](https://www.coin-or.org)
 
+Projects such as this one are maintained by a small group of volunteers under
+the auspices of the non-profit [COIN-OR Foundation](https://www.coin-or.org)
+and we need your help! Please consider [sponsoring our
+activities](https://github.com/sponsors/coin-or) or [volunteering](mailto:volunteer@coin-or.org) to help!
+
 [![Latest Release](https://img.shields.io/github/v/release/coin-or/CHiPPS-ALPS?sort=semver)](https://github.com/coin-or/CHiPPS-ALPS/releases)
 
 _This file is auto-generated from [config.yml](.coin-or/config.yml) using the 
@@ -27,7 +32,7 @@ The Alps development site is https://github.com/coin-or/CHiPPS-ALPS.
 
 ## CITE
 
-[![DOI](https://zenodo.org/badge/23726893.svg)](https://zenodo.org/badge/latestdoi/23726893)
+Code: [![DOI](https://zenodo.org/badge/23726893.svg)](https://zenodo.org/badge/latestdoi/23726893)
 
 ## CURRENT BUILD STATUS
 
@@ -69,17 +74,29 @@ Below is a quick start guide for building on common platforms. More detailed
 build instructions are
 [here](https://coin-or.github.io/user_introduction.html).
 
+### Dependencies
+
+Alps has a number of dependencies, which are detailed in
+[config.yml](.coin-or/config.yml). Dependencies on other COIN-OR projects are
+automatically downloaded when obtaining the source with `coinbrew`. For some
+of the remaining third-party dependencies, automatic download scripts and
+build wrappers are provided (and will also be automatically run for required
+and recommended dependencies), while other libraries that are aeasy to obtain
+must be installed using an appropriate package manager (or may come with your
+OS by default). 
+
 ## BUILDING from source
 
 The quick start assumes you are in a bash shell. 
 
 ### Using `coinbrew`
 
-To build Alps from source, obtain the `coinbrew` script, do
+To download and build Alps from source, execute the 
+following on the command line. 
 ```
 wget https://raw.githubusercontent.com/coin-or/coinbrew/master/coinbrew
 chmod u+x coinbrew
-./coinbrew fetch Alps@stable/2.0
+./coinbrew fetch Alps@2.0
 ./coinbrew build Alps
 ```
 For more detailed instructions on coinbrew, see https://coin-or.github.io/coinbrew.
@@ -128,10 +145,12 @@ documentation [here](http://coin-or.github.io/CHiPPS-ALPS/Doxygen).
 
 ## Project Links
 
- * [COIN-OR Initiative](http://www.coin-or.org/)
- * [Discussion formum](https://github.com/coin-or/CHiPPS-ALPS/discussions)
+ * [Code of Conduct](https://www.coin-or.org/code-of-conduct/)
+ * [COIN-OR Web Site](http://www.coin-or.org/)
+ * [COIN-OR general discussion forum](https://github.com/orgs/coin-or/discussions)
+ * [Alps Discussion forum](https://github.com/coin-or/CHiPPS-ALPS/discussions)
  * [Report a bug](https://github.com/coin-or/CHiPPS-ALPS/issues/new)
- * [Doxygen-generated html documentation](http://coin-or.github.io/CHiPPS-ALPS/Doxygen)
+ * [Doxygen generated documentation](http://coin-or.github.io/CHiPPS-ALPS/Doxygen)
 
 ## CURRENT TESTING STATUS
 
