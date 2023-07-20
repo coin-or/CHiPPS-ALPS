@@ -18,7 +18,7 @@
  *          Matthew Saltzman, Clemson University                             *
  *                                                                           *
  *                                                                           *
- * Copyright (C) 2001-2019, Lehigh University, Yan Xu, Aykut Bulut, and      *
+ * Copyright (C) 2001-2023, Lehigh University, Yan Xu, Aykut Bulut, and      *
  *                          Ted Ralphs.                                      *
  * All Rights Reserved.                                                      *
  *===========================================================================*/
@@ -4256,7 +4256,7 @@ AlpsKnowledgeBrokerMPI::initializeSearch(int argc,
 
         if (msgLevel_ > 0 && showBanner) {
 	std::cout << "==  Welcome to the Abstract Library for Parallel Search (ALPS) \n";
-	std::cout << "==  Copyright 2000-2019 Lehigh University and others \n";
+	std::cout << "==  Copyright 2000-2023 Lehigh University and others \n";
 	    std::cout << "==  All Rights Reserved. \n";
 	    std::cout << "==  Distributed under the Eclipse Public License 1.0 \n";
 	    if (strcmp(ALPS_VERSION, "trunk")){
