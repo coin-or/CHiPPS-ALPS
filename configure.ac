@@ -28,7 +28,7 @@
 #                       Names and other basic things                        #
 #############################################################################
 
-AC_INIT([Alps],[1.6],[https://github.com/coin-or/CHiPPS-ALPS/issues/new],[coin-or-alps],[https://github.com/coin-or/CHiPPS-ALPS])
+AC_INIT([Alps],[1.6.1],[https://github.com/coin-or/CHiPPS-ALPS/issues/new],[coin-or-alps],[https://github.com/coin-or/CHiPPS-ALPS])
 
 AC_COPYRIGHT([
 /*===========================================================================*
