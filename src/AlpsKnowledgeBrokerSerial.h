@@ -142,7 +142,7 @@ class ALPSLIB_EXPORT AlpsKnowledgeBrokerSerial : public AlpsKnowledgeBroker {
     virtual void initializeSearch(int argc,
                                   char* argv[],
                                   AlpsModel& model,
-                                  bool shawBanner = true);
+                                  bool showBanner = true);
 
     /** Search for best solution. */
     virtual void rootSearch(AlpsTreeNode* root);
