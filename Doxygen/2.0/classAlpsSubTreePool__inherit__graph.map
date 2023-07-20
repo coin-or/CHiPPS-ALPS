@@ -1,0 +1,4 @@
+<map id="AlpsSubTreePool" name="AlpsSubTreePool">
+<area shape="rect" id="node1" title="The subtree pool is used to store subtrees." alt="" coords="13,80,136,107"/>
+<area shape="rect" id="node2" href="$classAlpsKnowledgePool.html" title="This is an abstract base class, fixing an API for pool types of Alps, AlpsNodePool,..." alt="" coords="5,5,144,32"/>
+</map>

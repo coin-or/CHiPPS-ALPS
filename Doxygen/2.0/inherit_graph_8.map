@@ -1,0 +1,5 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classAlpsKnowledgeBroker.html" title="The base class of knowledge broker class." alt="" coords="5,31,156,57"/>
+<area shape="rect" id="node2" href="$classAlpsKnowledgeBrokerMPI.html" title="MPI implementation of AlpsKnowledgeBroker interface." alt="" coords="208,5,383,32"/>
+<area shape="rect" id="node3" href="$classAlpsKnowledgeBrokerSerial.html" title=" " alt="" coords="204,56,387,83"/>
+</map>

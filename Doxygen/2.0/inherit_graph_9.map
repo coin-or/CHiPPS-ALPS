@@ -1,0 +1,6 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classAlpsKnowledgePool.html" title="This is an abstract base class, fixing an API for pool types of Alps, AlpsNodePool,..." alt="" coords="5,56,144,83"/>
+<area shape="rect" id="node2" href="$classAlpsNodePool.html" title="AlpsNodePool is used to store the nodes to be processed." alt="" coords="201,5,306,32"/>
+<area shape="rect" id="node3" href="$classAlpsSolutionPool.html" title="This class is a comtainer for the solutions found during the search." alt="" coords="193,56,314,83"/>
+<area shape="rect" id="node4" href="$classAlpsSubTreePool.html" title="The subtree pool is used to store subtrees." alt="" coords="192,107,315,133"/>
+</map>

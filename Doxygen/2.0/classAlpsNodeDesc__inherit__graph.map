@@ -1,0 +1,6 @@
+<map id="AlpsNodeDesc" name="AlpsNodeDesc">
+<area shape="rect" id="node1" title="This is an abstract base class for subproblem data to be stored in a tree node." alt="" coords="70,80,181,107"/>
+<area shape="rect" id="node3" href="$classAbcNodeDesc.html" title=" " alt="" coords="5,155,112,181"/>
+<area shape="rect" id="node4" href="$classKnapNodeDesc.html" title="Here, we need to fill in what the node description will look like." alt="" coords="136,155,251,181"/>
+<area shape="rect" id="node2" href="$classAlpsKnowledge.html" title="The abstract base class of Alps knowledges generated during the search." alt="" coords="69,5,181,32"/>
+</map>

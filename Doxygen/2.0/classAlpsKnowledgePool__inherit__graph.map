@@ -1,0 +1,6 @@
+<map id="AlpsKnowledgePool" name="AlpsKnowledgePool">
+<area shape="rect" id="node1" title="This is an abstract base class, fixing an API for pool types of Alps, AlpsNodePool,..." alt="" coords="126,5,265,32"/>
+<area shape="rect" id="node2" href="$classAlpsNodePool.html" title="AlpsNodePool is used to store the nodes to be processed." alt="" coords="5,80,111,107"/>
+<area shape="rect" id="node3" href="$classAlpsSolutionPool.html" title="This class is a comtainer for the solutions found during the search." alt="" coords="135,80,256,107"/>
+<area shape="rect" id="node4" href="$classAlpsSubTreePool.html" title="The subtree pool is used to store subtrees." alt="" coords="281,80,403,107"/>
+</map>

@@ -1,0 +1,33 @@
+<map id="AlpsNodePool" name="AlpsNodePool">
+<area shape="rect" id="node1" title="AlpsNodePool is used to store the nodes to be processed." alt="" coords="193,257,299,284"/>
+<area shape="rect" id="node8" href="$classAlpsSubTree.html" title="This class contains the data pertaining to a particular subtree in the search tree." alt="" coords="467,257,564,284"/>
+<area shape="rect" id="node2" href="$classAlpsKnowledgePool.html" title="This is an abstract base class, fixing an API for pool types of Alps, AlpsNodePool,..." alt="" coords="5,517,144,544"/>
+<area shape="rect" id="node9" title=" " alt="" coords="780,714,987,755"/>
+<area shape="rect" id="node22" href="$classAlpsSolutionPool.html" title="This class is a comtainer for the solutions found during the search." alt="" coords="2977,813,3099,840"/>
+<area shape="rect" id="node27" href="$classAlpsSubTreePool.html" title="The subtree pool is used to store subtrees." alt="" coords="1529,527,1651,553"/>
+<area shape="rect" id="node3" href="$classAlpsPriorityQueue.html" title=" " alt="" coords="3219,602,3353,643"/>
+<area shape="rect" id="node4" title=" " alt="" coords="2939,609,3137,636"/>
+<area shape="rect" id="node5" href="$classAlpsTreeNode.html" title="This class holds one node of the search tree." alt="" coords="2697,392,2802,419"/>
+<area shape="rect" id="node6" href="$classAlpsKnowledge.html" title="The abstract base class of Alps knowledges generated during the search." alt="" coords="2128,416,2240,443"/>
+<area shape="rect" id="node13" href="$classAlpsModel.html" title="AlpsModel is a base class for user application problem data." alt="" coords="2417,209,2499,236"/>
+<area shape="rect" id="node21" title=" " alt="" coords="2349,528,2567,555"/>
+<area shape="rect" id="node24" href="$classAlpsSolution.html" title=" " alt="" coords="2411,472,2505,499"/>
+<area shape="rect" id="node31" href="$classAlpsNodeDesc.html" title="This is an abstract base class for subproblem data to be stored in a tree node." alt="" coords="2403,365,2513,392"/>
+<area shape="rect" id="node7" href="$classAlpsKnowledgeBroker.html" title="The base class of knowledge broker class." alt="" coords="1877,509,2028,536"/>
+<area shape="rect" id="node29" title=" " alt="" coords="788,511,979,537"/>
+<area shape="rect" id="node10" title="STL class." alt="" coords="454,732,577,759"/>
+<area shape="rect" id="node11" title=" " alt="" coords="227,809,265,836"/>
+<area shape="rect" id="node25" title="STL class." alt="" coords="440,849,591,876"/>
+<area shape="rect" id="node12" title=" " alt="" coords="227,720,265,747"/>
+<area shape="rect" id="node19" title="STL class." alt="" coords="457,568,573,595"/>
+<area shape="rect" id="node14" href="$classAlpsParams.html" title=" " alt="" coords="2137,181,2231,208"/>
+<area shape="rect" id="node15" href="$classAlpsParameterSet.html" title="This is the class serves as a holder for a set of parameters." alt="" coords="1889,260,2017,287"/>
+<area shape="rect" id="node16" title="STL class." alt="" coords="1271,251,1351,277"/>
+<area shape="rect" id="node18" title=" " alt="" coords="1507,297,1673,324"/>
+<area shape="rect" id="node17" title="STL class." alt="" coords="820,243,947,285"/>
+<area shape="rect" id="node20" title=" " alt="" coords="1011,461,1220,502"/>
+<area shape="rect" id="node23" title=" " alt="" coords="2672,806,2827,847"/>
+<area shape="rect" id="node26" href="$classAlpsTimer.html" title=" " alt="" coords="1549,577,1631,604"/>
+<area shape="rect" id="node28" href="$classAlpsPriorityQueue.html" title=" " alt="" coords="1244,530,1379,571"/>
+<area shape="rect" id="node30" href="$classAlpsPriorityQueue.html" title=" " alt="" coords="804,612,963,639"/>
+</map>

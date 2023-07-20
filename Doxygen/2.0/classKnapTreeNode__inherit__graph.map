@@ -1,0 +1,5 @@
+<map id="KnapTreeNode" name="KnapTreeNode">
+<area shape="rect" id="node1" title="Holds a Knapsack tree node." alt="" coords="7,155,116,181"/>
+<area shape="rect" id="node2" href="$classAlpsTreeNode.html" title="This class holds one node of the search tree." alt="" coords="9,80,114,107"/>
+<area shape="rect" id="node3" href="$classAlpsKnowledge.html" title="The abstract base class of Alps knowledges generated during the search." alt="" coords="5,5,117,32"/>
+</map>

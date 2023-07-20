@@ -1,0 +1,5 @@
+<map id="AbcSolution" name="AbcSolution">
+<area shape="rect" id="node1" title="This class holds a MIP feasible primal solution." alt="" coords="15,155,107,181"/>
+<area shape="rect" id="node2" href="$classAlpsSolution.html" title=" " alt="" coords="14,80,109,107"/>
+<area shape="rect" id="node3" href="$classAlpsKnowledge.html" title="The abstract base class of Alps knowledges generated during the search." alt="" coords="5,5,117,32"/>
+</map>
