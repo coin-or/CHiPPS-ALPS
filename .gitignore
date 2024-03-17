@@ -10,3 +10,10 @@ config.log
 config.status
 libtool
 dist
+
+# Ignore VS files
+*.suo
+*.db
+*.bak
+*.user
+**/.vs/
