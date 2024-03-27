@@ -1,5 +1,0 @@
-<map id="AbcModel" name="AbcModel">
-<area shape="rect" id="node1" title="Model class for ALPS Branch and Cut." alt="" coords="21,155,101,181"/>
-<area shape="rect" id="node2" href="$classAlpsModel.html" title=" " alt="" coords="20,80,103,107"/>
-<area shape="rect" id="node3" href="$classAlpsKnowledge.html" title="The abstract base class of any user&#45;defined class that Alps has to know about in order to encode/deco..." alt="" coords="5,5,117,32"/>
-</map>
