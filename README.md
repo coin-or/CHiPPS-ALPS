@@ -1,4 +1,4 @@
-# Alps 1.5
+# Alps 1.5.12
 
 [![A COIN-OR Project](https://coin-or.github.io/coin-or-badge.png)](https://www.coin-or.org)
 
@@ -38,9 +38,9 @@ Paper: http://dx.doi.org/10.1007/0-387-23529-9_21
 
 ## CURRENT BUILD STATUS
 
-[![Windows Builds](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/windows-ci.yml/badge.svg?branch=stable/1.5)](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/windows-ci.yml?query=branch%3Astable/1.5)
+[![Windows Builds](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/windows-ci.yml/badge.svg?branch=releases/1.5.12)](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/windows-ci.yml?query=branch%3Areleases/1.5.12)
 
-[![Linux and MacOS Builds](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/linux-ci.yml/badge.svg?branch=stable/1.5)](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/linux-ci.yml?query=branch%3Astable/1.5)
+[![Linux and MacOS Builds](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/linux-ci.yml/badge.svg?branch=releases/1.5.12)](https://github.com/coin-or/CHiPPS-ALPS/actions/workflows/linux-ci.yml?query=branch%3Areleases/1.5.12)
 
 ## DOWNLOAD
 
@@ -98,7 +98,7 @@ following on the command line.
 ```
 wget https://raw.githubusercontent.com/coin-or/coinbrew/master/coinbrew
 chmod u+x coinbrew
-./coinbrew fetch Alps@1.5
+./coinbrew fetch Alps@1.5.12
 ./coinbrew build Alps
 ```
 For more detailed instructions on coinbrew, see https://coin-or.github.io/coinbrew.
@@ -135,10 +135,10 @@ into the appropriate subdirectory in the source distribution and type `make`.
 
 If you have `Doxygen` available, you can build a HTML documentation by typing
 
-`make doxygen-docs` 
+`make doxydoc` 
 
 in the build directory. If Alps was built via `coinbrew`, then the build
-directory will be `./build/CHiPPS-ALPS/1.5` by default. The doxygen documentation main file
+directory will be `./build/CHiPPS-ALPS/1.5.12` by default. The doxygen documentation main file
 is found at `<build-dir>/doxydoc/html/index.html`.
 
 If you don't have `doxygen` installed locally, you can use also find the
@@ -169,13 +169,13 @@ documentation [here](http://coin-or.github.io/CHiPPS-ALPS/Doxygen).
 
 Source Code:
 
-Yan Xu (yax2@lehigh.edu) <br>
-Aykut Bulut (aykutblt@gmail.com) <br>
-Ted Ralphs (ted@lehigh.edu), Project Manager 
+Yan Xu (yax2@lehigh.edu)
+Aykut Bulut (aykutblt@gmail.com) 
+Ted Ralphs (ted@lehigh.edu), Project Manager
 
 Original Conceptual Design:
 
-Yan Xu (yax2@lehigh.edu) <br>
-Ted Ralphs (ted@lehigh.edu), Project Manager <br>
-Laci Ladanyi (ladanyi@us.ibm.com) <br>
-Matt Saltzman (mjs@clemson.edu) 
+Yan Xu (yax2@lehigh.edu)
+Ted Ralphs (ted@lehigh.edu), Project Manager
+Laci Ladanyi (ladanyi@us.ibm.com)
+Matt Saltzman (mjs@clemson.edu)
