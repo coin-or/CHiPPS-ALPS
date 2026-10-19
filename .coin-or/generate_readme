@@ -18,6 +18,9 @@ popd > /dev/null
 
 create_variables $SCRIPT_DIR/config.yml
 
+# The Doxygen documentation is published online
+Doxygen_URL=https://coin-or.github.io/$Description_Slug/Doxygen
+
 make_header
 
 echo "Welcome to Alps, (Abstract Library for Parallel Search). Alps is a 
